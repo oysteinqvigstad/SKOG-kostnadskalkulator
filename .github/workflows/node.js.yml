@@ -1,0 +1,45 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # even numbers are LTS releases
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+      # equivalent of doing git clone
+      - uses: actions/checkout@v4
+      # human readable name for the step
+      - name: Use Node.js ${{ matrix.node-version }}
+        # ensures node.js is available in $PATH
+        uses: actions/setup-node@v3
+        with:
+          # reference different versions
+          node-version: ${{ matrix.node-version }}
+      # npm ci is equivalent to npm install but is specifically optimized for CI
+      - run: npm ci
+      - run: npm run build --if-present
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm test
