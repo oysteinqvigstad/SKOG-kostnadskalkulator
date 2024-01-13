@@ -1,0 +1,7 @@
+runtime: nodejs20
+env: standard
+
+instance_class: F1 # Optional: Choose an appropriate instance class
+
+automatic_scaling:
+  max_instances: 3 # Maximum number of instances to run
