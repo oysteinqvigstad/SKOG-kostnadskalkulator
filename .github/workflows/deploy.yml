@@ -10,7 +10,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
       - name: Set up Google SDK
         uses: google-github-actions/setup-gcloud@main
         with:
@@ -28,6 +32,7 @@ jobs:
 #        working-directory: src/api
 #      - run: npm run build
 #        working-directory: src/api
+      - uses: actions/checkout@v4
       - name: Deploy to Google App Engine
         run: gcloud app deploy
         working-directory: src/api
