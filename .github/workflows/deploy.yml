@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Production Pipeline
 
 on:
   push:
@@ -49,6 +49,7 @@ jobs:
         working-directory: src/api
 
   deploy:
+    needs: [build, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
