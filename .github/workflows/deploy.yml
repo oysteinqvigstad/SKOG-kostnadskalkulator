@@ -27,8 +27,11 @@ jobs:
       # npm ci is equivalent to npm install but is specifically optimized for CI
       - run: npm ci
         working-directory: src/api
+      - run: npm ci
+        working-directory: src/client
       - run: npm run build --if-present
-        working-directory: src/api
+        working-directory: src
+
 
   test:
     needs: build
@@ -45,8 +48,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
         working-directory: src/api
+      - run: npm ci
+        working-directory: src/client
       - run: npm test
-        working-directory: src/api
+        working-directory: src
 
   deploy:
     needs: [build, test]
@@ -65,7 +70,10 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           # allows gcloud to read credentials
           export_default_credentials: true
+      - name: Installing dependencies
+        run: npm run install
+        working-directory: src
       - name: Deploy to Google App Engine
         run: gcloud app deploy
-        working-directory: src/api
+        working-directory: src
 
