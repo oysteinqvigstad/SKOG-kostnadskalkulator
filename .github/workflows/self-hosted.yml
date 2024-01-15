@@ -6,11 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-defaults:
-  run:
-    # used for sourcing rc files
-    shell: bash -leo pipefail {0}
-
 jobs:
   build:
     runs-on: self-hosted
