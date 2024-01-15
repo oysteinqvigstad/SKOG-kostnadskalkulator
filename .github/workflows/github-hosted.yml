@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,12 +29,14 @@ jobs:
         working-directory: src
       - run: npm run ci
         working-directory: src
-      - run: npm run build --if-present
+      - run: npm run build
+        working-directory: src
+      - run: npm test
         working-directory: src
 
 
   test:
-    needs: build
+    needs: build-test
     runs-on: ubuntu-latest
     strategy:
       matrix:
