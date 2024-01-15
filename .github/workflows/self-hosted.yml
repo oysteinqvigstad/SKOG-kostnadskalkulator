@@ -7,47 +7,25 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-test:
     runs-on: self-hosted
-    strategy:
-      matrix:
-        # even numbers are LTS releases
-        node-version: [16, 18, 20]
-
     steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
       # equivalent of doing git clone
-      - uses: actions/checkout@v4
-      # human readable name for the step
-      - name: Use Node.js ${{ matrix.node-version }}
-        run: |
-          . $HOME/.nvm/nvm.sh
-          nvm use ${{ matrix.node-version }}
-          npm ci
-          npm run ci
-          npm run build --if-present
-        working-directory: src
-
-
-  test:
-    needs: build
-    runs-on: self-hosted
-    strategy:
-      matrix:
-        node-version: [16, 18, 20]
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        run: nvm use ${{ matrix.node-version }}
       - run: npm ci
         working-directory: src
-      - run: npm run ci
+      - run: npm run build
         working-directory: src
       - run: npm test
         working-directory: src
 
+
   deploy:
-    needs: [build, test]
+    needs: build-test
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
@@ -66,9 +44,19 @@ jobs:
       - name: Installing dependencies
         run: npm ci
         working-directory: src
-      - run: npm run ci
-        working-directory: src
       - name: Deploy to Google App Engine
         run: gcloud app deploy
         working-directory: src
 
+  backup:
+    needs: build-test
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push to NTNU GitLab Workspace
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN}}
+        run: |
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.stud.idi.ntnu.no/oysteinq/skogkurskalk.git"
+          git fetch --prune --unshallow
+          git push gitlab --all
