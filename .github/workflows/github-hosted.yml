@@ -67,5 +67,4 @@ jobs:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN}}
         run: |
           git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.stud.idi.ntnu.no/oysteinq/skogkurskalk.git"
-          git fetch --all  # handles deleted branches, etc.
-          get push --force gitlab --all
+          git push --force gitlab --all
