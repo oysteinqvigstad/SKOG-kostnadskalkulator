@@ -6,13 +6,18 @@ on:
   pull_request:
     branches: [ main ]
 
+defaults:
+  run:
+    # used for sourcing rc files
+    shell: bash -leo pipefail {0}
+
 jobs:
   build:
     runs-on: self-hosted
     strategy:
       matrix:
         # even numbers are LTS releases
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [16, 18, 20]
 
     steps:
       # equivalent of doing git clone
@@ -34,7 +39,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [16, 18, 20]
 
     steps:
       - uses: actions/checkout@v4
