@@ -17,9 +17,8 @@ jobs:
     steps:
       # equivalent of doing git clone
       - uses: actions/checkout@v4
-      # human readable name for the step
       - name: Use Node.js ${{ matrix.node-version }}
-        # ensures node.js is available in $PATH
+        # ensures node.js is available
         uses: actions/setup-node@v3
         with:
           # reference different versions
@@ -57,3 +56,16 @@ jobs:
         run: gcloud app deploy
         working-directory: src
 
+  backup:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push to NTNU GitLab Workspace
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN}}
+        run: |
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.stud.idi.ntnu.no/oysteinq/skogkurskalk.git"
+          git fetch --all  # handles deleted branches, etc.
+          get push --force gitlab --all
