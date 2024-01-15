@@ -8,7 +8,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    #    runs-on: ubuntu-latest
     strategy:
       matrix:
         # even numbers are LTS releases
@@ -24,6 +25,7 @@ jobs:
         with:
           # reference different versions
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
       # npm ci is equivalent to npm install but is specifically optimized for CI
       - run: npm ci
         working-directory: src
@@ -35,7 +37,8 @@ jobs:
 
   test:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    #    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x]
@@ -46,6 +49,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
       - run: npm ci
         working-directory: src
       - run: npm run ci
@@ -55,7 +59,8 @@ jobs:
 
   deploy:
     needs: [build, test]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    #    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - id: 'auth'
