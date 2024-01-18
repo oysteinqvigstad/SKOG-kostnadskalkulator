@@ -1,4 +1,4 @@
-name: Production Pipeline (github-hosted)
+name: Production Pipeline (self-hosted matrix)
 
 on:
   push:
