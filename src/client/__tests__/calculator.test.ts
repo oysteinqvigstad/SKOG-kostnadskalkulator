@@ -1,4 +1,10 @@
 import {calculator, CalcResult} from "../src/calculator/calculator";
+
+/**
+ * Test that the calculator returns the correct result.
+ * Current implementation rounds the results, so we round the expected results as well
+ * in the test currently.
+ */
 test("Should result in same result as excel-calculator",  () => {
     const expectedCostPerTimberCubedRounded = 85;
     const expectedTimberCubedPerG15HourRounded = 19.9;
