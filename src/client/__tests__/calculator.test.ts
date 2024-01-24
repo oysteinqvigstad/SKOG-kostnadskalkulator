@@ -1,4 +1,4 @@
-import {calculator, CalcResult} from "../calculator/calculator";
+import {calculator, CalcResult} from "../src/calculator/calculator";
 test("Should result in same result as excel-calculator",  () => {
     const result = new CalcResult(85,19.9)
 
