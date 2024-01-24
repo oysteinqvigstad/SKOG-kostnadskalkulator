@@ -70,4 +70,4 @@ jobs:
         run: |
           git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.stud.idi.ntnu.no/oysteinq/skogkurskalk.git"
           git fetch --prune --unshallow
-          git push gitlab --all
+          git push --force gitlab --all
