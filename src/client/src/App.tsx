@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {FormContainer} from "./containers/FormContainer";
 import {FieldType, inputFieldData} from "./constants/FieldData";
 import {InputDropdown} from "./components/InputDropdown";
-import {Alert, Button, Row} from "react-bootstrap";
+import {Alert, Button} from "react-bootstrap";
 import {ExclamationTriangle} from "react-bootstrap-icons";
 
 function App() {

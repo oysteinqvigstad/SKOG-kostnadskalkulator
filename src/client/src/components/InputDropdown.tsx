@@ -1,4 +1,4 @@
-import {Col, Form, InputGroup} from "react-bootstrap";
+import {Form, InputGroup} from "react-bootstrap";
 import {DropdownProperties, FieldData} from "../constants/FieldData";
 import {InfoCircle} from "react-bootstrap-icons";
 import React from "react";

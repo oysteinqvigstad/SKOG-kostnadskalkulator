@@ -1,5 +1,4 @@
 import {Col} from "react-bootstrap";
-import {JSX} from "react";
 
 export function FormContainer(props: {children: React.ReactNode}) {
     return (

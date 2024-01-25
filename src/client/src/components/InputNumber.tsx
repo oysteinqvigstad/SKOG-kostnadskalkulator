@@ -1,6 +1,5 @@
 import React from "react";
-import {Col, Form, InputGroup} from "react-bootstrap";
-import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import {Form, InputGroup} from "react-bootstrap";
 import {InfoCircle} from "react-bootstrap-icons";
 import {FieldData, NumberedProperties} from "../constants/FieldData";
 
