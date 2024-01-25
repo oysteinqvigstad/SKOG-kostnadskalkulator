@@ -8,6 +8,18 @@ automatic_scaling:
 
 handlers:
   - url: /.*
-    script: auto
     secure: always
     redirect_http_response_code: 301
+
+  # Handler for API requests
+  - url: /api/.*
+    script: auto
+
+  # Handler for static files in the root folder
+  - url: /
+    static_files: client/build/index.html
+    upload: client/build/index.html
+
+  # Handler for other static files
+  - url: /.*
+    static_dir: client/build
