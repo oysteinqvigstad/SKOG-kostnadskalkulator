@@ -1,54 +1,25 @@
 import React from 'react';
 import './App.css';
-import {InputNumber} from "./components/InputNumber";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {FormContainer} from "./containers/FormContainer";
-import {FieldType, inputFieldData} from "./constants/FieldData";
-import {InputDropdown} from "./components/InputDropdown";
-import {Alert, Button} from "react-bootstrap";
-import {ExclamationTriangle} from "react-bootstrap-icons";
+import {MainContainer} from "./containers/MainContainer";
+import {inputFieldData} from "./constants/FieldData";
+import {Button} from "react-bootstrap";
+import {DevelopmentHeaderWarning} from "./components/DevelopmentHeaderWarning";
+import {InputField} from "./containers/InputField";
 
 function App() {
+
     return (
         <>
-        <Alert key="warning" variant="warning" className="text-center">
-            <ExclamationTriangle className="me-2" />
-             Kostnadskalkulatoren er <strong>under utvikling!</strong> Ikke forvent at den fungerer eller er korrekt.
-        </Alert>
-        <FormContainer>
-            {inputFieldData.map((data) => {
-                switch (data.type) {
-                    case FieldType.NUMBERED_INPUT:
-                        return <InputNumber fieldData={data} />
-                    case FieldType.DROPDOWN_INPUT:
-                        return <InputDropdown fieldData={data} />
-                    default:
-                        return null
-                }
-            })}
+        <DevelopmentHeaderWarning/>
+        <MainContainer>
+            {inputFieldData.map((data) => <InputField fieldData={data} />)}
             <div className="d-grid gap-2">
-                <Button>
-                    Beregn
-                </Button>
+                <Button>Beregn</Button>
             </div>
-        </FormContainer>
+        </MainContainer>
         </>
     )
-
-
-    // <InputNumber title="avstand" unit="meter" min={0} max={9999}/>
-    // <InputNumber title="høyde" unit="meter" min={0} max={9999}/>
-
-  // return (
-  //   <div className="App">
-  //     <header className="App-header">
-  //       <img src={logo} className="App-logo" alt="logo" />
-  //       <p>
-  //         Her kommer kostnadskalkulator, etterhvert :)
-  //       </p>
-  //     </header>
-  //   </div>
-  // );
 }
 
 export default App;
