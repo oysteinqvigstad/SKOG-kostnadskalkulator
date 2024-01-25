@@ -5,10 +5,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {FormContainer} from "./containers/FormContainer";
 import {FieldType, inputFieldData} from "./constants/FieldData";
 import {InputDropdown} from "./components/InputDropdown";
-import {Button, Row} from "react-bootstrap";
+import {Alert, Button, Row} from "react-bootstrap";
+import {ExclamationTriangle} from "react-bootstrap-icons";
 
 function App() {
     return (
+        <>
+        <Alert key="warning" variant="warning" className="text-center">
+            <ExclamationTriangle className="me-2" />
+             Kostnadskalkulatoren er <strong>under utvikling!</strong> Ikke forvent at den fungerer eller er korrekt.
+        </Alert>
         <FormContainer>
             {inputFieldData.map((data) => {
                 switch (data.type) {
@@ -24,7 +30,9 @@ function App() {
                 </Button>
             </div>
         </FormContainer>
+        </>
     )
+
 
     // <InputNumber title="avstand" unit="meter" min={0} max={9999}/>
     // <InputNumber title="høyde" unit="meter" min={0} max={9999}/>
