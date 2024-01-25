@@ -6,13 +6,13 @@ instance_class: F1 # Optional: Choose an appropriate instance class
 automatic_scaling:
   max_instances: 3 # Maximum number of instances to run
 
+# These handlers are mostly for efficiency only. They can be processed directly
+# instead of redirecting the request to our nodejs app
 handlers:
+  # HTTP to HTTPS redirection
   - url: /.*
     secure: always
     redirect_http_response_code: 301
-
-  # Handler for API requests
-  - url: /api/.*
 
   # Handler for static files in the root folder
   - url: /
@@ -20,5 +20,6 @@ handlers:
     upload: client/build/index.html
 
   # Handler for other static files
-  - url: /.*
-    static_dir: client/build
+  - url: /(.*\.(json|ico|js|png|jpg|css|txt|svg|woff|woff2|ttf|map))
+    static_files: client/build/\1
+    upload: client/build/.*\.(json|ico|js|png|jpg|css|txt|svg|woff|woff2|ttf|map)
