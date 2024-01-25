@@ -22,6 +22,8 @@ function App() {
                         return <InputNumber fieldData={data} />
                     case FieldType.DROPDOWN_INPUT:
                         return <InputDropdown fieldData={data} />
+                    default:
+                        return null
                 }
             })}
             <div className="d-grid gap-2">
