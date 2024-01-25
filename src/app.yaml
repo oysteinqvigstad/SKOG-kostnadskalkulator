@@ -13,7 +13,6 @@ handlers:
 
   # Handler for API requests
   - url: /api/.*
-    script: auto
 
   # Handler for static files in the root folder
   - url: /
