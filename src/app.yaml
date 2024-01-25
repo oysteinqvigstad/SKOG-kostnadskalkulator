@@ -9,17 +9,19 @@ automatic_scaling:
 # These handlers are mostly for efficiency only. They can be processed directly
 # instead of redirecting the request to our nodejs app
 handlers:
-  # HTTP to HTTPS redirection
+  - url: /api/.*
+    script: auto
+
+  # Serve all static files with url ending with a file extension
+  - url: /(.*\..+)$
+    secure: always
+    redirect_http_response_code: 301
+    static_files: client/build/\1
+    upload: client/build/(.*\..+)$
+
+  # Catch all handler to index.html
   - url: /.*
     secure: always
     redirect_http_response_code: 301
-
-  # Handler for static files in the root folder
-  - url: /
     static_files: client/build/index.html
     upload: client/build/index.html
-
-  # Handler for other static files
-  - url: /(.*\.(json|ico|js|png|jpg|css|txt|svg|woff|woff2|ttf|map))
-    static_files: client/build/\1
-    upload: client/build/.*\.(json|ico|js|png|jpg|css|txt|svg|woff|woff2|ttf|map)
