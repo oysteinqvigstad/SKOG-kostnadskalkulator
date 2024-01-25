@@ -5,3 +5,9 @@ instance_class: F1 # Optional: Choose an appropriate instance class
 
 automatic_scaling:
   max_instances: 3 # Maximum number of instances to run
+
+handlers:
+  - url: /.*
+    script: auto
+    secure: always
+    redirect_http_response_code: 301
