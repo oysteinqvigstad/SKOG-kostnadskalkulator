@@ -1,22 +1,27 @@
-import React from 'react';
-import './App.css';
+import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {MainContainer} from "./containers/MainContainer";
-import {inputFieldData} from "./constants/FieldData";
-import {Button} from "react-bootstrap";
 import {DevelopmentHeaderWarning} from "./components/DevelopmentHeaderWarning";
-import {InputField} from "./containers/InputField";
+import {InputPage} from "./pages/InputPage";
+import {ResultPage} from "./pages/ResultPage";
 
 function App() {
+    const [pageNumber, setPageNumber] = useState(0)
+    const updatePageNumber = (e: React.MouseEvent, n: number) => {
+        e.preventDefault()
+        setPageNumber(n)
+    }
+
+    const pages = [
+        <InputPage setPageNumber={updatePageNumber}/>,
+        <ResultPage setPageNumber={updatePageNumber} />
+    ]
 
     return (
         <>
         <DevelopmentHeaderWarning/>
         <MainContainer>
-            {inputFieldData.map((data) => <InputField fieldData={data} />)}
-            <div className="d-grid gap-2">
-                <Button>Beregn</Button>
-            </div>
+            {pages[pageNumber]}
         </MainContainer>
         </>
     )

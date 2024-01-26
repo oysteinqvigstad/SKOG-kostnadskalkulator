@@ -12,7 +12,11 @@ export enum UnitType {
     CUBIC_M_PER_DEKAR = 'm³/daa',
     TREE_PER_DEKAR = 'tre/daa',
     PIECE = 'stk',
-    COST_PER_G15 = 'kr/G₁₅-time'
+    COST_PER_G15 = 'kr/G₁₅-time',
+    CUBIC_M_PR_G15 = 'm³/G₁₅-time',
+    COST_PER_CUBIC_M = 'kr/m³',
+    CUBIC_M_PR_TREE = 'm³/tre'
+
 }
 
 
@@ -31,6 +35,13 @@ export interface FieldData {
     title: string
     properties: NumberedProperties | DropdownProperties
 }
+
+export interface ListItem {
+    text: string,
+    value: number,
+    unit: UnitType
+}
+
 
 export const inputFieldData: FieldData[] = [
     {

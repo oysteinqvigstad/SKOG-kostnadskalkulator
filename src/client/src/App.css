@@ -24,3 +24,17 @@
   color: #61dafb;
 }
 
+.item-base {
+  position: relative;
+  z-index: 1;
+}
+
+.item-overlay {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 84%;
+  z-index: 2;
+  border: black;
+}
