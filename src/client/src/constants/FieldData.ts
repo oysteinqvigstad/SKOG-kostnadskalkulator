@@ -9,16 +9,15 @@ export enum FieldType {
 
 export enum UnitType {
     CUBIC_M = 'm',
-    CUBIC_M_PER_DEKAR = 'm³/daa',
-    TREE_PER_DEKAR = 'tre/daa',
+    CUBIC_M_PER_DEKAR = 'm³ ∕ daa',
+    TREE_PER_DEKAR = 'tre ∕ daa',
     PIECE = 'stk',
-    COST_PER_G15 = 'kr/G₁₅',
-    CUBIC_M_PR_G15 = 'm³/G₁₅',
-    COST_PER_CUBIC_M = 'kr/m³',
-    CUBIC_M_PR_TREE = 'm³/tre'
+    COST_PER_G15 = 'kr ∕ G₁₅',
+    CUBIC_M_PR_G15 = 'm³ ∕ G₁₅',
+    COST_PER_CUBIC_M = 'kr ∕ m³',
+    CUBIC_M_PR_TREE = 'm³ ∕ tre'
 
 }
-
 
 export interface NumberedProperties {
     min: number
@@ -71,7 +70,7 @@ export const inputFieldData: FieldData[] = [
     {
         type: FieldType.NUMBERED_INPUT,
         id: FormInputErrorCode.CLEARANCE_TREES_1000_SQM,
-        title: "Ryddetrær per Dekar",
+        title: "Ryddetrær pr dekar",
         properties: { min: 0, unit: UnitType.TREE_PER_DEKAR }
     },
     {

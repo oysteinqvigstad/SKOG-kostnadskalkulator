@@ -29,9 +29,9 @@ export function Result(props: {
                     return (
                         <ListGroupItem>
                             <Row className="g-0">
-                                <Col xs={7}>{text}</Col>
-                                <Col xs={3} className="text-end" style={{fontWeight: 500}}>{value}</Col>
-                                <Col xs={2} className="text-start ps-2">{unit}</Col>
+                                <Col xs={8}>{text}</Col>
+                                <Col className="text-end" style={{fontWeight: 500}}>{value}</Col>
+                                <Col className="text-start ps-2">{unit}</Col>
                             </Row>
                         </ListGroupItem>
                     )

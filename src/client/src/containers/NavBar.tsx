@@ -30,9 +30,9 @@ export function NavBar() {
                             </Offcanvas.Header>
                             <Offcanvas.Body style={{background: "#e9f0ec"}}>
                                 <Nav className="justify-content-end flex-grow-1 pe-3">
-                                    <Nav.Link href="">Ressurs 1</Nav.Link>
-                                    <Nav.Link href="">Ressurs 2</Nav.Link>
-                                    <Nav.Link href="">Ressurs 3</Nav.Link>
+                                    <Nav.Link href="">Forskningsgrunnlag</Nav.Link>
+                                    <Nav.Link href="">API</Nav.Link>
+                                    <Nav.Link href="">Tilbakemelding</Nav.Link>
                                 </Nav>
                             </Offcanvas.Body>
                         </Navbar.Offcanvas>
@@ -41,24 +41,5 @@ export function NavBar() {
             ))}
         </>
     )
-    // return (
-    //        <>
-    //            <Navbar style={{background: "#e9f0ec"}}>
-    //                <Container>
-    //                    <Navbar.Brand href="#home">
-    //                        <img
-    //                            alt=""
-    //                            src="logo192.png"
-    //                            width="30"
-    //                            height="30"
-    //                            className="d-inline-block align-top"
-    //                        />{' '}
-    //                        Kostnadskalkulator
-    //                    </Navbar.Brand>
-    //                </Container>
-    //
-    //
-    //            </Navbar>
-    //        </>
-    // )
+
 }

@@ -2,10 +2,53 @@ import React from "react";
 import {Button, Stack} from "react-bootstrap";
 import {Result} from "../containers/Result";
 import {UnitType} from "../constants/FieldData";
-import {loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
+import {Calculation, loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
 
 export function ResultPage(props: {setPageNumber: (e: React.MouseEvent, n: number) => void}) {
 
+    const [logHarvesterResult, loadCarrierResult, logHarvesterMidDimension] = staticTestData()
+
+
+    return (
+            <Stack gap={3}>
+                <Result
+                    title="Hogstmaskin"
+                    productivity={logHarvesterResult.timberCubedPerG15Hour}
+                    listItems={[
+                        {
+                            text: "Kostnad",
+                            value: logHarvesterResult.costPerTimberCubed.toFixed(0),
+                            unit: UnitType.COST_PER_CUBIC_M
+                        },
+                        {
+                            text: "Middeldimensjon",
+                            value: logHarvesterMidDimension.toFixed(3),
+                            unit: UnitType.CUBIC_M_PR_TREE
+                        }
+                    ]}
+                />
+                <Result
+                    title="Lassbærer"
+                    productivity={loadCarrierResult.timberCubedPerG15Hour}
+                    listItems={[
+                        {
+                            text: "Kostnad",
+                            value: loadCarrierResult.costPerTimberCubed.toFixed(0),
+                            unit: UnitType.COST_PER_CUBIC_M
+                        }
+                    ]}
+                />
+                <div className="d-grid">
+                    <Button onClick={e => props.setPageNumber(e, 0)}>Tilbake</Button>
+                </div>
+            </Stack>
+    )
+}
+
+
+
+
+function staticTestData(): [Calculation, Calculation, number] {
     const terrainData = {
         drivingDistance: 200,
         drivingConditions: 3,
@@ -23,45 +66,13 @@ export function ResultPage(props: {setPageNumber: (e: React.MouseEvent, n: numbe
         incline: 2
     }
 
-    const logHarvesterResult = logHarvesterCostCalculator( 1680, treeData, terrainData )
-    const loadCarrierResult = loadCarrierCalculator( 1220, terrainData, roadData, treeData, 20, 5)
+    const logHarvesterResult = logHarvesterCostCalculator(1680, treeData, terrainData)
+    const loadCarrierResult = loadCarrierCalculator(1220, terrainData, roadData, treeData, 20, 5)
+    const midDimension = treeData.sellableTimberVolume / treeData.timberTrees
 
     if(!logHarvesterResult.ok || !loadCarrierResult.ok) {
         throw new Error("Result not ok")
     }
+    return [logHarvesterResult.value, loadCarrierResult.value, midDimension]
 
-    return (
-            <Stack gap={3}>
-                <Result
-                    title="Hogstmaskin"
-                    productivity={logHarvesterResult.value.timberCubedPerG15Hour}
-                    listItems={[
-                        {
-                            text: "Kostnad",
-                            value: logHarvesterResult.value.costPerTimberCubed.toFixed(0),
-                            unit: UnitType.COST_PER_CUBIC_M
-                        },
-                        {
-                            text: "Middeldimensjon",
-                            value: (treeData.sellableTimberVolume / treeData.timberTrees).toFixed(3),
-                            unit: UnitType.CUBIC_M_PR_TREE
-                        }
-                    ]}
-                />
-                <Result
-                    title="Lassbærer"
-                    productivity={loadCarrierResult.value.timberCubedPerG15Hour}
-                    listItems={[
-                        {
-                            text: "Kostnad",
-                            value: loadCarrierResult.value.costPerTimberCubed.toFixed(0),
-                            unit: UnitType.COST_PER_CUBIC_M
-                        }
-                    ]}
-                />
-                <div className="d-grid">
-                    <Button onClick={e => props.setPageNumber(e, 0)}>Tilbake</Button>
-                </div>
-            </Stack>
-    )
 }

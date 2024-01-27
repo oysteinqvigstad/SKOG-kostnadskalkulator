@@ -5,25 +5,20 @@ body {
 
 .item-base {
   position: relative;
-  z-index: 1;
 }
 
 .item-overlay {
   position: absolute;
   display: flex;
-  align-items: center;
   justify-content: center;
   top: 88%;
-  z-index: 2;
-  border: black;
-}
 
+}
 
 .field:focus {
   outline: none;
   box-shadow: inset 0 0 0 2px #a2afa7;
 }
-
 
 .btn-primary {
   background-color: #5e7461;
