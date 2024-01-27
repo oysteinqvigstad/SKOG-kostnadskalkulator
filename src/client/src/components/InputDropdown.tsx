@@ -8,7 +8,7 @@ export function InputDropdown({fieldData}: {fieldData: FieldData}) {
 
     return (
             <FloatingLabel label={fieldData.title} >
-                <Form.Select aria-label="Default select example">
+                <Form.Select aria-label="Default select example" className="field">
                     {dropdownItems.map(([name, value]) => <option value={value}>{name}</option>)}
                 </Form.Select>
             </FloatingLabel>

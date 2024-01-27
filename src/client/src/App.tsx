@@ -4,6 +4,7 @@ import {MainContainer} from "./containers/MainContainer";
 import {DevelopmentHeaderWarning} from "./components/DevelopmentHeaderWarning";
 import {InputPage} from "./pages/InputPage";
 import {ResultPage} from "./pages/ResultPage";
+import {NavBar} from "./containers/NavBar";
 
 function App() {
     const [pageNumber, setPageNumber] = useState(0)
@@ -19,10 +20,11 @@ function App() {
 
     return (
         <>
-        <DevelopmentHeaderWarning/>
-        <MainContainer>
-            {pages[pageNumber]}
-        </MainContainer>
+            <DevelopmentHeaderWarning />
+            <NavBar />
+            <MainContainer>
+                {pages[pageNumber]}
+            </MainContainer>
         </>
     )
 }

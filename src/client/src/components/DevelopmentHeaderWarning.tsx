@@ -4,9 +4,10 @@ import React from "react";
 
 export function DevelopmentHeaderWarning() {
    return (
-       <Alert key="warning" variant="warning" className="text-center">
+       <Alert variant={"warning"} className={"mb-0 pt-1 pb-1 text-center text-truncate"} style={{borderRadius: "0"}}>
+
             <ExclamationTriangle className="me-2" />
-            Kostnadskalkulatoren er <strong>under utvikling!</strong> Ikke forvent at den fungerer eller er korrekt.
-        </Alert>
+            Tjenesten er <strong>under utvikling</strong>! Ikke forvent at den fungerer eller gir korrekt resultat.
+       </Alert>
    )
 }

@@ -2,14 +2,11 @@ import React from "react";
 import GaugeComponent from "react-gauge-component";
 
 export function ResultGauge({productivity}: {productivity: number}) {
-    const formatText = (value: number) => {
-        return `${value}`
-    }
    return (
             <GaugeComponent
                 arc={{
                     nbSubArcs: 150,
-                    width: 0.3,
+                    width: 0.40,
                     padding: 0.003,
                     subArcs: [
                         { limit: 15, color: "#EA4228"},
@@ -20,15 +17,15 @@ export function ResultGauge({productivity}: {productivity: number}) {
                 labels={{
                     valueLabel: {
                         matchColorWithArc: true,
-                        formatTextValue: formatText,
-                        maxDecimalDigits: 1
+                        maxDecimalDigits: 0,
+                        style: {fontSize: '70px', fontWeight: '800', textShadow: "none"  }
                     },
                     tickLabels: {
                         type: "outer",
                         ticks: [
                             { value: 0 },
                             { value: 15 },
-                            { value: 30 },
+                            { value: 35 },
                             { value: 50 },
                         ],
                     }

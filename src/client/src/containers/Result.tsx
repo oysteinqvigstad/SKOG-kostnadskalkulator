@@ -2,6 +2,7 @@ import {Card, Col, Container, ListGroup, ListGroupItem, Row} from "react-bootstr
 import {ListItem, UnitType} from "../constants/FieldData";
 import React from "react";
 import {ResultGauge} from "../components/ResultGauge";
+import '../App.css'
 
 export function Result(props: {
     title: string,
@@ -27,10 +28,10 @@ export function Result(props: {
                 {props.listItems.map(({text, value, unit}) => {
                     return (
                         <ListGroupItem>
-                            <Row>
-                                <Col xs={5}>{text}</Col>
-                                <Col xs={4} className="text-end">{value.toFixed(2)}</Col>
-                                <Col xs={3} className="text-start">{unit}</Col>
+                            <Row className="g-0">
+                                <Col xs={7}>{text}</Col>
+                                <Col xs={3} className="text-end" style={{fontWeight: 500}}>{value}</Col>
+                                <Col xs={2} className="text-start ps-2">{unit}</Col>
                             </Row>
                         </ListGroupItem>
                     )

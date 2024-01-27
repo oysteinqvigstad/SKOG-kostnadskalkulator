@@ -38,12 +38,12 @@ export function ResultPage(props: {setPageNumber: (e: React.MouseEvent, n: numbe
                     listItems={[
                         {
                             text: "Kostnad",
-                            value: logHarvesterResult.value.costPerTimberCubed,
+                            value: logHarvesterResult.value.costPerTimberCubed.toFixed(0),
                             unit: UnitType.COST_PER_CUBIC_M
                         },
                         {
                             text: "Middeldimensjon",
-                            value: treeData.sellableTimberVolume / treeData.timberTrees,
+                            value: (treeData.sellableTimberVolume / treeData.timberTrees).toFixed(3),
                             unit: UnitType.CUBIC_M_PR_TREE
                         }
                     ]}
@@ -54,7 +54,7 @@ export function ResultPage(props: {setPageNumber: (e: React.MouseEvent, n: numbe
                     listItems={[
                         {
                             text: "Kostnad",
-                            value: loadCarrierResult.value.costPerTimberCubed,
+                            value: loadCarrierResult.value.costPerTimberCubed.toFixed(0),
                             unit: UnitType.COST_PER_CUBIC_M
                         }
                     ]}
