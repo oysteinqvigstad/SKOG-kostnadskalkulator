@@ -3,17 +3,10 @@ body {
   background-color: #004f59;
 }
 
-.item-base {
-  position: relative;
+.header-color {
+  background-color: #e9f0ec;
 }
 
-.item-overlay {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  top: 88%;
-
-}
 
 .field:focus {
   outline: none;
@@ -28,4 +21,14 @@ body {
 .btn-primary:hover, .btn-primary:active  {
   background-color: #4a604d !important;
   border-color: #4a604d !important;
+}
+
+/* Custom CSS to hide number input spinners */
+.form-control[type="number"]::-webkit-inner-spin-button,
+.form-control[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.form-control[type="number"] {
+  -moz-appearance: textfield; /* For Firefox */
 }

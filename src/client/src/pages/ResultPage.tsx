@@ -1,13 +1,12 @@
 import React from "react";
 import {Button, Stack} from "react-bootstrap";
 import {Result} from "../containers/Result";
-import {UnitType} from "../constants/FieldData";
+import {UnitType} from "../types/UnitTypes";
 import {Calculation, loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
 
 export function ResultPage(props: {setPageNumber: (e: React.MouseEvent, n: number) => void}) {
-
+    // WARNING: Uses Static test data, not actual results!!!!
     const [logHarvesterResult, loadCarrierResult, logHarvesterMidDimension] = staticTestData()
-
 
     return (
             <Stack gap={3}>

@@ -1,7 +1,7 @@
-import {FieldData, FieldType} from "../constants/FieldData";
+import {FieldData, FieldType} from "../types/FieldData";
 import {InputNumber} from "../components/InputNumber";
 import {InputDropdown} from "../components/InputDropdown";
-import {Button, InputGroup, Modal} from "react-bootstrap";
+import {Button, Form, InputGroup, Modal} from "react-bootstrap";
 import {InfoCircle} from "react-bootstrap-icons";
 import {useState} from "react";
 
@@ -14,8 +14,8 @@ export function InputField({fieldData}: {fieldData: FieldData}) {
     }
     const Component = fieldComponents[fieldData.type]
 
+    // modal state
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 

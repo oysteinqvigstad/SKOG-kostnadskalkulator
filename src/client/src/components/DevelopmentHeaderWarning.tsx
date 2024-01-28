@@ -4,9 +4,11 @@ import React from "react";
 
 export function DevelopmentHeaderWarning() {
    return (
-       <Alert variant={"warning"} className={"mb-0 pt-1 pb-1 text-center text-truncate"} style={{borderRadius: "0"}}>
+       <Alert variant={"warning"} className={"mb-0 p-1 text-center text-truncate shadow-lg rounded-0"}>
             <ExclamationTriangle className="me-2" />
-            Tjenesten er <strong>under utvikling</strong>! Resultatene er svært upålitlige.
+           {"Tjenesten er "}
+           <strong>under utvikling</strong>
+           {"! Resultatene er upålitlige."}
        </Alert>
    )
 }

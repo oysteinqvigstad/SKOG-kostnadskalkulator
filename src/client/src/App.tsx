@@ -20,8 +20,8 @@ function App() {
 
     return (
         <>
-            <NavBar />
             <DevelopmentHeaderWarning />
+            <NavBar />
             <MainContainer>
                 {pages[pageNumber]}
             </MainContainer>
