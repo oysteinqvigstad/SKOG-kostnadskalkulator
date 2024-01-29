@@ -8,7 +8,7 @@ export function DevelopmentHeaderWarning() {
             <ExclamationTriangle className="me-2" />
            {"Tjenesten er "}
            <strong>under utvikling</strong>
-           {"! Resultatene er upålitlige."}
+           {"! Resultatene er upålitelige."}
        </Alert>
    )
 }

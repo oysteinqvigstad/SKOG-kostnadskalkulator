@@ -30,7 +30,7 @@ export function ResultGauge({productivity}: {productivity: number}) {
                         ],
                     }
                 }}
-                value={productivity}
+                value={Math.min(productivity, 50)}
                 maxValue={50}
             />
    )

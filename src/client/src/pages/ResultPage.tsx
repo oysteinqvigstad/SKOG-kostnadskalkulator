@@ -3,25 +3,41 @@ import {Button, Stack} from "react-bootstrap";
 import {Result} from "../containers/Result";
 import {UnitType} from "../types/UnitTypes";
 import {Calculation, loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
+import {useAppDispatch, useAppSelector} from "../state/hooks";
+import {setPage} from "../state/formSlice";
+import {selectHarvesterData} from "../state/formSelectors";
 
-export function ResultPage(props: {setPageNumber: (e: React.MouseEvent, n: number) => void}) {
+
+
+
+export function ResultPage() {
+    const dispatch = useAppDispatch()
+
+    const harvesterData = useAppSelector(selectHarvesterData)
+    const harvesterResult = logHarvesterCostCalculator(harvesterData.harvesterCost, harvesterData.treeData, harvesterData.terrainData)
+
+    if(!harvesterResult.ok) {
+        throw new Error("Result not ok")
+    }
+
     // WARNING: Uses Static test data, not actual results!!!!
-    const [logHarvesterResult, loadCarrierResult, logHarvesterMidDimension] = staticTestData()
+    const loadCarrierResult = staticTestData()
+
 
     return (
             <Stack gap={3}>
                 <Result
                     title="Hogstmaskin"
-                    productivity={logHarvesterResult.timberCubedPerG15Hour}
+                    productivity={harvesterResult.value.timberCubedPerG15Hour}
                     listItems={[
                         {
                             text: "Kostnad",
-                            value: logHarvesterResult.costPerTimberCubed.toFixed(0),
+                            value: harvesterResult.value.costPerTimberCubed.toFixed(0),
                             unit: UnitType.COST_PER_CUBIC_M
                         },
                         {
                             text: "Middeldimensjon",
-                            value: logHarvesterMidDimension.toFixed(3),
+                            value: harvesterData.midDimension.toFixed(3),
                             unit: UnitType.CUBIC_M_PR_TREE
                         }
                     ]}
@@ -38,7 +54,7 @@ export function ResultPage(props: {setPageNumber: (e: React.MouseEvent, n: numbe
                     ]}
                 />
                 <div className="d-grid">
-                    <Button onClick={e => props.setPageNumber(e, 0)}>Tilbake</Button>
+                    <Button onClick={() => dispatch(setPage(0))}>Tilbake</Button>
                 </div>
             </Stack>
     )
@@ -47,7 +63,7 @@ export function ResultPage(props: {setPageNumber: (e: React.MouseEvent, n: numbe
 
 
 
-function staticTestData(): [Calculation, Calculation, number] {
+function staticTestData(): Calculation {
     const terrainData = {
         drivingDistance: 200,
         drivingConditions: 3,
@@ -65,13 +81,13 @@ function staticTestData(): [Calculation, Calculation, number] {
         incline: 2
     }
 
-    const logHarvesterResult = logHarvesterCostCalculator(1680, treeData, terrainData)
+    // const logHarvesterResult = logHarvesterCostCalculator(1680, treeData, terrainData)
     const loadCarrierResult = loadCarrierCalculator(1220, terrainData, roadData, treeData, 20, 5)
-    const midDimension = treeData.sellableTimberVolume / treeData.timberTrees
+    // const midDimension = treeData.sellableTimberVolume / treeData.timberTrees
 
-    if(!logHarvesterResult.ok || !loadCarrierResult.ok) {
+    if(/* !logHarvesterResult.ok || */ !loadCarrierResult.ok) {
         throw new Error("Result not ok")
     }
-    return [logHarvesterResult.value, loadCarrierResult.value, midDimension]
+    return loadCarrierResult.value
 
 }
