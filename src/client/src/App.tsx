@@ -10,6 +10,7 @@ import {setField} from "./state/formSlice";
 import {staticFieldDescriptions} from "./constants/staticFieldData";
 
 function App() {
+
     const pageNumber = useAppSelector((state) => state.form.page)
     const dispatch = useAppDispatch()
 
@@ -22,8 +23,9 @@ function App() {
     useEffect(() => {
         if (!loadedDefaults) {
             staticFieldDescriptions.forEach((fieldData) => {
-                if (fieldData.default)
+                if (fieldData.default) {
                     dispatch(setField({title: fieldData.title, value: fieldData.default}))
+                }
             })
             setLoadedDefaults(true)
         }

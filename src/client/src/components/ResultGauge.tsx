@@ -14,6 +14,9 @@ export function ResultGauge({productivity}: {productivity: number}) {
                         { color: "#5BE12C"},
                     ]
                 }}
+                pointer={{
+                    animate: false
+                }}
                 labels={{
                     valueLabel: {
                         matchColorWithArc: true,
