@@ -14,7 +14,7 @@ export const selectHarvesterData = createSelector(
                 clearanceTrees: parseInt(fields[FieldNames.RYDDETREAR_PR_DEKAR])
             } as TreeData,
             terrainData: {
-                drivingDistance: parseInt(fields[FieldNames.RYDDETREAR_PR_DEKAR]),
+                drivingDistance: parseInt(fields[FieldNames.KJOREAVSTAND_TERRENG]),
                 drivingConditions: parseInt(fields[FieldNames.OVERFLATESTRUKTUR_TERRENG]),
                 incline: parseInt(fields[FieldNames.HELLING_HOGSTFELT])
             } as DrivingData,
