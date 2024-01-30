@@ -1,43 +1,34 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {MainContainer} from "./containers/MainContainer";
+import {MainContent} from "./containers/MainContent";
 import {DevelopmentHeaderWarning} from "./components/DevelopmentHeaderWarning";
-import {InputPage} from "./pages/InputPage";
-import {ResultPage} from "./pages/ResultPage";
 import {NavBar} from "./containers/NavBar";
-import {useAppDispatch, useAppSelector} from "./state/hooks";
+import {useAppDispatch} from "./state/hooks";
 import {setField} from "./state/formSlice";
 import {staticFieldDescriptions} from "./constants/staticFieldData";
 
 function App() {
 
-    const pageNumber = useAppSelector((state) => state.form.page)
+    // ensures that default form values are being loaded into Redux
     const dispatch = useAppDispatch()
-
-    const pages = [
-        <InputPage />,
-        <ResultPage />
-    ]
-    const [loadedDefaults, setLoadedDefaults] = useState(false)
-
+    const [haveDefaultsBeenLoaded, setHaveDefaultsBeenLoaded] = useState(false)
     useEffect(() => {
-        if (!loadedDefaults) {
+        if (!haveDefaultsBeenLoaded) {
             staticFieldDescriptions.forEach((fieldData) => {
                 if (fieldData.default) {
                     dispatch(setField({title: fieldData.title, value: fieldData.default}))
                 }
             })
-            setLoadedDefaults(true)
+            setHaveDefaultsBeenLoaded(true)
         }
-    }, [dispatch, loadedDefaults]);
+    }, [dispatch, haveDefaultsBeenLoaded]);
+
 
     return (
         <>
             <DevelopmentHeaderWarning />
             <NavBar />
-            <MainContainer>
-                {pages[pageNumber]}
-            </MainContainer>
+            <MainContent />
         </>
     )
 }

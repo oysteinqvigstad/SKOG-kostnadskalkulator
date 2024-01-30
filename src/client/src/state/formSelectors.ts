@@ -24,3 +24,29 @@ export const selectHarvesterData = createSelector(
     }
 )
 
+export const selectLoadCarrierData = createSelector(
+    (state: RootState) => state.form.fields,
+    (fields) => {
+        return {
+            carrierCost: parseInt(fields[FieldNames.TIMEKOST_LASSBEARER]),
+            treeData: {
+                sellableTimberVolume: parseInt(fields[FieldNames.VOLUM_PR_DEKAR]),
+                timberTrees: parseInt(fields[FieldNames.TOMMERTREAR_PR_DEKAR]),
+                clearanceTrees: parseInt(fields[FieldNames.RYDDETREAR_PR_DEKAR]),
+                forestType: parseInt(fields[FieldNames.SKOGTYPE]) as ForestType
+            } as TreeData,
+            terrainData: {
+                drivingDistance: parseInt(fields[FieldNames.KJOREAVSTAND_TERRENG]),
+                drivingConditions: parseInt(fields[FieldNames.OVERFLATESTRUKTUR_TERRENG]),
+                incline: parseInt(fields[FieldNames.HELLING_HOGSTFELT])
+            } as DrivingData,
+            roadData: {
+                drivingDistance: parseInt(fields[FieldNames.KJOREAVSTAND_VEG]),
+                drivingConditions: parseInt(fields[FieldNames.OVERFLATESTRUKTUR_TRAKTORVEG]),
+                incline: parseInt(fields[FieldNames.HELLING_PAA_TRAKTORVEG])
+            } as DrivingData,
+            timerLoadSize: parseInt(fields[FieldNames.LASSTORRELSE]),
+            distinctAssortments: parseInt(fields[FieldNames.ANTALL_SORTIMENT])
+        }
+    }
+)

@@ -7,6 +7,7 @@ export interface FieldData {
     errorId: FormInputErrorCode | null
     title: string
     default: string | null
+    page: number
     properties: NumberedProperties | DropdownProperties
 }
 
