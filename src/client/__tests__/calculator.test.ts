@@ -33,7 +33,7 @@ describe("Should result in same result as excel-calculator for log harvester",  
         sellableTimberVolume: 25,
         timberTrees: 100,
         clearanceTrees: 150,
-        forestType: ForestType.ValleyAndMountainForest
+        forestType: ForestType.LowlandsForest
     }
 
 
