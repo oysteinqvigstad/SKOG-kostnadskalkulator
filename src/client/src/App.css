@@ -14,11 +14,11 @@ body {
 }
 
 .btn-primary {
-  background-color: #5e7461;
-  border-color: #5e7461;
+  background-color: #5e7461 !important;
+  border-color: #5e7461 !important;
 }
 
-.btn-primary:hover, .btn-primary:active  {
+.btn-primary:active {
   background-color: #4a604d !important;
   border-color: #4a604d !important;
 }
@@ -48,3 +48,10 @@ body {
   border-color: #5e7461;
 }
 
+/* avoid applying hover on touch devices that emulate it. Buttons tend to "stick" */
+@media (hover: hover) {
+  .btn-primary:hover {
+    background-color: #4a604d !important;
+    border-color: #4a604d !important;
+  }
+}
