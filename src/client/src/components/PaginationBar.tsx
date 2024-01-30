@@ -1,6 +1,7 @@
 import {Button, Col, Pagination, Row} from "react-bootstrap";
 import React from "react";
 import {useAppSelector} from "../state/hooks";
+import {BarChartLine} from "react-bootstrap-icons";
 
 export function PaginationBar(props: {onClick: (pageNumber: number) => void}) {
     const page = useAppSelector((state) => state.form.page)
@@ -10,7 +11,7 @@ export function PaginationBar(props: {onClick: (pageNumber: number) => void}) {
             key={n}
             active={page === n}
             onClick={() => props.onClick(n)}>
-            {n+1}
+            {(n === 3) ? <BarChartLine /> : n+1}
         </Pagination.Item>
     )
 
