@@ -1,7 +1,6 @@
 import {Button, Col, Pagination, Row} from "react-bootstrap";
-import React, {useRef} from "react";
-import {setPage, setValidated} from "../state/formSlice";
-import {useAppDispatch, useAppSelector} from "../state/hooks";
+import React from "react";
+import {useAppSelector} from "../state/hooks";
 
 export function PaginationBar(props: {onClick: (pageNumber: number) => void}) {
     const page = useAppSelector((state) => state.form.page)

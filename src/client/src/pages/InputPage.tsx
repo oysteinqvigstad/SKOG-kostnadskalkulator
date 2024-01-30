@@ -13,7 +13,7 @@ export function InputPage(props: {formRef: React.RefObject<HTMLFormElement>}) {
 
     return (
         <Form noValidate validated={validated} ref={props.formRef}>
-            {staticFieldDescriptions.map((data) => <InputField fieldData={data} hidden={data.page != page} />)}
+            {staticFieldDescriptions.map((data) => <InputField fieldData={data} hidden={data.page !== page} />)}
         </Form>
     )
 }
