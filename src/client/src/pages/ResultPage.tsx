@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Stack} from "react-bootstrap";
 import {Result} from "../containers/Result";
 import {UnitType} from "../types/UnitTypes";
-import {Calculation, loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
+import {Calculation, ForestType, loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
 import {useAppDispatch, useAppSelector} from "../state/hooks";
 import {setPage} from "../state/formSlice";
 import {selectHarvesterData} from "../state/formSelectors";
@@ -72,7 +72,8 @@ function staticTestData(): Calculation {
     const treeData = {
         sellableTimberVolume: 25,
         timberTrees: 100,
-        clearanceTrees: 150
+        clearanceTrees: 150,
+        forestType: ForestType.LowlandsForest
     }
 
     const roadData = {

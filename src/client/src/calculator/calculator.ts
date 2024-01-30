@@ -20,6 +20,7 @@ export type TreeData = {
     timberTrees: number
     clearanceTrees: number
     sellableTimberVolume: number
+    forestType: ForestType
 }
 
 
@@ -33,6 +34,17 @@ export enum ForestType {
     ValleyAndMountainForest,
     LowlandsForest,
     SuperForest
+}
+
+export function forestTypeToString(forestType: ForestType) {
+    switch(forestType) {
+        case ForestType.ValleyAndMountainForest:
+            return "Dal- og fjellskog"
+        case ForestType.LowlandsForest:
+            return "Låglandsskog"
+        case ForestType.SuperForest:
+            return "Særlig velpleid og jevn skog"
+    }
 }
 
 
@@ -87,7 +99,7 @@ export function logHarvesterCostCalculator(
 
     const secondsUsedPerTreeG15 = secondsPerTreeG15(
         T1Transport(treeData.timberTrees, terrainData.drivingConditions, terrainData.incline),
-        T2FellingAndProcessing(treeData.timberTrees, middleStem),
+        T2FellingAndProcessing(treeData.timberTrees, middleStem, treeData.forestType),
         T3AdditionalTime(),
         TR2ClearanceTrees(treeData.timberTrees, treeData.clearanceTrees)
     )

@@ -1,6 +1,6 @@
 import {createSelector} from "@reduxjs/toolkit";
 import {RootState} from "./store";
-import {DrivingData, TreeData} from "../calculator/calculator";
+import {DrivingData, ForestType, TreeData} from "../calculator/calculator";
 import {FieldNames} from "../types/FieldData";
 
 export const selectHarvesterData = createSelector(
@@ -11,7 +11,8 @@ export const selectHarvesterData = createSelector(
             treeData: {
                 sellableTimberVolume: parseInt(fields[FieldNames.VOLUM_PR_DEKAR]),
                 timberTrees: parseInt(fields[FieldNames.TOMMERTREAR_PR_DEKAR]),
-                clearanceTrees: parseInt(fields[FieldNames.RYDDETREAR_PR_DEKAR])
+                clearanceTrees: parseInt(fields[FieldNames.RYDDETREAR_PR_DEKAR]),
+                forestType: parseInt(fields[FieldNames.SKOGTYPE]) as ForestType
             } as TreeData,
             terrainData: {
                 drivingDistance: parseInt(fields[FieldNames.KJOREAVSTAND_TERRENG]),

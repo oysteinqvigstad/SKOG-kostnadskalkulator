@@ -1,8 +1,20 @@
 import {FieldData, FieldNames, FieldType} from "../types/FieldData";
 import {FormInputErrorCode} from "../calculator/calculator-fields";
 import {UnitType} from "../types/UnitTypes";
+import {ForestType, forestTypeToString} from "../calculator/calculator";
 
 export const staticFieldDescriptions: FieldData[] = [
+    {
+        type: FieldType.DROPDOWN_INPUT,
+        errorId: FormInputErrorCode.HARVESTER_HOUR_COST_G15, //TODO: Add errorId
+        title: FieldNames.SKOGTYPE,
+        default: ForestType.LowlandsForest.toString(),
+        properties: { options: new Map([
+                [forestTypeToString(ForestType.LowlandsForest), ForestType.LowlandsForest.toString()],
+                [forestTypeToString(ForestType.ValleyAndMountainForest), ForestType.ValleyAndMountainForest.toString()],
+                [forestTypeToString(ForestType.SuperForest), ForestType.SuperForest.toString()],
+            ]) }
+    },
     {
         type: FieldType.NUMBERED_INPUT,
         errorId: FormInputErrorCode.HARVESTER_HOUR_COST_G15,

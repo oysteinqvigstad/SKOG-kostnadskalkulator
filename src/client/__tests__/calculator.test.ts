@@ -32,7 +32,8 @@ describe("Should result in same result as excel-calculator for log harvester",  
     const treeData = {
         sellableTimberVolume: 25,
         timberTrees: 100,
-        clearanceTrees: 150
+        clearanceTrees: 150,
+        forestType: ForestType.ValleyAndMountainForest
     }
 
 
@@ -67,7 +68,8 @@ describe("Should result in same result as excel-calculator for log harvester",  
         const treeData = {
             sellableTimberVolume: 25,
             timberTrees: 100,
-            clearanceTrees: 150
+            clearanceTrees: 150,
+            forestType: ForestType.ValleyAndMountainForest
         }
         const result = logHarvesterCostCalculator( NaN, treeData, terrainData )
 
@@ -104,7 +106,8 @@ describe("Tests calculation of load carrier cost", () => {
         const treeData = {
             sellableTimberVolume: 25,
             timberTrees: 100,
-            clearanceTrees: 150
+            clearanceTrees: 150,
+            forestType: ForestType.ValleyAndMountainForest
         }
 
         const result = loadCarrierCalculator( 1220, terrainData, roadData, treeData, 20, 5)
