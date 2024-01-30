@@ -188,8 +188,6 @@ export function T1Transport(
 ) {
     const H = C.NAIVE_DRIVING_SPEED * (1 + 5 / timberTreeCountPer1000SQM
         - 0.1 * drivingConditions - 0.1 * incline)
-    //TODO: Kan se ut som a første 1 i T mangler i excel ark
-    // Legges 1 til så blir resultatet veldig feil
     return 60 * ( 1000 / (C.WORK_WIDTH * timberTreeCountPer1000SQM * H))
 }
 
@@ -250,10 +248,8 @@ export function T2FellingAndProcessing(
 }
 
 
-
-//TODO: T3 should be an input from user
 function T3AdditionalTime() {
-    return 1.5  // can be 0.8, 1.2 or 1.5 in Excel sheet.
+    return 1.5  // can be 0.8, 1.2 or 1.5 in Excel sheet. Not an exposed option.
 }
 
 
@@ -281,8 +277,12 @@ function TR2ClearanceTrees(
 
 /**
  * Calculates time spent at terminal
- * @param middleStem
- * @param sellableVolume
+ *
+ * T = k1 * ( (alpha + K*2*UT + beta*(sqrt(10*UT))) / (10*UT) )
+ * UT = sellable timber volume
+ *
+ * @param middleStem Sellable timber volume / timberTreeCountPer1000SQM
+ * @param sellableVolume sellable timber volume per 1000sqm
  * @constructor
  */
 export function T4TerminalTime(middleStem:number, sellableVolume:number) {
@@ -291,12 +291,9 @@ export function T4TerminalTime(middleStem:number, sellableVolume:number) {
     const k1 = 1.4
     const k2 = 0.73
 
-    const v = Math.sqrt(10 * sellableVolume) * beta
-    const var2 = 10 * k2 * sellableVolume
-    const var3 = (alpha + var2 + v) / (10 * sellableVolume)
-    const timePerM3 = k1 * var3
-
-    return timePerM3 * 60 * middleStem
+    const x = Math.sqrt(10 * sellableVolume) * beta
+    return (k1 * ((alpha + (10 * k2 * sellableVolume) + x) / (10 * sellableVolume)))
+        * 60 * middleStem
 }
 
 
@@ -316,12 +313,9 @@ export function T5DrivingTime(
     terrainDrivingConditions:number,
     incline:number
 ) {
-    const var1 = Math.pow(incline,2) * 1.4
-    const var2 = 75 - (8.2 * terrainDrivingConditions)
-    const h = var2 - var1
-    const var3 = h * timberLoadSize
+    const h = (75 - (8.2 * terrainDrivingConditions)) - (Math.pow(incline,2) * 1.4)
     const drivingDistanceBothWays = 2 * terrainDrivingDistance
-    const timePrM3 = drivingDistanceBothWays / var3
+    const timePrM3 = drivingDistanceBothWays / (h * timberLoadSize)
     return timePrM3 * 60 * middleStem
 }
 
