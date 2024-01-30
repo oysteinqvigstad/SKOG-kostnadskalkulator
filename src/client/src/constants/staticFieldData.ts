@@ -6,7 +6,7 @@ import {ForestType, forestTypeToString} from "../calculator/calculator";
 export const staticFieldDescriptions: FieldData[] = [
     {
         type: FieldType.DROPDOWN_INPUT,
-        errorId: FormInputErrorCode.HARVESTER_HOUR_COST_G15, //TODO: Add errorId
+        errorId: FormInputErrorCode.FOREST_TYPE,
         title: FieldNames.SKOGTYPE,
         default: ForestType.LowlandsForest.toString(),
         properties: { options: new Map([
