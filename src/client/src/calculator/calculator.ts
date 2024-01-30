@@ -299,6 +299,14 @@ export function T4TerminalTime(middleStem:number, sellableVolume:number) {
 
 /**
  * Calculates time spent driving between trees
+ *
+ * T = (2 * A) / (H * L)
+ * H = 75 - (8.2 * Y) - (1.4 * B)^2 - calculated driving speed
+ * A = Driving distance - one way
+ * Y = Driving conditions
+ * B = Incline
+ * L = timber load size
+ *
  * @param middleStem Sellable timber volume / timberTreeCountPer1000SQM
  * @param terrainDrivingDistance Driving distance
  * @param timberLoadSize volume of timber load per trip
