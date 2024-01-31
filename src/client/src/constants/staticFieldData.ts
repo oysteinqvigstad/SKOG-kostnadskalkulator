@@ -2,10 +2,25 @@ import {FieldData, FieldNames, FieldType} from "../types/FieldData";
 import {FormInputErrorCode} from "../calculator/calculator-fields";
 import {UnitType} from "../types/UnitTypes";
 import {ForestType, forestTypeToString} from "../calculator/calculator";
+import {
+    assortmentsNor,
+    clearanceTreesNor,
+    drivingConditionsExplanationNOR, forestTypeExplanationNOR,
+    harvesterCostNor,
+    logCarrierCostNor,
+    roadDistanceNor,
+    sellableVolumeNor,
+    terrainDistanceNor,
+    terrainInclineNor,
+    timberLoadSizeNor,
+    timberTreesNor
+} from "../fieldDescriptions/descriptions";
+import {renderToString} from "react-dom/server";
 
 export const staticFieldDescriptions: FieldData[] = [
     {
         type: FieldType.DROPDOWN_INPUT,
+        descriptionHTML: renderToString(forestTypeExplanationNOR()), //TODO: Add description
         errorId: FormInputErrorCode.FOREST_TYPE,
         title: FieldNames.SKOGTYPE,
         default: ForestType.LowlandsForest.toString(),
@@ -19,6 +34,7 @@ export const staticFieldDescriptions: FieldData[] = [
     // TREE DATA START
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(timberTreesNor()),
         errorId: FormInputErrorCode.TIMBER_TREES_1000_SQM,
         title: FieldNames.TOMMERTREAR_PR_DEKAR,
         default: "100",
@@ -27,6 +43,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(clearanceTreesNor()),
         errorId: FormInputErrorCode.CLEARANCE_TREES_1000_SQM,
         title: FieldNames.RYDDETREAR_PR_DEKAR,
         default: "150",
@@ -35,6 +52,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(sellableVolumeNor()),
         errorId: FormInputErrorCode.SELLABLE_TIMBER_VOLUME,
         title: FieldNames.VOLUM_PR_DEKAR,
         default: "25",
@@ -44,6 +62,7 @@ export const staticFieldDescriptions: FieldData[] = [
     // TREE DATA END
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(harvesterCostNor()),
         errorId: FormInputErrorCode.HARVESTER_HOUR_COST_G15,
         title: FieldNames.TIMEKOST_HOGSTMASKIN,
         default: "2000",
@@ -53,6 +72,7 @@ export const staticFieldDescriptions: FieldData[] = [
     // TERRAIN DATA START
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(terrainDistanceNor()),
         errorId: null,
         title: FieldNames.KJOREAVSTAND_TERRENG,
         default: "200",
@@ -61,6 +81,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.DROPDOWN_INPUT,
+        descriptionHTML: renderToString(drivingConditionsExplanationNOR()),
         errorId: FormInputErrorCode.DRIVING_CONDITIONS,
         title: FieldNames.OVERFLATESTRUKTUR_TERRENG,
         default: "1",
@@ -75,6 +96,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.DROPDOWN_INPUT,
+        descriptionHTML: renderToString(terrainInclineNor()),
         errorId: FormInputErrorCode.INCLINE,
         title: FieldNames.HELLING_HOGSTFELT,
         default: "1",
@@ -90,6 +112,7 @@ export const staticFieldDescriptions: FieldData[] = [
     // TERRAIN DATA END
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(logCarrierCostNor()),
         errorId: null,
         title: FieldNames.TIMEKOST_LASSBEARER,
         default: "1800",
@@ -99,6 +122,7 @@ export const staticFieldDescriptions: FieldData[] = [
     // ROAD DATA START
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(roadDistanceNor()),
         errorId: null,
         title: FieldNames.KJOREAVSTAND_VEG,
         default: "500",
@@ -107,6 +131,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.DROPDOWN_INPUT,
+        descriptionHTML: renderToString(drivingConditionsExplanationNOR()),
         errorId: FormInputErrorCode.DRIVING_CONDITIONS,
         title: FieldNames.OVERFLATESTRUKTUR_TRAKTORVEG,
         default: "1",
@@ -121,6 +146,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.DROPDOWN_INPUT,
+        descriptionHTML: renderToString(roadDistanceNor()),
         errorId: FormInputErrorCode.INCLINE,
         title: FieldNames.HELLING_PAA_TRAKTORVEG,
         default: "1",
@@ -136,6 +162,7 @@ export const staticFieldDescriptions: FieldData[] = [
     // ROAD DATA END
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(timberLoadSizeNor()),
         errorId: null,
         title: FieldNames.LASSTORRELSE,
         default: "20",
@@ -144,6 +171,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(assortmentsNor()),
         errorId: null,
         title: FieldNames.ANTALL_SORTIMENT,
         default: "8",

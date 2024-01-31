@@ -32,7 +32,7 @@ export function InputField(props: {fieldData: FieldData, hidden: boolean}) {
                <Modal.Header closeButton>
                    <Modal.Title>{props.fieldData.title}</Modal.Title>
                </Modal.Header>
-               <Modal.Body>Her kommer beskrivelse av parameter</Modal.Body>
+               <Modal.Body dangerouslySetInnerHTML={{__html: props.fieldData.descriptionHTML}}></Modal.Body>
            </Modal>
        </>
    )

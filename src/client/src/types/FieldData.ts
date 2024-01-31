@@ -4,6 +4,7 @@ import {UnitType} from "./UnitTypes";
 
 export interface FieldData {
     type: FieldType
+    descriptionHTML: string
     errorId: FormInputErrorCode | null
     title: string
     default: string | null
