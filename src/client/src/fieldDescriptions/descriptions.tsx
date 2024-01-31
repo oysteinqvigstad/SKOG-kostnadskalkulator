@@ -139,7 +139,7 @@ export function assortmentsNor() {
 export function harvesterCostNor() {
     return (
         <>
-            <p>Gjennomsnittlig timekostnad for hogstmaskin - kr pr g<sub>15</sub>-time</p>
+            <p>Gjennomsnittlig timekostnad for hogstmaskin - kr pr G<sub>15</sub>-time</p>
         </>
     )
 }
@@ -147,7 +147,7 @@ export function harvesterCostNor() {
 export function logCarrierCostNor() {
     return (
         <>
-            <p>Gjennomsnittlig timekostnad for lassbærer - kr pr g<sub>15</sub>-time</p>
+            <p>Gjennomsnittlig timekostnad for lassbærer - kr pr G<sub>15</sub>-time</p>
         </>
     )
 }
@@ -227,7 +227,7 @@ export function assortmentsEng() {
 export function harvesterCostEng() {
     return (
         <>
-            <p>Average hourly cost for harvesting machine - NOK per g<sub>15</sub>-hour</p>
+            <p>Average hourly cost for harvesting machine - NOK per G<sub>15</sub>-hour</p>
         </>
     )
 }
@@ -235,7 +235,7 @@ export function harvesterCostEng() {
 export function logCarrierCostEng() {
     return (
         <>
-            <p>Average hourly cost for log carrier - NOK per g<sub>15</sub>-hour</p>
+            <p>Average hourly cost for log carrier - NOK per G<sub>15</sub>-hour</p>
         </>
     )
 }
