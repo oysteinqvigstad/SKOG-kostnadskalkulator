@@ -1,4 +1,4 @@
-import {Button, Col, Pagination, Row} from "react-bootstrap";
+import {Col, Pagination, Row} from "react-bootstrap";
 import React from "react";
 import {useAppSelector} from "../state/hooks";
 import {BarChartLine} from "react-bootstrap-icons";
@@ -17,27 +17,14 @@ export function PaginationBar(props: {onClick: (pageNumber: number) => void}) {
 
     return (
         <Row>
-            <Col xs={3}>
-                <Button
-                    className={"w-100"}
-                    disabled={page === 0}
-                    onClick={() => props.onClick(page-1)}>
-                    {"Forrige"}
-                </Button>
-            </Col>
             <Col className={"d-flex justify-content-center"}>
-                <Pagination>
+                <Pagination size="lg">
+                    <Pagination.Prev disabled={page === 0} onClick={() => props.onClick(page-1)} />
                     {pagination}
+                    <Pagination.Next disabled={page === 3} onClick={() => props.onClick(page+1)} />
                 </Pagination>
             </Col>
-            <Col xs={3}>
-                <Button
-                    className={"w-100"}
-                    disabled={page === 3}
-                    onClick={() => props.onClick(page+1)}>
-                    {"Neste"}
-                </Button>
-            </Col>
+
         </Row>
     )
 }
