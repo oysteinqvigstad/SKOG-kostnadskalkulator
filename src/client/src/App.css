@@ -14,21 +14,44 @@ body {
 }
 
 .btn-primary {
-  background-color: #5e7461;
-  border-color: #5e7461;
+  background-color: #5e7461 !important;
+  border-color: #5e7461 !important;
 }
 
-.btn-primary:hover, .btn-primary:active  {
+.btn-primary:active {
   background-color: #4a604d !important;
   border-color: #4a604d !important;
 }
 
-/* Custom CSS to hide number input spinners */
+.btn-primary:disabled {
+  background-color: #5e7461;
+  border-color: #5e7461;
+
+}
+
+/* hide number input controls */
 .form-control[type="number"]::-webkit-inner-spin-button,
 .form-control[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 .form-control[type="number"] {
-  -moz-appearance: textfield; /* For Firefox */
+  -moz-appearance: textfield; /* same as above but for Firefox */
+}
+
+.page-item .page-link {
+  color: #6f7174;
+}
+.page-item.active .page-link {
+  color: white;
+  background-color: #5e7461;
+  border-color: #5e7461;
+}
+
+/* avoid applying hover on touch devices that emulate it. Buttons tend to "stick" */
+@media (hover: hover) {
+  .btn-primary:hover {
+    background-color: #4a604d !important;
+    border-color: #4a604d !important;
+  }
 }

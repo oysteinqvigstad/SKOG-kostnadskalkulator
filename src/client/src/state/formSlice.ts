@@ -3,6 +3,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 interface FormState {
     page: number
+    validated: boolean
     fields: {
         [key: string]: string
     }
@@ -10,6 +11,7 @@ interface FormState {
 
 const initialState: FormState = {
     page: 0,
+    validated: false,
     fields: {}
 }
 
@@ -23,9 +25,13 @@ export const formSlice = createSlice({
         setPage: (state, action: PayloadAction<number>) => {
             state.page = action.payload
         },
+        setValidated: (state, action: PayloadAction<boolean>) => {
+            state.validated = action.payload
+        }
     }
 })
 
-export const { setField, setPage } = formSlice.actions
+export const { setField, setPage, setValidated } = formSlice.actions
+
 
 export default formSlice.reducer
