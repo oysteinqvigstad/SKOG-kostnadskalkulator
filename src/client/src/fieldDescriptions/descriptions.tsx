@@ -1,29 +1,52 @@
 import {Table} from "react-bootstrap";
 
+export function forestTypeExplanationNOR() {
+    return (
+        <>
+            <Table>
+                <tbody>
+                <tr>
+                    <td>1. Dal- og fjellskog</td>
+                    <td>Skog i dal- og fjellstrøk, med mindre middelstamme enn de andre skogtypene - vanlig i Norge, særlig Vestlandet og Trøndelag</td>
+                </tr>
+                <tr>
+                    <td>2. Låglandsskog</td>
+                    <td>Kjennetegner skogen i deler av østlandsområdet, med større gjennomsnittlig middelstamme enn dal- og fjellskog</td>
+                </tr>
+                <tr>
+                    <td>3. Særlig velpleidd og jevn skog</td>
+                    <td>Skog med særlig stor middelstamme, åpner for bruk av eksta store maskiner - forekommer sjelden i Norge, men vanlig i Sverige</td>
+                </tr>
+                </tbody>
+            </Table>
+        </>
+    )
+}
+
 export function drivingConditionsExplanationNOR() {
     return (
         <>
             <Table>
                 <tbody>
                 <tr>
-                    <td>1. Meget gode</td>
+                    <td>1. Meget god</td>
                     <td>Meget jevnt terreng med sv&aelig;rt f&aring; hinder over 30cm</td>
                 </tr>
                 <tr>
-                    <td>2. Gode</td>
+                    <td>2. God</td>
                     <td>Sv&aelig;rt f&aring; hinder over 50cm. Hinder over 70cm kan forekomme.</td>
                 </tr>
                 <tr>
-                    <td>3. Middles gode</td>
+                    <td>3. Middels god</td>
                     <td>Sv&aelig;rt mmange mindre hinder. De fleste er mindre enn 40cm. F&aring; store hinder. Hinder over 70cm kan forekomme.</td>
                 </tr>
                 <tr>
-                    <td>4. D&aring;rlige</td>
+                    <td>4. D&aring;rlig</td>
                     <td>Sv&aelig;rt mange sm&aring; hinder. Mange mellomstore og store hinder. Hinder p&aring; 50-70 cm kan forekomme.</td>
                 </tr>
                 <tr>
-                    <td>5. Sv&aelig;rt D&aring;rlige</td>
-                    <td>Alt d&aring;rligere en klasse 4.</td>
+                    <td>5. Sv&aelig;rt D&aring;rlig</td>
+                    <td>Alt d&aring;rligere enn klasse 4.</td>
                 </tr>
                 </tbody>
             </Table>
