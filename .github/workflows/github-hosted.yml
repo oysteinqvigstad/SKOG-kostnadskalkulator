@@ -55,7 +55,7 @@ jobs:
           node-version: '20.x'
       - run: npm ci
         working-directory: src
-      - run: npm run build:client
+      - run: npm run build
         working-directory: src
       - name: Deploy to Google App Engine
         run: gcloud app deploy
