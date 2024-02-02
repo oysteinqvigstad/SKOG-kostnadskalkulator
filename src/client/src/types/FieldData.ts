@@ -1,7 +1,9 @@
 import {FormInputErrorCode} from "../calculator/calculator-fields";
-import {UnitType} from "./UnitTypes";
+import {UnitType} from "./UnitType";
 
-
+/**
+ * `FieldData` is an interface that is used to define the structure of the form fields.
+ */
 export interface FieldData {
     type: FieldType
     descriptionHTML: string
@@ -12,39 +14,26 @@ export interface FieldData {
     properties: NumberedProperties | DropdownProperties
 }
 
+/**
+ * `FieldType` is an enum that is used to define the different types of form fields.
+ */
 export enum FieldType {
     NUMBERED_INPUT,
     DROPDOWN_INPUT
 }
 
-export enum FieldNames {
-    SKOGTYPE = "Skogtype",
-    VOLUM_PR_DEKAR = "Volum pr dekar",
-    TOMMERTREAR_PR_DEKAR = "Tømmertrær pr dekar",
-    RYDDETREAR_PR_DEKAR = "Ryddetrær pr dekar",
-    OVERFLATESTRUKTUR_TERRENG = "Overflatestruktur i terrenget",
-    OVERFLATESTRUKTUR_TRAKTORVEG = "Overflatestruktur på traktorvei",
-    HELLING_HOGSTFELT = "Helling på hogstfeltet",
-    HELLING_PAA_TRAKTORVEG = "Helling på traktorvei",
-    KJOREAVSTAND_TERRENG = "Kjøreavstand i terrenget",
-    KJOREAVSTAND_VEG = "Kjøreavstand på vei",
-    LASSTORRELSE = "Lasstørrelse",
-    ANTALL_SORTIMENT = "Antall sortiment",
-    TIMEKOST_HOGSTMASKIN = "Timekostnad - hogstmaskin",
-    TIMEKOST_LASSBEARER = "Timekostnad - lassbærer"
-}
-
+/**
+ * `NumberedProperties` is an interface that is used to define the structure of the properties of a numbered input field.
+ */
 export interface NumberedProperties {
     min: number
     unit: UnitType
 }
 
+/**
+ * `DropdownProperties` is an interface that is used to define the structure of the properties of a dropdown input field.
+ */
 export interface DropdownProperties {
     options: Map<string, string>
 }
 
-export interface ResultListItem {
-    text: string,
-    value: string,
-    unit: UnitType
-}

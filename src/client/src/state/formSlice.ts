@@ -1,6 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-
+/**
+ * `FormState` is an interface that is used to define the form state.
+ */
 interface FormState {
     page: number
     validated: boolean
@@ -9,12 +11,18 @@ interface FormState {
     }
 }
 
+/**
+ * `initialState` is an object that is used to define the initial state of the form slice.
+ */
 const initialState: FormState = {
     page: 0,
     validated: false,
     fields: {}
 }
 
+/**
+ * `formSlice` is a slice that is used to define the form state and the actions that can be used to modify the form state.
+ */
 export const formSlice = createSlice({
     name: 'form',
     initialState,
@@ -32,6 +40,4 @@ export const formSlice = createSlice({
 })
 
 export const { setField, setPage, setValidated } = formSlice.actions
-
-
 export default formSlice.reducer

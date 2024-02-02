@@ -1,10 +1,16 @@
 import {Card, Col, Container, ListGroup, ListGroupItem, Row} from "react-bootstrap";
-import {ResultListItem} from "../types/FieldData";
-import {UnitType} from "../types/UnitTypes";
 import React from "react";
 import {ResultGauge} from "../components/ResultGauge";
 import '../App.css'
+import {ResultListItem} from "../types/ResultListItem";
+import {UnitType} from "../types/UnitType";
 
+/**
+ * The result component for the result page, displaying the result of the calculations for the harvester or load carrier
+ * @param props - title: string - the title of the result
+ *              - productivity: number - the productivity of the harvester or load carrier
+ *              - listItems: ResultListItem[] - the list of items to display in the result
+ */
 export function Result(props: {
     title: string,
     productivity: number,
@@ -23,6 +29,10 @@ export function Result(props: {
     )
 }
 
+/**
+ * The visual representation of the productivity of the harvester or load carrier, including a gauge and the unit
+ * @param productivity - the productivity of the harvester or load carrier
+ */
 function ResultFigure({productivity}: {productivity: number}) {
    return (
        <ListGroupItem>
@@ -43,6 +53,10 @@ function ResultFigure({productivity}: {productivity: number}) {
    )
 }
 
+/**
+ * The list of additional result lines for the harvester or load carrier
+* @param listItems - array of additional calculations to display
+ */
 function ResultLines({listItems}: {listItems: ResultListItem[]}) {
     return (
         <>

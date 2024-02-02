@@ -1,16 +1,17 @@
 import React from "react";
 import {Stack} from "react-bootstrap";
 import {Result} from "../containers/Result";
-import {UnitType} from "../types/UnitTypes";
+import {UnitType} from "../types/UnitType";
 import {loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
 import {useAppSelector} from "../state/hooks";
 import {selectHarvesterData, selectLoadCarrierData} from "../state/formSelectors";
 
 
-
-
+/**
+ * Result page for the harvester and load carrier
+ */
 export function ResultPage() {
-
+    // Get the data from the store and calculate the result
     const harvesterData = useAppSelector(selectHarvesterData)
     const harvesterResult = logHarvesterCostCalculator(
         harvesterData.harvesterCost,
@@ -18,6 +19,7 @@ export function ResultPage() {
         harvesterData.terrainData
     )
 
+    // Get the data from the store and calculate the result
     const loadCarrierData = useAppSelector(selectLoadCarrierData)
     const loadCarrierResult = loadCarrierCalculator(
         loadCarrierData.carrierCost,
@@ -28,6 +30,7 @@ export function ResultPage() {
         loadCarrierData.distinctAssortments
         )
 
+    // If the result is not ok, throw an error
     if(!harvesterResult.ok || !loadCarrierResult.ok) {
         throw new Error("Result not ok")
     }

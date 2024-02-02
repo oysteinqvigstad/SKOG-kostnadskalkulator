@@ -1,8 +1,11 @@
 import {createSelector} from "@reduxjs/toolkit";
 import {RootState} from "./store";
 import {DrivingData, ForestType, TreeData} from "../calculator/calculator";
-import {FieldNames} from "../types/FieldData";
+import {FieldNames} from "../types/FieldNames";
 
+/**
+ * `selectHarvesterData` is a selector that is used to select the harvester data from the form fields.
+ */
 export const selectHarvesterData = createSelector(
     (state: RootState) => state.form.fields,
     (fields) => {
@@ -24,6 +27,9 @@ export const selectHarvesterData = createSelector(
     }
 )
 
+/**
+ * `selectLoadCarrierData` is a selector that is used to select the load carrier data from the form fields.
+ */
 export const selectLoadCarrierData = createSelector(
     (state: RootState) => state.form.fields,
     (fields) => {

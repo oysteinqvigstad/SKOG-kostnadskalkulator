@@ -5,6 +5,12 @@ import {Button, InputGroup, Modal} from "react-bootstrap";
 import {InfoCircle} from "react-bootstrap-icons";
 import {useState} from "react";
 
+/**
+ * `InputField` is a container for an individual input field. It contains a button that opens a modal with a description
+ * of the field, and the input field itself and its corresponding unit
+ * @param props - fieldData: FieldData - the data for the field,
+ *                hidden: boolean - whether the field should be hidden (stilll applicable for form validation)
+ */
 export function InputField(props: {fieldData: FieldData, hidden: boolean}) {
 
     // creates a mapping of field type with corresponding jsx component

@@ -1,6 +1,10 @@
 import React from "react";
 import GaugeComponent from "react-gauge-component";
 
+/**
+ * The gauge component for the productivity of the harvester or load carrier
+ * @param productivity - the productivity number of the harvester or load carrier
+ */
 export function ResultGauge({productivity}: {productivity: number}) {
    return (
             <GaugeComponent

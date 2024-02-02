@@ -5,10 +5,16 @@ import '../App.css'
 import {useAppDispatch, useAppSelector} from "../state/hooks";
 import {setField} from "../state/formSlice";
 
+/**
+ * The input field for a numerical input
+ * @param fieldData - the data for the field, including the title and properties
+ */
 export function InputNumber({fieldData}: {fieldData: FieldData}) {
+    // Get the properties of the field
     const props = fieldData.properties as NumberedProperties
-
+    // Get the default value for the field from the store
     const data = useAppSelector((state) => state.form.fields[fieldData.title])
+    // Get the dispatch function from the store
     const dispatch = useAppDispatch()
 
     return (

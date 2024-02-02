@@ -2,6 +2,9 @@ import {Alert} from "react-bootstrap";
 import {ExclamationTriangle} from "react-bootstrap-icons";
 import React from "react";
 
+/**
+ * A warning message for when the service is under development
+ */
 export function DevelopmentHeaderWarning() {
    return (
        <Alert variant={"warning"} className={"mb-0 p-1 text-center text-truncate shadow-lg rounded-0"}>

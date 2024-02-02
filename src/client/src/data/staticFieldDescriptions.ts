@@ -1,6 +1,6 @@
-import {FieldData, FieldNames, FieldType} from "../types/FieldData";
+import {FieldData, FieldType} from "../types/FieldData";
 import {FormInputErrorCode} from "../calculator/calculator-fields";
-import {UnitType} from "../types/UnitTypes";
+import {UnitType} from "../types/UnitType";
 import {ForestType, forestTypeToString} from "../calculator/calculator";
 import {
     assortmentsNor,
@@ -16,7 +16,11 @@ import {
     timberTreesNor
 } from "../fieldDescriptions/descriptions";
 import {renderToString} from "react-dom/server";
+import {FieldNames} from "../types/FieldNames";
 
+/**
+ * `staticFieldDescriptions` is an array of `FieldData` objects that are used to define the data of the form fields.
+ */
 export const staticFieldDescriptions: FieldData[] = [
     {
         type: FieldType.DROPDOWN_INPUT,

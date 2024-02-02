@@ -2,6 +2,9 @@ import {Container, Nav, Navbar, Offcanvas} from "react-bootstrap";
 import '../App.css'
 import React from "react";
 
+/**
+ * The navigation bar for the application
+ */
 export function NavBar() {
     return (
         <>
@@ -33,6 +36,9 @@ export function NavBar() {
 
 }
 
+/**
+ * The header of the navigation bar
+ */
 function NavBarHeader() {
    return (
        <Navbar.Brand href="#home">
