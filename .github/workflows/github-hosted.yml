@@ -49,6 +49,8 @@ jobs:
         with:
           # reference different versions
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
       # npm ci is equivalent to npm install but is specifically optimized for CI
       - run: npm ci
         working-directory: src
@@ -76,6 +78,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
       - run: npm ci
         working-directory: src
       - run: npm run build
