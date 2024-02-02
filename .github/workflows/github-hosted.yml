@@ -7,7 +7,32 @@ on:
     branches: [ main ]
 
 jobs:
-  build-test:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # even numbers are LTS releases
+        node-version: [16, 18, 20]
+
+    steps:
+      # equivalent of doing git clone
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        # ensures node.js is available
+        uses: actions/setup-node@v3
+        with:
+          # reference different versions
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      # npm ci is equivalent to npm install but is specifically optimized for CI
+      - run: npm ci
+        working-directory: src
+      - run: npm run build
+        working-directory: src
+
+
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,11 +51,8 @@ jobs:
       # npm ci is equivalent to npm install but is specifically optimized for CI
       - run: npm ci
         working-directory: src
-      - run: npm run build
-        working-directory: src
       - run: npm test
         working-directory: src
-
 
   deploy:
     needs: build-test
