@@ -25,7 +25,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "workbox-build": "^7.0.0"
   },
   "dependencies": {
     "bootstrap": "^5.3.2",
