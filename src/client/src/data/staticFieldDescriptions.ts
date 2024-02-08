@@ -47,15 +47,6 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.NUMBERED_INPUT,
-        descriptionHTML: renderToString(clearanceTreesNor()),
-        errorId: FormInputErrorCode.CLEARANCE_TREES_1000_SQM,
-        title: FieldNames.RYDDETREAR_PR_DEKAR,
-        default: "150",
-        page: 0,
-        properties: { min: 0, unit: UnitType.TREE_PER_DEKAR }
-    },
-    {
-        type: FieldType.NUMBERED_INPUT,
         descriptionHTML: renderToString(sellableVolumeNor()),
         errorId: FormInputErrorCode.SELLABLE_TIMBER_VOLUME,
         title: FieldNames.VOLUM_PR_DEKAR,
@@ -63,31 +54,48 @@ export const staticFieldDescriptions: FieldData[] = [
         page: 0,
         properties: { min: 0, unit: UnitType.CUBIC_M_PER_DEKAR }
     },
-    // TREE DATA END
     {
         type: FieldType.NUMBERED_INPUT,
-        descriptionHTML: renderToString(harvesterCostNor()),
-        errorId: FormInputErrorCode.HARVESTER_HOUR_COST_G15,
-        title: FieldNames.TIMEKOST_HOGSTMASKIN,
-        default: "2000",
-        page: 1,
-        properties: { min: 0, unit: UnitType.COST_PER_G15 }
+        descriptionHTML: renderToString(clearanceTreesNor()),
+        errorId: FormInputErrorCode.CLEARANCE_TREES_1000_SQM,
+        title: FieldNames.RYDDETREAR_PR_DEKAR,
+        default: "150",
+        page: 0,
+        properties: { min: 0, unit: UnitType.TREE_PER_DEKAR }
     },
-    // TERRAIN DATA START
+    // TREE DATA END
+
+    // ROAD/TERRAIN DATA START
+
     {
         type: FieldType.NUMBERED_INPUT,
-        descriptionHTML: renderToString(terrainDistanceNor()),
+        descriptionHTML: renderToString(roadDistanceNor()),
         errorId: null,
-        title: FieldNames.KJOREAVSTAND_TERRENG,
-        default: "200",
+        title: FieldNames.KJOREAVSTAND_VEG,
+        default: "500",
         page: 1,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
         type: FieldType.DROPDOWN_INPUT,
+        descriptionHTML: renderToString(roadDistanceNor()),
+        errorId: FormInputErrorCode.INCLINE,
+        title: FieldNames.HELLING_PAA_TRAKTORVEG,
+        default: "1",
+        page: 1,
+        properties: { options: new Map([
+                ["0-10 %", "1"],
+                ["10-20 %", "2"],
+                ["20-33 %", "3"],
+                ["33-50 %", "4"],
+                ["> 50 %", "5"]
+            ]) }
+    },
+    {
+        type: FieldType.DROPDOWN_INPUT,
         descriptionHTML: renderToString(drivingConditionsExplanationNOR()),
         errorId: FormInputErrorCode.DRIVING_CONDITIONS,
-        title: FieldNames.OVERFLATESTRUKTUR_TERRENG,
+        title: FieldNames.OVERFLATESTRUKTUR_TRAKTORVEG,
         default: "1",
         page: 1,
         properties: { options: new Map([
@@ -97,6 +105,15 @@ export const staticFieldDescriptions: FieldData[] = [
                 ["Dårlig", "4"],
                 ["Svært dårlig", "5"]
             ]) }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(terrainDistanceNor()),
+        errorId: null,
+        title: FieldNames.KJOREAVSTAND_TERRENG,
+        default: "200",
+        page: 1,
+        properties: { min: 0, unit: UnitType.METER }
     },
     {
         type: FieldType.DROPDOWN_INPUT,
@@ -113,7 +130,33 @@ export const staticFieldDescriptions: FieldData[] = [
                 ["> 50 %", "5"]
             ]) }
     },
-    // TERRAIN DATA END
+    {
+        type: FieldType.DROPDOWN_INPUT,
+        descriptionHTML: renderToString(drivingConditionsExplanationNOR()),
+        errorId: FormInputErrorCode.DRIVING_CONDITIONS,
+        title: FieldNames.OVERFLATESTRUKTUR_TERRENG,
+        default: "1",
+        page: 1,
+        properties: { options: new Map([
+                ["Meget god", "1"],
+                ["God", "2"],
+                ["Middels god", "3"],
+                ["Dårlig", "4"],
+                ["Svært dårlig", "5"]
+            ]) }
+    },
+    // ROAD/TERRAIN DATA END
+
+    // MACHINE DATA START
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: renderToString(harvesterCostNor()),
+        errorId: FormInputErrorCode.HARVESTER_HOUR_COST_G15,
+        title: FieldNames.TIMEKOST_HOGSTMASKIN,
+        default: "2000",
+        page: 2,
+        properties: { min: 0, unit: UnitType.COST_PER_G15 }
+    },
     {
         type: FieldType.NUMBERED_INPUT,
         descriptionHTML: renderToString(logCarrierCostNor()),
@@ -123,47 +166,7 @@ export const staticFieldDescriptions: FieldData[] = [
         page: 2,
         properties: { min: 0, unit: UnitType.COST_PER_G15 }
     },
-    // ROAD DATA START
-    {
-        type: FieldType.NUMBERED_INPUT,
-        descriptionHTML: renderToString(roadDistanceNor()),
-        errorId: null,
-        title: FieldNames.KJOREAVSTAND_VEG,
-        default: "500",
-        page: 2,
-        properties: { min: 0, unit: UnitType.METER }
-    },
-    {
-        type: FieldType.DROPDOWN_INPUT,
-        descriptionHTML: renderToString(drivingConditionsExplanationNOR()),
-        errorId: FormInputErrorCode.DRIVING_CONDITIONS,
-        title: FieldNames.OVERFLATESTRUKTUR_TRAKTORVEG,
-        default: "1",
-        page: 2,
-        properties: { options: new Map([
-                ["Meget god", "1"],
-                ["God", "2"],
-                ["Middels god", "3"],
-                ["Dårlig", "4"],
-                ["Svært dårlig", "5"]
-            ]) }
-    },
-    {
-        type: FieldType.DROPDOWN_INPUT,
-        descriptionHTML: renderToString(roadDistanceNor()),
-        errorId: FormInputErrorCode.INCLINE,
-        title: FieldNames.HELLING_PAA_TRAKTORVEG,
-        default: "1",
-        page: 2,
-        properties: { options: new Map([
-                ["0-10 %", "1"],
-                ["10-20 %", "2"],
-                ["20-33 %", "3"],
-                ["33-50 %", "4"],
-                ["> 50 %", "5"]
-            ]) }
-    },
-    // ROAD DATA END
+
     {
         type: FieldType.NUMBERED_INPUT,
         descriptionHTML: renderToString(timberLoadSizeNor()),
@@ -182,4 +185,5 @@ export const staticFieldDescriptions: FieldData[] = [
         page: 2,
         properties: { min: 0, unit: UnitType.PIECE }
     },
+    // MACHINE DATA END
 ]
