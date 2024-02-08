@@ -1,11 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {MainContent} from "./containers/MainContent";
+import {MainContainer} from "./containers/MainContainer";
 import {DevelopmentHeaderWarning} from "./components/DevelopmentHeaderWarning";
 import {NavBar} from "./containers/NavBar";
 import {useAppDispatch} from "./state/hooks";
 import {setField} from "./state/formSlice";
 import {staticFieldDescriptions} from "./data/staticFieldDescriptions";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {FormPage} from "./pages/FormPage";
+import {InformationalScientificSourcesPage} from "./pages/InformationalScientificSourcesPage";
+import {InformationalDefaultValuesPage} from "./pages/InformationalDefaultValuesPage";
+import {InformationalApiPage} from "./pages/InformationalApiPage";
+import {FeedbackPage} from "./pages/FeedbackPage";
 
 function App() {
 
@@ -31,11 +37,19 @@ function App() {
 
 
     return (
-        <>
-            <DevelopmentHeaderWarning />
-            <NavBar />
-            <MainContent />
-        </>
+    <Router>
+        <DevelopmentHeaderWarning />
+        <NavBar />
+        <MainContainer>
+            <Routes>
+                <Route path="/" element={<FormPage />} />
+                <Route path="/forskningsgrunnlag" element={<InformationalScientificSourcesPage />} />
+                <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />
+                <Route path="/api" element={<InformationalApiPage />} />
+                <Route path="/tilbakemelding" element={<FeedbackPage />} />
+            </Routes>
+        </MainContainer>
+    </Router>
     )
 }
 

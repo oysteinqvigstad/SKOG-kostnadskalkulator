@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Form, InputGroup} from "react-bootstrap";
 import {FieldData, NumberedProperties} from "../types/FieldData";
 import '../App.css'
@@ -16,6 +16,15 @@ export function InputNumber({fieldData}: {fieldData: FieldData}) {
     const data = useAppSelector((state) => state.form.fields[fieldData.title])
     // Get the dispatch function from the store
     const dispatch = useAppDispatch()
+    // State for whether the input value has been modified from default
+    const [changedValue, setChangedValue] = useState<Boolean>(data === fieldData.default)
+
+    // callback function for changing input value
+    const onChange = (e: React.ChangeEvent<any>) => {
+        setChangedValue(true)
+        dispatch(setField({title: fieldData.title, value: e.target.value}))
+    }
+
 
     return (
         <>
@@ -24,12 +33,13 @@ export function InputNumber({fieldData}: {fieldData: FieldData}) {
                     className={"field"}
                     placeholder="value"
                     aria-describedby={`input ${fieldData.title}`}
-                    type="number"
+                    type={"number"}
                     inputMode={"numeric"}
                     pattern="[0-9]*"
                     min={props.min}
                     value={data}
-                    onChange={e => dispatch(setField({title: fieldData.title, value: e.target.value}))}
+                    isInvalid={changedValue && isNaN(parseInt(data))}
+                    onChange={e => onChange(e)}
                     required
                 />
                 <label>{fieldData.title}</label>

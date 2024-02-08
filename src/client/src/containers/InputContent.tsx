@@ -1,4 +1,4 @@
-import {InputField} from "../containers/InputField";
+import {InputField} from "./InputField";
 import {Form} from "react-bootstrap";
 import React from "react";
 import {useAppSelector} from "../state/hooks";
@@ -9,7 +9,7 @@ import {staticFieldDescriptions} from "../data/staticFieldDescriptions";
  * The input pages for the form where the user can input data
  * @param props - formRef: React.RefObject<HTMLFormElement> - A reference to the form
  */
-export function InputPage(props: {formRef: React.RefObject<HTMLFormElement>}) {
+export function InputContent(props: {formRef: React.RefObject<HTMLFormElement>}) {
     const page = useAppSelector((state) => state.form.page)
     const validated = useAppSelector((state) => state.form.validated)
 

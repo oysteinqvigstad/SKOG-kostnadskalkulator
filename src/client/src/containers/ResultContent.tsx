@@ -1,6 +1,6 @@
 import React from "react";
-import {Stack} from "react-bootstrap";
-import {Result} from "../containers/Result";
+import {Alert, Stack} from "react-bootstrap";
+import {ResultCard} from "../components/ResultCard";
 import {UnitType} from "../types/UnitType";
 import {loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
 import {useAppSelector} from "../state/hooks";
@@ -10,7 +10,7 @@ import {selectHarvesterData, selectLoadCarrierData} from "../state/formSelectors
 /**
  * Result page for the harvester and load carrier
  */
-export function ResultPage() {
+export function ResultContent() {
     // Get the data from the store and calculate the result
     const harvesterData = useAppSelector(selectHarvesterData)
     const harvesterResult = logHarvesterCostCalculator(
@@ -30,14 +30,22 @@ export function ResultPage() {
         loadCarrierData.distinctAssortments
         )
 
-    // If the result is not ok, throw an error
+    // If the result is not ok, show an error message to user
     if(!harvesterResult.ok || !loadCarrierResult.ok) {
-        throw new Error("Result not ok")
+        return (
+            <Alert variant={"warning"}>
+                {"Uventet feil oppsto ved kalkulasjon. "}
+                <br />
+                {"Vennligst kontroller opplysningene du oppga."}
+            </Alert>
+        )
     }
 
+
     return (
+
             <Stack className={"mb-3"} gap={3}>
-                <Result
+                <ResultCard
                     title="Hogstmaskin"
                     productivity={harvesterResult.value.timberCubedPerG15Hour}
                     listItems={[
@@ -53,7 +61,7 @@ export function ResultPage() {
                         }
                     ]}
                 />
-                <Result
+                <ResultCard
                     title="Lassbærer"
                     productivity={loadCarrierResult.value.timberCubedPerG15Hour}
                     listItems={[
