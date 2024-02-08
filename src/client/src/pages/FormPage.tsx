@@ -1,16 +1,13 @@
-import {Col} from "react-bootstrap";
-import React, {useRef} from "react";
-import {ResultPage} from "../pages/ResultPage";
-import {InputPage} from "../pages/InputPage";
-import {PaginationBar} from "../components/PaginationBar";
+// Get the current page number from the store
 import {useAppDispatch, useAppSelector} from "../state/hooks";
+import React, {useRef} from "react";
 import {setPage, setValidated} from "../state/formSlice";
+import {Col} from "react-bootstrap";
+import {ResultContent} from "../containers/ResultContent";
+import {InputContent} from "../containers/InputContent";
+import {PaginationBar} from "../components/PaginationBar";
 
-/**
- * The main content of the application, containing the input and result pages
- */
-export function MainContent() {
-    // Get the current page number from the store
+export function FormPage() {
     const pageNumber = useAppSelector((state) => state.form.page)
     // Get the dispatch function from the store
     const dispatch = useAppDispatch()
@@ -38,7 +35,7 @@ export function MainContent() {
 
     return (
         <Col className={"p-3 mt-2 mx-auto"} style={{maxWidth: '400px'}}>
-            {(pageNumber === 3) ? <ResultPage /> : <InputPage formRef={formRef} />}
+            {(pageNumber === 3) ? <ResultContent /> : <InputContent formRef={formRef} />}
             <PaginationBar onClick={switchPage} />
         </Col>
     )

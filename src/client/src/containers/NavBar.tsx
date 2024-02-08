@@ -1,6 +1,7 @@
 import {Container, Nav, Navbar, Offcanvas} from "react-bootstrap";
 import '../App.css'
 import React from "react";
+import {Link} from "react-router-dom";
 
 /**
  * The navigation bar for the application
@@ -23,9 +24,10 @@ export function NavBar() {
                         </Offcanvas.Header>
                         <Offcanvas.Body className={"header-color"}>
                             <Nav className="justify-content-end flex-grow-1 pe-3">
-                                <Nav.Link href="">Forskningsgrunnlag</Nav.Link>
-                                <Nav.Link href="">API</Nav.Link>
-                                <Nav.Link href="">Tilbakemelding</Nav.Link>
+                                <Nav.Link as={Link} to="/forskningsgrunnlag">Forskningsgrunnlag</Nav.Link>
+                                <Nav.Link as={Link} to="/tallgrunnlag">Tallgrunnlag</Nav.Link>
+                                <Nav.Link as={Link} to="/api">API</Nav.Link>
+                                <Nav.Link as={Link} to="/tilbakemelding">Tilbakemelding</Nav.Link>
                             </Nav>
                         </Offcanvas.Body>
                     </Navbar.Offcanvas>
@@ -41,7 +43,7 @@ export function NavBar() {
  */
 function NavBarHeader() {
    return (
-       <Navbar.Brand href="#home">
+       <Navbar.Brand as={Link} to="/">
            <img
                alt="logo"
                src="logo32.png"

@@ -1,6 +1,6 @@
 import {Card, Col, Container, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import React from "react";
-import {ResultGauge} from "../components/ResultGauge";
+import {ResultGauge} from "./ResultGauge";
 import '../App.css'
 import {ResultListItem} from "../types/ResultListItem";
 import {UnitType} from "../types/UnitType";
@@ -11,7 +11,7 @@ import {UnitType} from "../types/UnitType";
  *              - productivity: number - the productivity of the harvester or load carrier
  *              - listItems: ResultListItem[] - the list of items to display in the result
  */
-export function Result(props: {
+export function ResultCard(props: {
     title: string,
     productivity: number,
     listItems: ResultListItem[]
@@ -64,7 +64,7 @@ function ResultLines({listItems}: {listItems: ResultListItem[]}) {
                 return (
                     <ListGroupItem>
                         <Row className="g-0">
-                            <Col xs={8}>{text}</Col>
+                            <Col xs={7}>{text}</Col>
                             <Col className="text-end" style={{fontWeight: 500}}>{value}</Col>
                             <Col className="text-start ps-2">{unit}</Col>
                         </Row>
