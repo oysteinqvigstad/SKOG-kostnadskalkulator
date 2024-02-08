@@ -1,5 +1,5 @@
 import React from "react";
-import {Stack} from "react-bootstrap";
+import {Alert, Stack} from "react-bootstrap";
 import {ResultCard} from "../components/ResultCard";
 import {UnitType} from "../types/UnitType";
 import {loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
@@ -30,12 +30,20 @@ export function ResultContent() {
         loadCarrierData.distinctAssortments
         )
 
-    // If the result is not ok, throw an error
+    // If the result is not ok, show an error message to user
     if(!harvesterResult.ok || !loadCarrierResult.ok) {
-        throw new Error("Result not ok")
+        return (
+            <Alert variant={"warning"}>
+                {"Uventet feil oppsto ved kalkulasjon. "}
+                <br />
+                {"Vennligst kontroller opplysningene du oppga."}
+            </Alert>
+        )
     }
 
+
     return (
+
             <Stack className={"mb-3"} gap={3}>
                 <ResultCard
                     title="Hogstmaskin"

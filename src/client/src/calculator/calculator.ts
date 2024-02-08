@@ -107,6 +107,10 @@ export function logHarvesterCostCalculator(
     const timberM3PerG15Hour = 3600 / (secondsUsedPerTreeG15 / middleStem)
     const costPerM3Timber = harvesterCost / timberM3PerG15Hour
 
+    if (isNaN(costPerM3Timber) || isNaN(timberM3PerG15Hour)) {
+        return { ok: false, error: [] }
+    }
+
     return {
         ok: true,
         value: {
