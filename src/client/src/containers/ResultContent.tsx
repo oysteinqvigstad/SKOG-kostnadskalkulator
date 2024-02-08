@@ -1,16 +1,19 @@
 import React from "react";
-import {Alert, Stack} from "react-bootstrap";
+import {Alert, Button, OverlayTrigger, Stack, Tooltip} from "react-bootstrap";
 import {ResultCard} from "../components/ResultCard";
 import {UnitType} from "../types/UnitType";
 import {loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
 import {useAppSelector} from "../state/hooks";
 import {selectHarvesterData, selectLoadCarrierData} from "../state/formSelectors";
+import {Share} from "react-bootstrap-icons";
 
 
 /**
  * Result page for the harvester and load carrier
  */
 export function ResultContent() {
+    const fields = useAppSelector((state) => state.form.fields)
+
     // Get the data from the store and calculate the result
     const harvesterData = useAppSelector(selectHarvesterData)
     const harvesterResult = logHarvesterCostCalculator(
@@ -39,6 +42,19 @@ export function ResultContent() {
                 {"Vennligst kontroller opplysningene du oppga."}
             </Alert>
         )
+    }
+
+
+    const copyToClipboard = async () => {
+        try {
+            const queries = Object.entries(fields).map(([key, value]) => {
+                return `${key}=${value}`
+            }).join("&")
+            const url = `${window.location.origin}/resultat?${queries}`
+            await navigator.clipboard.writeText(url);
+        } catch (err) {
+            console.error('Failed to copy!', err);
+        }
     }
 
 
@@ -72,6 +88,13 @@ export function ResultContent() {
                         }
                     ]}
                 />
+                <OverlayTrigger
+                    overlay={<Tooltip>Link kopiert til utklippstavle</Tooltip>}
+                    placement={"top"}
+                    delay={{show: 250, hide: 400}}
+                >
+                    <Button onClick={() => copyToClipboard()}>{"Lagre/del resultat"}<Share className={"ms-2"} /></Button>
+                </OverlayTrigger>
             </Stack>
     )
 }
