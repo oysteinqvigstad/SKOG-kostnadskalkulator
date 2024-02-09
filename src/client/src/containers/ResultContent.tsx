@@ -8,6 +8,7 @@ import {selectHarvesterData, selectLoadCarrierData} from "../state/formSelectors
 import {ShareResultButton} from "../components/ShareResultButton";
 
 
+
 /**
  * Result page for the harvester and load carrier
  */

@@ -1,5 +1,6 @@
 import {Button, OverlayTrigger, Tooltip} from "react-bootstrap";
-import {Link45deg} from "react-bootstrap-icons";
+//import {Link45deg} from "react-bootstrap-icons";
+import {MdLink} from "react-icons/md"
 import React from "react";
 import {useAppSelector} from "../state/hooks";
 
@@ -36,7 +37,7 @@ export function ShareResultButton() {
                 hidden={true}
                 onClick={() => copyToClipboard()}
             >
-                {"Opprett lenke til resultatet"}<Link45deg className={"ms-2"}/>
+                {"Opprett lenke til resultatet"}<MdLink className={"ms-2"}/>
             </Button>
         </OverlayTrigger>
     )

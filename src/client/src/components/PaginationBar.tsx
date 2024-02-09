@@ -1,8 +1,8 @@
-import {Button, ButtonGroup, Col, Pagination, Row} from "react-bootstrap";
+import {Button, ButtonGroup, Col, Row} from "react-bootstrap";
 import React, {ReactNode} from "react";
 import {useAppSelector} from "../state/hooks";
-import {BarChart, Forest, Landscape, PrecisionManufacturing} from "@mui/icons-material"
-import {ArrowBack, ArrowForward} from "@mui/icons-material"
+import {MdBarChart, MdForest, MdLandscape, MdPrecisionManufacturing} from "react-icons/md";
+import {MdArrowBack, MdArrowForward} from "react-icons/md";
 
 /**
  * The pagination bar for the input and result pages
@@ -12,72 +12,37 @@ export function PaginationBar(props: { onClick: (pageNumber: number) => void }) 
     // Get the current page number from the store
     const page = useAppSelector((state) => state.form.page)
 
+    // Icons in order corresponding to page number:
     const icons: ReactNode[] = [
-        <Forest/>,
-        <Landscape/>,
-        <PrecisionManufacturing/>,
-        <BarChart/>,
-
+        <MdForest/>,
+        <MdLandscape/>,
+        <MdPrecisionManufacturing/>,
+        <MdBarChart/>
     ]
 
+
     /**
-     * Creates the individual page numbers
+     * Creates the individual page buttons
      */
-    //TODO: remove original code OR create new ButtonGroup component?
-
-    /* Original code:
-    const pagination = [...Array(4)].map((_, n) =>
-        <Pagination.Item
-            key={n}
-            active={page === n}
-            onClick={() => props.onClick(n)}>
-            {(n === 3) ? <BarChartLine /> : n+1}
-        </Pagination.Item>
-    )
-    */
-    const pagination = [...Array(4)].map((_, n) =>
-        <Pagination.Item
-            //className="pagination"
-            key={n}
-            active={page === n}
-            onClick={() => props.onClick(n)}>
-            {iconSelector(n, icons)}
-        </Pagination.Item>
-    )
-
     const pageButton = [...Array(4)].map((_, n) =>
         <Button
             key={n}
-            disabled={page === n}
+            active
+            //disabled={page === n}
             onClick={() => props.onClick(n)}>
             {iconSelector(n, icons)}
         </Button>
     )
-    /*
-    return (
-        <>
 
-            <Row>
-                <Col className={"d-flex justify-content-center"}>
-                    <Pagination size="lg">
-                        <Pagination.Prev disabled={page === 0} onClick={() => props.onClick(page - 1)}/>
-                        {pagination}
-                        <Pagination.Next disabled={page === 3} onClick={() => props.onClick(page + 1)}/>
-                    </Pagination>
-                </Col>
-            </Row>
-        </>
-    )
-    */
     return( <>
             <Row>
                 <Col className={"d-flex justify-content-center"}>
                     <ButtonGroup size={"lg"}>
                         <Button disabled={page === 0} onClick={() =>
-                            props.onClick(page - 1)}><ArrowBack/></Button>
+                            props.onClick(page - 1)}><MdArrowBack/></Button>
                         {pageButton}
                         <Button disabled={page === 3} onClick={() =>
-                            props.onClick(page + 1)}><ArrowForward/></Button>
+                            props.onClick(page + 1)}><MdArrowForward/></Button>
                     </ButtonGroup>
                 </Col>
             </Row>

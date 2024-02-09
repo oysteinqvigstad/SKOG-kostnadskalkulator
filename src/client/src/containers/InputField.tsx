@@ -2,8 +2,8 @@ import {FieldData, FieldType} from "../types/FieldData";
 import {InputNumber} from "../components/InputNumber";
 import {InputDropdown} from "../components/InputDropdown";
 import {Button, InputGroup, Modal} from "react-bootstrap";
-import {InfoCircle} from "react-bootstrap-icons";
 import {useState} from "react";
+import {MdInfoOutline} from "react-icons/md";
 
 /**
  * `InputField` is a container for an individual input field. It contains a button that opens a modal with a description
@@ -30,7 +30,7 @@ export function InputField(props: {fieldData: FieldData, hidden: boolean}) {
        <>
            <InputGroup className="mb-3" hidden={props.hidden}>
                <Button onClick={handleShow}>
-                   <InfoCircle />
+                   <MdInfoOutline />
                </Button>
                {Component ? <Component fieldData={props.fieldData} /> : null}
            </InputGroup>
