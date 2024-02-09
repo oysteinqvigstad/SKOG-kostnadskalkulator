@@ -32,7 +32,10 @@ export function ShareResultButton() {
             placement={"top"}
             delay={{show: 250, hide: 400}}
         >
-            <Button onClick={() => copyToClipboard()}>
+            <Button
+                hidden={true}
+                onClick={() => copyToClipboard()}
+            >
                 {"Opprett lenke til resultatet"}<Link45deg className={"ms-2"}/>
             </Button>
         </OverlayTrigger>
