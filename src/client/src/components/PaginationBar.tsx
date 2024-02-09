@@ -27,8 +27,7 @@ export function PaginationBar(props: { onClick: (pageNumber: number) => void }) 
     const pageButton = [...Array(4)].map((_, n) =>
         <Button
             key={n}
-            active
-            //disabled={page === n}
+            disabled={page === n}
             onClick={() => props.onClick(n)}>
             {iconSelector(n, icons)}
         </Button>
