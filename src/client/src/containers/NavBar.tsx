@@ -17,13 +17,13 @@ export function NavBar() {
             <Navbar key={"sm"} expand={"sm"} className={"shadow-lg header-color"}>
                 <Container fluid>
                     <NavBarHeader />
-                    <Navbar.Toggle onClick={() => setShow(true)} aria-controls={"canvas"} />
+                    <Navbar.Toggle onClick={() => setShow(!show)} aria-controls={"canvas"} />
                     <Navbar.Offcanvas
                         show={show}
                         id={"canvas"}
                         aria-labelledby={"canvas"}
                         placement="end">
-                        <Offcanvas.Header className={"header-color"} closeButton>
+                        <Offcanvas.Header className={"header-color"} closeButton onClick={onLinkClick}>
                             <Offcanvas.Title id={"canvas"}>
                                 {"Kostnadskalkulator"}
                             </Offcanvas.Title>
