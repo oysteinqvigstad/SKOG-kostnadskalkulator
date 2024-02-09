@@ -13,15 +13,31 @@ handlers:
     redirect_http_response_code: 301
     script: auto
 
-  - url: /
+  # Serve all static files with url ending with a file extension
+  - url: /(.*\..+)$
+    secure: always
+    redirect_http_response_code: 301
+    static_files: client/build/\1
+    upload: client/build/(.*\..+)$
+
+
+  # Serve index.html for all other requests for client-side routing
+  - url: /.*
     secure: always
     redirect_http_response_code: 301
     static_files: client/build/index.html
     upload: client/build/index.html
 
-  - url: /(.*)
-    secure: always
-    redirect_http_response_code: 301
-    static_files: client/build/\1
-    upload: client/build/(.*)
-
+#    old config
+#
+#  - url: /
+#    secure: always
+#    redirect_http_response_code: 301
+#    static_files: client/build/index.html
+#    upload: client/build/index.html
+#
+#  - url: /(.*)
+#    secure: always
+#    redirect_http_response_code: 301
+#    static_files: client/build/\1
+#    upload: client/build/(.*)
