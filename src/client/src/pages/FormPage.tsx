@@ -7,6 +7,7 @@ import {ResultContent} from "../containers/ResultContent";
 import {InputContent} from "../containers/InputContent";
 import {PaginationBar} from "../components/PaginationBar";
 
+
 export function FormPage() {
     const pageNumber = useAppSelector((state) => state.form.page)
     // Get the dispatch function from the store
@@ -35,8 +36,17 @@ export function FormPage() {
 
     return (
         <Col className={"p-3 mt-2 mx-auto"} style={{maxWidth: '400px'}}>
+            {pageDescription[pageNumber]}
             {(pageNumber === 3) ? <ResultContent /> : <InputContent formRef={formRef} />}
             <PaginationBar onClick={switchPage} />
         </Col>
     )
 }
+
+// TODO: Combine with Icon from PaginationBar.tsx?
+const pageDescription: string[] = [
+    "Bestand",
+    "Kjøreforhold",
+    "Maskin",
+    "Resultat"
+]

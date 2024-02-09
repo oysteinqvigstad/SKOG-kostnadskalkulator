@@ -1,7 +1,6 @@
 import {Button, ButtonGroup, Col, Pagination, Row} from "react-bootstrap";
 import React, {ReactNode} from "react";
 import {useAppSelector} from "../state/hooks";
-import {BarChartLine} from "react-bootstrap-icons";
 import {BarChart, Forest, Landscape, PrecisionManufacturing} from "@mui/icons-material"
 import {ArrowBack, ArrowForward} from "@mui/icons-material"
 
@@ -24,7 +23,7 @@ export function PaginationBar(props: { onClick: (pageNumber: number) => void }) 
     /**
      * Creates the individual page numbers
      */
-    //TODO: remove original code
+    //TODO: remove original code OR create new ButtonGroup component?
 
     /* Original code:
     const pagination = [...Array(4)].map((_, n) =>
@@ -94,6 +93,6 @@ export function PaginationBar(props: { onClick: (pageNumber: number) => void }) 
  * @param icons - array of icons, must be mapped to page number
  */
 const iconSelector = (n: number, icons: ReactNode[]) => {
-    if ((icons.length === 0) || (n > icons.length)) throw new Error("oops!")
+    if ((icons.length === 0) || (n > icons.length)) throw new Error("Icon array out of range.")
     return icons[n];
 }
