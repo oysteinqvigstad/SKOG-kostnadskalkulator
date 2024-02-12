@@ -1,4 +1,4 @@
-import {Button, ButtonGroup, Col, Row} from "react-bootstrap";
+import {Button, ButtonGroup, Row} from "react-bootstrap";
 import React, {ReactNode} from "react";
 import {useAppSelector} from "../state/hooks";
 import {MdBarChart, MdForest, MdLandscape, MdPrecisionManufacturing} from "react-icons/md";
@@ -35,15 +35,13 @@ export function PaginationBar(props: { onClick: (pageNumber: number) => void }) 
 
     return( <>
             <Row>
-                <Col className={"d-flex justify-content-center"}>
-                    <ButtonGroup size={"lg"}>
-                        <Button disabled={page === 0} onClick={() =>
-                            props.onClick(page - 1)}><MdArrowBack/></Button>
-                        {pageButton}
-                        <Button disabled={page === 3} onClick={() =>
-                            props.onClick(page + 1)}><MdArrowForward/></Button>
-                    </ButtonGroup>
-                </Col>
+                <ButtonGroup size={"lg"}>
+                    <Button disabled={page === 0} onClick={() =>
+                        props.onClick(page - 1)}><MdArrowBack/></Button>
+                    {pageButton}
+                    <Button disabled={page === 3} onClick={() =>
+                        props.onClick(page + 1)}><MdArrowForward/></Button>
+                </ButtonGroup>
             </Row>
         </>
     )

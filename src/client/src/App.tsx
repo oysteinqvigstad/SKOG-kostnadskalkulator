@@ -12,7 +12,7 @@ import {InformationalScientificSourcesPage} from "./pages/InformationalScientifi
 import {InformationalDefaultValuesPage} from "./pages/InformationalDefaultValuesPage";
 import {InformationalApiPage} from "./pages/InformationalApiPage";
 import {FeedbackPage} from "./pages/FeedbackPage";
-import {ResultPage} from "./pages/ResultPage";
+import {ResultParser} from "./pages/ResultParser";
 
 function App() {
 
@@ -48,7 +48,7 @@ function App() {
                 <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />
                 <Route path="/api" element={<InformationalApiPage />} />
                 <Route path="/tilbakemelding" element={<FeedbackPage />} />
-                <Route path="/resultat" element={<ResultPage />} />
+                <Route path="/resultat" element={<ResultParser />} />
             </Routes>
         </MainContainer>
     </Router>
