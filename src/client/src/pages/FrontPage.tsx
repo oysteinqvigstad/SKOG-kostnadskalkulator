@@ -5,7 +5,9 @@ import {StartButton} from "../components/StartButton";
 import CalculatorPicker from "../containers/CalculatorPicker";
 
 export function FrontPage() {
+    // Get the calculator data from the store
     const calculatorData = useAppSelector(selectCalculatorData)
+
     return (
         <>
             <CalculatorPicker/>

@@ -35,7 +35,7 @@ function App() {
                     dispatch(setField({title: fieldData.title, value: fieldData.default}))
                 }
             })
-            // sets default values for calculation data
+            // sets default values for calculator data
             dispatch(setCalculatorData(staticCalculatorData[0]))
             setHaveDefaultsBeenLoaded(true)
         }
