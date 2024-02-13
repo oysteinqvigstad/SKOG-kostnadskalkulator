@@ -13,6 +13,9 @@ import {InformationalDefaultValuesPage} from "./pages/InformationalDefaultValues
 import {InformationalApiPage} from "./pages/InformationalApiPage";
 import {FeedbackPage} from "./pages/FeedbackPage";
 import {ResultParser} from "./pages/ResultParser";
+import {FrontPage} from "./pages/FrontPage";
+import {setCalculatorData} from "./state/calculatorSlice";
+import {staticCalculatorData} from "./data/staticCalculatorData";
 
 function App() {
 
@@ -32,6 +35,8 @@ function App() {
                     dispatch(setField({title: fieldData.title, value: fieldData.default}))
                 }
             })
+            // sets default values for calculation data
+            dispatch(setCalculatorData(staticCalculatorData[0]))
             setHaveDefaultsBeenLoaded(true)
         }
     }, [dispatch, haveDefaultsBeenLoaded]);
@@ -43,7 +48,8 @@ function App() {
         <NavBar />
         <MainContainer>
             <Routes>
-                <Route path="/" element={<FormPage />} />
+                <Route path="/" element={<FrontPage />}/>
+                <Route path="/kalkulator" element={<FormPage />} />
                 <Route path="/forskningsgrunnlag" element={<InformationalScientificSourcesPage />} />
                 <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />
                 <Route path="/api" element={<InformationalApiPage />} />

@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import formReducer from "./formSlice";
+import calculatorReducer from "./calculatorSlice";
 
 /**
  * `store` is a store that is used to define the Redux store.
  */
 export const store = configureStore({
     reducer: {
-        form: formReducer
+        form: formReducer,
+        calculator: calculatorReducer
     }
 })
 
