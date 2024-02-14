@@ -31,7 +31,7 @@ export function ResultParser() {
 
     return (
         <>
-            {errors.length > 0 ? errors.map((error) => <Alert>{error}</Alert>) : navigate("/")}
+            {errors.length > 0 ? errors.map((error) => <Alert>{error}</Alert>) : navigate("/kalkulator")}
         </>
     )
 }
