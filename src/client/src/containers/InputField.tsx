@@ -12,7 +12,6 @@ import {MdInfoOutline} from "react-icons/md";
  *                hidden: boolean - whether the field should be hidden (stilll applicable for form validation)
  */
 export function InputField(props: {fieldData: FieldData, hidden: boolean}) {
-
     // creates a mapping of field type with corresponding jsx component
     const fieldComponents = {
         [FieldType.NUMBERED_INPUT]: InputNumber,

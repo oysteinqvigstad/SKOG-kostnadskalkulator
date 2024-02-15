@@ -8,6 +8,13 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+if (process.env.NODE_ENV === 'production') {
+    console.log('production');
+} else {
+    console.log('development');
+}
+
+
 
 // WARNING: Google App Engine has been configured to use a frontend/middleware handler for
 // the static files for faster processing. No request will actually reach the handler

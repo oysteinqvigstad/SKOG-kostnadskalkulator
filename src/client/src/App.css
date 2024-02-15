@@ -13,10 +13,12 @@ body {
   box-shadow: inset 0 0 0 2px #a2afa7;
 }
 
+
 .field:invalid, .field:invalid:focus {
   outline: none;
   box-shadow: inset 0 0 0 2px #FA8072;
 }
+
 
 
 .btn-info {
@@ -43,6 +45,13 @@ body {
 
 }
 
+
+.reset-button {
+  font-size: 1.3em;
+  background-color: transparent !important;
+}
+
+
 /* hide number input controls */
 .form-control[type="number"]::-webkit-inner-spin-button,
 .form-control[type="number"]::-webkit-outer-spin-button {
@@ -62,11 +71,19 @@ body {
   border-color: #5e7461;
 }
 
+
+
+
+
 /* avoid applying hover on touch devices that emulate it. Buttons tend to "stick" */
 @media (hover: hover) {
   .btn-primary:hover {
     background-color: #4a604d !important;
     border-color: #4a604d !important;
+  }
+
+  .reset-button:hover {
+    background-color: transparent !important;
   }
 }
 
