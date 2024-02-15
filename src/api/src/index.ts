@@ -2,17 +2,27 @@
 import express, { Express} from "express";
 import dotenv from "dotenv";
 import path from "path";
+import {Configuration} from "./types/Configuration";
+import {FirestoreDatabase} from "./database/FirestoreDatabase";
+import {Formula} from "./types/Formula";
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-if (process.env.NODE_ENV === 'production') {
-    console.log('production');
-} else {
-    console.log('development');
+
+
+let config: Configuration = {
+        database: new FirestoreDatabase({projectId: process.env.GCLOUD_PROJECT})
 }
+
+const formula: Formula = {
+    name: "Quadratic Formula",
+    version: "1.0.0",
+    formula: "x^2 + 2x + 1"
+}
+config.database.addFormula(formula).catch(console.error);
 
 
 
