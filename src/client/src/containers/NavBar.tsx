@@ -32,7 +32,7 @@ export function NavBar() {
                             <Nav className="justify-content-end flex-grow-1 pe-3">
                                 <Nav.Link as={Link} onClick={onLinkClick} to="/forskningsgrunnlag">Forskningsgrunnlag</Nav.Link>
                                 <Nav.Link as={Link} onClick={onLinkClick} to="/tallgrunnlag">Tallgrunnlag</Nav.Link>
-                                <Nav.Link as={Link} onClick={onLinkClick} to="/api">API</Nav.Link>
+                                <Nav.Link as={Link} onClick={onLinkClick} to="/apiinfo">API</Nav.Link>
                                 <Nav.Link as={Link} onClick={onLinkClick} to="/tilbakemelding">Tilbakemelding</Nav.Link>
                             </Nav>
                         </Offcanvas.Body>

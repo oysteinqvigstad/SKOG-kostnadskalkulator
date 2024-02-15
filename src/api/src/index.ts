@@ -8,14 +8,19 @@ import {Formula} from "./types/Formula";
 
 dotenv.config();
 
+console.log("starting api server")
+
 const app: Express = express();
 const port = process.env.PORT || 3000;
+
 
 
 
 let config: Configuration = {
         database: new FirestoreDatabase({projectId: process.env.GCLOUD_PROJECT})
 }
+
+console.log("firestore configuration done")
 
 const formula: Formula = {
     name: "Quadratic Formula",
@@ -24,6 +29,7 @@ const formula: Formula = {
 }
 config.database.addFormula(formula).catch(console.error);
 
+console.log("uploaded formula to firestore database")
 
 
 // WARNING: Google App Engine has been configured to use a frontend/middleware handler for
@@ -31,6 +37,9 @@ config.database.addFormula(formula).catch(console.error);
 // that is defined below, on the production PaaS server.
 const reactDirectory = path.join(__dirname, '..', '..', '..', 'client', 'build');
 app.use(express.static(reactDirectory));
+app.get('/api', (_, res) => {
+    res.send('Hello from the API');
+});
 app.get('*', (_, res) => {
     res.sendFile(path.join(reactDirectory, 'index.html'));
 });

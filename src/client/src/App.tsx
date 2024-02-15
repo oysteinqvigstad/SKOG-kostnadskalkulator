@@ -52,7 +52,7 @@ function App() {
                 <Route path="/kalkulator" element={<FormPage />} />
                 <Route path="/forskningsgrunnlag" element={<InformationalScientificSourcesPage />} />
                 <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />
-                <Route path="/api" element={<InformationalApiPage />} />
+                <Route path="/apiinfo" element={<InformationalApiPage />} />
                 <Route path="/tilbakemelding" element={<FeedbackPage />} />
                 <Route path="/resultat" element={<ResultParser />} />
             </Routes>
