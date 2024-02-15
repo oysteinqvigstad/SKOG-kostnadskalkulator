@@ -46,10 +46,12 @@ body {
 }
 
 
-.reset-button {
+.reset-button, .reset-button:active {
   font-size: 1.3em;
+  color: #6f7174 !important;
   background-color: transparent !important;
 }
+
 
 
 /* hide number input controls */
