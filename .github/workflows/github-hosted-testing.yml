@@ -56,3 +56,38 @@ jobs:
         working-directory: src
       - run: npm test
         working-directory: src
+
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+      - name: Set up Google SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: 'latest'
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          # allows gcloud to read credentials
+          export_default_credentials: true
+      - name: Deploy to Google App Engine
+        run: gcloud app deploy
+        working-directory: src
+
+  backup:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push to NTNU GitLab Workspace
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN}}
+        run: |
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.stud.idi.ntnu.no/oysteinq/skogkurskalk.git"
+          git fetch --prune --unshallow
+          git push --force gitlab --all
