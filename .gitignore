@@ -2,3 +2,5 @@
 /src/api/.idea
 /src/api/dist/
 /src/node_modules/
+/src/common/node_modules/
+/src/common/dist/
