@@ -11,13 +11,18 @@ export function InformationalApiPage() {
         "name": "Kostnadskalkulator",
         "version": "1.0"
         "formula": "...",
+    },
+    {
+        "name": "Taubanekalkulator",
+        "version": "2.0"
+        "formula": "...",
     }
 ]`
 
 
     return (
         <>
-            <Alert>
+            <Alert variant={"warning"} dismissible>
                 {"Tilhørende API er experimentell og bør ikke brukes enda"}
             </Alert>
             <Accordion>
