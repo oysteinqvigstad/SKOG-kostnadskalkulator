@@ -22,4 +22,13 @@ export class FirestoreDatabase implements IDatabase {
     async addFormula(formula: Formula): Promise<void> {
         await this.#db.collection('formulas').add(formula);
     }
+
+    async getFormulas(): Promise<Formula[]> {
+        let formulas: Formula[] = []
+        let snapshot = await this.#db.collection('formulas').get()
+        snapshot.forEach(doc => {
+            formulas.push(doc.data() as Formula)
+        })
+        return formulas
+    }
 }
