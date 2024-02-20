@@ -1,7 +1,7 @@
 import FirebaseFirestore from "@google-cloud/firestore";
 import {IDatabase} from "../models/IDatabase";
 import {FirestoreConfiguration} from "../types/FirestoreConfiguration";
-import {Formula} from "../types/Formula";
+import {Formula} from "@skogkalk/common/dist/src/types/Formula";
 
 export class FirestoreDatabase implements IDatabase {
     #db: FirebaseFirestore.Firestore

@@ -27,3 +27,11 @@ export function reactApp(staticFilesPath: string) {
         res.sendFile(path.join(staticFilesPath, 'index.html'));
     }
 }
+
+export function cors() {
+    return function(_req: express.Request, res: express.Response, next: express.NextFunction) {
+        res.header("Access-Control-Allow-Origin", "*")
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+        next()
+    }
+}

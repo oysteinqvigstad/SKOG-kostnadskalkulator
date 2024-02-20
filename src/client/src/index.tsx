@@ -8,9 +8,6 @@ import {store} from "./state/store";
 import {LoadServiceWorker} from "./containers/LoadServiceWorker";
 
 
-
-
-
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );

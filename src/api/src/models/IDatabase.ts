@@ -1,4 +1,4 @@
-import {Formula} from "../types/Formula";
+import {Formula} from "@skogkalk/common/dist/src/types/Formula";
 
 export interface IDatabase {
     addFormula(formula: Formula): Promise<void>;
