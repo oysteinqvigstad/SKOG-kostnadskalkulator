@@ -11,7 +11,7 @@ export class ButtonControl extends ClassicPreset.Control {
 }
 
 
-export function DropdownValues(props: { data: ButtonControl }) {
+export function DropdownValues() {
 
     const [state, setState] = useState({
         formValues: [""],
@@ -31,7 +31,7 @@ export function DropdownValues(props: { data: ButtonControl }) {
                         enumerate: state.enumerate,
                         enumerations: state.enumerations
                     });
-                    state.formValues.forEach((value, index) => {console.log(value)});
+                    state.formValues.forEach((value) => {console.log(value)});
                 }}
             >
                 + Add value
@@ -52,7 +52,7 @@ export function DropdownValues(props: { data: ButtonControl }) {
                         enumerations: state.enumerations
 
                     });
-                    state.formValues.forEach((value, index) => {console.log(value)});
+                    state.formValues.forEach((value) => {console.log(value)});
                 }}
             >
                 Enumerate

@@ -1,5 +1,4 @@
 import {Schemes, SkogNode} from "./nodes/types";
-
 import {NodeEditor} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree/parseTree";
 
@@ -65,9 +64,7 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undef
     });
 
     nodes.forEach((node) => {
-        const outputCount = nodeOutputs.get(node.id) ?? -1;
-        const inputCount = nodeInputs.get(node.id) ?? -1;
-        if (outputCount === 0) {
+        if (nodeOutputs.get(node.id) === 0) {
             subtrees.push(populateTree(nodeSet.get(node.id) ?? {id: node.id, name: node.controls.description.value ?? ""}, nodeSet, new Map(nodes.map((node) => [node.id, node]))));
         }
     });
@@ -90,7 +87,7 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undef
 function populateTree(startNode: NodeConnection, connections: Map<string, NodeConnection>, nodes: Map<string, SkogNode>): ParseNode {
 
     const rootNodeData = nodes.get(startNode.id);
-    if(!rootNodeData) { throw new Error("Start node not found in nodes map")};
+    if(!rootNodeData) { throw new Error("Start node not found in nodes map")}
 
     const rootNode: ParseNode = {
         id: startNode.id, // Only id is needed. Rest is filled out in loop below.

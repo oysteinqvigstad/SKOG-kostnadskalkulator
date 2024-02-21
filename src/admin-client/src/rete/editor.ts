@@ -40,7 +40,7 @@ export function process (engine: DataflowEngine<Schemes>, editor: NodeEditor<Sch
         editor
             .getNodes()
             .forEach((node) => {
-                engine.fetch(node.id).catch((e) => {});
+                engine.fetch(node.id).catch(() => {});
             });
     }
 }
@@ -70,7 +70,7 @@ async function  loadGraphFromLocalStorage(
                 .then(() => {
                     resolve();
                 })
-                .catch((e) => {
+                .catch(() => {
                     reject("Failed to load graph from existing file");
                 });
         } else {
@@ -257,7 +257,7 @@ export async function createEditor(container: HTMLElement) {
                 .then(async () => {
                     onLoaded();
                 })
-                .catch((e) => {onFailedToLoad()});
+                .catch(() => {onFailedToLoad()});
         },
         save: () => {
             saveGraphToLocalStorage(

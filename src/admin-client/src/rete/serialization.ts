@@ -26,7 +26,7 @@ export async function importGraph(
 
         let totalConnections: ConnProps[]  = [];
 
-        for await (const { id, inputs, controls, type, xy , connections} of data.nodes) {
+        for await (const { id, controls, type, xy , connections} of data.nodes) {
             // await new Promise(r => setTimeout(r, 10));
             let node = getSkogNodeFromNodeType(
                 type,
@@ -91,13 +91,17 @@ export async function exportGraph(editor: NodeEditor<Schemes>) : Promise<any> {
             connections: []
         });
 
-        data.nodes.map((n: any) => {
+        data.nodes.map((node: any) => {
             for(const connection of connections){
-                if(connection.source === n.id && n.connections.find((e:any)=>e.id == connection.id) == undefined) {
-                    n.connections.push(serializeConnection(connection));
+                if(
+                    connection.source === node.id &&
+                    node.connections.find((e:any)=>e.id === connection.id) === undefined
+                ) {
+
+                    node.connections.push(serializeConnection(connection));
                 }
             }
-            return n;
+            return node;
         });
     }
     return data;
