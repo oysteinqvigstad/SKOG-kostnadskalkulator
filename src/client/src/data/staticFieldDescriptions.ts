@@ -28,7 +28,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.FOREST_TYPE,
         title: FieldNames.SKOGTYPE,
         default: ForestType.LowlandsForest.toString(),
-        page: 0,
+        page: 1,
         properties: { options: new Map([
                 [forestTypeToString(ForestType.LowlandsForest), ForestType.LowlandsForest.toString()],
                 [forestTypeToString(ForestType.ValleyAndMountainForest), ForestType.ValleyAndMountainForest.toString()],
@@ -42,7 +42,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.TIMBER_TREES_1000_SQM,
         title: FieldNames.TOMMERTREAR_PR_DEKAR,
         default: "100",
-        page: 0,
+        page: 1,
         properties: { min: 1, unit: UnitType.TREE_PER_DEKAR }
     },
     {
@@ -51,7 +51,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.SELLABLE_TIMBER_VOLUME,
         title: FieldNames.VOLUM_PR_DEKAR,
         default: "25",
-        page: 0,
+        page: 1,
         properties: { min: 0, unit: UnitType.CUBIC_M_PER_DEKAR }
     },
     {
@@ -60,7 +60,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.CLEARANCE_TREES_1000_SQM,
         title: FieldNames.RYDDETREAR_PR_DEKAR,
         default: "150",
-        page: 0,
+        page: 1,
         properties: { min: 0, unit: UnitType.TREE_PER_DEKAR }
     },
     // TREE DATA END
@@ -73,7 +73,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: null,
         title: FieldNames.KJOREAVSTAND_VEG,
         default: "500",
-        page: 1,
+        page: 2,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
@@ -82,7 +82,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.INCLINE,
         title: FieldNames.HELLING_PAA_TRAKTORVEG,
         default: "1",
-        page: 1,
+        page: 2,
         properties: { options: new Map([
                 ["0-10 %", "1"],
                 ["10-20 %", "2"],
@@ -97,7 +97,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.DRIVING_CONDITIONS,
         title: FieldNames.OVERFLATESTRUKTUR_TRAKTORVEG,
         default: "1",
-        page: 1,
+        page: 2,
         properties: { options: new Map([
                 ["Meget god", "1"],
                 ["God", "2"],
@@ -112,7 +112,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: null,
         title: FieldNames.KJOREAVSTAND_TERRENG,
         default: "200",
-        page: 1,
+        page: 2,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
@@ -121,7 +121,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.INCLINE,
         title: FieldNames.HELLING_HOGSTFELT,
         default: "1",
-        page: 1,
+        page: 2,
         properties: { options: new Map([
                 ["0-10 %", "1"],
                 ["10-20 %", "2"],
@@ -136,7 +136,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.DRIVING_CONDITIONS,
         title: FieldNames.OVERFLATESTRUKTUR_TERRENG,
         default: "1",
-        page: 1,
+        page: 2,
         properties: { options: new Map([
                 ["Meget god", "1"],
                 ["God", "2"],
@@ -154,7 +154,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: FormInputErrorCode.HARVESTER_HOUR_COST_G15,
         title: FieldNames.TIMEKOST_HOGSTMASKIN,
         default: "2000",
-        page: 2,
+        page: 3,
         properties: { min: 0, unit: UnitType.COST_PER_G15 }
     },
     {
@@ -163,7 +163,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: null,
         title: FieldNames.TIMEKOST_LASSBEARER,
         default: "1800",
-        page: 2,
+        page: 3,
         properties: { min: 0, unit: UnitType.COST_PER_G15 }
     },
 
@@ -173,7 +173,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: null,
         title: FieldNames.LASSTORRELSE,
         default: "20",
-        page: 2,
+        page: 3,
         properties: { min: 0, unit: UnitType.CUBIC_M }
     },
     {
@@ -182,7 +182,7 @@ export const staticFieldDescriptions: FieldData[] = [
         errorId: null,
         title: FieldNames.ANTALL_SORTIMENT,
         default: "8",
-        page: 2,
+        page: 3,
         properties: { min: 0, unit: UnitType.PIECE }
     },
     // MACHINE DATA END

@@ -73,9 +73,21 @@ body {
   border-color: #5e7461;
 }
 
+.page-bar-spacer {
+  width: 0.25rem;
+  padding: 0;
+}
 
-
-
+.page-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.5rem;
+  min-width: 20%;
+  max-width: 30%;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 
 /* avoid applying hover on touch devices that emulate it. Buttons tend to "stick" */
 @media (hover: hover) {
