@@ -19,5 +19,5 @@
     "bootstrap": "^5.3.2",
     "react-bootstrap": "^2.10.0"
   },
-  "workspaces": ["common", "client", "api"]
+  "workspaces": ["common", "client", "api","admin-client"]
 }
