@@ -25,6 +25,7 @@ export default function App() {
                       functions?.clear()
                   }}>Clear</Button>
                   <Button size="lg" onClick={()=>{functions?.testJSON()}}>Test JSON</Button>
+                  <Button size="lg" onClick={()=>{functions?.resetView()}}>Reset View</Button>
               </Col>
           </Container>
           <div ref={ref} style={{height: "100vh", width: "100vw"}}></div>

@@ -279,6 +279,9 @@ export async function createEditor(container: HTMLElement) {
         testJSON: () => {
             currentJSONTree = createJSONGraph(editor);
             console.log(JSON.stringify(currentJSONTree, null, 2));
+        },
+        resetView: () => {
+            AreaExtensions.zoomAt(area, editor.getNodes()).then(() => {});
         }
     };
 }

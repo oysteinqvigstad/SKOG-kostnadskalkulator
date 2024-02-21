@@ -22,6 +22,8 @@ export function addCalculator(db: IDatabase) {
     }
 }
 
+
+
 export function reactApp(staticFilesPath: string) {
     return async function(_req: express.Request, res: express.Response) {
         res.sendFile(path.join(staticFilesPath, 'index.html'));
