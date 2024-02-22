@@ -17,7 +17,7 @@ import {ButtonControl, DropdownValues} from "./nodes/controls";
 import {Schemes} from "./nodes/types";
 import {exportGraph, importGraph} from "./serialization";
 import {createJSONGraph} from "./adapters";
-import {calculateNode, getNodeByID, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree/parseTree";
+import {calculateNode, getNodeByID, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
 
 
@@ -124,19 +124,23 @@ function createContextMenu(
     area: AreaPlugin<Schemes, AreaExtra>,
     onInputChange: () => void
 ) : ContextMenuPlugin<Schemes> {
+    // NB: For a node to be copyable, it must implement clone() in a way
+    // that does not require 'this' to be valid in its context.
     const updateNodeRender =
         (c:  ClassicPreset.InputControl<"number", number>) => { area.update("control", c.id) }
     return new ContextMenuPlugin<Schemes>({
-        items: ContextMenuPresets.classic.setup([
+        delay: 50000,
+        items: ContextMenuPresets.classic.setup(
+            [["Math",
+                [["Number", () => new NumberNode(0, onInputChange)],
+                ["Add", () => new BinaryNode(NodeType.Add, updateNodeRender)],
+                ["Sub", () => new BinaryNode(NodeType.Sub, updateNodeRender)],
+                ["Mul", () => new BinaryNode(NodeType.Mul, updateNodeRender)],
+                ["Pow", () => new BinaryNode(NodeType.Pow, updateNodeRender)],
+                ["Div", () => new BinaryNode(NodeType.Div, updateNodeRender)],
+                ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
+                ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]]],
             ["Input", () => new InputNode(0, onInputChange)],
-            ["Number", () => new NumberNode(0, onInputChange)],
-            ["Add", () => new BinaryNode(NodeType.Add, updateNodeRender)],
-            ["Sub", () => new BinaryNode(NodeType.Sub, updateNodeRender)],
-            ["Mul", () => new BinaryNode(NodeType.Mul, updateNodeRender)],
-            ["Pow", () => new BinaryNode(NodeType.Pow, updateNodeRender)],
-            ["Div", () => new BinaryNode(NodeType.Div, updateNodeRender)],
-            ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
-            ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]
         ])
     });
 }
@@ -158,6 +162,8 @@ export async function createEditor(container: HTMLElement) {
     const arrange = new AutoArrangePlugin<Schemes>();
     const engine = new DataflowEngine<Schemes>();
     const scopes = new ScopesPlugin<Schemes>();
+
+    let selectedNode: string = "";
 
     AreaExtensions.selectableNodes(area, AreaExtensions.selector(), {
         accumulating: AreaExtensions.accumulateOnCtrl()
@@ -181,7 +187,13 @@ export async function createEditor(container: HTMLElement) {
 
 
 
-    render.addPreset(Presets.contextMenu.setup());
+
+    // context menu can be customized here by adding a Customize object inside
+    // object passed to setup(), with customize : { ... }
+    render.addPreset(Presets.contextMenu.setup({delay:10}));
+
+
+
     connection.addPreset(ConnectionPresets.classic.setup());
     arrange.addPreset(ArrangePresets.classic.setup());
 
@@ -192,10 +204,11 @@ export async function createEditor(container: HTMLElement) {
 
 
     area.use(connection);
+    area.use(createContextMenu(editor, area, process(engine, editor)));
     area.use(render);
 
     area.use(scopes);
-    area.use(createContextMenu(editor, area, process(engine, editor)));
+
     area.use(arrange);
 
 
@@ -212,6 +225,7 @@ export async function createEditor(container: HTMLElement) {
     area.addPipe((context)=> {
         if(context.type === "nodepicked") {
             currentJSONTree = createJSONGraph(editor);
+            selectedNode = context.data.id;
             const nodeResult = getNodeByID(context.data.id, currentJSONTree);
             if(!nodeResult) {
                 console.log("Node not in tree due to multiple roots");
@@ -221,6 +235,7 @@ export async function createEditor(container: HTMLElement) {
         }
         return context;
     })
+
 
 
     area.addPipe((context) => {
@@ -280,8 +295,26 @@ export async function createEditor(container: HTMLElement) {
             currentJSONTree = createJSONGraph(editor);
             console.log(JSON.stringify(currentJSONTree, null, 2));
         },
-        resetView: () => {
-            AreaExtensions.zoomAt(area, editor.getNodes()).then(() => {});
+        deleteSelected: async () => {
+            const connections = editor.getConnections().filter(c => {
+                return c.source === selectedNode || c.target === selectedNode
+            })
+
+            for (const connection of connections) {
+                await editor.removeConnection(connection.id)
+            }
+            await editor.removeNode(selectedNode)
+            editor.removeNode(selectedNode).then(()=>{});
+        },
+        viewControllers: {
+            resetView: () => {
+                AreaExtensions.zoomAt(area, editor.getNodes()).then(() => {});
+            },
+            focusSelectedNode: () => {
+                AreaExtensions.zoomAt(area, [editor.getNode(selectedNode)]).then(() => {});
+            },
+            zoomIn: () => {
+            }
         }
     };
 }

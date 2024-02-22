@@ -8,8 +8,8 @@ export const apiService = createApi({
     endpoints: (builder) => ({
         getCalculators: builder.query<Formula[], void>({
             query: () => 'getCalculators'
-            // transformResponse: (response: {data: Formula[]}, meta, arg) => response.data,
-            // transformErrorResponse: (response: {status: string | number}, meta, arg) => response.status,
+            // transformResponse: (response: {data: Formula[]}, nodeMeta, arg) => response.data,
+            // transformErrorResponse: (response: {status: string | number}, nodeMeta, arg) => response.status,
         }),
     }),
 })

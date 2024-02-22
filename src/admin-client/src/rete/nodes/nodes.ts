@@ -1,7 +1,7 @@
 import { ClassicPreset } from "rete";
 import {ButtonControl} from "./controls";
 import {SkogNode} from "./types";
-import {getBinaryOperation, getNaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree/parseTree";
+import {getBinaryOperation, getNaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
 
 export class Connection<
     A extends SkogNode,
@@ -106,9 +106,11 @@ export class NumberNode extends BaseNode<
     { value: ClassicPreset.Socket },
     { value: ClassicPreset.InputControl<"number">, description: ClassicPreset.InputControl<"text">}
 > {
+    clone: () => NumberNode;
     constructor(initialValue: number, onValueChange?: () => void) {
         super(NodeType.Number);
         this.height = 160;
+        this.clone = () => new NumberNode(this.controls.value.value || 0);
         this.addControl(
             "value",
             new ClassicPreset.InputControl("number", { initial: initialValue, change: onValueChange })
@@ -121,6 +123,7 @@ export class NumberNode extends BaseNode<
     }
 
     data(): { value: number } {
+        this.clone = () => new NumberNode(this.controls.value.value || 0);
         return {
             value: this.controls.value.value || 0
         };

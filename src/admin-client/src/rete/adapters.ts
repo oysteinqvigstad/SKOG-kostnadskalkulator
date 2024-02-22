@@ -1,6 +1,6 @@
 import {Schemes, SkogNode} from "./nodes/types";
 import {NodeEditor} from "rete";
-import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree/parseTree";
+import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
 
 /**
@@ -91,7 +91,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
 
     const rootNode: ParseNode = {
         id: startNode.id, // Only id is needed. Rest is filled out in loop below.
-        operation: NodeType.Number,
+        type: NodeType.Number,
         value: 0,
         description: ""
     }
@@ -110,7 +110,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
 
         if(currentSkogNode === undefined) {throw new Error("Node not found");}
 
-        currentNode.operation = currentSkogNode.type;
+        currentNode.type = currentSkogNode.type;
         currentNode.value = currentSkogNode.controls.value.value ?? 0;
         currentNode.description = currentSkogNode.controls.description.value ?? "";
 
@@ -118,7 +118,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
         if (currentConnection?.left) {
             currentNode.left = {
                 id: currentConnection.left,
-                operation: NodeType.Number,
+                type: NodeType.Number,
                 value: 0,
                 description: "",
             };
@@ -129,7 +129,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
         if (currentConnection?.right) {
             currentNode.right = {
                 id: currentConnection.right,
-                operation: NodeType.Number,
+                type: NodeType.Number,
                 value: 0,
                 description: "",
             };
@@ -142,7 +142,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
             currentConnection.inputs.forEach((nodeID)=> {
                 const node: ParseNode = {
                     id: nodeID,
-                    operation: NodeType.Number,
+                    type: NodeType.Number,
                     value: 0,
                     description: ""
                 }
