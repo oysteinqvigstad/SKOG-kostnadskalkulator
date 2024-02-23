@@ -1,23 +1,21 @@
 import {createRoot} from "react-dom/client";
 import {ClassicPreset, NodeEditor} from "rete";
 import {AreaExtensions, AreaPlugin} from "rete-area-plugin";
-import {
-    BinaryNode,
-    InputNode,
-    NaryNode,
-    NumberNode
-} from "./nodes/nodes";
 import {ConnectionPlugin, Presets as ConnectionPresets} from "rete-connection-plugin";
 import {Presets, ReactArea2D, ReactPlugin} from "rete-react-plugin";
 import {AutoArrangePlugin, Presets as ArrangePresets} from "rete-auto-arrange-plugin";
 import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
 import {Presets as ScopesPresets, ScopesPlugin} from "rete-scopes-plugin";
 import {DataflowEngine} from "rete-engine";
-import {ButtonControl, DropdownValues} from "./nodes/controls";
+import {ButtonControl, DropdownValues} from "./customControls/controls";
 import {Schemes} from "./nodes/types";
 import {exportGraph, importGraph} from "./serialization";
 import {createJSONGraph} from "./adapters";
 import {calculateNode, getNodeByID, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NumberNode} from "./nodes/numberNode";
+import {BinaryNode} from "./nodes/binaryNode";
+import {NaryNode} from "./nodes/naryNode";
+import {InputNode} from "./nodes/inputNode";
 
 
 
