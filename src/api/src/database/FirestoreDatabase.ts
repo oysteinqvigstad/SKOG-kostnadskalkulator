@@ -1,4 +1,4 @@
-import FirebaseFirestore from "@google-cloud/firestore";
+import FirebaseFirestore, {DocumentData, Query} from "@google-cloud/firestore";
 import {IDatabase} from "../models/IDatabase";
 import {FirestoreConfiguration} from "../types/FirestoreConfiguration";
 import {Formula} from "@skogkalk/common/dist/src/types/Formula";
@@ -19,16 +19,19 @@ export class FirestoreDatabase implements IDatabase {
         }
     }
 
-    async addFormula(formula: Formula): Promise<void> {
+    async addCalculator(formula: Formula): Promise<void> {
         await this.#db.collection('formulas').add(formula);
     }
 
-    async getFormulas(): Promise<Formula[]> {
-        let formulas: Formula[] = []
-        let snapshot = await this.#db.collection('formulas').get()
-        snapshot.forEach(doc => {
-            formulas.push(doc.data() as Formula)
-        })
-        return formulas
+    async getCalculator(name: string | undefined, version: string | undefined): Promise<Formula[]> {
+        let query: Query<DocumentData> = this.#db.collection('calculators')
+        if (name) {
+            query = query.where('name', '==', name)
+        }
+        if (version) {
+            query = query.where('version', '==', version)
+        }
+        let snapshot = await query.get()
+        return snapshot.docs.map(doc => doc.data() as Formula)
     }
 }

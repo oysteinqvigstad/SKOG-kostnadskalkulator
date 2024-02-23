@@ -1,6 +1,6 @@
 import {Configuration} from "../types/Configuration";
 import express, {Express} from "express";
-import {addCalculator, cors, getCalculators, reactApp} from "./controllers";
+import {addCalculator, cors, getCalculator, reactApp} from "./controllers";
 import * as http from "http";
 
 export default class WebServer {
@@ -31,7 +31,7 @@ export default class WebServer {
             .use(express.static(this.#config.staticFilesPath))
             .use(express.json())
             .use(cors()) // temprory during development to allow CORS
-            .get('/api/v0/getCalculators', getCalculators(this.#config.database))
+            .get('/api/v0/getCalculator', getCalculator(this.#config.database))
             .get('*', reactApp(this.#config.staticFilesPath))
             .post('/api/v0/addCalculator', addCalculator(this.#config.database))
 

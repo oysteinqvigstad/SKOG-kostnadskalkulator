@@ -17,7 +17,7 @@ export const store = configureStore({
 })
 
 // importing auto generated hooks from the redux toolkit
-export const { useGetCalculatorsQuery } = apiService
+export const { useGetCalculatorsQuery, useAddCalculatorMutation } = apiService
 
 // types that our hooks use, don't use these directly in components
 export type RootState = ReturnType<typeof store.getState>

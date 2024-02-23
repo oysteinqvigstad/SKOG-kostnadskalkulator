@@ -4,7 +4,7 @@ import {Configuration} from "../src/types/Configuration";
 import {MockDatabase} from "../src/database/MockDatabase";
 import request from 'supertest'
 import path from "path";
-import {Formula} from "../src/types/Formula";
+import {Formula} from "@skogkalk/common/dist/src/types/Formula";
 
 let server: WebServer
 let database: IDatabase
@@ -45,17 +45,40 @@ describe('serve static files', () => {
 })
 
 describe('api formulas', () => {
-    test('GET /api/v0/getCalculators', async () => {
+    test('GET /api/v0/getCalculator', async () => {
         const formula: Formula = {
             name: "Quadratic Formula",
             version: "1.0.0",
             formula: "x^2 + 2x + 1"
         }
-        await database.addFormula(formula)
+        await database.addCalculator(formula)
         await request(server.app)
-            .get('/api/v0/getCalculators')
+            .get('/api/v0/getCalculator')
             .expect('Content-Type', /json/)
             .expect(200, [formula])
+    })
+
+    test('GET /api/v0/getCalculator?name=mycalc', async () => {
+        const formulas: Formula[] = [
+            {
+            name: "mycalculator",
+            version: "1.0.0",
+            formula: "x^2 + 2x + 1"
+            },
+            {
+            name: "mycalc",
+            version: "1.0.1",
+            formula: "x^2 + 2x + 1"
+            }
+        ]
+
+        await database.addCalculator(formulas[0])
+        await database.addCalculator(formulas[1])
+
+        await request(server.app)
+            .get('/api/v0/getCalculator?name=mycalc')
+            .expect('Content-Type', /json/)
+            .expect(200, [formulas[1]])
     })
 
     test('POST /api/v0/addCalculator', async () => {

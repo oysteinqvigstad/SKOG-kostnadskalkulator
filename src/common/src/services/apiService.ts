@@ -11,6 +11,13 @@ export const apiService = createApi({
             // transformResponse: (response: {data: Formula[]}, nodeMeta, arg) => response.data,
             // transformErrorResponse: (response: {status: string | number}, nodeMeta, arg) => response.status,
         }),
+        addCalculator: builder.mutation<void, Formula>({
+            query: (body) => ({
+                url: 'addCalculator',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 })
 
