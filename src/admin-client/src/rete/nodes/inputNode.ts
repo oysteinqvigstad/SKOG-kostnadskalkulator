@@ -1,7 +1,9 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {ButtonControl} from "../customControls/controls";
+import {DropdownValuesControl} from "../customControls/dropdownValues";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {InputAlternative} from "@skogkalk/common/dist/src/parseTree/nodeMeta/input";
+import {DropdownSelectionControl} from "../customControls/dropdownSelection";
 
 /**
  * Node whose value can be set by the user.
@@ -12,9 +14,12 @@ export class InputNode extends BaseNode<
     {
         value: ClassicPreset.InputControl<"number">,
         description: ClassicPreset.InputControl<"text">,
-        button: ButtonControl
+        dropdown: DropdownValuesControl
+        dropdownSelection: DropdownSelectionControl
     }
 > {
+    inputAlternatives: InputAlternative[] = []
+
     constructor(
         initialValue: number,
         onValueChange?: () => void // function to be called on user changing value
@@ -22,11 +27,33 @@ export class InputNode extends BaseNode<
         super(NodeType.Number);
         this.height = 400;
         this.width = 400;
+
+
         this.addControl(
             "value",
             new ClassicPreset.InputControl("number", { initial: initialValue, change: onValueChange })
         );
-        this.addControl("button", new ButtonControl("Click me", () => console.log("clicked")));
+
+
+        this.addControl(
+            "dropdownSelection",
+            new DropdownSelectionControl(
+                "dropdownSelection",
+                this.inputAlternatives,
+                (input) => {
+                    this.controls.value.setValue(input.value);
+                }
+            )
+            )
+
+        this.addControl("dropdown", new DropdownValuesControl("dropdown",
+            [],
+            (dropdownAlternatives) => {
+                this.controls.dropdownSelection.setInitialState(dropdownAlternatives);
+                this.inputAlternatives = dropdownAlternatives;
+            })
+        );
+
         this.addControl(
             "description",
             new ClassicPreset.InputControl("text", { initial: "description" })
