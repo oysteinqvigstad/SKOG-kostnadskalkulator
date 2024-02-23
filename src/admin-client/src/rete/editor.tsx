@@ -1,23 +1,25 @@
 import {createRoot} from "react-dom/client";
 import {ClassicPreset, NodeEditor} from "rete";
 import {AreaExtensions, AreaPlugin} from "rete-area-plugin";
-import {
-    BinaryNode,
-    InputNode,
-    NaryNode,
-    NumberNode
-} from "./nodes/nodes";
 import {ConnectionPlugin, Presets as ConnectionPresets} from "rete-connection-plugin";
 import {Presets, ReactArea2D, ReactPlugin} from "rete-react-plugin";
 import {AutoArrangePlugin, Presets as ArrangePresets} from "rete-auto-arrange-plugin";
 import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
 import {Presets as ScopesPresets, ScopesPlugin} from "rete-scopes-plugin";
 import {DataflowEngine} from "rete-engine";
-import {ButtonControl, DropdownValues} from "./nodes/controls";
+import {
+    DropdownValues,
+    DropdownValuesControl
+} from "./customControls/dropdownValues";
 import {Schemes} from "./nodes/types";
 import {exportGraph, importGraph} from "./serialization";
 import {createJSONGraph} from "./adapters";
 import {calculateNode, getNodeByID, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NumberNode} from "./nodes/numberNode";
+import {BinaryNode} from "./nodes/binaryNode";
+import {NaryNode} from "./nodes/naryNode";
+import {InputNode} from "./nodes/inputNode";
+import {DropdownSelection, DropdownSelectionControl} from "./customControls/dropdownSelection";
 
 
 
@@ -129,7 +131,6 @@ function createContextMenu(
     const updateNodeRender =
         (c:  ClassicPreset.InputControl<"number", number>) => { area.update("control", c.id) }
     return new ContextMenuPlugin<Schemes>({
-        delay: 50000,
         items: ContextMenuPresets.classic.setup(
             [["Math",
                 [["Number", () => new NumberNode(0, onInputChange)],
@@ -173,8 +174,21 @@ export async function createEditor(container: HTMLElement) {
         Presets.classic.setup({
             customize: {
                 control(data) {
-                    if (data.payload instanceof ButtonControl) {
-                        return DropdownValues;
+                    if (data.payload instanceof DropdownValuesControl) {
+                        const updateFunc = data.payload.onElementUpdate;
+                        const initialState = data.payload.initialState;
+                        return () => {return <DropdownValues onUpdate={updateFunc} initialState={initialState}/>}
+                    }
+                    if(data.payload instanceof DropdownSelectionControl) {
+                        const onSelection = data.payload.onSelection;
+                        const id = data.payload.id;
+                        const initialState = data.payload.initialState;
+                        return () => {return <DropdownSelection onSelection={
+                            (input) => {
+                                onSelection(input);
+                                area.update("control", id)
+                            }
+                        } inputAlternatives={initialState}/>}
                     }
                     if (data.payload instanceof ClassicPreset.InputControl) {
                         return Presets.classic.Control;
@@ -235,6 +249,13 @@ export async function createEditor(container: HTMLElement) {
         }
         return context;
     })
+
+    area.addPipe((context) => {
+
+
+
+        return context;
+    });
 
 
 

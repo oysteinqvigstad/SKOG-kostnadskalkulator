@@ -1,9 +1,11 @@
 import {ClassicPreset, NodeEditor} from "rete";
-import {ConnProps, Schemes, SkogNode} from "./nodes/types";
+import {Connection, ConnProps, Schemes, SkogNode} from "./nodes/types";
 import {DataflowEngine} from "rete-engine";
 import {AreaPlugin} from "rete-area-plugin";
 import {process} from "./editor";
-import {BinaryNode, Connection, getSkogNodeFromNodeType, NumberNode} from "./nodes/nodes";
+import {getSkogNodeFromNodeType} from "./utility/utility";
+import {NumberNode} from "./nodes/numberNode";
+import {BinaryNode} from "./nodes/binaryNode";
 
 
 export async function importGraph(
@@ -27,7 +29,6 @@ export async function importGraph(
         let totalConnections: ConnProps[]  = [];
 
         for await (const { id, controls, type, xy , connections} of data.nodes) {
-            // await new Promise(r => setTimeout(r, 10));
             let node = getSkogNodeFromNodeType(
                 type,
                 onValueUpdate,
@@ -50,7 +51,6 @@ export async function importGraph(
         }
 
         for await (const connection of totalConnections) {
-            // await new Promise(r => setTimeout(r, 10));
             editor.addConnection(connection)
                 .catch((e) => console.log(e))
                 .then(() => {});

@@ -1,0 +1,35 @@
+import {BaseNode} from "./baseNode";
+import {ClassicPreset} from "rete";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+
+/**
+ * Node providing a simple number value that can be manually set. Represents a constant.
+ */
+export class NumberNode extends BaseNode<
+    {},
+    { value: ClassicPreset.Socket },
+    { value: ClassicPreset.InputControl<"number">, description: ClassicPreset.InputControl<"text">}
+> {
+    clone: () => NumberNode;
+    constructor(initialValue: number, onValueChange?: () => void) {
+        super(NodeType.Number);
+        this.height = 160;
+        this.clone = () => new NumberNode(this.controls.value.value || 0);
+        this.addControl(
+            "value",
+            new ClassicPreset.InputControl("number", { initial: initialValue, change: onValueChange })
+        );
+        this.addControl(
+            "description",
+            new ClassicPreset.InputControl("text", { initial: "description" })
+        );
+        this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Number"));
+    }
+
+    data(): { value: number } {
+        this.clone = () => new NumberNode(this.controls.value.value || 0);
+        return {
+            value: this.controls.value.value || 0
+        };
+    }
+}
