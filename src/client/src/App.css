@@ -78,6 +78,11 @@ body {
   padding: 0;
 }
 
+.page-bar {
+  background-color: #004f59;
+  padding-bottom: 0.2rem;
+}
+
 .page-button {
   display: flex;
   flex-direction: column;
