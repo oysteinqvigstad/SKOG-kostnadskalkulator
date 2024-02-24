@@ -15,7 +15,7 @@ export function FrontPage() {
     const [addCalculator, {isLoading: isUpdating, error: postError}] = useAddCalculatorMutation()
     useEffect(() => {
         addCalculator({name: "test", version: "1.0", formula: "abcdfg"})
-    }, []);
+    }, [addCalculator]);
 
     useEffect(() => {
         console.log('data:', JSON.stringify(data), 'error:', !!error, 'isLoading:', isLoading)
