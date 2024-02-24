@@ -1,11 +1,13 @@
 import React from "react";
 import {Alert, Stack} from "react-bootstrap";
-import {ResultCard} from "../components/ResultCard";
+import {ResultCard} from "../components/result/ResultCard";
 import {UnitType} from "../types/UnitType";
-import {loadCarrierCalculator, logHarvesterCostCalculator} from "../calculator/calculator";
 import {useAppSelector} from "../state/hooks";
-import {selectHarvesterData, selectLoadCarrierData} from "../state/formSelectors";
+import {selectCalculatorResult} from "../state/formSelectors";
 import {ShareResultButton} from "../components/ShareResultButton";
+import { ResultGraph } from "../components/result/ResultGraph";
+import {ResultProductivity} from "../components/result/ResultProductivity";
+import {ResultCost} from "../components/result/ResultCost";
 
 
 
@@ -14,24 +16,7 @@ import {ShareResultButton} from "../components/ShareResultButton";
  */
 export function ResultContent() {
 
-    // Get the data from the store and calculate the result
-    const harvesterData = useAppSelector(selectHarvesterData)
-    const harvesterResult = logHarvesterCostCalculator(
-        harvesterData.harvesterCost,
-        harvesterData.treeData,
-        harvesterData.terrainData
-    )
-
-    // Get the data from the store and calculate the result
-    const loadCarrierData = useAppSelector(selectLoadCarrierData)
-    const loadCarrierResult = loadCarrierCalculator(
-        loadCarrierData.carrierCost,
-        loadCarrierData.terrainData,
-        loadCarrierData.roadData,
-        loadCarrierData.treeData,
-        loadCarrierData.timerLoadSize,
-        loadCarrierData.distinctAssortments
-        )
+    const {harvesterResult, loadCarrierResult} = useAppSelector(selectCalculatorResult)
 
     // If the result is not ok, show an error message to user
     if(!harvesterResult.ok || !loadCarrierResult.ok) {
@@ -45,9 +30,6 @@ export function ResultContent() {
     }
 
 
-
-
-
     return (
             <Stack className={"mb-3"} gap={3}>
                 <ResultCard
@@ -58,11 +40,6 @@ export function ResultContent() {
                             text: "Kostnad",
                             value: harvesterResult.value.costPerTimberCubed.toFixed(0),
                             unit: UnitType.COST_PER_CUBIC_M
-                        },
-                        {
-                            text: "Middeldimensjon",
-                            value: harvesterData.midDimension.toFixed(3),
-                            unit: UnitType.CUBIC_M_PR_TREE
                         }
                     ]}
                 />
@@ -77,6 +54,9 @@ export function ResultContent() {
                         }
                     ]}
                 />
+                <ResultProductivity />
+                <ResultCost />
+                <ResultGraph />
                 <ShareResultButton />
             </Stack>
     )

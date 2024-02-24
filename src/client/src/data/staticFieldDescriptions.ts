@@ -8,13 +8,13 @@ import {
     drivingConditionsExplanationNOR, forestTypeExplanationNOR,
     harvesterCostNor,
     logCarrierCostNor,
-    roadDistanceNor,
+    roadDistanceNor, roadInclineNor,
     sellableVolumeNor,
     terrainDistanceNor,
     terrainInclineNor,
     timberLoadSizeNor,
     timberTreesNor
-} from "../fieldDescriptions/descriptions";
+} from "./staticFieldInfoText";
 import {renderToString} from "react-dom/server";
 import {FieldNames} from "../types/FieldNames";
 
@@ -78,7 +78,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.DROPDOWN_INPUT,
-        descriptionHTML: renderToString(roadDistanceNor()),
+        descriptionHTML: renderToString(roadInclineNor()),
         errorId: FormInputErrorCode.INCLINE,
         title: FieldNames.HELLING_PAA_TRAKTORVEG,
         default: "1",

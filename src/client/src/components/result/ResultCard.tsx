@@ -1,9 +1,9 @@
 import {Card, Col, Container, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import React from "react";
 import {ResultGauge} from "./ResultGauge";
-import '../App.css'
-import {ResultListItem} from "../types/ResultListItem";
-import {UnitType} from "../types/UnitType";
+import '../../App.css'
+import {ResultListItem} from "../../types/ResultListItem";
+import {UnitType} from "../../types/UnitType";
 
 /**
  * The result component for the result page, displaying the result of the calculations for the harvester or load carrier
