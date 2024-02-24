@@ -6,6 +6,7 @@ import {Col} from "react-bootstrap";
 import {ResultContent} from "../containers/ResultContent";
 import {InputContent} from "../containers/InputContent";
 import {PaginationBar} from "../components/PaginationBar";
+import {InfoContent} from "../containers/InfoContent";
 
 
 export function FormPage() {
@@ -39,7 +40,7 @@ export function FormPage() {
     const pageSwitcher = (pageNumber: number) => {
         switch (pageNumber) {
             case INFOPAGE:
-                return "Informasjon"
+                return <InfoContent />
             case RESULTPAGE:
                 return <ResultContent />
             default :

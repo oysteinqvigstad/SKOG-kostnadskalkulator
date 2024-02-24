@@ -26,9 +26,6 @@ export const staticCalculatorData: CalculatorData[] = [
 function skogkursv1desctiption() {
     return (
         <>
-            <h2>
-                Velkommen til Skogkurs sin kostnadskalkulator
-            </h2>
             <p>
                 Kalkulatoren inneholder tre kategorier, bestand, terreng og maskin:
                     <table>
