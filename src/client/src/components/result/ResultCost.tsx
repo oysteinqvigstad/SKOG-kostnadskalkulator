@@ -1,4 +1,4 @@
-import {Alert, Card, Col, Row} from "react-bootstrap";
+import {Alert} from "react-bootstrap";
 import {FcSalesPerformance} from "react-icons/fc";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
@@ -6,6 +6,7 @@ import {ApexOptions} from "apexcharts";
 import {useAppSelector} from "../../state/hooks";
 import {selectCalculatorResult} from "../../state/formSelectors";
 import {UnitType} from "../../types/UnitType";
+import {ResultCard} from "./ResultCard";
 
 export function ResultCost() {
     const {harvesterResult, loadCarrierResult} = useAppSelector(selectCalculatorResult)
@@ -78,27 +79,22 @@ export function ResultCost() {
             }
         }
     };
-    return (
-        <Card>
-            <Card.Body>
-                <Row className={"align-items-center"}>
-                    <Col xs={1}>
-                        <FcSalesPerformance style={{fontSize: '1.5em'}}/>
-                    </Col>
-                    <Col>
-                        <h5 className={"m-0 pt-1"}>
-                            {"Kostnad"}
-                        </h5>
-                    </Col>
-                </Row>
-                <ReactApexChart
-                    options={options}
-                    series={options.series}
-                    type="donut"
-                    height={300}
-                />
 
-            </Card.Body>
-        </Card>
+    const children = (
+        <ReactApexChart
+            options={options}
+            series={options.series}
+            type="donut"
+            height={300}
+        />
+    )
+
+    return (
+        <ResultCard
+            icon={<FcSalesPerformance />}
+            title={"Kostnad"}
+            children={children}
+        />
+
     )
 }

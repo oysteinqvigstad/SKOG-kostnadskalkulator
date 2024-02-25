@@ -1,4 +1,4 @@
-import {Alert, Card, Col, Row} from "react-bootstrap";
+import {Alert} from "react-bootstrap";
 import ReactApexChart from "react-apexcharts";
 import React from "react";
 import {ApexOptions} from "apexcharts";
@@ -6,6 +6,7 @@ import {UnitType} from "../../types/UnitType";
 import {useAppSelector} from "../../state/hooks";
 import {selectCalculatorResult} from "../../state/formSelectors";
 import {FcBullish} from "react-icons/fc";
+import {ResultCard} from "./ResultCard";
 
 export function ResultProductivity() {
 
@@ -22,36 +23,33 @@ export function ResultProductivity() {
         )
     }
 
-    return (
-        <Card>
-            <Card.Body>
-                <Row className={"align-items-center mb-4"}>
-                    <Col xs={1}>
-                        <FcBullish style={{fontSize: '1.5em'}}/>
-                    </Col>
-                    <Col>
-                        <h5 className={"m-0 pt-1"}>
-                        {"Produktivitet"}
-                        </h5>
-                    </Col>
-                </Row>
+    const children = (
+        <>
+            <DrawBar
+                title="Hogstmaskin"
+                value={harvesterResult.value.timberCubedPerG15Hour}
+                unit={UnitType.CUBIC_M_PR_G15}
+                max={50}
+                color={"#008FFB"}
+            />
+            <DrawBar
+                title="Lassbærer"
+                value={loadCarrierResult.value.timberCubedPerG15Hour}
+                unit={UnitType.CUBIC_M_PR_G15}
+                max={50}
+                color={"#00E396"}
+            />
+        </>
+    )
 
-                <DrawBar
-                    title="Hogstmaskin"
-                    value={harvesterResult.value.timberCubedPerG15Hour}
-                    unit={UnitType.CUBIC_M_PR_G15}
-                    max={50}
-                    color={"#008FFB"}
-                />
-                <DrawBar
-                    title="Lassbærer"
-                    value={loadCarrierResult.value.timberCubedPerG15Hour}
-                    unit={UnitType.CUBIC_M_PR_G15}
-                    max={50}
-                    color={"#00E396"}
-                />
-            </Card.Body>
-        </Card>
+
+    return (
+        <ResultCard
+            icon={<FcBullish />}
+            title={"Produktivitet"}
+            children={children}
+        />
+
     )
 }
 

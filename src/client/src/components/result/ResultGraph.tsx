@@ -1,4 +1,4 @@
-import {Card, Col, Form, Row} from "react-bootstrap";
+import {Form} from "react-bootstrap";
 import ReactApexChart from "react-apexcharts";
 import React, {useState} from "react";
 import {ApexOptions} from "apexcharts";
@@ -9,6 +9,7 @@ import {UnitType} from "../../types/UnitType";
 import {staticFieldDescriptions} from "../../data/staticFieldDescriptions";
 import {NumberedProperties} from "../../types/FieldData";
 import {FcIdea} from "react-icons/fc";
+import {ResultCard} from "./ResultCard";
 
 export function ResultGraph() {
     const [selection, setSelection] = useState<FieldNames>(FieldNames.VOLUM_PR_DEKAR)
@@ -46,49 +47,43 @@ export function ResultGraph() {
         },
     ]
 
+    const children = (
+        <>
+        <Form>
+            <Form.Text>{"Velg kostnadsdriver:"}</Form.Text>
+            <Form.Select
+                aria-label={`select field to draw graph for`}
+                value={selection}
+                onChange={e => {setSelection(e.target.value as FieldNames)}}
+            >
+                {dropdownItems.map((title) => <option value={title}>{title}</option>)}
+            </Form.Select>
+            <Form.Check
+                type="switch"
+                label="Vis som kostnad"
+                className={"pt-2 pb-3"}
+                checked={showCost}
+                onChange={e => setShowCost(e.target.checked)}
+            />
+        </Form>
+    <DrawGraph
+        series={chartSeries}
+        xLabels={series.labels}
+        xUnit={unit ?? ""}
+        yUnit={showCost ? UnitType.COST_PER_CUBIC_M : UnitType.CUBIC_M_PR_G15}
+        yLabel={showCost ? 'Kostnad' : 'Produktivitet'}
 
+        actualValue={value}
+    />
+        </>
+    )
 
     return (
-        <Card>
-            <Card.Body>
-                <Row className={"align-items-center mb-4"}>
-                    <Col xs={1}>
-                        <FcIdea style={{fontSize: '1.5em'}}/>
-                    </Col>
-                    <Col>
-                        <h5 className={"m-0 pt-1"}>
-                            {"Innsikt i kostnadsdrivere"}
-                        </h5>
-                    </Col>
-                </Row>
-            <Form>
-                <Form.Text>{"Velg kostnadsdriver:"}</Form.Text>
-                <Form.Select
-                    aria-label={`select field to draw graph for`}
-                    value={selection}
-                    onChange={e => {setSelection(e.target.value as FieldNames)}}
-                >
-                    {dropdownItems.map((title) => <option value={title}>{title}</option>)}
-                </Form.Select>
-                <Form.Check
-                    type="switch"
-                    label="Vis som kostnad"
-                    className={"pt-2 pb-3"}
-                    checked={showCost}
-                    onChange={e => setShowCost(e.target.checked)}
-                />
-            </Form>
-            <DrawGraph
-                series={chartSeries}
-                xLabels={series.labels}
-                xUnit={unit ?? ""}
-                yUnit={showCost ? UnitType.COST_PER_CUBIC_M : UnitType.CUBIC_M_PR_G15}
-                yLabel={showCost ? 'Kostnad' : 'Produktivitet'}
-
-                actualValue={value}
-            />
-            </Card.Body>
-        </Card>
+        <ResultCard
+            icon={<FcIdea />}
+            title={"Innsikt i kostnadsdrivere"}
+            children={children}
+        />
     )
 }
 

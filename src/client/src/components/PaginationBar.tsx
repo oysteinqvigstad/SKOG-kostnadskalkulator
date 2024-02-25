@@ -46,7 +46,7 @@ export function PaginationBar(props: { onClick: (pageNumber: number) => void }) 
 
     return(
         <>
-            <Row className={"d-flex flex-nowrap overflow-x-auto mx-auto sticky-top page-bar"}>
+            <Row className={"d-flex flex-nowrap overflow-x-auto mx-auto sticky-top page-bar"} style={{maxWidth: '400px'}}>
                 {/*<Button disabled={page === 0} onClick={() =>
                 props.onClick(page - 1)}><MdArrowBack/></Button>*/}
                 {pageButton}

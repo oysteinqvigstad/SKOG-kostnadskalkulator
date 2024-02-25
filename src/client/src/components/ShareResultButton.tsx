@@ -39,7 +39,11 @@ export function ShareResultButton() {
                 placement={"top"}
                 delay={{show: 250, hide: 400}}
             >
-                <Button onClick={() => share()}>
+                <Button
+                    variant={"link"}
+                    onClick={() => share()}
+                    style={{fontSize: '1.5em', color: "white"}}
+                >
                     <MdShare />
                 </Button>
             </OverlayTrigger>

@@ -49,7 +49,7 @@ export function FormPage() {
     }
 
     return (
-        <Col className={"px-3 mt-2 mx-auto"} style={{maxWidth: '400px'}}>
+        <Col className={"px-3 mt-2 mx-auto"} style={{maxWidth: '1200px'}}>
             <PaginationBar onClick={switchPage} />
             {pageDescription[pageNumber]}
             {pageSwitcher(pageNumber)}
@@ -63,5 +63,5 @@ const pageDescription: string[] = [
     "Bestand",
     "Kjøreforhold",
     "Maskin",
-    "Resultat"
+    ""
 ]

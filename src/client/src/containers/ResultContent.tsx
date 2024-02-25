@@ -1,13 +1,12 @@
 import React from "react";
-import {Alert, Stack} from "react-bootstrap";
-import {ResultCard} from "../components/result/ResultCard";
-import {UnitType} from "../types/UnitType";
+import {Alert, Col, Row, Stack} from "react-bootstrap";
 import {useAppSelector} from "../state/hooks";
 import {selectCalculatorResult} from "../state/formSelectors";
 import {ShareResultButton} from "../components/ShareResultButton";
 import { ResultGraph } from "../components/result/ResultGraph";
 import {ResultProductivity} from "../components/result/ResultProductivity";
 import {ResultCost} from "../components/result/ResultCost";
+import {ResultTable} from "../components/result/ResultTable";
 
 
 
@@ -32,32 +31,25 @@ export function ResultContent() {
 
     return (
             <Stack className={"mb-3"} gap={3}>
-                <ResultCard
-                    title="Hogstmaskin"
-                    productivity={harvesterResult.value.timberCubedPerG15Hour}
-                    listItems={[
-                        {
-                            text: "Kostnad",
-                            value: harvesterResult.value.costPerTimberCubed.toFixed(0),
-                            unit: UnitType.COST_PER_CUBIC_M
-                        }
-                    ]}
-                />
-                <ResultCard
-                    title="Lassbærer"
-                    productivity={loadCarrierResult.value.timberCubedPerG15Hour}
-                    listItems={[
-                        {
-                            text: "Kostnad",
-                            value: loadCarrierResult.value.costPerTimberCubed.toFixed(0),
-                            unit: UnitType.COST_PER_CUBIC_M
-                        }
-                    ]}
-                />
-                <ResultProductivity />
-                <ResultCost />
-                <ResultGraph />
-                <ShareResultButton />
+                <Row className={"pt-3"}>
+                    <Col xs={12} className={"d-flex justify-content-end"}>
+                        <ShareResultButton />
+                    </Col>
+                </Row>
+                <Row className={"row-gap-4"}>
+                    <Col md={6} lg={4}>
+                        <ResultProductivity />
+                    </Col>
+                    <Col md={6} lg={4}>
+                        <ResultCost />
+                    </Col>
+                    <Col md={{span: 6, order: 2}} lg={{span: 4, order: 1}}>
+                        <ResultTable />
+                    </Col>
+                    <Col md={{span: 6, order: 1}} lg={{span: 12, order: 2}}>
+                        <ResultGraph />
+                    </Col>
+                </Row>
             </Stack>
     )
 }
