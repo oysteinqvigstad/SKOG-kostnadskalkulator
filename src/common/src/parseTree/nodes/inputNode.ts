@@ -1,6 +1,7 @@
 import type {ParseNode} from "./parseNode";
 import {NodeType} from "../nodeMeta/node";
 import type {InputAlternative, InputType, LegalValues} from "../nodeMeta/input";
+import type {NodeRendering} from "../nodeMeta/rendering";
 
 
 
@@ -25,8 +26,9 @@ export interface InputNode extends ParseNode {
     inputType: InputType
     valueAlternatives?: InputAlternative[]
     legalValues?: LegalValues[]
+    displayMeta: NodeRendering
 }
 
 export function isInputNode(node: ParseNode): node is InputNode {
-    return node.type === NodeType.Output;
+    return node.type === NodeType.Input;
 }
