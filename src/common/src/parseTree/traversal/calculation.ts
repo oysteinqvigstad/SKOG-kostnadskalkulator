@@ -37,6 +37,7 @@ export function calculateNode(node: ParseNode | undefined): number {
         case NodeType.Input: return node.value;
         //TODO: Output node should act as a reference to another node
         case NodeType.Number: return node.value;
+        case NodeType.Output: return calculateNode(node.child);
         case NodeType.Add: return calculateNode(node.left) + calculateNode(node.right);
         case NodeType.Sub: return calculateNode(node.left) - calculateNode(node.right);
         case NodeType.Mul: return calculateNode(node.left) * calculateNode(node.right);
