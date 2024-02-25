@@ -6,6 +6,9 @@ import {process} from "./editor";
 import {getSkogNodeFromNodeType} from "./utility/utility";
 import {NumberNode} from "./nodes/numberNode";
 import {BinaryNode} from "./nodes/binaryNode";
+import {InputNode} from "./nodes/inputNode";
+import {OutputNode} from "./nodes/outputNode";
+import {LabelNode} from "./nodes/labelNode";
 
 
 export async function importGraph(
@@ -38,7 +41,13 @@ export async function importGraph(
             if(!node) {
                 reject("Invalid node type found in file");
             } else {
-                node.controls.value.setValue(controls.value.value);
+                if(!(node instanceof OutputNode) && !(node instanceof LabelNode)) {
+                    node.controls.value.setValue(controls.value.value);
+                    console.log("Not instance of input or output")
+                } else {
+                    console.log("Instance of input or output")
+                }
+
                 node.controls.description.setValue(controls.description.value);
                 node.id = id;
                 node.xTranslation = xy[0];

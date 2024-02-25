@@ -20,6 +20,8 @@ import {BinaryNode} from "./nodes/binaryNode";
 import {NaryNode} from "./nodes/naryNode";
 import {InputNode} from "./nodes/inputNode";
 import {DropdownSelection, DropdownSelectionControl} from "./customControls/dropdownSelection";
+import {OutputNode} from "./nodes/outputNode";
+import {LabelNode} from "./nodes/labelNode";
 
 
 
@@ -129,7 +131,7 @@ function createContextMenu(
     // NB: For a node to be copyable, it must implement clone() in a way
     // that does not require 'this' to be valid in its context.
     const updateNodeRender =
-        (c:  ClassicPreset.InputControl<"number", number>) => { area.update("control", c.id) }
+        (c:  ClassicPreset.InputControl<"number", number> | ClassicPreset.InputControl<"text", string>) => { area.update("control", c.id) }
     return new ContextMenuPlugin<Schemes>({
         items: ContextMenuPresets.classic.setup(
             [["Math",
@@ -142,6 +144,8 @@ function createContextMenu(
                 ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
                 ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]]],
             ["Input", () => new InputNode(0, onInputChange)],
+                ["Output", () => new OutputNode(updateNodeRender)],
+                ["Label", ()=> new LabelNode(onInputChange)]
         ])
     });
 }
@@ -190,6 +194,7 @@ export async function createEditor(container: HTMLElement) {
                             }
                         } inputAlternatives={initialState}/>}
                     }
+
                     if (data.payload instanceof ClassicPreset.InputControl) {
                         return Presets.classic.Control;
                     }

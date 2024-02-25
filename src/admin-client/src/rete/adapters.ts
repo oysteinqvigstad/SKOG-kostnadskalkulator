@@ -1,25 +1,20 @@
 import {Schemes, SkogNode} from "./nodes/types";
 import {NodeEditor} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {LabelNode} from "./nodes/labelNode";
+import {OutputNode} from "./nodes/outputNode";
 
 
-/**
- * Object representing a node with its children, which may be left, right, or an
- * array of n inputs, or none.
- */
 interface NodeConnection {
     id: string
     name: string
     left?: string
     right?: string
+    child?: string
     inputs?: string[]
 }
 
 
-/**
- * WIP
- * @param editor
- */
 export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undefined {
     let subtrees: (ParseNode | undefined)[] = [];
     let connections = editor.getConnections();
@@ -41,7 +36,11 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undef
         let parentNode = nodeSet.get(connection.target);
         const targetPortName = connection.targetInput;
 
+
         if(parentNode !== undefined) {
+            if(targetPortName === "result") {
+                parentNode.child = connection.source;
+            }
             if(targetPortName === "left") {
                 parentNode.left = connection.source;
             }
@@ -111,7 +110,11 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
         if(currentSkogNode === undefined) {throw new Error("Node not found");}
 
         currentNode.type = currentSkogNode.type;
-        currentNode.value = currentSkogNode.controls.value.value ?? 0;
+        if(currentSkogNode !instanceof LabelNode && currentSkogNode !instanceof OutputNode) {
+            //TODO: Need a more flexible way of declaring input and output controls dynamically
+            // and allowing these to be parsed
+            currentNode.value = currentSkogNode.controls.value.value ?? 0;
+        }
         currentNode.description = currentSkogNode.controls.description.value ?? "";
 
 
@@ -135,6 +138,17 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
             };
             const rightNode = currentNode.right;
             stack.push(rightNode);
+        }
+
+        if (currentConnection?.child) {
+            currentNode.child = {
+                id: currentConnection.child,
+                type: NodeType.Number,
+                value: 0,
+                description: "",
+            }
+            const childNode = currentNode.child;
+            stack.push(childNode);
         }
 
         if (currentConnection?.inputs) {
