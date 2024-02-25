@@ -11,6 +11,7 @@ export type ParseNode = {
     description: string
     left?: ParseNode
     right?: ParseNode
+    child?: ParseNode
     inputs?: ParseNode[]
 }
 
