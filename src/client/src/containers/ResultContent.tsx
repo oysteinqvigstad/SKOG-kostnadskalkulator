@@ -4,9 +4,9 @@ import {useAppSelector} from "../state/hooks";
 import {selectCalculatorResult} from "../state/formSelectors";
 import {ShareResultButton} from "../components/ShareResultButton";
 import { ResultGraph } from "../components/result/ResultGraph";
-import {ResultProductivity} from "../components/result/ResultProductivity";
 import {ResultCost} from "../components/result/ResultCost";
 import {ResultTable} from "../components/result/ResultTable";
+import {ResultProductivityRadial} from "../components/result/ResultProductivityRadial";
 
 
 
@@ -38,7 +38,7 @@ export function ResultContent() {
                 </Row>
                 <Row className={"row-gap-4"}>
                     <Col md={6} lg={4}>
-                        <ResultProductivity />
+                        <ResultProductivityRadial />
                     </Col>
                     <Col md={6} lg={4}>
                         <ResultCost />

@@ -1,14 +1,15 @@
-import {Alert} from "react-bootstrap";
-import {FcSalesPerformance} from "react-icons/fc";
-import React from "react";
-import ReactApexChart from "react-apexcharts";
-import {ApexOptions} from "apexcharts";
 import {useAppSelector} from "../../state/hooks";
 import {selectCalculatorResult} from "../../state/formSelectors";
-import {UnitType} from "../../types/UnitType";
+import {Alert} from "react-bootstrap";
+import React from "react";
 import {ResultCard} from "./ResultCard";
+import {FcBullish} from "react-icons/fc";
+import ReactApexChart from "react-apexcharts";
+import {ApexOptions} from "apexcharts";
+import {UnitType} from "../../types/UnitType";
 
-export function ResultCost() {
+export function ResultProductivityRadial() {
+
     const {harvesterResult, loadCarrierResult} = useAppSelector(selectCalculatorResult)
 
     // If the result is not ok, show an error message to user
@@ -22,18 +23,34 @@ export function ResultCost() {
         )
     }
 
-    const harvesterCost = Math.round(harvesterResult.value.costPerTimberCubed)
-    const forwarderCost = Math.round(loadCarrierResult.value.costPerTimberCubed)
-
     const options: ApexOptions = {
-        series: [harvesterCost, forwarderCost, 0],
         chart: {
-            type: 'donut',
-
+            type: "radialBar",
         },
-        labels: ['Hogstmaskin', 'Lassbærer', 'Annet'],
+        series: [
+            harvesterResult.value.timberCubedPerG15Hour * 2,
+            loadCarrierResult.value.timberCubedPerG15Hour * 2
+        ],
+        plotOptions: {
+            radialBar: {
+                offsetY: -41,
+                dataLabels: {
+                    name: {
+                        show: false,
+                    },
+                    value: {
+                        show: false,
+                    }
+                }
+
+            }
+        },
+        labels: ['Hogstmaskin', 'Lassbærer'],
         title: {
-            text: `${harvesterCost + forwarderCost}`,
+            text: Math.round(Math.min(
+                harvesterResult.value.timberCubedPerG15Hour,
+                loadCarrierResult.value.timberCubedPerG15Hour
+            )).toString(),
             align: 'center',
             floating: true,
             offsetY: 75,
@@ -42,7 +59,7 @@ export function ResultCost() {
             }
         },
         subtitle: {
-            text: UnitType.COST_PER_CUBIC_M,
+            text: UnitType.CUBIC_M_PR_G15,
             align: 'center',
             offsetX: 2,
             offsetY: 120,
@@ -50,18 +67,11 @@ export function ResultCost() {
                 fontSize: '20px'
             }
         },
-        dataLabels: {
-            enabled: false,
-        },
         legend: {
-            position: 'bottom'
-        },
-        plotOptions: {
+            show: true,
+            position: 'bottom',
+            offsetY: -15,
 
-            pie: {
-                offsetY: -20,
-                expandOnClick: false,
-            }
         },
         states: {
             active: {
@@ -72,11 +82,12 @@ export function ResultCost() {
             }
         },
         tooltip: {
+            enabled: true,
+            theme: 'dark',
             y: {
                 formatter: function (val: number) {
-                    return `${val} ${UnitType.COST_PER_CUBIC_M}`
+                    return `${Math.round(val/2)} ${UnitType.COST_PER_CUBIC_M}`
                 }
-
             }
         }
     };
@@ -85,15 +96,16 @@ export function ResultCost() {
         <ReactApexChart
             options={options}
             series={options.series}
-            type="donut"
-            height={300}
+            type="radialBar"
+            height={340}
         />
     )
 
+
     return (
         <ResultCard
-            icon={<FcSalesPerformance />}
-            title={"Kostnad"}
+            icon={<FcBullish />}
+            title={"Produktivitet"}
             children={children}
         />
 
