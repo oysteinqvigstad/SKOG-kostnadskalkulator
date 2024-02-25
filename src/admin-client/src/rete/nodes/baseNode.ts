@@ -14,15 +14,15 @@ export class BaseNode<
     type: NodeType;
     width: number;
     height: number;
-    parent?: string;
 
 
     constructor(
         type: NodeType,
+        name?: string,
         height: number = 230,
         width: number = 180
     ) {
-        super(type.toString());
+        super(name ?? type.toString());
         this.type = type;
         this.height = height;
         this.width = width;
