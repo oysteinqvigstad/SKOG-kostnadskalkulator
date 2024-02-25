@@ -24,7 +24,7 @@ export class InputNode extends BaseNode<
         initialValue: number,
         onValueChange?: () => void // function to be called on user changing value
     ) {
-        super(NodeType.Number);
+        super(NodeType.Number, "Dropdown Input");
         this.height = 400;
         this.width = 400;
 
