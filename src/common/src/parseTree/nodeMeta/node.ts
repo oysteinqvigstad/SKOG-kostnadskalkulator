@@ -1,4 +1,5 @@
 export enum NodeType {
+    Reference = "Reference",
     Input = "Input",
     Output = "Output",
     Number = "Number",
