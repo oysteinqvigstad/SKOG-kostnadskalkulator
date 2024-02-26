@@ -2,6 +2,8 @@ import type {ParseNode} from "../nodes/parseNode";
 import {isOutputNode, type OutputNode} from "../nodes/outputNode";
 import {type InputNode, isInputNode} from "../nodes/inputNode";
 import {calculateNode} from "../traversal/calculation";
+import {NodeType} from "../nodeMeta/node";
+import {isReferenceNode, type ReferenceNode} from "../nodes/referenceNode";
 
 
 export class ParseTree {
@@ -93,7 +95,7 @@ export class ParseTree {
         if(!parseNode) {
             return undefined
         }
-        return calculateNode(parseNode);
+        return this.calculateNode(parseNode);
     }
 
 
@@ -101,12 +103,12 @@ export class ParseTree {
         let matchNode: ParseNode | undefined;
         const treeIndex = this.nodeLookup.get(id);
 
-        if(treeIndex) {
+        if(treeIndex !== undefined) {
             const node = this.subTrees[treeIndex];
             if(node) {
                 this.forEachNode(node, (n)=>{
                     if(n.id === id) {
-                        matchNode = node;
+                        matchNode = n;
                     }
                 })
             }
@@ -147,5 +149,29 @@ export class ParseTree {
         this.forEach((node, index) => {
             this.nodeLookup.set(node.id, index);
         })
+    }
+
+    private calculateNode(node: ParseNode | undefined): number {
+        if(!node) {return 0}
+
+        switch(node.type) {
+            case NodeType.Input: return node.value;
+            case NodeType.Reference: {
+                if(isReferenceNode(node)) {
+                    return this.calculateNode(this.getNodeByID(node.referenceID));
+                } else {
+                    throw new Error("Reference node is missing its referenceID property")
+                }
+            }
+            case NodeType.Number: return node.value;
+            case NodeType.Output: return this.calculateNode(node.child);
+            case NodeType.Add: return this.calculateNode(node.left) + this.calculateNode(node.right);
+            case NodeType.Sub: return this.calculateNode(node.left) - this.calculateNode(node.right);
+            case NodeType.Mul: return this.calculateNode(node.left) * this.calculateNode(node.right);
+            case NodeType.Div: return this.calculateNode(node.left) / this.calculateNode(node.right);
+            case NodeType.Sum: return node.inputs!.map(this.calculateNode).reduce((a, b)=> {return a + b}) ?? 0
+            case NodeType.Prod: return node.inputs!.map(this.calculateNode).reduce((a, b)=> {return a * b}) ?? 0
+            default: return 0;
+        }
     }
 }
