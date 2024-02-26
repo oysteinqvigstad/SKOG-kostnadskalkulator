@@ -26,7 +26,7 @@ export function ResultParser() {
           dispatch(setField({title: key, value: value}))
       }
     })
-    dispatch(setPage(3))
+    dispatch(setPage(4))
 
 
     return (

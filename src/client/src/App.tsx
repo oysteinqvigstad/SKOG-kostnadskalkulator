@@ -14,6 +14,7 @@ import {InformationalApiPage} from "./pages/InformationalApiPage";
 import {FeedbackPage} from "./pages/FeedbackPage";
 import {ResultParser} from "./pages/ResultParser";
 import {FrontPage} from "./pages/FrontPage";
+import {InfoPage} from "./pages/InfoPage";
 import {setCalculatorData} from "./state/calculatorSlice";
 import {staticCalculatorData} from "./data/staticCalculatorData";
 
@@ -50,6 +51,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<FrontPage />}/>
                 <Route path="/kalkulator" element={<FormPage />} />
+                <Route path="/info" element={<InfoPage />} />
                 <Route path="/forskningsgrunnlag" element={<InformationalScientificSourcesPage />} />
                 <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />
                 <Route path="/apiinfo" element={<InformationalApiPage />} />
