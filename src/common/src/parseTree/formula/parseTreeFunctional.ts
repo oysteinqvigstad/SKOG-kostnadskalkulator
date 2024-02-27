@@ -2,7 +2,7 @@ import type {ParseNode} from "../nodes/parseNode";
 import type {InputNode} from "../nodes/inputNode";
 import type {OutputNode} from "../nodes/outputNode";
 import {NodeType} from "../nodeMeta/node";
-import {isReferenceNode} from "../nodes/referenceNode";
+import {isReferenceNode, type ReferenceNode} from "../nodes/referenceNode";
 import {isOutputNode} from "../nodes/outputNode";
 import {isInputNode} from "../nodes/inputNode";
 import {isParseNode} from "../nodes/parseNode";
@@ -84,10 +84,15 @@ export function getResultsForInputs(tree: TreeState, inputID: string, values: nu
     const treeCopy = cloneTree(tree);
     let currentInput = getNodeByID(treeCopy, inputID);
     const outputValues = new Map<string, number[]>;
+
     values.forEach((value, index) => {
         if(currentInput !== undefined && isInputNode(currentInput)) {
             currentInput.value = value;
-            updateTree(treeCopy);
+
+            treeCopy.subTrees.forEach((root) => {
+                calculateNode(treeCopy, root);
+            });
+
             treeCopy.outputs.forEach((output) => {
                 const out = outputValues.get(output.id);
                 if(out) {
@@ -124,12 +129,12 @@ export function getNodeByID(tree: TreeState, nodeID: string) : ParseNode | undef
 /// Kun skumle ting forbi denne strek //////////////////////////////////////////
 
 
-function updateTree(tree: TreeState) : TreeState {
-    let result = JSON.parse(JSON.stringify(tree));
+function updateTree(tree: TreeState) : void { // Should not be called often, may lead to significant overhead
+    // let result = JSON.parse(JSON.stringify(tree));
     tree.subTrees.forEach((root) => {
         calculateNode(tree, root);
     });
-    return result;
+    // return tree;
 }
 
 function calculateNode(tree: TreeState, node: ParseNode | undefined): number {
@@ -159,6 +164,25 @@ function calculateNode(tree: TreeState, node: ParseNode | undefined): number {
 
     node.value = result;
     return result;
+}
+
+
+// Bruker ca 66% av tiden tretraversering bruker, men kan ikke lagres på fornuftig vis mtp redux
+export function getFunction(node: ParseNode | undefined, tree: TreeState) : () => number {
+    if(node?.type === NodeType.Input) {
+        const reference = tree.inputs.find((n)=> {return n.id === node.id})
+        if(reference === undefined) { throw new Error("input node not in list")}
+        return ()=> {return reference.value}
+    } else {
+        switch(node?.type) {
+            case NodeType.Number: return () => node.value;
+            case NodeType.Output: return getFunction(node.child!, tree);
+            case NodeType.Reference: return getFunction(getNodeByID(tree, (node as ReferenceNode).referenceID), tree);
+            case NodeType.Add: return () => {return getFunction(node.left, tree)() + getFunction(node.right, tree)()}
+            case NodeType.Mul: return () => {return getFunction(node.left, tree)() * getFunction(node.right, tree)()}
+            default: return () => {return 0}
+        }
+    }
 }
 
 

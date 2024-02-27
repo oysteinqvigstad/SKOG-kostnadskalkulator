@@ -1,5 +1,11 @@
 import {NodeType} from "../src/parseTree";
-import {getNodeByID, setInputValue, treeStateFromData} from "../src/parseTree/formula/parseTreeFunctional";
+import {
+    getFunction,
+    getNodeByID,
+    getResultsForInputs,
+    setInputValue,
+    treeStateFromData
+} from "../src/parseTree/formula/parseTreeFunctional";
 import {InputType} from "../src/parseTree/nodeMeta/input";
 
 const testTree1 = [
@@ -137,5 +143,73 @@ describe('should not mutate original tree', () => {
         const treeState = treeStateFromData(testTree2);
         const treeStateClone = treeStateFromData(treeState.subTrees);
         expect(treeState).not.toBe(treeStateClone);
+    })
+})
+
+
+describe('getting multiple results', () => {
+    it('should compute outputs within a reasonable timeframe', () => {
+        const treeState = treeStateFromData(testTree2);
+        const input = treeState.inputs[0];
+
+        let inputValues: number[] = []
+        let expectedValues = []
+
+        for(let i = 0; i <= 10000; i++) {
+            inputValues.push(i);
+            expectedValues.push(i+treeState.inputs[0].value);
+        }
+
+        const startTime = performance.now();
+        const results = getResultsForInputs(treeState, input.id, inputValues)[0];
+        const endTime = performance.now();
+
+        expect(results).toEqual({ outputID: "156", values: expectedValues });
+        expect(endTime - startTime).toBeLessThan(20);
+    })
+})
+
+describe('tree to lambda', () => {
+    it('should evaluate to the same as tree traversal', () => {
+        const tree = treeStateFromData(testTree2);
+        const func = getFunction(tree.outputs[0], tree);
+
+        expect(func()).toEqual(tree.outputs[0].value);
+    })
+    /**
+     * Tree traversal is faster for fewer calculations, while reducing the tree to
+     * nested functions is faster when we near 10000 computations.
+     */
+    it('should be faster than tree traversal', () => {
+        const tree = treeStateFromData(testTree2);
+        const func = getFunction(tree.outputs[0], tree);
+
+        let inputValues: number[] = []
+        let expectedValues = []
+
+        for(let i = 0; i <= 100000; i++) {
+            inputValues.push(i);
+            expectedValues.push(i + tree.inputs[0].value);
+        }
+
+        let startTime = performance.now();
+        const results = getResultsForInputs(tree, tree.inputs[0].id, inputValues)[0];
+        let endTime = performance.now();
+
+        const traversalTime = endTime - startTime;
+
+        startTime = performance.now();
+        let results2: number[] = [];
+        inputValues.forEach((v)=> {
+            tree.inputs[0].value = v;
+            results2.push(func());
+        })
+        endTime = performance.now();
+
+        const functionTime = endTime - startTime;
+
+        expect(traversalTime).toBeGreaterThan(functionTime);
+        expect(results.values).toEqual(results2);
+
     })
 })
