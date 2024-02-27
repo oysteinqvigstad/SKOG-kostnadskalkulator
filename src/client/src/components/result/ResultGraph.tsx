@@ -1,4 +1,4 @@
-import {Form} from "react-bootstrap";
+import {Button, ButtonGroup, Col, Form, Row} from "react-bootstrap";
 import ReactApexChart from "react-apexcharts";
 import React, {useState} from "react";
 import {ApexOptions} from "apexcharts";
@@ -10,9 +10,11 @@ import {staticFieldDescriptions} from "../../data/staticFieldDescriptions";
 import {NumberedProperties} from "../../types/FieldData";
 import {FcIdea} from "react-icons/fc";
 import {ResultCard} from "./ResultCard";
+import "../../App.css"
 
 export function ResultGraph() {
     const [selection, setSelection] = useState<FieldNames>(FieldNames.VOLUM_PR_DEKAR)
+
     const unit = (staticFieldDescriptions.find((fieldData) => fieldData.title === selection)?.properties as NumberedProperties).unit
     const value = useAppSelector(selectXasisText(selection))
     const dropdownItems = staticFieldDescriptions.map((fieldData) => fieldData.title)
@@ -50,21 +52,43 @@ export function ResultGraph() {
     const children = (
         <>
         <Form>
-            <Form.Text>{"Velg kostnadsdriver:"}</Form.Text>
-            <Form.Select
-                aria-label={`select field to draw graph for`}
-                value={selection}
-                onChange={e => {setSelection(e.target.value as FieldNames)}}
-            >
-                {dropdownItems.map((title) => <option value={title}>{title}</option>)}
-            </Form.Select>
-            <Form.Check
-                type="switch"
-                label="Vis som kostnad"
-                className={"pt-2 pb-3"}
-                checked={showCost}
-                onChange={e => setShowCost(e.target.checked)}
-            />
+            <Row className={"row-gap-2 mb-4"}>
+                <Col md={12} lg={6}>
+                    <Form.Text>{"Velg kostnadsdriver:"}</Form.Text>
+                    <Form.Select
+                        aria-label={`select field to draw graph for`}
+                        value={selection}
+                        onChange={e => {setSelection(e.target.value as FieldNames)}}
+                    >
+                        {dropdownItems.map((title) => <option value={title}>{title}</option>)}
+                    </Form.Select>
+                </Col>
+
+                <Col md={12} lg={5}>
+
+                    <Row>
+                        <Form.Text>{"Velg resultattype:"}</Form.Text>
+                    </Row>
+                    <Row>
+                        <ButtonGroup aria-label="Basic example" className={"d-inline"} >
+                            <Button
+                                className={"btn-toggle"}
+                                active={!showCost}
+                                onClick={() => setShowCost(false)}
+                            >
+                                {"Produktivitet"}
+                            </Button>
+                            <Button
+                                className={"btn-toggle"}
+                                active={showCost}
+                                onClick={() => setShowCost(true)}
+                            >
+                                {"Kostnad"}
+                            </Button>
+                        </ButtonGroup>
+                    </Row>
+                </Col>
+            </Row>
         </Form>
     <DrawGraph
         series={chartSeries}
@@ -124,7 +148,7 @@ function DrawGraph(
             title: {
                 text: `${props.yLabel} (${props.yUnit})`,
             },
-            decimalsInFloat: 0,
+            decimalsInFloat: 1,
         },
         annotations: {
             xaxis: [{
@@ -158,7 +182,7 @@ function DrawGraph(
             options={chartOptions}
             series={props.series}
             type="line"
-            height={320}
+            height={400}
         />
     )
 

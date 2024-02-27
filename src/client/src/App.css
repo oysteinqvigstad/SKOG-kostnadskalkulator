@@ -46,6 +46,16 @@ body {
 }
 
 
+.btn-toggle {
+  border-color: lightgray !important;
+  color: black !important;
+}
+
+.btn-toggle.active {
+  background-color: #E8E8E8 !important;
+}
+
+
 .reset-button, .reset-button:active {
   font-size: 1.3em;
   color: #6f7174 !important;
@@ -99,6 +109,15 @@ body {
   .btn-primary:hover {
     background-color: #4a604d !important;
     border-color: #4a604d !important;
+  }
+
+  .btn-toggle:hover {
+    border-color: lightgray !important;
+    color: black !important;
+    background-color: #F5F5F5 !important;
+  }
+  .btn-toggle.active:hover {
+    background-color: #E8E8E8 !important;
   }
 
   .reset-button:hover {

@@ -1,36 +1,25 @@
-import {useAppSelector} from "../../state/hooks";
-import {selectCalculatorResult} from "../../state/formSelectors";
-import {Alert} from "react-bootstrap";
 import React from "react";
 import {ResultCard} from "./ResultCard";
 import {FcBullish} from "react-icons/fc";
 import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
 import {UnitType} from "../../types/UnitType";
+import {ResultListItem} from "../../types/ResultListItem";
+import {ResultRowBoxes} from "./ResultRowBoxes";
 
-export function ResultProductivityRadial() {
+export function ResultProductivityRadial(props: {
+    productivityItems: ResultListItem[]
+}) {
 
-    const {harvesterResult, loadCarrierResult} = useAppSelector(selectCalculatorResult)
+    const productivityPercentages = props.productivityItems.map((productivity) => productivity.percentage ?? 0)
+    const minimumValue = Math.min(...props.productivityItems.map((productivity) => productivity.value))
 
-    // If the result is not ok, show an error message to user
-    if(!harvesterResult.ok || !loadCarrierResult.ok) {
-        return (
-            <Alert variant={"warning"}>
-                {"Uventet feil oppsto ved kalkulasjon. "}
-                <br />
-                {"Vennligst kontroller opplysningene du oppga."}
-            </Alert>
-        )
-    }
 
     const options: ApexOptions = {
         chart: {
             type: "radialBar",
         },
-        series: [
-            harvesterResult.value.timberCubedPerG15Hour * 2,
-            loadCarrierResult.value.timberCubedPerG15Hour * 2
-        ],
+        series: productivityPercentages,
         plotOptions: {
             radialBar: {
                 offsetY: -41,
@@ -47,30 +36,30 @@ export function ResultProductivityRadial() {
         },
         labels: ['Hogstmaskin', 'Lassbærer'],
         title: {
-            text: Math.round(Math.min(
-                harvesterResult.value.timberCubedPerG15Hour,
-                loadCarrierResult.value.timberCubedPerG15Hour
-            )).toString(),
+            text: Math.round(minimumValue).toString(),
             align: 'center',
             floating: true,
-            offsetY: 75,
+            offsetY: 85,
             style: {
                 fontSize: '40px'
             }
         },
         subtitle: {
-            text: UnitType.CUBIC_M_PR_G15,
+            text: props.productivityItems[0]?.unit ?? "",
             align: 'center',
             offsetX: 2,
-            offsetY: 120,
+            offsetY: 130,
             style: {
                 fontSize: '20px'
             }
         },
         legend: {
-            show: true,
+            show: false,
             position: 'bottom',
             offsetY: -15,
+            formatter(seriesName: string, opts: any) {
+                return `${seriesName}: ${Math.round(props.productivityItems[opts.seriesIndex]?.value ?? 0)}`
+            }
 
         },
         states: {
@@ -97,7 +86,7 @@ export function ResultProductivityRadial() {
             options={options}
             series={options.series}
             type="radialBar"
-            height={340}
+            height={290}
         />
     )
 
@@ -106,8 +95,11 @@ export function ResultProductivityRadial() {
         <ResultCard
             icon={<FcBullish />}
             title={"Produktivitet"}
-            children={children}
-        />
+        >
+            {children}
+            <ResultRowBoxes listItems={props.productivityItems} />
+        </ResultCard>
+
 
     )
 }

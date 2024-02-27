@@ -5,6 +5,7 @@ import {UnitType} from "./UnitType";
  */
 export interface ResultListItem {
     text: string,
-    value: string,
+    value: number,
+    percentage?: number,
     unit: UnitType
 }
