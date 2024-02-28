@@ -1,4 +1,4 @@
-export {NodeType} from "./nodeMeta/node";
+export {NodeType} from "./nodes/nodeMeta/node";
 export type {ParseNode} from "./nodes/parseNode";
 export type {
     GraphDisplayOptions,
@@ -6,9 +6,15 @@ export type {
     TableDisplayOptions,
     BasicDisplayOptions,
     DisplayOptions
-} from "./nodeMeta/display";
+} from "./nodes/nodeMeta/display";
 export type {OutputNode} from "./nodes/outputNode";
-export {calculateNode} from "./traversal/calculation";
-export {getNodeByID} from "./traversal/referenceRetrieval";
 export {getBinaryOperation, getNaryOperation} from "./traversal/calculation";
-export {ParseTree} from "./formula/parseTree"
+export {
+    treeStateFromData,
+    setInputValue,
+    cloneTree,
+    getNodeByID,
+    getResultsForInputs,
+    type TreeState
+} from "./formula/parseTreeFunctional";
+

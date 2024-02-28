@@ -1,7 +1,7 @@
 import type {ParseNode} from "./parseNode";
-import {NodeType} from "../nodeMeta/node";
-import type {InputAlternative, InputType, LegalValues} from "../nodeMeta/input";
-import type {NodeRendering} from "../nodeMeta/rendering";
+import {NodeType} from "./nodeMeta/node";
+import type {InputAlternative, InputType, LegalValues} from "./nodeMeta/input";
+import type {NodeRendering} from "./nodeMeta/rendering";
 
 
 

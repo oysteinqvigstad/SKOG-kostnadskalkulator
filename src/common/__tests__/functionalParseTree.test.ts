@@ -1,6 +1,6 @@
 import {NodeType} from "../src/parseTree";
 import {getNodeByID, setInputValue, treeStateFromData} from "../src/parseTree/formula/parseTreeFunctional";
-import {InputType} from "../src/parseTree/nodeMeta/input";
+import {InputType} from "../src/parseTree/nodes/nodeMeta/input";
 
 const testTree1 = [
     {
@@ -127,8 +127,8 @@ describe('input setting', () => {
         const originalOutputValue = treeState.outputs[0].value;
         const newTreeState = setInputValue(treeState, input.id, 10);
 
-        expect(newTreeState.inputs[0].value).toEqual(10);
-        expect(newTreeState.outputs[0].value).toEqual(originalOutputValue + 5);
+        expect(newTreeState!.inputs[0].value).toEqual(10);
+        expect(newTreeState!.outputs[0].value).toEqual(originalOutputValue + 5);
     })
 })
 

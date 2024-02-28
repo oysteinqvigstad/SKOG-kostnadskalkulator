@@ -1,5 +1,5 @@
 import type {ParseNode} from "./parseNode";
-import {NodeType} from "../nodeMeta/node";
+import {NodeType} from "./nodeMeta/node";
 
 export interface ReferenceNode extends ParseNode {
     referenceID: string

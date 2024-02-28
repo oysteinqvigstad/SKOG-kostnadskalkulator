@@ -1,7 +1,7 @@
 import type {ParseNode} from "./parseNode";
-import {NodeType} from "../nodeMeta/node";
-import type {DisplayOptions} from "../nodeMeta/display";
-import type {NodeRendering} from "../nodeMeta/rendering";
+import {NodeType} from "./nodeMeta/node";
+import type {DisplayOptions} from "./nodeMeta/display";
+import type {NodeRendering} from "./nodeMeta/rendering";
 
 
 export interface OutputNode extends ParseNode {

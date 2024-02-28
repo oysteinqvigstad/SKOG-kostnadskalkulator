@@ -1,13 +1,16 @@
 import type {ParseNode} from "../nodes/parseNode";
 import type {InputNode} from "../nodes/inputNode";
 import type {OutputNode} from "../nodes/outputNode";
-import {NodeType} from "../nodeMeta/node";
+import {NodeType} from "../nodes/nodeMeta/node";
 import {isReferenceNode} from "../nodes/referenceNode";
 import {isOutputNode} from "../nodes/outputNode";
 import {isInputNode} from "../nodes/inputNode";
 import {isParseNode} from "../nodes/parseNode";
 
 
+/**
+ *
+ */
 export interface TreeState {
     subTrees: ParseNode[],
     inputs: InputNode[],
@@ -15,33 +18,35 @@ export interface TreeState {
 }
 
 
-
-
-
-
-
+/**
+ * Creates a TreeState object from an array of ParseNode objects
+ *
+ * Throws an error on invalid data format
+ *
+ * @param data An array of ParseNode objects, or a JSON string version of such an array.
+ * @returns A TreeState object where inputs and outputs are object references
+ * to the nodes in the subTrees array
+ */
 export function treeStateFromData(data: any): TreeState {
     if(typeof data === "string") {
         data = JSON.parse(data);
     } else {
         data = JSON.parse(JSON.stringify(data));
     }
-
-    const result: TreeState = {
-        subTrees: [],
-        inputs: [],
-        outputs: []
-    }
-
-    if(Array.isArray(data)) {
-        data.forEach((subTreeRoot)=> {
-            if(isParseNode(subTreeRoot)) {
-                result.subTrees.push(subTreeRoot)
-            }
-        })
-    } else {
+    if(!Array.isArray(data)) {
         throw new Error("Root of JSON is expected to be an array");
     }
+
+
+    const result: TreeState = { subTrees: [], inputs: [], outputs: [] }
+
+    data.forEach((subTreeRoot)=> {
+        if(isParseNode(subTreeRoot)) {
+            result.subTrees.push(subTreeRoot)
+        } else {
+            throw new Error("Invalid data format. Expected array of ParseNode objects");
+        }
+    })
 
     result.subTrees.forEach((node, index) => {
         forEachNode(node, (node) => {
@@ -53,18 +58,31 @@ export function treeStateFromData(data: any): TreeState {
             }
         });
     });
-
-    updateTree(result);
-
     return result;
 }
 
+
+/**
+ * Returns a deep copy of a TreeState object
+ * @param tree The TreeState object to be cloned
+ */
 export function cloneTree(tree: TreeState) : TreeState {
     return treeStateFromData(tree.subTrees);
 }
 
-export function setInputValue(tree: TreeState, inputId: string, value: number) : TreeState {
+
+/**
+ * Returns a deep copy of a ParseNode object where the input value is updated
+ * and calculation is run on every node.
+ *
+ * @param tree The tree to clone and update. The original is not altered.
+ * @param inputId
+ * @param value
+ */
+export function setInputValue(tree: TreeState, inputId: string, value: number) : TreeState | undefined {
     let result = cloneTree(tree);
+
+    if(getNodeByID(result, inputId) === undefined) { return undefined; }
 
     result.subTrees.forEach((node, index) => {
         forEachNode(node, (node) => {
@@ -74,20 +92,31 @@ export function setInputValue(tree: TreeState, inputId: string, value: number) :
         });
     });
 
-    updateTree(result);
+    updateNodeValuesMutably(result);
 
     return result;
 }
 
 
-export function getResultsForInputs(tree: TreeState, inputID: string, values: number[]): {outputID: string, values: number[]}[] {
+/**
+ * Returns the calculated output values for a given input node and a set of values
+ *
+ * @param tree The tree to calculate the output values from
+ * @param inputID The ID of the input node
+ * @param values An array of values to set the input node to
+ * @returns An array with the results for each output node in the tree,
+ * or undefined if the input node is not found in the tree.
+ */
+export function getResultsForInputs(tree: TreeState, inputID: string, values: number[]): {outputID: string, values: number[]}[] | undefined {
     const treeCopy = cloneTree(tree);
     let currentInput = getNodeByID(treeCopy, inputID);
+    if(!currentInput) {return undefined;}
+
     const outputValues = new Map<string, number[]>;
     values.forEach((value, index) => {
         if(currentInput !== undefined && isInputNode(currentInput)) {
             currentInput.value = value;
-            updateTree(treeCopy);
+            updateNodeValuesMutably(treeCopy);
             treeCopy.outputs.forEach((output) => {
                 const out = outputValues.get(output.id);
                 if(out) {
@@ -99,11 +128,17 @@ export function getResultsForInputs(tree: TreeState, inputID: string, values: nu
             });
         }
     });
-
     return Array.from(outputValues).map(([outputID, values]) => {return {outputID, values}});
 }
 
 
+/**
+ * Retrieves a node from a TreeState object by its ID
+ *
+ * @param tree TreeState object to search
+ * @param nodeID The node id.
+ * @returns A shallow copy of the matching node, otherwise undefined.
+ */
 export function getNodeByID(tree: TreeState, nodeID: string) : ParseNode | undefined {
     let matchNode: ParseNode | undefined;
     tree.subTrees.forEach((root)=> {
@@ -121,18 +156,51 @@ export function getNodeByID(tree: TreeState, nodeID: string) : ParseNode | undef
 
 
 
-/// Kun skumle ting forbi denne strek //////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+                            // Internal Functions
+////////////////////////////////////////////////////////////////////////////////
 
 
-function updateTree(tree: TreeState) : TreeState {
-    let result = JSON.parse(JSON.stringify(tree));
+/**
+ * Updates the calculated value of all nodes in the tree
+ *
+ * @param tree
+ */
+function updateNodeValuesMutably(tree: TreeState) : TreeState {
     tree.subTrees.forEach((root) => {
-        calculateNode(tree, root);
+        calculateNodeValue(tree, root);
+    });
+    return tree;
+}
+
+
+/**
+ * Creates a deep copy of the tree and updates the calculated value
+ * of all nodes in the subtrees.
+ *
+ * NB: Noticeably slower than updateNodeValuesMutably due to the deep
+ * copying of the tree
+ *
+ * @param tree
+ */
+function updateNodeValuesImmutably(tree: TreeState) : TreeState {
+    const result = cloneTree(tree);
+    result.subTrees.forEach((root) => {
+        calculateNodeValue(result, root);
     });
     return result;
 }
 
-function calculateNode(tree: TreeState, node: ParseNode | undefined): number {
+
+/**
+ * Calculates the value of a node and all its children, along
+ * with any subtrees referenced in the node or its children.
+ *
+ * @param tree
+ * @param node
+ */
+function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): number {
     if(!node) {return 0}
 
     let result = 0;
@@ -141,19 +209,19 @@ function calculateNode(tree: TreeState, node: ParseNode | undefined): number {
         case NodeType.Input: return node.value;
         case NodeType.Reference: {
             if(isReferenceNode(node)) {
-                return calculateNode(tree, getNodeByID(tree, node.referenceID));
+                return calculateNodeValue(tree, getNodeByID(tree, node.referenceID));
             } else {
                 throw new Error("Reference node is missing its referenceID property")
             }
         }
         case NodeType.Number: result =  node.value; break;
-        case NodeType.Output: result =  calculateNode(tree, node.child); break;
-        case NodeType.Add: result = calculateNode(tree, node.left) + calculateNode(tree, node.right); break;
-        case NodeType.Sub: result = calculateNode(tree, node.left) - calculateNode(tree, node.right); break;
-        case NodeType.Mul: result = calculateNode(tree, node.left) * calculateNode(tree, node.right); break;
-        case NodeType.Div: result =  calculateNode(tree, node.left) / calculateNode(tree, node.right); break;
-        case NodeType.Sum: result =  node.inputs!.map((node)=>{return calculateNode(tree, node)}).reduce((a, b)=> {return a + b}) ?? 0; break;
-        case NodeType.Prod: result = node.inputs!.map((node)=>{return calculateNode(tree, node)}).reduce((a, b)=> {return a * b}) ?? 0; break;
+        case NodeType.Output: result =  calculateNodeValue(tree, node.child); break;
+        case NodeType.Add: result = calculateNodeValue(tree, node.left) + calculateNodeValue(tree, node.right); break;
+        case NodeType.Sub: result = calculateNodeValue(tree, node.left) - calculateNodeValue(tree, node.right); break;
+        case NodeType.Mul: result = calculateNodeValue(tree, node.left) * calculateNodeValue(tree, node.right); break;
+        case NodeType.Div: result =  calculateNodeValue(tree, node.left) / calculateNodeValue(tree, node.right); break;
+        case NodeType.Sum: result =  node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a + b}) ?? 0; break;
+        case NodeType.Prod: result = node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a * b}) ?? 0; break;
         default: result = 0;
     }
 

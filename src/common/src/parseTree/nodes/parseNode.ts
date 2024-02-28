@@ -1,4 +1,4 @@
-import type {NodeType} from "../nodeMeta/node";
+import type {NodeType} from "./nodeMeta/node";
 
 /**
  * Basis for an N-ary parse tree with basic information about a node's
