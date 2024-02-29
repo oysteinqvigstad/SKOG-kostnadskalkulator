@@ -14,7 +14,7 @@ import {
 import {Schemes} from "./nodes/types";
 import {exportGraph, importGraph} from "./serialization";
 import {createJSONGraph} from "./adapters";
-import {calculateNode, getNodeByID, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {getNodeByID, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberNode} from "./nodes/numberNode";
 import {BinaryNode} from "./nodes/binaryNode";
 import {NaryNode} from "./nodes/naryNode";
@@ -245,12 +245,6 @@ export async function createEditor(container: HTMLElement) {
         if(context.type === "nodepicked") {
             currentJSONTree = createJSONGraph(editor);
             selectedNode = context.data.id;
-            const nodeResult = getNodeByID(context.data.id, currentJSONTree);
-            if(!nodeResult) {
-                console.log("Node not in tree due to multiple roots");
-            } else {
-                console.log(`Calculated value for node ${context.data.id} is: ${calculateNode(nodeResult)}`);
-            }
         }
         return context;
     })
