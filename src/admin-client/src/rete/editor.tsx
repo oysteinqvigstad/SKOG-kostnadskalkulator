@@ -14,7 +14,7 @@ import {
 import {Schemes} from "./nodes/types";
 import {exportGraph, importGraph} from "./serialization";
 import {createJSONGraph} from "./adapters";
-import {getNodeByID, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberNode} from "./nodes/numberNode";
 import {BinaryNode} from "./nodes/binaryNode";
 import {NaryNode} from "./nodes/naryNode";
