@@ -18,10 +18,11 @@ export function ResultParser() {
 
     // Check if the queries are valid
     Array.from(queries.entries()).forEach(([key, value]) => {
-      if (isNaN(parseFloat(value))) {
+      if (isNaN(parseInt(value))) {
           errors.push(`Verdien "${value}" for feltnavnet "${key}" er ikke et heltall`)
       } else if (formFields[key] === undefined) {
           errors.push(`Feltnavnet "${key}" er ikke gyldig`)
+          console.log("Feltnavnet er ikke gyldig")
       } else {
           dispatch(setField({title: key, value: value}))
       }
@@ -31,7 +32,7 @@ export function ResultParser() {
 
     return (
         <>
-            {errors.length > 0 ? errors.map((error) => <Alert>{error}</Alert>) : navigate("/kalkulator")}
+            {errors.length > 0 ? errors.map((error) => <Alert>{error}</Alert>) : navigate("/")}
         </>
     )
 }

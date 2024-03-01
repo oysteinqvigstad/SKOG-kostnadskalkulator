@@ -2,13 +2,13 @@ import React from "react";
 import {Alert, Col, Row, Stack} from "react-bootstrap";
 import {useAppSelector} from "../state/hooks";
 import {selectCalculatorResult} from "../state/formSelectors";
-import {ShareResultButton} from "../components/ShareResultButton";
 import { ResultGraph } from "../components/result/ResultGraph";
 import {ResultTable} from "../components/result/ResultTable";
 import {ResultListItem} from "../types/ResultListItem";
 import {UnitType} from "../types/UnitType";
 import { ResultProductivityRadial } from "../components/result/ResultProductivityRadial";
 import {ResultCost} from "../components/result/ResultCost";
+import {ResultParameters} from "../components/result/ResultParameters";
 
 
 
@@ -101,11 +101,6 @@ export function ResultContent() {
 
     return (
             <Stack className={"mb-3"} gap={3}>
-                <Row className={"pt-3"}>
-                    <Col xs={12} className={"d-flex justify-content-end"}>
-                        <ShareResultButton />
-                    </Col>
-                </Row>
                 <Row className={"row-gap-4"}>
                     <Col md={6} lg={4}>
                         <ResultProductivityRadial
@@ -121,7 +116,10 @@ export function ResultContent() {
                             costItems={costLines}
                         />
                     </Col>
-                    <Col md={{span: 6, order: 1}} lg={{span: 12, order: 2}}>
+                    <Col md={{span: 6, order: 3}} lg={{span: 8, order: 2}} className={"d-none d-md-block"}>
+                        <ResultParameters />
+                    </Col>
+                    <Col md={{span: 6, order: 1}} lg={{span: 4, order: 3}}>
                         <ResultGraph />
                     </Col>
                 </Row>

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {MainContainer} from "./containers/MainContainer";
 import {DevelopmentHeaderWarning} from "./components/DevelopmentHeaderWarning";
 import {NavBar} from "./containers/NavBar";
 import {useAppDispatch} from "./state/hooks";
@@ -13,9 +12,10 @@ import {InformationalDefaultValuesPage} from "./pages/InformationalDefaultValues
 import {InformationalApiPage} from "./pages/InformationalApiPage";
 import {FeedbackPage} from "./pages/FeedbackPage";
 import {ResultParser} from "./pages/ResultParser";
-import {FrontPage} from "./pages/FrontPage";
 import {setCalculatorData} from "./state/calculatorSlice";
 import {staticCalculatorData} from "./data/staticCalculatorData";
+import {NavBarNew} from "./containers/NavBarNew";
+import {LandingPage} from "./pages/LandingPage";
 
 function App() {
 
@@ -44,19 +44,22 @@ function App() {
 
     return (
     <Router>
-        <DevelopmentHeaderWarning />
-        <NavBar />
-        <MainContainer>
+            <DevelopmentHeaderWarning />
             <Routes>
-                <Route path="/" element={<FrontPage />}/>
-                <Route path="/kalkulator" element={<FormPage />} />
-                <Route path="/forskningsgrunnlag" element={<InformationalScientificSourcesPage />} />
-                <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />
-                <Route path="/apiinfo" element={<InformationalApiPage />} />
-                <Route path="/tilbakemelding" element={<FeedbackPage />} />
-                <Route path="/resultat" element={<ResultParser />} />
+                <Route element={<NavBarNew/>}>
+                    <Route path={"/"} element={<LandingPage />}/>
+                    <Route path="/forskningsgrunnlag" element={<InformationalScientificSourcesPage />} />
+                    <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />
+                    <Route path="/apiinfo" element={<InformationalApiPage />} />
+                    <Route path="/tilbakemelding" element={<FeedbackPage />} />
+                    <Route path="/resultat" element={<ResultParser />} />
+                </Route>
+                <Route element={<NavBar/>}>
+                    <Route path="/kalkulator" element={<FormPage />} />
+                </Route>
+
+
             </Routes>
-        </MainContainer>
     </Router>
     )
 }

@@ -19,14 +19,20 @@ export function InputDropdown({fieldData}: {fieldData: FieldData}) {
     // whole form has been validated
     const formValidated = useAppSelector((state) => state.form.validated)
 
+    const onChange = (e: React.ChangeEvent<any>) => {
+        dispatch(setField({title: fieldData.title, value: e.target.value}))
+        e.target.blur()
+        e.currentTarget.blur()
+    }
+
     return (
             <FloatingLabel label={fieldData.title} >
                 <Form.Select
                     aria-label={`dropdown ${fieldData.title}`}
                     className="field"
-                    style={{fontWeight: (fieldValue !== fieldData.default) ? 'bold' : 'normal'}}
+                    // style={{fontWeight: (fieldValue !== fieldData.default) ? 'bold' : 'normal'}}
                     value={fieldValue ?? ""}
-                    onChange={e => dispatch(setField({title: fieldData.title, value: e.target.value}))}>
+                    onChange={onChange}>
                     <option value="" disabled>Velg et alternativ</option>
                     {dropdownItems.map(([name, value]) => <option value={value}>{name}</option>)}
                 </Form.Select>
