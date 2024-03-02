@@ -90,6 +90,19 @@ describe('validation of inputs', ()=> {
         type: NodeType.NumberInput,
     }
 
+    const numberInputNodeAllValuesAllowed : NumberInputNode = {
+        id: "1",
+        name: "høyde",
+        value: 1,
+        defaultValue: 1,
+        legalValues: [],
+        infoText: "Høyde av rektangel",
+        simpleInput: true,
+        inputType: InputType.Float,
+        unit: "meter",
+        pageName: "Rektangel",
+        type: NodeType.NumberInput,
+    }
 
     const dropdownInput : DropdownInput = {
         id: "2",
@@ -111,5 +124,6 @@ describe('validation of inputs', ()=> {
         expect(isValidValue(dropdownInput, 5)).toEqual(false);
         expect(isValidValue(numberInputNode, -1)).toEqual(false);
         expect(isValidValue(numberInputNode, 1)).toEqual(true);
+        expect(isValidValue(numberInputNodeAllValuesAllowed, -1)).toEqual(true);
     })
 })
