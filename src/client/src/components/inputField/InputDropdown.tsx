@@ -1,8 +1,8 @@
 import {Form, FloatingLabel, Button} from "react-bootstrap";
-import {DropdownProperties, FieldData} from "../types/FieldData";
+import {DropdownProperties, FieldData} from "../../types/FieldData";
 import React from "react";
-import {useAppDispatch, useAppSelector} from "../state/hooks";
-import {setField} from "../state/formSlice";
+import {useAppDispatch, useAppSelector} from "../../state/hooks";
+import {setField} from "../../state/formSlice";
 import {MdReplay} from "react-icons/md";
 
 /**

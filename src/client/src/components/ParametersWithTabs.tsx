@@ -1,7 +1,7 @@
 import React from "react";
 import {Col, Row, Tab, Tabs} from "react-bootstrap";
 import {staticFieldDescriptions} from "../data/staticFieldDescriptions";
-import {InputField} from "../containers/InputField";
+import {InputField} from "./inputField/InputField";
 
 export function ParametersWithTabs() {
 
