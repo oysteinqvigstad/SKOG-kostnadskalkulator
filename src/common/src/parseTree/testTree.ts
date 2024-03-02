@@ -61,9 +61,9 @@ const enhetDropdown : DropdownInput = {
     value: 1,
     defaultValue: 1,
     dropdownAlternatives: [
-        {value: "1", label: "m"},
-        {value: "100", label: "cm"},
-        {value: "0.001", label: "km"}
+        {value: 1, label: "m"},
+        {value: 100, label: "cm"},
+        {value: 0.001, label: "km"}
     ],
     infoText: "Enhet",
     simpleInput: true,

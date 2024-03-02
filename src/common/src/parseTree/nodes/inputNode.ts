@@ -39,6 +39,28 @@ export function isNumberInputNode(node: ParseNode): node is NumberInputNode {
     return node.type === NodeType.NumberInput;
 }
 
+export function isValidValue(node: InputNode, value: number) : boolean {
+    if(isNumberInputNode(node)) {
+        if(node.legalValues) {
+            let legal = false;
+            node.legalValues.forEach((range) => {
+                if((range.min? value >= range.min : true) && (range.max? value <= range.max : true)) {
+                    legal = true;
+                }
+            })
+            return legal;
+        } else {
+            return true;
+        }
+    } else if (isDropdownInputNode(node)) {
+        return node.dropdownAlternatives
+            .find((alternative)=> {
+                return alternative.value === value
+            }) !== undefined
+    }
+    return false;
+}
+
 
 export enum InputType {
     Float,
@@ -52,8 +74,8 @@ export enum InputType {
 export interface DropdownInput extends InputNode {
     type: NodeType.DropdownInput
     dropdownAlternatives: {
-        value: string
         label: string
+        value: number
     }[]
 }
 
