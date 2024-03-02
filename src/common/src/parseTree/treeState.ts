@@ -4,11 +4,12 @@ import type {OutputNode} from "./nodes/outputNode";
 import {isReferenceNode} from "./nodes/referenceNode";
 import {isOutputNode} from "./nodes/outputNode";
 import {isInputNode} from "./nodes/inputNode";
-import {isParseNode, NodeType} from "./nodes/parseNode";
+import {isBinaryNode, isNaryNode, isParseNode, NodeType} from "./nodes/parseNode";
 import type {RootNode} from "./nodes/rootNode";
 import {isRootNode} from "./nodes/rootNode";
 import type {DisplayNode} from "./nodes/displayNode";
 import {isDisplayNode} from "./nodes/displayNode";
+import {getBinaryOperation, getNaryOperation} from "./math/operations";
 
 
 /**

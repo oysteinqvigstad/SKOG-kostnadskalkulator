@@ -2,15 +2,14 @@ import {ClassicPreset} from "rete";
 import React, {useState} from "react";
 import Button from "react-bootstrap/Button";
 import {Form, InputGroup, Row} from "react-bootstrap";
-import {InputAlternative} from "@skogkalk/common/dist/src/parseTree/nodes/nodeMeta/input";
 
 
 export class DropdownValuesControl extends ClassicPreset.Control {
 
     constructor(
         public label: string,
-        public initialState: InputAlternative[],
-        public onElementUpdate: (dropdownAlternatives: InputAlternative[])=> void
+        public initialState: {label: string, value: number}[],
+        public onElementUpdate: (dropdownAlternatives: {label: string, value: number}[])=> void
     ) {
         super();
     }
@@ -19,13 +18,13 @@ export class DropdownValuesControl extends ClassicPreset.Control {
 
 export function DropdownValues(
     props :{
-        onUpdate: (dropdownAlternatives: InputAlternative[])=> void,
-        initialState?: InputAlternative[]
+        onUpdate: (dropdownAlternatives: {label: string, value: number}[])=> void,
+        initialState?: {label: string, value: number}[]
     }
 ) {
 
     const [state, setState] = useState({
-        dropDownAlternatives: props.initialState ?? [{name:"", value: 0}],
+        dropDownAlternatives: props.initialState ?? [{label:"", value: 0}],
         enumerate: true,
     });
 
@@ -34,7 +33,7 @@ export function DropdownValues(
                 onDoubleClick={(e) => {e.stopPropagation()}}
                 onPointerDown={(e) => {e.stopPropagation()}}
                 onClick={()=>{
-                    state.dropDownAlternatives.push({name:"", value: state.dropDownAlternatives.length + 1});
+                    state.dropDownAlternatives.push({label:"", value: state.dropDownAlternatives.length + 1});
                     setState({
                         dropDownAlternatives : state.dropDownAlternatives,
                         enumerate: state.enumerate
@@ -65,7 +64,7 @@ export function DropdownValues(
             {/*    Enumerate*/}
             {/*</Button>*/}
             <div>
-                {state.dropDownAlternatives.map(({name, value}, index) => {
+                {state.dropDownAlternatives.map(({label, value}, index) => {
                     return <Row>
                         <InputGroup size="sm" className="mb-3">
                             <Form.Floating
@@ -74,9 +73,9 @@ export function DropdownValues(
                             >
                                 <Form.Label></Form.Label>
                                 <Form.Control
-                                    value={name} type="text" placeholder="Enter label"
+                                    value={label} type="text" placeholder="Enter label"
                                     onChange={e=> {
-                                        state.dropDownAlternatives[index].name = e.target.value;
+                                        state.dropDownAlternatives[index].label = e.target.value;
                                         setState({
                                             dropDownAlternatives: state.dropDownAlternatives,
                                             enumerate: state.enumerate

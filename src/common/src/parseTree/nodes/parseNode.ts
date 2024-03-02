@@ -27,6 +27,23 @@ export function isParseNode(node: any): node is ParseNode {
     );
 }
 
+export function isBinaryNode(node: ParseNode) : boolean {
+    return node.type in [
+        NodeType.Add,
+        NodeType.Sub,
+        NodeType.Pow,
+        NodeType.Div,
+        NodeType.Mul
+    ]
+}
+
+export function isNaryNode(node: ParseNode) : boolean {
+    return node.type in [
+        NodeType.Sum,
+        NodeType.Prod
+    ]
+}
+
 export enum NodeType {
     Reference = "Reference",
     Root = "Root",
