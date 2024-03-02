@@ -1,5 +1,5 @@
 import {BaseNode} from "./baseNode";
-import {DisplayOptions, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import { NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ClassicPreset} from "rete";
 
 
@@ -12,7 +12,7 @@ export class OutputNode extends BaseNode <
     groupName: ClassicPreset.InputControl<"text">
 }
 > {
-    displayOptions: DisplayOptions[] = []
+
 
     constructor(
         private onNodeUpdate?: (control: ClassicPreset.InputControl<"number"> | ClassicPreset.InputControl<"text">) => void

@@ -1,17 +1,22 @@
-import type {ParseNode} from "../nodes/parseNode";
-import type {InputNode} from "../nodes/inputNode";
-import type {OutputNode} from "../nodes/outputNode";
-import {NodeType} from "../nodes/nodeMeta/node";
-import {isReferenceNode} from "../nodes/referenceNode";
-import {isOutputNode} from "../nodes/outputNode";
-import {isInputNode} from "../nodes/inputNode";
-import {isParseNode} from "../nodes/parseNode";
+import type {ParseNode} from "./nodes/parseNode";
+import type {InputNode} from "./nodes/inputNode";
+import type {OutputNode} from "./nodes/outputNode";
+import {isReferenceNode} from "./nodes/referenceNode";
+import {isOutputNode} from "./nodes/outputNode";
+import {isInputNode} from "./nodes/inputNode";
+import {isParseNode, NodeType} from "./nodes/parseNode";
+import type {RootNode} from "./nodes/rootNode";
+import {isRootNode} from "./nodes/rootNode";
+import type {DisplayNode} from "./nodes/displayNode";
+import {isDisplayNode} from "./nodes/displayNode";
 
 
 /**
  *
  */
 export interface TreeState {
+    rootNode: RootNode,
+    displayNodes: DisplayNode[],
     subTrees: ParseNode[],
     inputs: InputNode[],
     outputs: OutputNode[],
@@ -38,27 +43,46 @@ export function treeStateFromData(data: any): TreeState {
     }
 
 
-    const result: TreeState = { subTrees: [], inputs: [], outputs: [] }
+    const subTrees: ParseNode[] = [];
+    const inputs: InputNode[] = [];
+    const outputs: OutputNode[] = [];
+    const displays: DisplayNode[] = [];
+    const roots: RootNode[] = [];
 
     data.forEach((subTreeRoot)=> {
         if(isParseNode(subTreeRoot)) {
-            result.subTrees.push(subTreeRoot)
+            subTrees.push(subTreeRoot)
         } else {
             throw new Error("Invalid data format. Expected array of ParseNode objects");
         }
     })
 
-    result.subTrees.forEach((node, index) => {
+    subTrees.forEach((node, index) => {
         forEachNode(node, (node) => {
             if(isOutputNode(node)) {
-                result.outputs.push(node);
+                outputs.push(node);
             }
             if(isInputNode(node)) {
-                result.inputs.push(node);
+                inputs.push(node);
+            }
+            if(isDisplayNode(node)) {
+                displays.push(node);
+            }
+            if(isRootNode(node)) {
+                roots.push(node);
             }
         });
     });
-    return result;
+
+    if (roots.length !== 1) { throw new Error("None or multiple root nodes found in tree")}
+
+    return {
+        rootNode: roots[0],
+        displayNodes: displays,
+        inputs: inputs,
+        outputs: outputs,
+        subTrees: subTrees
+    };
 }
 
 
@@ -86,7 +110,7 @@ export function setInputValue(tree: TreeState, inputId: string, value: number) :
 
     result.subTrees.forEach((node, index) => {
         forEachNode(node, (node) => {
-            if(node.id === inputId && node.type === NodeType.Input) {
+            if(node.id === inputId && isInputNode(node)) {
                 node.value = value;
             }
         });
@@ -151,6 +175,13 @@ export function getNodeByID(tree: TreeState, nodeID: string) : ParseNode | undef
     return matchNode;
 }
 
+export function getInputByName(tree: TreeState, name: string, page?: string) : InputNode | undefined {
+    return tree.inputs.find((input) => {return input.name === name && (page? input.pageName === page : true) });
+}
+
+export function getOutputByName(tree: TreeState, name: string) : OutputNode | undefined {
+    return tree.outputs.find((output) => {return output.name === name });
+}
 
 
 
@@ -205,13 +236,28 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
 
     let result = 0;
 
+    if(isRootNode(node)) {
+        node.displays.forEach((node)=> {
+            calculateNodeValue(tree, node);
+        })
+        return 0;
+    }
+    if(isDisplayNode(node)) {
+        node.inputs.forEach((node)=> {
+            calculateNodeValue(tree, node);
+        })
+        return 0;
+    }
+
     switch(node.type) {
-        case NodeType.Input: return node.value;
+        case NodeType.NumberInput: return node.value;
+        case NodeType.DropdownInput: return node.value;
         case NodeType.Reference: {
             if(isReferenceNode(node)) {
-                return calculateNodeValue(tree, getNodeByID(tree, node.referenceID));
+                node.value = calculateNodeValue(tree, getNodeByID(tree, node.referenceID));
+                return node.value;
             } else {
-                throw new Error("Reference node is missing its referenceID property")
+                throw new Error("Reference node is missing its referenceID property");
             }
         }
         case NodeType.Number: result =  node.value; break;
@@ -220,6 +266,7 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
         case NodeType.Sub: result = calculateNodeValue(tree, node.left) - calculateNodeValue(tree, node.right); break;
         case NodeType.Mul: result = calculateNodeValue(tree, node.left) * calculateNodeValue(tree, node.right); break;
         case NodeType.Div: result =  calculateNodeValue(tree, node.left) / calculateNodeValue(tree, node.right); break;
+        case NodeType.Pow: result =  calculateNodeValue(tree, node.left) ** calculateNodeValue(tree, node.right); break;
         case NodeType.Sum: result =  node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a + b}) ?? 0; break;
         case NodeType.Prod: result = node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a * b}) ?? 0; break;
         default: result = 0;

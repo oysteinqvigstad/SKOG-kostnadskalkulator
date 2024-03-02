@@ -1,4 +1,4 @@
-import type {NodeType} from "./nodeMeta/node";
+import type {ReferenceNode} from "./referenceNode";
 
 /**
  * Basis for an N-ary parse tree with basic information about a node's
@@ -8,11 +8,10 @@ export type ParseNode = {
     id: string
     type: NodeType
     value: number
-    description: string
-    left?: ParseNode
-    right?: ParseNode
-    child?: ParseNode
-    inputs?: ParseNode[]
+    left?: ParseNode | ReferenceNode
+    right?: ParseNode | ReferenceNode
+    child?: ParseNode | ReferenceNode
+    inputs?: (ReferenceNode | ParseNode)[]
 }
 
 
@@ -21,10 +20,26 @@ export function isParseNode(node: any): node is ParseNode {
         typeof node.id === 'string' &&
         typeof node.type === 'string' &&
         typeof node.value === 'number' &&
-        typeof node.description === 'string' &&
         (node.left === undefined || typeof node.left === 'object') &&
         (node.right === undefined || typeof node.right === 'object') &&
         (node.child === undefined || typeof node.child === 'object') &&
         (node.inputs === undefined || Array.isArray(node.inputs))
     );
+}
+
+export enum NodeType {
+    Reference = "Reference",
+    Root = "Root",
+    Display = "Display",
+    NumberInput = "NumberInput",
+    DropdownInput = "DropdownInput",
+    Output = "Output",
+    Number = "Number",
+    Add = "Add",
+    Sub = "Sub",
+    Mul = "Mul",
+    Pow = "Pow",
+    Sum = "Sum",
+    Prod = "Prod",
+    Div = "Div",
 }

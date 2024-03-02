@@ -1,34 +1,76 @@
 import type {ParseNode} from "./parseNode";
-import {NodeType} from "./nodeMeta/node";
-import type {InputAlternative, InputType, LegalValues} from "./nodeMeta/input";
-import type {NodeRendering} from "./nodeMeta/rendering";
+import {NodeType} from "./parseNode";
+
+
+/**
+ * Input node
+ */
+export interface InputNode extends ParseNode {
+    type: NodeType.NumberInput | NodeType.DropdownInput
+    name: string
+    defaultValue: number
+    infoText: string
+    pageName: string
+    ordering?: number
+    simpleInput: boolean
+}
+
+export function isInputNode(node: ParseNode): node is InputNode {
+    return node.type === NodeType.NumberInput || node.type === NodeType.DropdownInput;
+}
+
 
 
 
 /**
- * InputNode is a ParseNode that represents a value that can be set by the user.
- *
- * @example
- * const node : InputNode = {
- *     id: "test",
- *     type: NodeType.Input,
- *     value: 0,
- *     description: "Test",
- *     inputType: InputType.Float,
- *     illegalValues: [1.3,Infinity]
- * }
- * @property inputType Type of input to be expected
- * @property valueAlternatives Optional list of value alternatives
- * @property legalValues Optional either a single illegal value or a tuple signifying a range of illegal values
+ * Number input node
  */
-export interface InputNode extends ParseNode {
-    type: NodeType.Input
+export interface NumberInputNode extends InputNode {
+    type: NodeType.NumberInput
     inputType: InputType
-    valueAlternatives?: InputAlternative[]
-    legalValues?: LegalValues[]
-    displayMeta: NodeRendering
+    legalValues: {
+        min: number | null
+        max: number | null
+    }[]
+    unit: string
 }
 
-export function isInputNode(node: ParseNode): node is InputNode {
-    return node.type === NodeType.Input;
+export function isNumberInputNode(node: ParseNode): node is NumberInputNode {
+    return node.type === NodeType.NumberInput;
 }
+
+
+export enum InputType {
+    Float,
+    Integer
+}
+
+
+/**
+ * Dropdown input node
+ */
+export interface DropdownInput extends InputNode {
+    type: NodeType.DropdownInput
+    dropdownAlternatives: {
+        value: string
+        label: string
+    }[]
+}
+
+export function isDropdownInputNode(node: ParseNode) : node is DropdownInput {
+    return node.type === NodeType.DropdownInput;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

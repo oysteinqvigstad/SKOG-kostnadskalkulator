@@ -91,8 +91,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
     const rootNode: ParseNode = {
         id: startNode.id, // Only id is needed. Rest is filled out in loop below.
         type: NodeType.Number,
-        value: 0,
-        description: ""
+        value: 0
     }
 
     const stack: ParseNode[] = [rootNode];
@@ -115,15 +114,14 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
             // and allowing these to be parsed
             currentNode.value = currentSkogNode.controls.value.value ?? 0;
         }
-        currentNode.description = currentSkogNode.controls.description.value ?? "";
+        // currentNode.description = currentSkogNode.controls.description.value ?? "";
 
 
         if (currentConnection?.left) {
             currentNode.left = {
                 id: currentConnection.left,
                 type: NodeType.Number,
-                value: 0,
-                description: "",
+                value: 0
             };
             const leftNode = currentNode.left;
             stack.push(leftNode);
@@ -133,8 +131,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
             currentNode.right = {
                 id: currentConnection.right,
                 type: NodeType.Number,
-                value: 0,
-                description: "",
+                value: 0
             };
             const rightNode = currentNode.right;
             stack.push(rightNode);
@@ -144,8 +141,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
             currentNode.child = {
                 id: currentConnection.child,
                 type: NodeType.Number,
-                value: 0,
-                description: "",
+                value: 0
             }
             const childNode = currentNode.child;
             stack.push(childNode);
@@ -157,8 +153,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
                 const node: ParseNode = {
                     id: nodeID,
                     type: NodeType.Number,
-                    value: 0,
-                    description: ""
+                    value: 0
                 }
                 currentNode.inputs?.push(node)
                 stack.push(node)

@@ -1,4 +1,4 @@
-import {NodeType} from "../nodes/nodeMeta/node";
+import {NodeType} from "../nodes/parseNode";
 
 
 export function getBinaryOperation(type: NodeType): (l:number, r:number) => number {
