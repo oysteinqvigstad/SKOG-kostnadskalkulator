@@ -44,7 +44,7 @@ export function isValidValue(node: InputNode, value: number) : boolean {
         if(node.legalValues) {
             let legal = false;
             node.legalValues.forEach((range) => {
-                if((range.min? value >= range.min : true) && (range.max? value <= range.max : true)) {
+                if(((range.min !== null)? value >= range.min : true) && ((range.max !== null)? value <= range.max : true)) {
                     legal = true;
                 }
             })

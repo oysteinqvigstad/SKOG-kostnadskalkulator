@@ -1,6 +1,16 @@
-import {getNodeByID, setInputValue, treeStateFromData} from "../src/parseTree";
+import {
+    DropdownInput,
+    getNodeByID,
+    InputType,
+    isValidValue,
+    NodeType,
+    setInputValue,
+    treeStateFromData
+} from "../src/parseTree";
 import {testTree} from "../src/parseTree/testTree";
 import {getInputByName, getOutputByName} from "../src/parseTree/treeState";
+import {NumberInputNode} from "../src/parseTree/nodes/inputNode";
+import * as domain from "domain";
 
 
 
@@ -65,3 +75,41 @@ describe('calculation', () => {
     })
 })
 
+describe('validation of inputs', ()=> {
+    const numberInputNode : NumberInputNode = {
+        id: "1",
+        name: "høyde",
+        value: 1,
+        defaultValue: 1,
+        legalValues: [{min: 0, max: null}],
+        infoText: "Høyde av rektangel",
+        simpleInput: true,
+        inputType: InputType.Float,
+        unit: "meter",
+        pageName: "Rektangel",
+        type: NodeType.NumberInput,
+    }
+
+
+    const dropdownInput : DropdownInput = {
+        id: "2",
+        name: "enhet",
+        value: 1,
+        defaultValue: 1,
+        dropdownAlternatives: [
+            {value: 1, label: "m"},
+            {value: 100, label: "cm"},
+            {value: 0.001, label: "km"}
+        ],
+        infoText: "Enhet",
+        simpleInput: true,
+        pageName: "Enhet",
+        type: NodeType.DropdownInput,
+    }
+    it('should validate dropdown inputs', () => {
+        expect(isValidValue(dropdownInput, 1)).toEqual(true);
+        expect(isValidValue(dropdownInput, 5)).toEqual(false);
+        expect(isValidValue(numberInputNode, -1)).toEqual(false);
+        expect(isValidValue(numberInputNode, 1)).toEqual(true);
+    })
+})
