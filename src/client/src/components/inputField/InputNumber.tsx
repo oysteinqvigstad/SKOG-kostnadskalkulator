@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
 import {Button, Form, InputGroup} from "react-bootstrap";
-import {FieldData, NumberedProperties} from "../types/FieldData";
-import '../App.css'
-import {useAppDispatch, useAppSelector} from "../state/hooks";
-import {setField} from "../state/formSlice";
+import {FieldData, NumberedProperties} from "../../types/FieldData";
+import '../../App.css'
+import {useAppDispatch, useAppSelector} from "../../state/hooks";
+import {setField} from "../../state/formSlice";
 import {MdReplay} from "react-icons/md";
 
 /**

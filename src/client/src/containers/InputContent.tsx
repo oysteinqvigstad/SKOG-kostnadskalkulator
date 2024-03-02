@@ -1,4 +1,4 @@
-import {InputField} from "./InputField";
+import {InputField} from "../components/inputField/InputField";
 import {Form} from "react-bootstrap";
 import React from "react";
 import {useAppSelector} from "../state/hooks";

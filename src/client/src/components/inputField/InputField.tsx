@@ -1,6 +1,6 @@
-import {FieldData, FieldType} from "../types/FieldData";
-import {InputNumber} from "../components/InputNumber";
-import {InputDropdown} from "../components/InputDropdown";
+import {FieldData, FieldType} from "../../types/FieldData";
+import {InputNumber} from "./InputNumber";
+import {InputDropdown} from "./InputDropdown";
 import {Button, InputGroup, Modal} from "react-bootstrap";
 import {useState} from "react";
 import {MdInfoOutline} from "react-icons/md";
