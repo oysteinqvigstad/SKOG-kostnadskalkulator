@@ -4,12 +4,11 @@ import type {OutputNode} from "./nodes/outputNode";
 import {isReferenceNode} from "./nodes/referenceNode";
 import {isOutputNode} from "./nodes/outputNode";
 import {isInputNode} from "./nodes/inputNode";
-import {isBinaryNode, isNaryNode, isParseNode, NodeType} from "./nodes/parseNode";
+import { isParseNode, NodeType} from "./nodes/parseNode";
 import type {RootNode} from "./nodes/rootNode";
 import {isRootNode} from "./nodes/rootNode";
 import type {DisplayNode} from "./nodes/displayNode";
 import {isDisplayNode} from "./nodes/displayNode";
-import {getBinaryOperation, getNaryOperation} from "./math/operations";
 
 
 /**
@@ -58,7 +57,7 @@ export function treeStateFromData(data: any): TreeState {
         }
     })
 
-    subTrees.forEach((node, index) => {
+    subTrees.forEach((node) => {
         forEachNode(node, (node) => {
             if(isOutputNode(node)) {
                 outputs.push(node);
@@ -121,7 +120,7 @@ export function setInputValue(tree: TreeState, inputId: string, value: number) :
 
     if(getNodeByID(result, inputId) === undefined) { return undefined; }
 
-    result.subTrees.forEach((node, index) => {
+    result.subTrees.forEach((node) => {
         forEachNode(node, (node) => {
             if(node.id === inputId && isInputNode(node)) {
                 node.value = value;
@@ -150,7 +149,7 @@ export function getResultsForInputs(tree: TreeState, inputID: string, values: nu
     if(!currentInput) {return undefined;}
 
     const outputValues = new Map<string, number[]>;
-    values.forEach((value, index) => {
+    values.forEach((value) => {
         if(currentInput !== undefined && isInputNode(currentInput)) {
             currentInput.value = value;
             updateNodeValuesMutably(treeCopy);
