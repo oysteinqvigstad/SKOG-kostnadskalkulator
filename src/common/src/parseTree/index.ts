@@ -10,6 +10,8 @@ export {
     getInputByName,
     getOutputByName,
     getResultsForInputs,
+    resetInputToDefault,
+    resetAllInputsToDefaults,
     type TreeState
 } from "./treeState";
 export {testTree} from "./testTree"

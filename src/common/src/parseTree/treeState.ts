@@ -95,6 +95,18 @@ export function cloneTree(tree: TreeState) : TreeState {
     return treeStateFromData(tree.subTrees);
 }
 
+export function resetAllInputsToDefaults(treeState: TreeState) : TreeState {
+    const newTree = treeStateFromData(treeState.subTrees);
+    newTree.inputs.forEach((input)=> {
+        input.value = input.defaultValue;
+    })
+    return updateNodeValuesMutably(newTree);
+}
+
+export function resetInputToDefault(treeState: TreeState, input: InputNode) : TreeState | undefined {
+    return setInputValue(treeState,input.id, input.defaultValue);
+}
+
 
 /**
  * Returns a deep copy of a ParseNode object where the input value is updated
