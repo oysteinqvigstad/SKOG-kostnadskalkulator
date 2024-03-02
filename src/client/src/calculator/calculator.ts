@@ -10,6 +10,15 @@ export type Calculation = {
     timberCubedPerG15Hour: number
 }
 
+export type ExtraCostCalculation = {
+    oppstartskostnader: number
+    flyttekostnader: number
+    etablereBru: number
+    klopplegging: number
+    gravearbeid: number
+    manueltTilleggsarbeid: number
+}
+
 export type DrivingData = {
     drivingDistance: number
     drivingConditions: number
@@ -386,7 +395,32 @@ function secondsPerTreeG15(
     ) * C.G0_TO_G15_FACTOR
 }
 
-//ctrl shift X for bytte mellom åpen og lukket verjon
+export function extraCostCalculator(
+    sumKubikkMeter: number,
+    oppstartskostnader: number,
+    enhetsprisFlyttingPrMaskin: number,
+    enhetsprisPrBru: number,
+    enhetsprisPrKlopp: number,
+    timeprisGravemaskin: number,
+    timeprisTilleggsarbeid: number,
+    antallMaskinFlyttinger: number,
+    antallBru: number,
+    antallKlopper: number,
+    antallTimerGravemaskin: number,
+    antallTimerTilleggsarbeid: number
+) : Result<ExtraCostCalculation, FormInputErrorCode[]> {
+    return {
+        ok: true,
+        value: {
+            oppstartskostnader: oppstartskostnader / sumKubikkMeter,
+            flyttekostnader: enhetsprisFlyttingPrMaskin * antallMaskinFlyttinger / sumKubikkMeter,
+            etablereBru: enhetsprisPrBru * antallBru / sumKubikkMeter,
+            klopplegging: enhetsprisPrKlopp * antallKlopper / sumKubikkMeter,
+            gravearbeid: timeprisGravemaskin * antallTimerGravemaskin / sumKubikkMeter,
+            manueltTilleggsarbeid: timeprisTilleggsarbeid * antallTimerTilleggsarbeid / sumKubikkMeter
+        }
+    }
 
+}
 
 

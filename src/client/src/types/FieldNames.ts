@@ -3,6 +3,7 @@ export enum FieldNames {
     SKOGTYPE = "Skogtype",
     VOLUM_PR_DEKAR = "Volum pr dekar",
     TOMMERTREAR_PR_DEKAR = "Treantall pr dekar",
+    ANTALL_DEKAR = "Antall dekar",
     RYDDETREAR_PR_DEKAR = "Ryddetrær pr dekar",
     OVERFLATESTRUKTUR_TERRENG = "Overflatestruktur hogstfelt",
     OVERFLATESTRUKTUR_TRAKTORVEG = "Overflatestruktur basvei",
@@ -13,5 +14,18 @@ export enum FieldNames {
     LASSTORRELSE = "Lasstørrelse",
     ANTALL_SORTIMENT = "Antall sortiment",
     TIMEKOST_HOGSTMASKIN = "Timekostnad - hogstmaskin",
-    TIMEKOST_LASSBEARER = "Timekostnad - lassbærer"
+    TIMEKOST_LASSBEARER = "Timekostnad - lassbærer",
+    OPPSTARTSKOSTNADER = "Oppstartskostnader",
+    ENHETSPRIS_MASKINFLYTT = "Enhetspris pr maskinflytt",
+    ANTALL_MASKINFLYTT = "Antall maskinflytt",
+    ENHETSPRIS_BRO = "Enhetspris pr bro",
+    ANTALL_BRUER = "Antall broer",
+    ENHETSPRIS_KLOPP = "Enhetspris pr kloppmeter",
+    KLOPPLEGGING = "Avstand klopplegging",
+    TIMEKOST_GRAVEMASKIN = "Timekostnad - gravemaskin",
+    TIMER_GRAVEMASKIN = "Timer gravemaskin",
+    MANUELT_TILLEGGSARBEID = "Timekostnad - tilleggsarbeid",
+    TIMER_TILLEGGSARBEID = "Timer tilleggsarbeid",
+
+
 }

@@ -7,7 +7,9 @@ import {setPage, setValidated} from "../state/formSlice";
 import {InfoContent} from "../containers/InfoContent";
 import {InputContent} from "../containers/InputContent";
 import {MdForest, MdLandscape, MdPrecisionManufacturing} from "react-icons/md";
-import { IconContext } from "react-icons";
+import {IconContext} from "react-icons";
+import {ResultParameters} from "../components/result/ResultParameters";
+import {ResultPeek} from "../components/result/ResultPeek";
 
 export function LandingPage() {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
@@ -45,12 +47,12 @@ function MobileView() {
 
         return (
         <>
-            <FormPage />
+            <ResultParameters />
             <Button
                 className={"fixed-bottom"}
                 onClick={() => setIsOpen(true)}
             >
-                {"Vis resultat..."}
+                <ResultPeek />
             </Button>
             <Sheet
                 isOpen={isOpen}

@@ -11,7 +11,7 @@ import {MdInfoOutline} from "react-icons/md";
  * @param props - fieldData: FieldData - the data for the field,
  *                hidden: boolean - whether the field should be hidden (stilll applicable for form validation)
  */
-export function InputField(props: {fieldData: FieldData, hidden: boolean}) {
+export function InputField(props: {fieldData: FieldData}) {
     // creates a mapping of field type with corresponding jsx component
     const fieldComponents = {
         [FieldType.NUMBERED_INPUT]: InputNumber,
@@ -27,8 +27,8 @@ export function InputField(props: {fieldData: FieldData, hidden: boolean}) {
 
    return (
        <>
-           <InputGroup className="mb-3" hidden={props.hidden}>
-               <Button onClick={handleShow} className={"btn-toggle"}>
+           <InputGroup className="mb-3">
+               <Button variant={"white"} onClick={handleShow} className={"btn-toggle"}>
                    <MdInfoOutline />
                </Button>
                {Component ? <Component fieldData={props.fieldData} /> : null}
