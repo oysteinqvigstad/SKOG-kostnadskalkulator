@@ -56,6 +56,15 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.ANTALL_DEKAR,
+        default: "1",
+        page: 1,
+        properties: { min: 1, unit: UnitType.COUNT }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
         descriptionHTML: renderToString(clearanceTreesNor()),
         errorId: FormInputErrorCode.CLEARANCE_TREES_1000_SQM,
         title: FieldNames.RYDDETREAR_PR_DEKAR,
@@ -186,4 +195,104 @@ export const staticFieldDescriptions: FieldData[] = [
         properties: { min: 0, unit: UnitType.PIECE }
     },
     // MACHINE DATA END
+    // TILLEGG DATA START
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.OPPSTARTSKOSTNADER,
+        default: "0",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COST }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.ENHETSPRIS_MASKINFLYTT,
+        default: "4000",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COST }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.ANTALL_MASKINFLYTT,
+        default: "0",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COUNT }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.ENHETSPRIS_BRO,
+        default: "3000",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COST }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.ANTALL_BRUER,
+        default: "0",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COUNT }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.ENHETSPRIS_KLOPP,
+        default: "50",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COST }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.KLOPPLEGGING,
+        default: "0",
+        page: 4,
+        properties: { min: 0, unit: UnitType.METER }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.TIMEKOST_GRAVEMASKIN,
+        default: "3000",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COST }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.TIMER_GRAVEMASKIN,
+        default: "0",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COUNT }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.MANUELT_TILLEGGSARBEID,
+        default: "0",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COST }
+    },
+    {
+        type: FieldType.NUMBERED_INPUT,
+        descriptionHTML: "",
+        errorId: null,
+        title: FieldNames.TIMER_TILLEGGSARBEID,
+        default: "0",
+        page: 4,
+        properties: { min: 0, unit: UnitType.COUNT }
+    },
 ]

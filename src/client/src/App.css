@@ -26,6 +26,10 @@ body {
 }
 
 .btn-primary {
+  /*color: white !important;*/
+  /*background-color: #5e7461 !important;*/
+  /*border-color: #5e7461 !important;*/
+
   color: #6f7174 !important;
   background-color: #ffffff !important;
   border-color: #ffffff !important;
@@ -137,8 +141,10 @@ body {
 /* avoid applying hover on touch devices that emulate it. Buttons tend to "stick" */
 @media (hover: hover) {
   .btn-primary:hover {
-    background-color: #4a604d !important;
-    border-color: #4a604d !important;
+    border-color: lightgray !important;
+    color: black !important;
+    background-color: #F5F5F5 !important;
+
   }
 
   .btn-toggle:hover {

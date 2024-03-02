@@ -1,7 +1,7 @@
 import {createSelector} from "@reduxjs/toolkit";
 import {RootState} from "./store";
 import {
-    DrivingData,
+    DrivingData, extraCostCalculator,
     ForestType,
     loadCarrierCalculator,
     logHarvesterCostCalculator,
@@ -90,6 +90,20 @@ export const selectCalculatorResult = createSelector(
                 treeData,
                 timberLoadSize,
                 distinctAssortments
+            ),
+            extraCostResult: extraCostCalculator(
+                parseInt(fields[FieldNames.VOLUM_PR_DEKAR]) * parseInt(fields[FieldNames.ANTALL_DEKAR]),
+                parseInt(fields[FieldNames.OPPSTARTSKOSTNADER]),
+                parseInt(fields[FieldNames.ENHETSPRIS_MASKINFLYTT]),
+                parseInt(fields[FieldNames.ENHETSPRIS_BRO]),
+                parseInt(fields[FieldNames.ENHETSPRIS_KLOPP]),
+                parseInt(fields[FieldNames.TIMEKOST_GRAVEMASKIN]),
+                parseInt(fields[FieldNames.MANUELT_TILLEGGSARBEID]),
+                parseInt(fields[FieldNames.ANTALL_MASKINFLYTT]),
+                parseInt(fields[FieldNames.ANTALL_BRUER]),
+                parseInt(fields[FieldNames.KLOPPLEGGING]),
+                parseInt(fields[FieldNames.TIMER_GRAVEMASKIN]),
+                parseInt(fields[FieldNames.TIMER_TILLEGGSARBEID])
             )
         }
     }

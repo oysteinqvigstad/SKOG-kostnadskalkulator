@@ -10,6 +10,8 @@ export enum UnitType {
     CUBIC_M_PR_G15 = 'm³ ∕ G₁₅',
     COST_PER_CUBIC_M = 'kr ∕ m³',
     CUBIC_M_PR_TREE = 'm³ ∕ tre',
-    METER = 'meter'
+    METER = 'meter',
+    COST = 'kr',
+    COUNT = 'antall'
 
 }

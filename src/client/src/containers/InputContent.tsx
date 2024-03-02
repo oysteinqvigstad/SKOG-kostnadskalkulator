@@ -16,7 +16,9 @@ export function InputContent(props: {formRef: React.RefObject<HTMLFormElement>})
     return (
         <Form noValidate validated={validated} ref={props.formRef}>
             {staticFieldDescriptions.map((data) =>
-                <InputField fieldData={data} hidden={data.page !== page} />
+                <div hidden={data.page !== page}>
+                    <InputField fieldData={data} />
+                </div>
             )}
         </Form>
     )

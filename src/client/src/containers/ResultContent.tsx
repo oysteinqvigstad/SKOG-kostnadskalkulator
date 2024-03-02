@@ -17,10 +17,10 @@ import {ResultParameters} from "../components/result/ResultParameters";
  */
 export function ResultContent() {
 
-    const {harvesterResult, loadCarrierResult} = useAppSelector(selectCalculatorResult)
+    const {harvesterResult, loadCarrierResult, extraCostResult} = useAppSelector(selectCalculatorResult)
 
     // If the result is not ok, show an error message to user
-    if(!harvesterResult.ok || !loadCarrierResult.ok) {
+    if(!harvesterResult.ok || !loadCarrierResult.ok || !extraCostResult.ok) {
         return (
             <Alert variant={"warning"}>
                 {"Uventet feil oppsto ved kalkulasjon. "}
@@ -44,32 +44,32 @@ export function ResultContent() {
         },
         {
             text: "Oppstartskostnader",
-            value: 0,
+            value: extraCostResult.value.oppstartskostnader,
             unit: UnitType.COST_PER_CUBIC_M
         },
         {
             text: "Flyttekostnader",
-            value: 0,
+            value: extraCostResult.value.flyttekostnader,
             unit: UnitType.COST_PER_CUBIC_M
         },
         {
             text: "Etablere midlertidig bru",
-            value: 0,
+            value: extraCostResult.value.etablereBru,
             unit: UnitType.COST_PER_CUBIC_M
         },
         {
             text: "Klopplegging",
-            value: 0,
+            value: extraCostResult.value.klopplegging,
             unit: UnitType.COST_PER_CUBIC_M
         },
         {
             text: "Gravemaskinarbeid",
-            value: 0,
+            value: extraCostResult.value.gravearbeid,
             unit: UnitType.COST_PER_CUBIC_M
         },
         {
             text: "Manuelt tilleggsarbeid",
-            value: 0,
+            value: extraCostResult.value.manueltTilleggsarbeid,
             unit: UnitType.COST_PER_CUBIC_M
         },
     ]
@@ -79,7 +79,7 @@ export function ResultContent() {
         costLines[1],
         {
             text: "Tillegg",
-            value: 0,
+            value: costLines.slice(2).reduce((acc, cost) => acc + cost.value, 0),
             unit: UnitType.COST_PER_CUBIC_M
         }
     ]
