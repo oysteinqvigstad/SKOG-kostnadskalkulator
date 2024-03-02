@@ -2,7 +2,7 @@ import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {DropdownValuesControl} from "../customControls/dropdownValues";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {InputAlternative} from "@skogkalk/common/dist/src/parseTree/nodeMeta/input";
+import {InputAlternative} from "@skogkalk/common/dist/src/parseTree/nodes/nodeMeta/input";
 import {DropdownSelectionControl} from "../customControls/dropdownSelection";
 
 /**

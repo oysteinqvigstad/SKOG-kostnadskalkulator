@@ -9,8 +9,8 @@ export function ResultCard(props: {
     return (
         <Card className={"h-100"}>
             <Card.Body>
-                <Stack direction={"horizontal"} className={"mb-4"}>
-                    <h5 style={{fontSize: '1.5em'}}>
+                <Stack direction={"horizontal"} className={"mb-3"}>
+                    <h5 className={"ps-1 pe-1"} style={{fontSize: '1.5em'}}>
                         {props.icon}
                     </h5>
                         <h5 className={"m-0 ms-1"}>

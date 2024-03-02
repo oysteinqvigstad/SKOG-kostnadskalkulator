@@ -6,7 +6,6 @@ import {process} from "./editor";
 import {getSkogNodeFromNodeType} from "./utility/utility";
 import {NumberNode} from "./nodes/numberNode";
 import {BinaryNode} from "./nodes/binaryNode";
-import {InputNode} from "./nodes/inputNode";
 import {OutputNode} from "./nodes/outputNode";
 import {LabelNode} from "./nodes/labelNode";
 

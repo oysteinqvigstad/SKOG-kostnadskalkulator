@@ -28,7 +28,7 @@ export function InputField(props: {fieldData: FieldData, hidden: boolean}) {
    return (
        <>
            <InputGroup className="mb-3" hidden={props.hidden}>
-               <Button onClick={handleShow}>
+               <Button onClick={handleShow} className={"btn-toggle"}>
                    <MdInfoOutline />
                </Button>
                {Component ? <Component fieldData={props.fieldData} /> : null}

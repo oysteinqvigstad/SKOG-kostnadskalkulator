@@ -1,5 +1,5 @@
 import {ClassicPreset} from "rete";
-import {InputAlternative} from "@skogkalk/common/dist/src/parseTree/nodeMeta/input";
+import {InputAlternative} from "@skogkalk/common/dist/src/parseTree/nodes/nodeMeta/input";
 import {Dropdown, DropdownButton} from "react-bootstrap";
 import React from "react";
 

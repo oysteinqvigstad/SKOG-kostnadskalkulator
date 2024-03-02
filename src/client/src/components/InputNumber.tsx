@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Button, Form, InputGroup} from "react-bootstrap";
 import {FieldData, NumberedProperties} from "../types/FieldData";
 import '../App.css'
@@ -21,25 +21,52 @@ export function InputNumber({fieldData}: {fieldData: FieldData}) {
     const dispatch = useAppDispatch()
     // callback function for changing input value
     const onChange = (e: React.ChangeEvent<any>) => {
-        dispatch(setField({title: fieldData.title, value: e.target.value}))
+        setValue(e.target.value)
     }
 
+    const [value, setValue] = React.useState<string>(fieldValue)
+
+    // keep the value in sync with the store
+    useEffect(() => {
+        setValue(fieldValue)
+    }, [fieldValue]);
+
+    const onKeyPress = (e: React.KeyboardEvent<any>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            e.currentTarget.blur()
+            console.log(e.currentTarget.value)
+            if (!isNaN(parseInt(e.currentTarget.value))) {
+                dispatch(setField({title: fieldData.title, value: e.currentTarget.value}))
+            }
+        }
+    }
+
+    const onUnfocus = (e: React.FocusEvent<any>) => {
+        console.log(e.currentTarget.value)
+        if (!isNaN(parseInt(e.currentTarget.value))) {
+            dispatch(setField({title: fieldData.title, value: e.currentTarget.value}))
+        }
+
+    }
 
     return (
         <>
             <Form.Floating style={{color: '#6f7174'}}>
                 <Form.Control
                     className={"field"}
-                    style={{fontWeight: (fieldValue !== fieldData.default) ? 'bold' : 'normal'}}
+                    // style={{fontWeight: (fieldValue !== fieldData.default) ? 'bold' : 'normal'}}
                     placeholder="value"
                     aria-describedby={`input ${fieldData.title}`}
                     type={"number"}
                     inputMode={"numeric"}
                     pattern="[0-9]*"
                     min={props.min}
-                    value={fieldValue}
+                    value={value}
                     isInvalid={isNaN(parseInt(fieldValue))}
                     onChange={e => onChange(e)}
+                    onKeyPress={e => onKeyPress(e)}
+                    onBlur={e => onUnfocus(e)}
                     required
                 />
                 <label>{fieldData.title}</label>

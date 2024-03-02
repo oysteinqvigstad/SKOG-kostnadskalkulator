@@ -1,8 +1,9 @@
 import {Col, Container, Nav, Navbar, Offcanvas} from "react-bootstrap";
 import '../App.css'
 import React, {useState} from "react";
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
 import {MdArrowBackIosNew, MdClose, MdMenu} from "react-icons/md";
+import {MainContainer} from "./MainContainer";
 
 /**
  * The navigation bar for the application
@@ -62,6 +63,9 @@ export function NavBar() {
                     </Offcanvas.Body>
                 </Offcanvas>
             </Navbar>
+            <MainContainer>
+                <Outlet />
+            </MainContainer>
         </>
     )
 

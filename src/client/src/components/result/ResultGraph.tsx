@@ -53,7 +53,7 @@ export function ResultGraph() {
         <>
         <Form>
             <Row className={"row-gap-2 mb-4"}>
-                <Col md={12} lg={6}>
+                <Col md={12} lg={12}>
                     <Form.Text>{"Velg kostnadsdriver:"}</Form.Text>
                     <Form.Select
                         aria-label={`select field to draw graph for`}
@@ -64,7 +64,7 @@ export function ResultGraph() {
                     </Form.Select>
                 </Col>
 
-                <Col md={12} lg={5}>
+                <Col md={12} lg={12}>
 
                     <Row>
                         <Form.Text>{"Velg resultattype:"}</Form.Text>
@@ -182,7 +182,7 @@ function DrawGraph(
             options={chartOptions}
             series={props.series}
             type="line"
-            height={400}
+            height={300}
         />
     )
 

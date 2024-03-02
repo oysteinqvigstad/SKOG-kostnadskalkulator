@@ -2,7 +2,7 @@ import {ClassicPreset} from "rete";
 import React, {useState} from "react";
 import Button from "react-bootstrap/Button";
 import {Form, InputGroup, Row} from "react-bootstrap";
-import {InputAlternative} from "@skogkalk/common/dist/src/parseTree/nodeMeta/input";
+import {InputAlternative} from "@skogkalk/common/dist/src/parseTree/nodes/nodeMeta/input";
 
 
 export class DropdownValuesControl extends ClassicPreset.Control {
