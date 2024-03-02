@@ -48,7 +48,6 @@ function combineSameTitleAndColor(items: ResultListItem[]) {
     const unique = new Set<string>(
         items.map((item) => item.text)
     )
-    console.log(unique)
     return Array.from(unique).map((title) => {
 
         return {

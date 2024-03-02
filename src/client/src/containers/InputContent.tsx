@@ -1,4 +1,3 @@
-import {InputField} from "../components/inputField/InputField";
 import {Form} from "react-bootstrap";
 import React from "react";
 import {useAppSelector} from "../state/hooks";
@@ -17,7 +16,7 @@ export function InputContent(props: {formRef: React.RefObject<HTMLFormElement>})
         <Form noValidate validated={validated} ref={props.formRef}>
             {staticFieldDescriptions.map((data) =>
                 <div hidden={data.page !== page}>
-                    <InputField fieldData={data} />
+                    {/*<InputField fieldData={data} />*/}
                 </div>
             )}
         </Form>

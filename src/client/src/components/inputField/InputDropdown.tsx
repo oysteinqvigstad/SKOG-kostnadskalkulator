@@ -1,44 +1,44 @@
 import {Form, FloatingLabel, Button} from "react-bootstrap";
-import {DropdownProperties, FieldData} from "../../types/FieldData";
 import React from "react";
 import {useAppDispatch, useAppSelector} from "../../state/hooks";
-import {setField} from "../../state/formSlice";
 import {MdReplay} from "react-icons/md";
+import {DropdownInput} from "@skogkalk/common/dist/src/parseTree";
+import {selectInputFieldValue} from "../../state/treeSelectors";
+import {setField} from "../../state/treeSlice";
 
 /**
  * The input field for a dropdown input
  * @param fieldData - the data for the field, including the title and properties
  */
-export function InputDropdown({fieldData}: {fieldData: FieldData}) {
-    // Get the properties of the field
-    const dropdownItems = Array.from((fieldData.properties as DropdownProperties).options)
+export function InputDropdown({node}: {node: DropdownInput}) {
     // Get the default value for the field from the store
-    const fieldValue = useAppSelector((state) => state.form.fields[fieldData.title])
+    const fieldValue = useAppSelector(selectInputFieldValue(node.id))
     // Get the dispatch function from the store
     const dispatch = useAppDispatch()
     // whole form has been validated
     const formValidated = useAppSelector((state) => state.form.validated)
 
     const onChange = (e: React.ChangeEvent<any>) => {
-        dispatch(setField({title: fieldData.title, value: e.target.value}))
+        dispatch(setField({id: node.id, value: e.target.value}))
         e.target.blur()
         e.currentTarget.blur()
     }
 
     return (
-            <FloatingLabel label={fieldData.title} >
+            <FloatingLabel label={node.name} >
                 <Form.Select
-                    aria-label={`dropdown ${fieldData.title}`}
+                    aria-label={`dropdown ${node.name}`}
                     className="field"
                     // style={{fontWeight: (fieldValue !== fieldData.default) ? 'bold' : 'normal'}}
                     value={fieldValue ?? ""}
                     onChange={onChange}>
                     <option value="" disabled>Velg et alternativ</option>
-                    {dropdownItems.map(([name, value]) => <option value={value}>{name}</option>)}
+                    {node.dropdownAlternatives.map(({value, label}) => <option value={value}>{label}</option>)}
                 </Form.Select>
                 <Button
-                    onClick={() => dispatch(setField({title: fieldData.title, value: fieldData.default ?? ""}))}
-                    hidden={fieldValue === fieldData.default}
+                    // TODO
+                    // onClick={() => dispatch(setField({id: fieldData.title, value: fieldData.default ?? ""}))}
+                    hidden={node.value === node.defaultValue}
                     className={"reset-button"}
                     style={{
                         position: 'absolute',
