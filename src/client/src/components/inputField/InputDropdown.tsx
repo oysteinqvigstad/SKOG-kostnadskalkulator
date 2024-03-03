@@ -2,7 +2,7 @@ import {Form, FloatingLabel, Button} from "react-bootstrap";
 import React from "react";
 import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {MdReplay} from "react-icons/md";
-import {DropdownInput} from "@skogkalk/common/dist/src/parseTree";
+import {DropdownInput, isValidValue} from "@skogkalk/common/dist/src/parseTree";
 import {selectInputFieldValue} from "../../state/treeSelectors";
 import {resetField, setField} from "../../state/treeSlice";
 
@@ -17,6 +17,8 @@ export function InputDropdown({node}: {node: DropdownInput}) {
     const dispatch = useAppDispatch()
     // whole form has been validated
     const formValidated = useAppSelector((state) => state.form.validated)
+    // check if selection is invalid
+    const isInvalid =  !isValidValue(node, parseFloat(fieldValue))
 
     const onChange = (e: React.ChangeEvent<any>) => {
         dispatch(setField({id: node.id, value: e.target.value}))
@@ -29,20 +31,19 @@ export function InputDropdown({node}: {node: DropdownInput}) {
                 <Form.Select
                     aria-label={`dropdown ${node.name}`}
                     className="field"
-                    // style={{fontWeight: (fieldValue !== fieldData.default) ? 'bold' : 'normal'}}
                     value={fieldValue ?? ""}
+                    isInvalid={isInvalid}
                     onChange={onChange}>
                     <option value="" disabled>Velg et alternativ</option>
                     {node.dropdownAlternatives.map(({value, label}) => <option value={value}>{label}</option>)}
                 </Form.Select>
                 <Button
-                    // TODO
                     onClick={() => dispatch(resetField({id: node.id}))}
                     hidden={node.value === node.defaultValue}
                     className={"reset-button"}
                     style={{
                         position: 'absolute',
-                        right: (isNaN(parseInt(fieldValue)) || formValidated) ? '50px' : '25px',
+                        right: (isInvalid || formValidated) ? '50px' : '25px',
                         border: 'none',
                         top: '11%',
                     }}

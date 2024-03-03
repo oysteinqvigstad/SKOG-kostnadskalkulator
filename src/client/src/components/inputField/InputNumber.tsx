@@ -6,6 +6,7 @@ import {MdReplay} from "react-icons/md";
 import {resetField, setField} from "../../state/treeSlice";
 import {selectInputFieldValue} from "../../state/treeSelectors";
 import {NumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
+import {isValidValue} from "@skogkalk/common/dist/src/parseTree";
 
 /**
  * The input field for a numerical input
@@ -20,16 +21,24 @@ export function InputNumber({node}: {node: NumberInputNode}) {
     // Get the dispatch function from the store
     const dispatch = useAppDispatch()
     // callback function for changing input value
+
+
+
+
+
+    // field value is kept in local state because we don't want to update the
+    // node value until all the digits have been entered
+    const [value, setValue] = React.useState<string>(fieldValue)
+
     const onChange = (e: React.ChangeEvent<any>) => {
         setValue(e.target.value)
     }
 
-    const [value, setValue] = React.useState<string>(fieldValue)
-
-    // keep the value in sync with the store
     useEffect(() => {
         setValue(fieldValue)
     }, [fieldValue]);
+
+    const isInvalid =  !isValidValue(node, parseFloat(value))
 
     const onKeyPress = (e: React.KeyboardEvent<any>) => {
         if (e.key === 'Enter') {
@@ -46,7 +55,11 @@ export function InputNumber({node}: {node: NumberInputNode}) {
         if (!isNaN(parseInt(e.currentTarget.value))) {
             dispatch(setField({id: node.id, value: e.currentTarget.value}))
         }
+    }
 
+    const onReset = () => {
+        dispatch(resetField({id: node.id}))
+        setValue(fieldValue)
     }
 
     return (
@@ -60,9 +73,8 @@ export function InputNumber({node}: {node: NumberInputNode}) {
                     type={"number"}
                     inputMode={"numeric"}
                     pattern="[0-9]*"
-                    // min={node.} // TODO
                     value={value}
-                    isInvalid={isNaN(parseInt(fieldValue))}
+                    isInvalid={isInvalid}
                     onChange={e => onChange(e)}
                     onKeyPress={e => onKeyPress(e)}
                     onBlur={e => onUnfocus(e)}
@@ -72,12 +84,12 @@ export function InputNumber({node}: {node: NumberInputNode}) {
             </Form.Floating>
             <Button
                 // TODO: Reset!
-                onClick={() => dispatch(resetField({id: node.id}))}
-                hidden={parseFloat(fieldValue) === node.defaultValue}
+                onClick={() => onReset()}
+                hidden={parseFloat(value) === node.defaultValue}
                 className={"reset-button"}
                 style={{
                     position: 'absolute',
-                    right: (isNaN(parseInt(fieldValue)) || formValidated) ? '100px' : '80px',
+                    right: (isInvalid || formValidated) ? '100px' : '80px',
                     zIndex: 5,
                     border: 'none',
                     top: '11%',
