@@ -78,7 +78,7 @@ export function NavBarNew() {
                     </Collapse>
                 </Row>
             </Container>
-            <Col className={"mt-2 mx-auto ps-4 pe-4"} style={{maxWidth: '1200px'}}>
+            <Col className={"mt-2 mx-auto ps-2 pe-2"} style={{maxWidth: '1200px'}}>
                 <Outlet />
             </Col>
         </>
