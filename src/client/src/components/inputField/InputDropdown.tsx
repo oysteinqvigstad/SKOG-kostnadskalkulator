@@ -4,7 +4,7 @@ import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {MdReplay} from "react-icons/md";
 import {DropdownInput} from "@skogkalk/common/dist/src/parseTree";
 import {selectInputFieldValue} from "../../state/treeSelectors";
-import {setField} from "../../state/treeSlice";
+import {resetField, setField} from "../../state/treeSlice";
 
 /**
  * The input field for a dropdown input
@@ -37,7 +37,7 @@ export function InputDropdown({node}: {node: DropdownInput}) {
                 </Form.Select>
                 <Button
                     // TODO
-                    // onClick={() => dispatch(setField({id: fieldData.title, value: fieldData.default ?? ""}))}
+                    onClick={() => dispatch(resetField({id: node.id}))}
                     hidden={node.value === node.defaultValue}
                     className={"reset-button"}
                     style={{
