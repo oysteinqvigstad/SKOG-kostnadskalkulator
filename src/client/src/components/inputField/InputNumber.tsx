@@ -3,7 +3,7 @@ import {Button, Form, InputGroup} from "react-bootstrap";
 import '../../App.css'
 import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {MdReplay} from "react-icons/md";
-import {setField} from "../../state/treeSlice";
+import {resetField, setField} from "../../state/treeSlice";
 import {selectInputFieldValue} from "../../state/treeSelectors";
 import {NumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
 
@@ -72,7 +72,7 @@ export function InputNumber({node}: {node: NumberInputNode}) {
             </Form.Floating>
             <Button
                 // TODO: Reset!
-                // onClick={() => dispatch(setField({title: fieldData.title, value: fieldData.default ?? ""}))}
+                onClick={() => dispatch(resetField({id: node.id}))}
                 hidden={parseFloat(fieldValue) === node.defaultValue}
                 className={"reset-button"}
                 style={{

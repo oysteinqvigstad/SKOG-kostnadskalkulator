@@ -1,4 +1,10 @@
-import {setInputValue, TreeState, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
+import {
+    getNodeByID, InputNode,
+    resetInputToDefault,
+    setInputValue,
+    TreeState,
+    treeStateFromData
+} from "@skogkalk/common/dist/src/parseTree";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 interface TreeFormState {
@@ -36,8 +42,19 @@ export const treeFormSlice = createSlice({
                 state.tree = setInputValue(state.tree, id, parseFloat(value))
             }
         },
+        resetField: (state, action: PayloadAction<{id: string}>) => {
+            // TODO rewrite - resetInputToDefault could probably take ID like setInputValue()
+            if (state.tree) {
+                const node = getNodeByID(state.tree, action.payload.id) as InputNode
+                if (node) {
+                    state.tree = resetInputToDefault(state.tree, node)
+                    state.inputFieldValues[action.payload.id] = node.defaultValue.toFixed()
+
+                }
+            }
+        }
     }
 })
 
-export const {initiateTree, setField} = treeFormSlice.actions
+export const {initiateTree, setField, resetField} = treeFormSlice.actions
 export default treeFormSlice.reducer
