@@ -42,6 +42,7 @@ function MobileView() {
         return (
         <>
             <ResultParameters />
+            <div style={{height: '100px'}} />
             <Button
                 className={"fixed-bottom"}
                 onClick={() => setIsOpen(true)}
