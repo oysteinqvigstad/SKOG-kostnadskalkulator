@@ -4,7 +4,6 @@ import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
 import {ResultCard} from "./ResultCard";
 import {ResultListItem} from "../../types/ResultListItem";
-import {ResultRowBoxes} from "./ResultRowBoxes";
 
 export function ResultCost(props: {
     costCategories: ResultListItem[]
@@ -90,7 +89,7 @@ export function ResultCost(props: {
             title={"Kostnad"}
         >
             {children}
-            <ResultRowBoxes listItems={props.costCategories} />
+            {/*<ResultRowBoxes listItems={props.costCategories} />*/}
         </ResultCard>
 
     )

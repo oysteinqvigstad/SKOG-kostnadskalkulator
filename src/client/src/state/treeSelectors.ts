@@ -16,9 +16,6 @@ export const selectInputFieldValue = (id: string) => createSelector(
     (inputFields) => inputFields[id]
 )
 
-
-
-
 export const selectPageTitles = createSelector(
     (state: RootState) => state.tree.tree,
     (tree) => {
@@ -28,4 +25,10 @@ export const selectPageTitles = createSelector(
         })
         return pages?.map((page) => page.pageName)
     }
+)
+
+export const selectDisplayNodes = createSelector(
+    (state: RootState) => state.tree.tree,
+    (tree) => tree?.displayNodes
+
 )

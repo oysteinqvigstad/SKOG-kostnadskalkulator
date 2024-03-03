@@ -5,7 +5,6 @@ import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
 import {UnitType} from "../../types/UnitType";
 import {ResultListItem} from "../../types/ResultListItem";
-import {ResultRowBoxes} from "./ResultRowBoxes";
 
 export function ResultProductivityRadial(props: {
     productivityItems: ResultListItem[]
@@ -97,7 +96,7 @@ export function ResultProductivityRadial(props: {
             title={"Produktivitet"}
         >
             {children}
-            <ResultRowBoxes listItems={props.productivityItems} />
+            {/*<ResultRowBoxes listItems={props.productivityItems} />*/}
         </ResultCard>
 
 
