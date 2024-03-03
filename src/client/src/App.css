@@ -45,14 +45,12 @@ body {
   color: #6f7174;
   background-color: #5e7461;
   border-color: #5e7461;
-
 }
 
 
 .btn-toggle {
   border-color: lightgray !important;
   color: black !important;
-
 }
 
 
@@ -67,6 +65,10 @@ body {
   background-color: transparent !important;
 }
 
+.nav-tabs .nav-link {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 
 
 /* hide number input controls */
