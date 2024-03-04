@@ -80,6 +80,7 @@ describe('validation of inputs', ()=> {
         id: "1",
         name: "høyde",
         value: 1,
+        ordering: 0,
         defaultValue: 1,
         legalValues: [{min: 0, max: null}],
         infoText: "Høyde av rektangel",
@@ -94,6 +95,7 @@ describe('validation of inputs', ()=> {
         id: "1",
         name: "høyde",
         value: 1,
+        ordering: 0,
         defaultValue: 1,
         legalValues: [],
         infoText: "Høyde av rektangel",
@@ -108,6 +110,7 @@ describe('validation of inputs', ()=> {
         id: "2",
         name: "enhet",
         value: 1,
+        ordering: 0,
         defaultValue: 1,
         dropdownAlternatives: [
             {value: 1, label: "m"},
