@@ -290,6 +290,15 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
 
 
 
+export function getInputByPageAndIndex(tree: TreeState, pageName: string, index: number) : InputNode | undefined {
+    return tree.inputs.find((node)=>{
+        return node.pageName === pageName && node.ordering === index
+    }
+    )
+}
+
+
+
 function forEachNode(node: ParseNode, func: (node: ParseNode)=>void) {
     let nodes = [node];
     while(nodes.length != 0) {
