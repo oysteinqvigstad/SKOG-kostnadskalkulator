@@ -249,7 +249,7 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
     let result = 0;
 
     if(isRootNode(node)) {
-        node.displays.forEach((node)=> {
+        node.inputs.forEach((node)=> {
             calculateNodeValue(tree, node);
         })
         return 0;
@@ -286,6 +286,15 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
 
     node.value = result;
     return result;
+}
+
+
+
+export function getInputByPageAndIndex(tree: TreeState, pageName: string, index: number) : InputNode | undefined {
+    return tree.inputs.find((node)=>{
+        return node.pageName === pageName && node.ordering === index
+    }
+    )
 }
 
 

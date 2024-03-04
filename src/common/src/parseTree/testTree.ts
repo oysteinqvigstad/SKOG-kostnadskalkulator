@@ -16,6 +16,7 @@ const radiusInput : NumberInputNode = {
     id: getUniquieID(),
     name: "radius",
     value: 1,
+    ordering: 0,
     defaultValue: 1,
     legalValues: [{min: 0, max: null}],
     infoText: "Radius av sirkel",
@@ -30,6 +31,7 @@ const breddeInput : NumberInputNode = {
     id: getUniquieID(),
     name: "bredde",
     value: 1,
+    ordering: 0,
     defaultValue: 1,
     legalValues: [{min: 0, max: null}],
     infoText: "Bredde av rektangel",
@@ -44,6 +46,7 @@ const hoydeInput : NumberInputNode = {
     id: getUniquieID(),
     name: "høyde",
     value: 1,
+    ordering: 1,
     defaultValue: 1,
     legalValues: [{min: 0, max: null}],
     infoText: "Høyde av rektangel",
@@ -59,6 +62,7 @@ const enhetDropdown : DropdownInput = {
     id: getUniquieID(),
     name: "enhet",
     value: 1,
+    ordering: 0,
     defaultValue: 1,
     dropdownAlternatives: [
         {value: 1, label: "m"},
@@ -357,7 +361,7 @@ export const testTree = [
                 ordering: 1
             }
         ],
-        displays: [
+        inputs: [
             grafOmkrets,
             arealGraf
         ]

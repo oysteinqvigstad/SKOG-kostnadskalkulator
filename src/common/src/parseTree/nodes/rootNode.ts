@@ -16,7 +16,7 @@ export interface RootNode extends ParseNode {
         pageName: string,
         ordering?: number
     }[],
-    displays: DisplayNode[]
+    inputs: DisplayNode[]
 }
 
 export function isRootNode(node: ParseNode): node is RootNode {
