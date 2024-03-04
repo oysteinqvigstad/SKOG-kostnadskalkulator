@@ -7,10 +7,9 @@ import {
     setInputValue,
     treeStateFromData
 } from "../src/parseTree";
-import {testTree} from "../src/parseTree/testTree";
-import {getInputByName, getOutputByName} from "../src/parseTree/treeState";
+import {testTree} from "../src/parseTree";
+import {getInputByName, getOutputByName} from "../src/parseTree";
 import {NumberInputNode} from "../src/parseTree/nodes/inputNode";
-import * as domain from "domain";
 
 
 
@@ -21,6 +20,13 @@ describe('parsing of data into TreeState object', () => {
     it('treeStateFromData should create a deep copy', () => {
         expect(treeState.subTrees).toEqual(testTree);
         expect(treeState.subTrees).not.toBe(testTree);
+    })
+
+    it('should correctly locate display nodes', () => {
+        expect(treeState.displayNodes.length).toEqual(2);
+        expect(treeState.displayNodes.map(node=>node.name)).toContain("Omkrets");
+        expect(treeState.displayNodes.map(node=>node.name)).toContain("Areal");
+
     })
 
     it('should correctly locate outputs', () => {
@@ -45,6 +51,7 @@ describe('parsing of data into TreeState object', () => {
 
     })
 })
+
 
 
 describe('calculation', () => {

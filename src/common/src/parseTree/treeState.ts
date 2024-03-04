@@ -249,7 +249,7 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
     let result = 0;
 
     if(isRootNode(node)) {
-        node.displays.forEach((node)=> {
+        node.inputs.forEach((node)=> {
             calculateNodeValue(tree, node);
         })
         return 0;

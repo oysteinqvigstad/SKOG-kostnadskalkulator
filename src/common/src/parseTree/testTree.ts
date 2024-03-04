@@ -361,7 +361,7 @@ export const testTree = [
                 ordering: 1
             }
         ],
-        displays: [
+        inputs: [
             grafOmkrets,
             arealGraf
         ]
