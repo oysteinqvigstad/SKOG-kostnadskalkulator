@@ -11,7 +11,7 @@ export interface InputNode extends ParseNode {
     defaultValue: number
     infoText: string
     pageName: string
-    ordering?: number
+    ordering: number
     simpleInput: boolean
 }
 
