@@ -2,13 +2,11 @@ import React, {useEffect} from "react";
 import {Col, Row, Tab, Tabs} from "react-bootstrap";
 import {InputField} from "./inputField/InputField";
 import {useAppSelector} from "../state/hooks";
-import {selectInputNodes, selectOutputNodes, selectPageTitles} from "../state/treeSelectors";
+import {selectInputNodes, selectPageTitles} from "../state/treeSelectors";
 
 export function ParametersWithTabs() {
     const inputNodes = useAppSelector(selectInputNodes)
     const pageTitles = useAppSelector(selectPageTitles)
-    const outputNodes = useAppSelector(selectOutputNodes)
-    console.log(outputNodes)
 
 
     const [key, setKey] = React.useState(pageTitles[0] ?? "");

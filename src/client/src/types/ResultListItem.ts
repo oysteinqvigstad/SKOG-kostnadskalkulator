@@ -10,3 +10,9 @@ export interface ResultListItem {
     percentage?: number
     color?: string
 }
+
+export interface VisualResult {
+    name: string
+    items: ResultListItem[]
+
+}

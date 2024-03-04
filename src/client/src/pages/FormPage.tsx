@@ -5,7 +5,6 @@ import {setPage, setValidated} from "../state/formSlice";
 import {Col} from "react-bootstrap";
 import {ResultContent} from "../containers/ResultContent";
 import {InputContent} from "../containers/InputContent";
-import {PaginationBar} from "../components/PaginationBar";
 import {InfoContent} from "../containers/InfoContent";
 
 
@@ -50,7 +49,6 @@ export function FormPage() {
 
     return (
         <Col className={"px-3 mt-2 mx-auto"} style={{maxWidth: '1200px'}}>
-            <PaginationBar onClick={switchPage} />
             {pageDescription[pageNumber]}
             {pageSwitcher(pageNumber)}
         </Col>

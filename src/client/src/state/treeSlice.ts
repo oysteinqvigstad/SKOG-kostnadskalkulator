@@ -9,6 +9,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 interface TreeFormState {
     tree: TreeState | undefined
+    activePage: string
     inputFieldValues: {
         [id: string]: string
     }
@@ -16,6 +17,7 @@ interface TreeFormState {
 
 const initialTreeFormState: TreeFormState = {
     tree: undefined,
+    activePage: "",
     inputFieldValues: {}
 }
 
@@ -42,19 +44,20 @@ export const treeFormSlice = createSlice({
                 state.tree = setInputValue(state.tree, id, parseFloat(value))
             }
         },
+        setActivePage: (state, action: PayloadAction<{title: string}>) => {
+            state.activePage = action.payload.title
+        },
         resetField: (state, action: PayloadAction<{id: string}>) => {
-            // TODO rewrite - resetInputToDefault could probably take ID like setInputValue()
             if (state.tree) {
                 const node = getNodeByID(state.tree, action.payload.id) as InputNode
                 if (node) {
                     state.tree = resetInputToDefault(state.tree, node)
                     state.inputFieldValues[action.payload.id] = node.defaultValue.toFixed()
-
                 }
             }
         }
     }
 })
 
-export const {initiateTree, setField, resetField} = treeFormSlice.actions
+export const {initiateTree, setField, resetField, setActivePage} = treeFormSlice.actions
 export default treeFormSlice.reducer
