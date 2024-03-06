@@ -83,7 +83,7 @@ function t_harv_ccf_fj94(
         const v_sr = v;
         const vharv_sr = stems_ha * sr_share_harvest_area * v_sr;
         const vharv_bsr = vharv - vharv_sr;
-        const v_bsr = v * 1.3; // selektivt valg av trør 30% over snitt av v
+        const v_bsr = v * 1.3; // selektivt valg av trær 30% over snitt av v
         // const nharv_bsr = vharv_bsr / v_bsr;
         // const nharv = parseInt((nharv_bsr + nharv_sr).toString());
         vharv = vharv_sr * vharv_bsr;
@@ -128,15 +128,15 @@ function getHarvestTime(
     const cmin_tree = T_mean_cmin_m3 * v;
     const harv_G15min_tree = cmin_tree * 1.5 / 100;
     const harv_G15min_ha = T_cmin_ha * 1.5 / 100;
-    const harv_G15h_ha = harv_G15min_ha / 60;
+    // const harv_G15h_ha = harv_G15min_ha / 60;
     const harv_G15min_m3 = harv_G15min_ha / vharv;
     const harv_m3_g15h = 60 / harv_G15min_m3;
 
-    console.log("cmin_tree", cmin_tree);
-    console.log("harv_G15min_tree", harv_G15min_tree);
-    console.log("harv_G15min_ha", harv_G15min_ha);
-    console.log("harv_G15h_ha", harv_G15h_ha);
-    console.log("harv_G15min_m3", harv_G15min_m3);
+    // console.log("cmin_tree", cmin_tree);
+    // console.log("harv_G15min_tree", harv_G15min_tree);
+    // console.log("harv_G15min_ha", harv_G15min_ha);
+    // console.log("harv_G15h_ha", harv_G15h_ha);
+    // console.log("harv_G15min_m3", harv_G15min_m3);
     console.log("harv_m3_g15h", harv_m3_g15h);
 }
 
@@ -240,8 +240,8 @@ function getHarvestTimeLong(
     // Jeg antar cmin er centiminutter
     const timeProcessingInCminPrM3 = 81.537 / (29.4662 / v_bsr) + 31.12 * ((type === TreatmentType.PATCH_HARVEST)? 1 : 2);
     const timeMovingInCminPrM3 = 5.756 + (539.574 / (v_bsr * harvestStrengthPercentage));
-    const T_clpr_cmin_m3 = 15.84;
-    const cminPrM3BetweenStripRoads = (timeProcessingInCminPrM3 + timeMovingInCminPrM3 + T_clpr_cmin_m3);
+    const timeSpentClearingAndPreparingInCminPrM3 = 15.84;
+    const cminPrM3BetweenStripRoads = (timeProcessingInCminPrM3 + timeMovingInCminPrM3 + timeSpentClearingAndPreparingInCminPrM3);
     const cminSpentPerHectareBetweenStripRoads = cminPrM3BetweenStripRoads * volumeHarvestedPrHectareBetweenStripRoads;
     const cminSpentPrM3OnStripRoads = stripRoadExists? 81.537 + (29.4662/v_sr)  + 31.12 * 1.5 + 23.9 / v_sr + 15.84 : 0;
     const cminSpentPrHectareOnStripRoads = stripRoadExists? cminSpentPrM3OnStripRoads * volumeHarvestedPrHectareOnStripRoad : 0;
