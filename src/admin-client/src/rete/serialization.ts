@@ -8,6 +8,7 @@ import {NumberNode} from "./nodes/numberNode";
 import {BinaryNode} from "./nodes/binaryNode";
 import {OutputNode} from "./nodes/outputNode";
 import {LabelNode} from "./nodes/labelNode";
+import {NumberInputNode} from "./nodes/numberInputNode";
 
 
 export async function importGraph(
@@ -40,14 +41,14 @@ export async function importGraph(
             if(!node) {
                 reject("Invalid node type found in file");
             } else {
-                if(!(node instanceof OutputNode) && !(node instanceof LabelNode)) {
+                if(!(node instanceof OutputNode) && !(node instanceof LabelNode) && !(node instanceof NumberInputNode)) {
                     node.controls.value.setValue(controls.value.value);
                     console.log("Not instance of input or output")
                 } else {
                     console.log("Instance of input or output")
                 }
 
-                node.controls.description.setValue(controls.description.value);
+                // node.controls.description.setValue(controls.description.value);
                 node.id = id;
                 node.xTranslation = xy[0];
                 node.yTranslation = xy[1];
