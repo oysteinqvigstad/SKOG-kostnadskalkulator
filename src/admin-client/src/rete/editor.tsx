@@ -185,7 +185,7 @@ export async function createEditor(container: HTMLElement) {
                     }
                     return null;
                 },
-                node(context) {
+                node() {
                     // Custom node goes here
                     return Presets.classic.Node;
                 }

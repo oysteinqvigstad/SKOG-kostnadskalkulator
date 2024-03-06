@@ -1,4 +1,4 @@
-import {FloatingLabel, Form, InputGroup} from "react-bootstrap";
+import {FloatingLabel, Form} from "react-bootstrap";
 import React from "react";
 
 export function DropdownSelection(

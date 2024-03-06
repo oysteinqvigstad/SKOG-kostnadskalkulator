@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Form, InputGroup} from "react-bootstrap";
+import {Form} from "react-bootstrap";
 
 export function TextInputField(
     props: { value: string | undefined, inputHint: string, onChange: (value: string)=>void }

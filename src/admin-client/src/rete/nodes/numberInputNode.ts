@@ -57,7 +57,7 @@ export class NumberInputNode extends BaseNode<
                         this.height = this.originalHeight * 0.5;
                     } else {
                         this.width = this.originalWidth;
-                        this.height = this.originalHeight + this.controls.baseInputData.legalValues.length * 60;;
+                        this.height = this.originalHeight + this.controls.baseInputData.legalValues.length * 60;
                     }
                     onNodeUpdate?.(this.id);
                     onValueChange?.();

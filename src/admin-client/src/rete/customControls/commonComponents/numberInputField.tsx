@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {Form, InputGroup} from "react-bootstrap";
+import React from "react";
+import {Form} from "react-bootstrap";
 
 
 export function isInRange(value: number, range: {min?: number, max?: number}) {

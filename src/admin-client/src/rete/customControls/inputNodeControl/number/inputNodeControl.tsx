@@ -1,11 +1,9 @@
-import {InputNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
-import React, {useEffect, useState} from "react";
-import {Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
+
+import React from "react";
+import {Col, InputGroup, Row} from "react-bootstrap";
 import {Drag} from "rete-react-plugin";
 import {ClassicPreset} from "rete";
-import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import {DropdownInputNode} from "../../../nodes/dropdownInputNode";
 import {NumberInputField} from "../../commonComponents/numberInputField";
 import {TextInputField} from "../../commonComponents/textInputField";
 import {OptionSwitch} from "../../commonComponents/optionSwitch";
