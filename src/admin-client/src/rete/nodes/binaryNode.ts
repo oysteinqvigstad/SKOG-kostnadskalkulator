@@ -17,9 +17,8 @@ export class BinaryNode extends BaseNode<
         type: NodeType,
         private onNodeUpdate?: (control: ClassicPreset.InputControl<"number">) => void, // function called on node value change
     ) {
-        super(type);
+        super(type, 230, 180);
 
-        this.type = type;
         this.binaryOperation = getBinaryOperation(type);
 
         this.addControl(

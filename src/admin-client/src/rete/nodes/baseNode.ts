@@ -13,18 +13,27 @@ export class BaseNode<
     yTranslation: number = 0;
     type: NodeType;
     width: number;
+    originalWidth: number;
     height: number;
+    originalHeight: number;
 
 
+    /**
+     *
+     * @param type NodeType
+     * @param height height of the node
+     * @param width width of the node
+     * @param name
+     */
     constructor(
         type: NodeType,
+        height: number,
+        width: number,
         name?: string,
-        height: number = 230,
-        width: number = 180
     ) {
         super(name ?? type.toString());
         this.type = type;
-        this.height = height;
-        this.width = width;
+        this.originalHeight = this.height = height;
+        this.originalWidth = this.width = width;
     }
 }
