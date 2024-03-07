@@ -168,7 +168,7 @@ const rektangelOmkrets: OutputNode = {
     value: 0,
     name: "Rektangelomkrets",
     color: "#55FF55",
-    unit: "m^2",
+    unit: "meter",
     child: {
         id: getUniquieID(),
         type: NodeType.Add,
@@ -230,7 +230,7 @@ const rektangelAreal: OutputNode = {
     name: "Rektangelareal",
     color: "#55FF55",
     value: 0,
-    unit: "m",
+    unit: "m^2",
     child: {
         id: getUniquieID(),
         type: NodeType.Prod,
