@@ -18,12 +18,9 @@ export class NaryNode extends BaseNode<
         type: NodeType,
         private onNodeUpdate?: (control: ClassicPreset.InputControl<"number">) => void
     ) {
-        super(type);
+        super(type, 190, 180);
 
         this.naryOperation = getNaryOperation(type);
-        this.type = type;
-        this.height = 190;
-        this.width = 180;
 
         this.addControl(
             "value",

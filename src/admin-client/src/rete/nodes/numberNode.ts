@@ -12,9 +12,10 @@ export class NumberNode extends BaseNode<
 > {
     clone: () => NumberNode;
     constructor(initialValue: number, onValueChange?: () => void) {
-        super(NodeType.Number);
-        this.height = 160;
+        super(NodeType.Number, 160, 180);
+
         this.clone = () => new NumberNode(this.controls.value.value || 0);
+
         this.addControl(
             "value",
             new ClassicPreset.InputControl("number", { initial: initialValue, change: onValueChange })

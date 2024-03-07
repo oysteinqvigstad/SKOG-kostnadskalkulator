@@ -288,6 +288,70 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
     return result;
 }
 
+/**
+ * Sets the value of all input nodes in the tree by parsing the URL queries containing the page name and the input values
+ * @param tree The current tree state
+ * @param queries A list of tuples with the page name and the query string
+ * @param valueSeperator The character that separates the values in the query string
+ * @throws Error If the input field is not found by index or if the query string contains a non-numeric value
+ * @example
+ * // https://url/api_or_resultPage?page1=80,25,20&page2=3,1,9 will invocate:
+ * setInputsByURLQueries(tree, [["page1", "80,25,20"], ["page2", "3,1,9"]], ",")
+ */
+export function setInputsByURLQueries(tree: TreeState, queries: [page: string, values: string][], valueSeperator: string) : TreeState | undefined {
+    /**
+     * Reducer function that iterates over the queries and updates the tree
+     * @param tree The current tree state
+     * @param queries A tuple with the page name and an array of numbers
+     * @throws Error If the input field is not found
+     */
+    const updateTree = (tree: TreeState, queries: [pageName: string, values: number[]][]) : TreeState => {
+        return queries.reduce(updateTreeByPageNameAndValues, tree)
+    }
+
+    /**
+     * Updates the tree by updating the input fields in the tree
+     * @param tree The current tree state
+     * @param parsedQuery A tuple with the page name and an array of numbers
+     * @throws Error If the input field is not found
+     * @returns The updated tree
+     */
+    const updateTreeByPageNameAndValues = (tree: TreeState, parsedQuery: [pageName: string, values: number[]]): TreeState => {
+        const [pageName, values] = parsedQuery
+        return values.reduce((tree, value, index) => {
+            const input = getInputByPageAndIndex(tree, pageName, index)
+            if (input) {
+                return setInputValue(tree, input.id, value) ?? tree
+            } else {
+                throw new Error(`could not find input at page ${pageName} and index ${index}`)
+            }
+        }, tree)
+    }
+
+    /**
+     * Parses a query key into an array of numbers
+     * @param query A tuple with the page name and the query string
+     * @throws Error If the query string contain a non-numeric value
+     * @returns tuple of page name and an array of numbers
+     * @example
+     * // returns ["pageName", [1, 2, 3]]
+     * parseQuery(["pageName", "1,2,3"])
+     */
+    const parseQuery = (query: [pageName: string, values: string]) : [string, number[]] => {
+        const [pageName, values] = query
+        const parsedKeys = values.split(valueSeperator).map((keyValue, index) => {
+            const parsed = parseFloat(keyValue)
+            if (isNaN(parsed)) {
+                throw new Error(`could not parse key value at index ${index} at page ${pageName}`)
+            }
+            return parsed
+        })
+        return [decodeURI(pageName), parsedKeys]
+    }
+
+    // creates a new {Tree State} with all key-value query inputs inserted
+    return updateTree(tree, queries.map(parseQuery))
+}
 
 
 export function getInputByPageAndIndex(tree: TreeState, pageName: string, index: number) : InputNode | undefined {

@@ -17,7 +17,7 @@ export class OutputNode extends BaseNode <
     constructor(
         private onNodeUpdate?: (control: ClassicPreset.InputControl<"number"> | ClassicPreset.InputControl<"text">) => void
     ) {
-        super(NodeType.Output);
+        super(NodeType.Output, 200, 200);
 
         this.addInput("result",
             new ClassicPreset.Input(

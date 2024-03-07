@@ -7,10 +7,6 @@ import {AutoArrangePlugin, Presets as ArrangePresets} from "rete-auto-arrange-pl
 import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
 import {Presets as ScopesPresets, ScopesPlugin} from "rete-scopes-plugin";
 import {DataflowEngine} from "rete-engine";
-import {
-    DropdownValues,
-    DropdownValuesControl
-} from "./customControls/dropdownValues";
 import {Schemes} from "./nodes/types";
 import {exportGraph, importGraph} from "./serialization";
 import {createJSONGraph} from "./adapters";
@@ -18,10 +14,11 @@ import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberNode} from "./nodes/numberNode";
 import {BinaryNode} from "./nodes/binaryNode";
 import {NaryNode} from "./nodes/naryNode";
-import {InputNode} from "./nodes/inputNode";
-import {DropdownSelection, DropdownSelectionControl} from "./customControls/dropdownSelection";
+import {NumberInputNode} from "./nodes/numberInputNode";
 import {OutputNode} from "./nodes/outputNode";
 import {LabelNode} from "./nodes/labelNode";
+import {InputBasicControl, NumberInputControls} from "./customControls/inputNodeControl/number/inputNodeControl";
+import {DropdownInputNode} from "./nodes/dropdownInputNode";
 
 
 
@@ -143,9 +140,11 @@ function createContextMenu(
                 ["Div", () => new BinaryNode(NodeType.Div, updateNodeRender)],
                 ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
                 ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]]],
-            ["Input", () => new InputNode(0, onInputChange)],
-                ["Output", () => new OutputNode(updateNodeRender)],
-                ["Label", ()=> new LabelNode(onInputChange)]
+            ["Inputs",
+                [["Dropdown", () => new DropdownInputNode(onInputChange, (id)=>{area.update("node", id)})],
+                ["Number", () => new NumberInputNode(onInputChange, (id)=>{area.update("node", id)})],]],
+            ["Output", () => new OutputNode(updateNodeRender)],
+            ["Label", ()=> new LabelNode(onInputChange)]
         ])
     });
 }
@@ -178,27 +177,17 @@ export async function createEditor(container: HTMLElement) {
         Presets.classic.setup({
             customize: {
                 control(data) {
-                    if (data.payload instanceof DropdownValuesControl) {
-                        const updateFunc = data.payload.onElementUpdate;
-                        const initialState = data.payload.initialState;
-                        return () => {return <DropdownValues onUpdate={updateFunc} initialState={initialState}/>}
+                    if(data.payload instanceof InputBasicControl) {
+                        return NumberInputControls;
                     }
-                    if(data.payload instanceof DropdownSelectionControl) {
-                        const onSelection = data.payload.onSelection;
-                        const id = data.payload.id;
-                        const initialState = data.payload.initialState;
-                        return () => {return <DropdownSelection onSelection={
-                            (input) => {
-                                onSelection(input);
-                                area.update("control", id)
-                            }
-                        } inputAlternatives={initialState}/>}
-                    }
-
                     if (data.payload instanceof ClassicPreset.InputControl) {
                         return Presets.classic.Control;
                     }
                     return null;
+                },
+                node() {
+                    // Custom node goes here
+                    return Presets.classic.Node;
                 }
             }
         })

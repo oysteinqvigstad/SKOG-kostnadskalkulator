@@ -22,7 +22,7 @@ class ExampleNode extends BaseNode<
         // Og i andre retning, om manuell endring av verdien skal trigge en oppdatering i DataFlow trengs også en funksjon
         private oppdaterDataFlyt: () => void
     ) {
-        super(NodeType.Number);
+        super(NodeType.Number, 499, 499);
 
         // Input og Ouput sockets forteller editoren hvordan noder kan kobles sammen.
 

@@ -24,7 +24,7 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undef
     const nodeSet = new Map(nodes.map((node) => {
         const parsed: NodeConnection = {
             id: (node.id),
-            name: (node.controls.description.value ?? "")
+            name: ""
         }
         return [node.id, parsed]
     }));
@@ -64,7 +64,7 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undef
 
     nodes.forEach((node) => {
         if (nodeOutputs.get(node.id) === 0) {
-            subtrees.push(populateTree(nodeSet.get(node.id) ?? {id: node.id, name: node.controls.description.value ?? ""}, nodeSet, new Map(nodes.map((node) => [node.id, node]))));
+            subtrees.push(populateTree(nodeSet.get(node.id) ?? {id: node.id, name:  ""}, nodeSet, new Map(nodes.map((node) => [node.id, node]))));
         }
     });
 

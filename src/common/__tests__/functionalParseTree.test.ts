@@ -10,6 +10,7 @@ import {
 import {testTree} from "../src/parseTree";
 import {getInputByName, getOutputByName} from "../src/parseTree";
 import {NumberInputNode} from "../src/parseTree/nodes/inputNode";
+import {setInputsByURLQueries} from "../src/parseTree/treeState";
 
 
 
@@ -135,5 +136,48 @@ describe('validation of inputs', ()=> {
         expect(isValidValue(numberInputNode, -1)).toEqual(false);
         expect(isValidValue(numberInputNode, 1)).toEqual(true);
         expect(isValidValue(numberInputNodeAllValuesAllowed, -1)).toEqual(true);
+    })
+})
+
+describe('parse values from url query', () => {
+    it('should parse values', () => {
+        const queries: [string, string][] = [
+            ["Rektangel", "5,2"],
+            ["Sirkel", "3"],
+            ["Enhet", "0.001"]
+        ]
+        const treeState = setInputsByURLQueries(treeStateFromData(testTree), queries, ',');
+
+        const breddeInput = getInputByName(treeState!, "bredde");
+        const hoydeInput = getInputByName(treeState!, "høyde");
+        const radiusInput = getInputByName(treeState!, "radius");
+        const unitInput = getInputByName(treeState!, "enhet");
+
+        expect(breddeInput!.value).toEqual(5);
+        expect(hoydeInput!.value).toEqual(2);
+        expect(radiusInput!.value).toEqual(3);
+        expect(unitInput!.value).toEqual(0.001);
+    })
+    it('too many values should throw error', () => {
+        const queries: [string, string][] = [
+            ["Rektangel", "5,2,3"],
+        ]
+        expect(() => setInputsByURLQueries(treeStateFromData(testTree), queries, ',')).toThrow(Error);
+    })
+
+    it('invalid values should throw error', () => {
+        const queries: [string, string][] = [
+            ["Rektangel", "5,a"],
+        ]
+        expect(() => setInputsByURLQueries(treeStateFromData(testTree), queries, ',')).toThrow(Error);
+    })
+
+
+    // this should probably be accepted in the future
+    it('empty values should throw error', () => {
+        const queries: [string, string][] = [
+            ["Rektangel", ",2"],
+        ]
+        expect(() => setInputsByURLQueries(treeStateFromData(testTree), queries, ',')).toThrow(Error);
     })
 })

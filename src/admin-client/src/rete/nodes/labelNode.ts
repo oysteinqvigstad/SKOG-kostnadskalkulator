@@ -11,8 +11,7 @@ export class LabelNode extends BaseNode<
     constructor(
         private onStateUpdate: () => void
     ) {
-        super(NodeType.Number, "Label"); // TODO: Add meta nodes
-        this.height = 180;
+        super(NodeType.Number, 200, 200, "Label"); // TODO: Add meta nodes
         this.addOutput(
             "value",
             new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Label Name"),
