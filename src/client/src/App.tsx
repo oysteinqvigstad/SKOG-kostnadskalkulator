@@ -17,7 +17,7 @@ import {staticCalculatorData} from "./data/staticCalculatorData";
 import {NavBarNew} from "./containers/NavBarNew";
 import {LandingPage} from "./pages/LandingPage";
 import {initiateTree} from "./state/treeSlice";
-import {testTree} from "@skogkalk/common/dist/src/parseTree";
+import {testTree, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 
 function App() {
 
@@ -38,7 +38,7 @@ function App() {
                 }
             })
             // read tree data
-            dispatch(initiateTree({data: testTree}))
+            dispatch(initiateTree({tree: treeStateFromData(testTree)}))
 
             // sets default values for calculator data
             dispatch(setCalculatorData(staticCalculatorData[0]))

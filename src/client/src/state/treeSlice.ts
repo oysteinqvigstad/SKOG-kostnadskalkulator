@@ -3,7 +3,6 @@ import {
     resetInputToDefault,
     setInputValue,
     TreeState,
-    treeStateFromData
 } from "@skogkalk/common/dist/src/parseTree";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
@@ -25,8 +24,8 @@ export const treeFormSlice = createSlice({
     name: 'tree',
     initialState: initialTreeFormState,
     reducers: {
-        initiateTree: (state, action: PayloadAction<{data: any}>) => {
-            state.tree = treeStateFromData(action.payload.data)
+        initiateTree: (state, action: PayloadAction<{tree: TreeState}>) => {
+            state.tree = action.payload.tree
             state.tree.inputs.forEach((inputNode) => {
                 if (state.inputFieldValues[inputNode.id] && state.tree) {
                     // update tree if input is defined already
@@ -55,7 +54,7 @@ export const treeFormSlice = createSlice({
                     state.inputFieldValues[action.payload.id] = node.defaultValue.toFixed()
                 }
             }
-        }
+        },
     }
 })
 

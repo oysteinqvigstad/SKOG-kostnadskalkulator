@@ -41,21 +41,34 @@ export const selectDisplayNodes = createSelector(
 
 export const selectResults = createSelector(
     (state: RootState) => state.tree.tree,
+    (tree) => tree?.displayNodes.map((node) => {
+        return {
+            name: node.name,
+            items: node.inputOrdering.map((inputs) => {
+                const node = getNodeByID(tree, inputs.outputID) as OutputNode
+                return {
+                    text: inputs.outputLabel,
+                    value: node?.value,
+                    unit: node?.unit,
+                    color: node?.color,
+                }
+            })
+        } as VisualResult
+    })
+)
+
+export const selectURLQueries = (seperator: string) => createSelector(
+    (state: RootState) => state.tree.tree,
     (tree) => {
-        console.log(tree?.displayNodes)
-        return tree?.displayNodes.map((node) => {
-            return {
-                name: node.name,
-                items: node.inputOrdering.map((inputs) => {
-                    const node = getNodeByID(tree, inputs.outputID) as OutputNode
-                    return {
-                        text: inputs.outputLabel,
-                        value: node?.value,
-                        unit: node?.unit,
-                        color: node?.color,
-                    }
-                })
-            } as VisualResult
-        })
+        const pageNames = new Set(tree?.inputs.map((input) => input.pageName))
+        return Array
+            .from(pageNames)
+            .map((pageName) => {
+                const inputs = tree?.inputs.filter((input) => input.pageName === pageName)!
+                const size = Math.max(...inputs.map((input) => input.ordering)) + 1
+                const values = new Array<string>(size)
+                inputs.forEach((input) => { values[input.ordering] = input.value.toString() })
+                return `${encodeURI(pageName)}=${values.join(seperator)}`
+            }).join('&')
     }
 )
