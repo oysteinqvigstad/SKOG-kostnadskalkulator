@@ -1,4 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {staticFieldDescriptions} from "../data/staticFieldDescriptions";
 
 /**
  * `FormState` is an interface that is used to define the form state.
@@ -7,6 +8,7 @@ interface FormState {
     page: number
     parameterPage: number
     validated: boolean
+    hideAdvanced: boolean
     fields: {
         [key: string]: string
     }
@@ -19,6 +21,7 @@ const initialState: FormState = {
     page: 0, // the input fields that are visible on the input page
     parameterPage: 1, // The input field card that is visible on the result page
     validated: false,
+    hideAdvanced: false,
     fields: {}
 }
 
@@ -40,9 +43,19 @@ export const formSlice = createSlice({
         },
         setParameterPage: (state, action: PayloadAction<number>) => {
             state.parameterPage = action.payload
+        },
+        resetAllFields: (state) => {
+            staticFieldDescriptions.forEach((fieldData) => {
+                if (fieldData.default) {
+                    state.fields[fieldData.title] = fieldData.default
+                }
+            })
+        },
+        toggleHideAdvanced: (state) => {
+            state.hideAdvanced = !state.hideAdvanced
         }
     }
 })
 
-export const { setField, setPage, setValidated, setParameterPage } = formSlice.actions
+export const { setField, setPage, setValidated, setParameterPage, resetAllFields, toggleHideAdvanced } = formSlice.actions
 export default formSlice.reducer

@@ -30,6 +30,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: ForestType.LowlandsForest.toString(),
         page: 1,
         showGraph: false,
+        advanced: false,
         properties: { options: new Map([
                 [forestTypeToString(ForestType.LowlandsForest), ForestType.LowlandsForest.toString()],
                 [forestTypeToString(ForestType.ValleyAndMountainForest), ForestType.ValleyAndMountainForest.toString()],
@@ -45,6 +46,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "100",
         page: 1,
         showGraph: true,
+        advanced: false,
         properties: { min: 1, unit: UnitType.TREE_PER_DEKAR }
     },
     {
@@ -55,6 +57,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "25",
         page: 1,
         showGraph: true,
+        advanced: false,
         properties: { min: 0, unit: UnitType.CUBIC_M_PER_DEKAR }
     },
     {
@@ -65,6 +68,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "1",
         page: 1,
         showGraph: false,
+        advanced: false,
         properties: { min: 1, unit: UnitType.COUNT }
     },
     {
@@ -75,6 +79,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "150",
         page: 1,
         showGraph: true,
+        advanced: true,
         properties: { min: 0, unit: UnitType.TREE_PER_DEKAR }
     },
     // TREE DATA END
@@ -89,6 +94,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "500",
         page: 2,
         showGraph: true,
+        advanced: false,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
@@ -99,6 +105,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "1",
         page: 2,
         showGraph: true,
+        advanced: true,
         properties: { options: new Map([
                 ["0-10 %", "1"],
                 ["10-20 %", "2"],
@@ -115,6 +122,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "1",
         page: 2,
         showGraph: true,
+        advanced: true,
         properties: { options: new Map([
                 ["Meget god", "1"],
                 ["God", "2"],
@@ -131,6 +139,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "200",
         page: 2,
         showGraph: true,
+        advanced: false,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
@@ -141,6 +150,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "1",
         page: 2,
         showGraph: true,
+        advanced: true,
         properties: { options: new Map([
                 ["0-10 %", "1"],
                 ["10-20 %", "2"],
@@ -157,6 +167,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "1",
         page: 2,
         showGraph: true,
+        advanced: true,
         properties: { options: new Map([
                 ["Meget god", "1"],
                 ["God", "2"],
@@ -176,6 +187,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "2000",
         page: 3,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COST_PER_G15 }
     },
     {
@@ -186,6 +198,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "1800",
         page: 3,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COST_PER_G15 }
     },
 
@@ -197,6 +210,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "20",
         page: 3,
         showGraph: true,
+        advanced: true,
         properties: { min: 0, unit: UnitType.CUBIC_M }
     },
     {
@@ -207,6 +221,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "8",
         page: 3,
         showGraph: true,
+        advanced: true,
         properties: { min: 0, unit: UnitType.PIECE }
     },
     // MACHINE DATA END
@@ -219,6 +234,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "0",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -229,6 +245,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "4000",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -239,6 +256,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "0",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COUNT }
     },
     {
@@ -249,6 +267,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "3000",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -259,6 +278,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "0",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COUNT }
     },
     {
@@ -269,6 +289,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "50",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -279,6 +300,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "0",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
@@ -289,6 +311,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "3000",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -299,6 +322,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "0",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COUNT }
     },
     {
@@ -309,6 +333,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "0",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -319,6 +344,7 @@ export const staticFieldDescriptions: FieldData[] = [
         default: "0",
         page: 4,
         showGraph: false,
+        advanced: true,
         properties: { min: 0, unit: UnitType.COUNT }
     },
 ]

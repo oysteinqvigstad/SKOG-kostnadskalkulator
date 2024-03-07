@@ -2,8 +2,10 @@ import React from "react";
 import {Col, Row, Tab, Tabs} from "react-bootstrap";
 import {staticFieldDescriptions} from "../data/staticFieldDescriptions";
 import {InputField} from "./inputField/InputField";
+import {useAppSelector} from "../state/hooks";
 
 export function ParametersWithTabs() {
+    const hideAdanced = useAppSelector((state) => state.form.hideAdvanced)
 
     const menuItems: string[] = [
         "Bestand",
@@ -22,7 +24,7 @@ export function ParametersWithTabs() {
             <Tab eventKey={title} title={title}>
                 <Row>
                     {staticFieldDescriptions
-                        .filter((data) => data.page === index+1)
+                        .filter((data) => data.page === index+1 && (hideAdanced ? !data.advanced : true))
                         .map((data) => (
                             <Col md={12} lg={6}>
                                 <InputField fieldData={data} />

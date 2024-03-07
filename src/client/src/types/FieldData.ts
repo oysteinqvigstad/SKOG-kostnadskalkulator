@@ -12,6 +12,7 @@ export interface FieldData {
     default: string | null
     page: number
     showGraph: boolean
+    advanced: boolean
     properties: NumberedProperties | DropdownProperties
 }
 
