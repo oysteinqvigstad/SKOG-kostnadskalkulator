@@ -17,7 +17,9 @@ export function ResultGraph() {
 
     const unit = (staticFieldDescriptions.find((fieldData) => fieldData.title === selection)?.properties as NumberedProperties).unit
     const value = useAppSelector(selectXasisText(selection))
-    const dropdownItems = staticFieldDescriptions.map((fieldData) => fieldData.title)
+    const dropdownItems = staticFieldDescriptions
+        .filter((fieldData) => fieldData.showGraph)
+        .map((fieldData) => fieldData.title)
 
     const series = useAppSelector(selectGraphXaxis(selection))
     const results = useAppSelector(selectCalculatorSeriesResult(selection, series.values))

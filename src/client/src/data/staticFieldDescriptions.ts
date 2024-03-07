@@ -29,6 +29,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.SKOGTYPE,
         default: ForestType.LowlandsForest.toString(),
         page: 1,
+        showGraph: false,
         properties: { options: new Map([
                 [forestTypeToString(ForestType.LowlandsForest), ForestType.LowlandsForest.toString()],
                 [forestTypeToString(ForestType.ValleyAndMountainForest), ForestType.ValleyAndMountainForest.toString()],
@@ -43,6 +44,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.TOMMERTREAR_PR_DEKAR,
         default: "100",
         page: 1,
+        showGraph: true,
         properties: { min: 1, unit: UnitType.TREE_PER_DEKAR }
     },
     {
@@ -52,6 +54,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.VOLUM_PR_DEKAR,
         default: "25",
         page: 1,
+        showGraph: true,
         properties: { min: 0, unit: UnitType.CUBIC_M_PER_DEKAR }
     },
     {
@@ -61,6 +64,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.ANTALL_DEKAR,
         default: "1",
         page: 1,
+        showGraph: false,
         properties: { min: 1, unit: UnitType.COUNT }
     },
     {
@@ -70,6 +74,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.RYDDETREAR_PR_DEKAR,
         default: "150",
         page: 1,
+        showGraph: true,
         properties: { min: 0, unit: UnitType.TREE_PER_DEKAR }
     },
     // TREE DATA END
@@ -83,6 +88,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.KJOREAVSTAND_VEG,
         default: "500",
         page: 2,
+        showGraph: true,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
@@ -92,6 +98,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.HELLING_PAA_TRAKTORVEG,
         default: "1",
         page: 2,
+        showGraph: true,
         properties: { options: new Map([
                 ["0-10 %", "1"],
                 ["10-20 %", "2"],
@@ -107,6 +114,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.OVERFLATESTRUKTUR_TRAKTORVEG,
         default: "1",
         page: 2,
+        showGraph: true,
         properties: { options: new Map([
                 ["Meget god", "1"],
                 ["God", "2"],
@@ -122,6 +130,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.KJOREAVSTAND_TERRENG,
         default: "200",
         page: 2,
+        showGraph: true,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
@@ -131,6 +140,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.HELLING_HOGSTFELT,
         default: "1",
         page: 2,
+        showGraph: true,
         properties: { options: new Map([
                 ["0-10 %", "1"],
                 ["10-20 %", "2"],
@@ -146,6 +156,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.OVERFLATESTRUKTUR_TERRENG,
         default: "1",
         page: 2,
+        showGraph: true,
         properties: { options: new Map([
                 ["Meget god", "1"],
                 ["God", "2"],
@@ -164,6 +175,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.TIMEKOST_HOGSTMASKIN,
         default: "2000",
         page: 3,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COST_PER_G15 }
     },
     {
@@ -173,6 +185,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.TIMEKOST_LASSBEARER,
         default: "1800",
         page: 3,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COST_PER_G15 }
     },
 
@@ -183,6 +196,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.LASSTORRELSE,
         default: "20",
         page: 3,
+        showGraph: true,
         properties: { min: 0, unit: UnitType.CUBIC_M }
     },
     {
@@ -192,6 +206,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.ANTALL_SORTIMENT,
         default: "8",
         page: 3,
+        showGraph: true,
         properties: { min: 0, unit: UnitType.PIECE }
     },
     // MACHINE DATA END
@@ -203,6 +218,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.OPPSTARTSKOSTNADER,
         default: "0",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -212,6 +228,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.ENHETSPRIS_MASKINFLYTT,
         default: "4000",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -221,6 +238,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.ANTALL_MASKINFLYTT,
         default: "0",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COUNT }
     },
     {
@@ -230,6 +248,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.ENHETSPRIS_BRO,
         default: "3000",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -239,6 +258,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.ANTALL_BRUER,
         default: "0",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COUNT }
     },
     {
@@ -248,6 +268,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.ENHETSPRIS_KLOPP,
         default: "50",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -257,6 +278,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.KLOPPLEGGING,
         default: "0",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.METER }
     },
     {
@@ -266,6 +288,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.TIMEKOST_GRAVEMASKIN,
         default: "3000",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -275,6 +298,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.TIMER_GRAVEMASKIN,
         default: "0",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COUNT }
     },
     {
@@ -284,6 +308,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.MANUELT_TILLEGGSARBEID,
         default: "0",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COST }
     },
     {
@@ -293,6 +318,7 @@ export const staticFieldDescriptions: FieldData[] = [
         title: FieldNames.TIMER_TILLEGGSARBEID,
         default: "0",
         page: 4,
+        showGraph: false,
         properties: { min: 0, unit: UnitType.COUNT }
     },
 ]
