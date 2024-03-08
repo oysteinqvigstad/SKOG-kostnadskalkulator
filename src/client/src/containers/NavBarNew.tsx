@@ -39,12 +39,7 @@ export function NavBarNew() {
 
     return (
         <>
-            {isDesktop &&
-                <Col xs={12} className={"position-absolute text-center pt-3"} style={{fontSize: '1.5em', fontFamily: 'Arial', color: 'White', zIndex: -1}}>
-                    <NavBarLogo />
-                    {"Skogkurs | Kostnadskalkulator"}
-                </Col>
-            }
+
             <Container className={"justify-text-center"} style={{maxWidth: '1200px'}}>
                 <Row className={"d-flex align-items-center"}>
                     {!onMainPage &&
@@ -54,11 +49,7 @@ export function NavBarNew() {
                     }
                     <Col className={"pt-2 flex-grow-1"}
                          style={{fontSize: '1.5em', fontFamily: 'Arial', color: 'White', minWidth: 0}}>
-                        {!isDesktop &&
-                                <div style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                    {"Kostnadskalkulator"}
-                                </div>
-                        }
+                            <img src={"brand-banner.png"} alt={"Skogkurs Kostnadskalkulator"} />
                     </Col>
                     <Col xs={"auto"} className={"d-flex text-end"}>
                         {!onMainPage && !isDesktop &&
@@ -96,24 +87,6 @@ function NavBarButton(props: {icon: JSX.Element, onClick: () => void}) {
         >
             {props.icon}
         </Button>
-
-
-    )
-}
-
-/**
- * The header of the navigation bar
- */
-function NavBarLogo() {
-    return (
-            <img
-                alt="logo"
-                src="logo192.png"
-                width="35"
-                height="35"
-                className="d-inline-block align-top me-2 logo"
-                style={{filter: 'brightness(0) invert(1)'}}
-            />
 
 
     )

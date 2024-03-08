@@ -20,6 +20,7 @@ export function ResultParameters() {
     )
 }
 
+
 function SettingsPane() {
     const dispatch = useAppDispatch()
     const hideAdvanced = useAppSelector((state) => state.form.hideAdvanced)
@@ -34,7 +35,7 @@ function SettingsPane() {
                     onClick={() => dispatch(resetAllFields())}
                 >
                     <MdReplay fontSize={'1.2em'} className={'ms-1 me-3'}/>
-                    {"Nullstill alle felt"}
+                    {"Tilbakestill alle felt"}
                 </Dropdown.Item>
                 <Dropdown.Item as={"div"}>
                     <Form.Check
