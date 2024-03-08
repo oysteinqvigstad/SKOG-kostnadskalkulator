@@ -6,8 +6,8 @@ import {
     assortmentsNor,
     clearanceTreesNor,
     drivingConditionsExplanationNOR, forestTypeExplanationNOR,
-    harvesterCostNor,
-    logCarrierCostNor,
+    harvesterCostNor, klopplegging,
+    logCarrierCostNor, midlertidigeBroer,
     roadDistanceNor, roadInclineNor,
     sellableVolumeNor,
     terrainDistanceNor,
@@ -272,7 +272,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.NUMBERED_INPUT,
-        descriptionHTML: "",
+        descriptionHTML: renderToString(midlertidigeBroer()),
         errorId: null,
         title: FieldNames.ANTALL_BRUER,
         default: "0",
@@ -294,7 +294,7 @@ export const staticFieldDescriptions: FieldData[] = [
     },
     {
         type: FieldType.NUMBERED_INPUT,
-        descriptionHTML: "",
+        descriptionHTML: renderToString(klopplegging()),
         errorId: null,
         title: FieldNames.KLOPPLEGGING,
         default: "0",

@@ -50,7 +50,7 @@ export function forestTypeToString(forestType: ForestType) {
         case ForestType.ValleyAndMountainForest:
             return "Dal- og fjellskog"
         case ForestType.LowlandsForest:
-            return "Låglandsskog"
+            return "Lavlandsskog"
         case ForestType.SuperForest:
             return "Særlig velpleid og jevn skog"
     }

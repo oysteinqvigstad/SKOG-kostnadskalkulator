@@ -7,11 +7,11 @@ export function forestTypeExplanationNOR() {
                 <tbody>
                 <tr>
                     <td>1. Dal- og fjellskog</td>
-                    <td>Skog i dal- og fjellstrøk, med mindre middelstamme enn de andre skogtypene - vanlig i Norge, særlig Vestlandet og Trøndelag</td>
+                    <td>Skog i dal- og fjellstrøk, med mindre middelstamme, større avsmalning og vanskeligere driftsforhold enn de andre skogtypene</td>
                 </tr>
                 <tr>
-                    <td>2. Låglandsskog</td>
-                    <td>Kjennetegner skogen i deler av østlandsområdet, med større gjennomsnittlig middelstamme enn dal- og fjellskog</td>
+                    <td>2. Lavlandsskog</td>
+                    <td>Kjennetegner skogen i deler av østlandsområdet</td>
                 </tr>
                 <tr>
                     <td>3. Særlig velpleidd og jevn skog</td>
@@ -107,7 +107,8 @@ export function roadInclineNor() {
 export function terrainDistanceNor() {
     return (
         <>
-            <p>Kjøreavstand i hogstfelt - én vei</p>
+            <p>Kjøreavstand i hogstfelt - én vei. Ren terrengkjøring; - ikke langs bas-/ traktorvei.</p>
+            <p>Kan kombineres med kjøring på basveg (hvis forskjellig helling eller overflatsstruktur).</p>
         </>
     )
 }
@@ -115,7 +116,8 @@ export function terrainDistanceNor() {
 export function roadDistanceNor() {
     return (
         <>
-            <p>Kjøreavstand på traktorvei i én retning</p>
+            <p>Kjøreavstand én vei fra hogstfelt til velteplass. Volmveid avstand, basert på hvor hoveddelen av tømmeret fraktes fra/til.</p>
+            <p><strong>NB! Husk «slingrefaktoren» (den reelle avstanden inkl svinger og bakker)</strong></p>
         </>
     )
 }
@@ -131,7 +133,7 @@ export function timberLoadSizeNor() {
 export function assortmentsNor() {
     return (
         <>
-            <p>Antall tømmersortiment</p>
+            <p>Antall sortiment tømmeret skal sorteres i fordelt på treslag. Det kan være ett eller flere både sagtømmersortiment, massevirksortiment og ved.</p>
         </>
     )
 }
@@ -140,6 +142,14 @@ export function harvesterCostNor() {
     return (
         <>
             <p>Gjennomsnittlig timekostnad for hogstmaskin - kr pr G<sub>15</sub>-time</p>
+            <p>I utgangspunktet er dette en kostnadskalkulator. Legge inn enhetskostnader med eller uten
+                fortjenestemargin til entreprenøren.</p>
+            <p>En G-15 time inkluderer all ståtid på inntil 15 minutter. Dette er en del av <a
+                href={"https://www.skogforsk.se/english/projects/stanford/"} target={"_blank"}
+                rel="noreferrer">StanForD</a>-standarden som alle moderne skogsmaskiner er utstyrt med, og en vanlig
+                måte å registrere maskintiden på. Entreprenøren kan selv velge hva slags Grunntid (G-tid) som skal
+                registreres; G<sub>0-</sub>time, G<sub>10</sub>-time eller G<sub>15</sub>-time. Grunnen til at
+                G<sub>15</sub> er valgt her er at de svenske produktivitetsnormene er basert på G<sub>15</sub>.</p>
         </>
     )
 }
@@ -148,6 +158,14 @@ export function logCarrierCostNor() {
     return (
         <>
             <p>Gjennomsnittlig timekostnad for lassbærer - kr pr G<sub>15</sub>-time</p>
+            <p>I utgangspunktet er dette en kostnadskalkulator. Legge inn enhetskostnader med eller uten
+                fortjenestemargin til entreprenøren.</p>
+            <p>En G-15 time inkluderer all ståtid på inntil 15 minutter. Dette er en del av <a
+                href={"https://www.skogforsk.se/english/projects/stanford/"} target={"_blank"}
+                rel="noreferrer">StanForD</a>-standarden som alle moderne skogsmaskiner er utstyrt med, og en vanlig
+                måte å registrere maskintiden på. Entreprenøren kan selv velge hva slags Grunntid (G-tid) som skal
+                registreres; G<sub>0-</sub>time, G<sub>10</sub>-time eller G<sub>15</sub>-time. Grunnen til at
+                G<sub>15</sub> er valgt her er at de svenske produktivitetsnormene er basert på G<sub>15</sub>.</p>
         </>
     )
 }
@@ -163,7 +181,7 @@ export function sellableVolumeNor() {
 export function timberTreesNor() {
     return (
         <>
-            <p>Antall tømmertrær pr dekar</p>
+            <p>Antall trær som skal felles og opparbeides</p>
         </>
     )
 }
@@ -171,7 +189,10 @@ export function timberTreesNor() {
 export function clearanceTreesNor() {
     return (
         <>
-            <p>Antall ryddetrær pr dekar</p>
+            <p>Småtrær som ikke skal opparbeides, men som hindrer effektiviteten for hogstmaskinen.</p>
+            <p><strong>NB: Tell med alle trær med diameter under 8 cm i brysthøyde og som er over 1 meter høye, også de
+                som ikke vil bli ryddet vekk.</strong></p>
+            <p>Kalkylen beregner kun for hogstmaskin. Påvirker også lassbæreren dersom f.eks. 10 % opparbeides og kjøres til velteplass.</p>
         </>
     )
 }
@@ -260,6 +281,22 @@ export function clearanceTreesEng() {
     return (
         <>
             <p>Number of clearance trees per 1000m<sup>2</sup></p>
+        </>
+    )
+}
+
+export function midlertidigeBroer() {
+    return (
+        <>
+            <p>Antall bruer som entreprenøren bygger for å unngå skader ved kryssing av bekker eller små elver.</p>
+        </>
+    )
+}
+
+export function klopplegging() {
+    return (
+        <>
+            <p>Antall meter hvor det legges ut tømmer og hogstavfall i basvegen for å øke bæreevnen. Tømmeret blir plukket opp av lassbæreren nå drifta avsluttes.</p>
         </>
     )
 }
