@@ -1,10 +1,10 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {
-    DropdownInputBaseControls,
-    InputBasicControl,
-} from "../customControls/inputNodeControl/number/inputNodeControl";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {DropdownInputControl} from "../customControls/inputNodeControls/dropdown/dropdownInputControl";
+import {InputBaseControl} from "../customControls/inputNodeControls/common/inputBaseControl";
+
+
 
 
 /**
@@ -16,7 +16,7 @@ export class DropdownInputNode extends BaseNode<
     {
         value: ClassicPreset.InputControl<"number">,
         description: ClassicPreset.InputControl<"text">,
-        baseInputData: DropdownInputBaseControls
+        baseInputData: DropdownInputControl
     }
 > {
     inputAlternatives: {label: string, value: number}[] = []
@@ -27,15 +27,15 @@ export class DropdownInputNode extends BaseNode<
     ) {
         super(NodeType.NumberInput, 400, 400, "Dropdown Input");
 
-        this.addControl("baseInputData", new DropdownInputBaseControls(
+        this.addControl("baseInputData", new DropdownInputControl(
             {
                 name: "",
                 simpleInput: true,
             },
             [],
             {
-                onUpdate: (newValue: InputBasicControl) => {
-                    if(newValue instanceof DropdownInputBaseControls) {
+                onUpdate: (newValue: InputBaseControl) => {
+                    if(newValue instanceof DropdownInputControl) {
                         onValueChange?.();
                         this.controls.baseInputData.name = newValue.name;
                         this.controls.baseInputData.simpleInput = newValue.simpleInput;

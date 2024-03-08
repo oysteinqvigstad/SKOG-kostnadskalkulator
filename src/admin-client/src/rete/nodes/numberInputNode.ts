@@ -1,8 +1,9 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {InputBasicControl, NumberInputBaseControls} from "../customControls/inputNodeControl/number/inputNodeControl";
+import {NumberInputControl} from "../customControls/inputNodeControls/number/numberInputControl";
 import {getLegalValueInRange, isInRange} from "../../components/input/numberInputField";
+import {InputBaseControl} from "../customControls/inputNodeControls/common/inputBaseControl";
 
 
 
@@ -13,7 +14,7 @@ export class NumberInputNode extends BaseNode<
     {},
     { value: ClassicPreset.Socket },
     {
-        baseInputData: NumberInputBaseControls
+        baseInputData: NumberInputControl
     }
 > {
     legalValues: {min: number, max: number}[] = []
@@ -24,7 +25,7 @@ export class NumberInputNode extends BaseNode<
     ) {
         super(NodeType.NumberInput, 400, 400, "Number Input");
 
-        this.addControl( "baseInputData",new NumberInputBaseControls(
+        this.addControl( "baseInputData",new NumberInputControl(
             {
                 name: "",
                 simpleInput: true,
@@ -32,8 +33,8 @@ export class NumberInputNode extends BaseNode<
             },
             [],
             {
-                onUpdate: (newValue: InputBasicControl) => {
-                    if(!(newValue instanceof NumberInputBaseControls)) {
+                onUpdate: (newValue: InputBaseControl) => {
+                    if(!(newValue instanceof NumberInputControl)) {
                         throw new Error("Invalid instance of InputBasicControl in NumberInputNode constructor.");
                     }
                     this.controls.baseInputData.name = newValue.name;

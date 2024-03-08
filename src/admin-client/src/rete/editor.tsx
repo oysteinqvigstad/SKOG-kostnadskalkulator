@@ -17,8 +17,9 @@ import {NaryNode} from "./nodes/naryNode";
 import {NumberInputNode} from "./nodes/numberInputNode";
 import {OutputNode} from "./nodes/outputNode";
 import {LabelNode} from "./nodes/labelNode";
-import {InputBasicControl, NumberInputControls} from "./customControls/inputNodeControl/number/inputNodeControl";
 import {DropdownInputNode} from "./nodes/dropdownInputNode";
+import {NumberInputControl} from "./customControls/inputNodeControls/number/numberInputControl";
+import {NumberInputControlContainer} from "./customControls/inputNodeControls/number/numberInputControlContainer";
 
 
 
@@ -177,8 +178,8 @@ export async function createEditor(container: HTMLElement) {
         Presets.classic.setup({
             customize: {
                 control(data) {
-                    if(data.payload instanceof InputBasicControl) {
-                        return NumberInputControls;
+                    if(data.payload instanceof NumberInputControl) {
+                        return NumberInputControlContainer;
                     }
                     if (data.payload instanceof ClassicPreset.InputControl) {
                         return Presets.classic.Control;
