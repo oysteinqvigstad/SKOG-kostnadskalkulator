@@ -13,7 +13,7 @@ export function ShareResultButton() {
     const share = async () => {
         // create share url
         const queries = Object.entries(fields).map(([key, value]) => {
-            return `${key.replaceAll(" ", "%20")}=${value}`
+            return `${encodeURI(key)}=${value}`
         }).join("&")
         const url = `${window.location.origin}/resultat?${queries}`
 

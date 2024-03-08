@@ -6,6 +6,7 @@ import {MdArrowBackIosNew, MdClose, MdInfo, MdMenu} from "react-icons/md";
 import {ShareResultButton} from "../components/ShareResultButton";
 import {useAppDispatch} from "../state/hooks";
 import {setPage} from "../state/formSlice";
+import {SaveMenuButton} from "../components/SaveMenuButton";
 
 /**
  * The navigation bar for the application
@@ -63,6 +64,7 @@ export function NavBarNew() {
                         {!onMainPage && !isDesktop &&
                             <NavBarButton icon={<MdInfo />} onClick={() => dispatch(setPage(0))} />
                         }
+                        <SaveMenuButton />
                         <ShareResultButton />
                         <NavBarButton icon={!show ? <MdMenu /> : <MdClose />} onClick={onLinkClick} />
                     </Col>
