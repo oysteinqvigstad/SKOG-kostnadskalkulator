@@ -27,7 +27,7 @@ export const formulaInfoSlice = createSlice(
             increasePatchVersion: (state) => {
                 state.version.patch++;
             },
-            setDateCreated: (state, action) => {
+            setDateCreated: (state) => {
                 const date = new Date();
                 state.dateCreated = date.getTime()
             }
