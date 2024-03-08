@@ -2,7 +2,7 @@ import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {InputBasicControl, NumberInputBaseControls} from "../customControls/inputNodeControl/number/inputNodeControl";
-import {getLegalValueInRange, isInRange} from "../customControls/commonComponents/numberInputField";
+import {getLegalValueInRange, isInRange} from "../../components/input/numberInputField";
 
 
 
@@ -24,7 +24,7 @@ export class NumberInputNode extends BaseNode<
     ) {
         super(NodeType.NumberInput, 400, 400, "Number Input");
 
-        this.addControl("baseInputData", new NumberInputBaseControls(
+        this.addControl( "baseInputData",new NumberInputBaseControls(
             {
                 name: "",
                 simpleInput: true,
