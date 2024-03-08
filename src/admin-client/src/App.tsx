@@ -6,6 +6,7 @@ import {useEffect} from "react";
 import {Provider} from "react-redux";
 import {PagesWindow} from "./containers/pagesWindow";
 import {store} from "./state/store";
+import {FormulaInfoContainer} from "./containers/formulaInfoContainer";
 
 
 
@@ -69,6 +70,12 @@ export default function App() {
                                           functions?.testJSON()
                                       }}>Test JSON</NavDropdown.Item>
                                   </NavDropdown>
+                                  <Navbar.Collapse className="justify-content-end">
+                                      <Navbar.Text>
+                                          <FormulaInfoContainer/>
+                                      </Navbar.Text>
+
+                                  </Navbar.Collapse>
                               </Nav>
                           </Navbar>
                       </Col>
