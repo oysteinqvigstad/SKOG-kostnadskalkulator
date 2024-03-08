@@ -18,13 +18,13 @@ export const formulaInfoSlice = createSlice(
             setName: (state, action: PayloadAction<string>) => {
                 state.name = action.payload;
             },
-            increaseMajorVersion: (state, action) => {
+            increaseMajorVersion: (state) => {
                 state.version.major++;
             },
-            increaseMinorVersion: (state, action) => {
+            increaseMinorVersion: (state) => {
                 state.version.minor++;
             },
-            increasePatchVersion: (state, action) => {
+            increasePatchVersion: (state) => {
                 state.version.patch++;
             },
             setDateCreated: (state, action) => {
