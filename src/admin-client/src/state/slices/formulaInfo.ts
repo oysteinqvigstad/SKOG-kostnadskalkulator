@@ -20,9 +20,12 @@ export const formulaInfoSlice = createSlice(
             },
             increaseMajorVersion: (state) => {
                 state.version.major++;
+                state.version.minor = 0;
+                state.version.patch = 0;
             },
             increaseMinorVersion: (state) => {
                 state.version.minor++;
+                state.version.patch = 0;
             },
             increasePatchVersion: (state) => {
                 state.version.patch++;
