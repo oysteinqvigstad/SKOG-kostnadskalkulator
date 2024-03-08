@@ -1,12 +1,16 @@
 
-import React from "react";
+import React, {useEffect} from "react";
 import {Col, InputGroup, Row} from "react-bootstrap";
 import {Drag} from "rete-react-plugin";
 import {ClassicPreset} from "rete";
 import Button from "react-bootstrap/Button";
-import {NumberInputField} from "../../commonComponents/numberInputField";
-import {TextInputField} from "../../commonComponents/textInputField";
-import {OptionSwitch} from "../../commonComponents/optionSwitch";
+import {NumberInputField} from "../../../../components/input/numberInputField";
+import {TextInputField} from "../../../../components/input/textInputField";
+import {OptionSwitch} from "../../../../components/input/optionSwitch";
+import { useAppSelector} from "../../../../state/hooks";
+import {selectPages, store} from "../../../../state/store";
+import {DropdownSelection} from "../../../../components/input/dropdownSelection";
+import {Provider} from "react-redux";
 
 export interface InputBaseData {
     name?: string,
@@ -123,6 +127,31 @@ export function HiddenOnMinimized(
 export function NumberInputControls(
     props: { data: NumberInputBaseControls }
 ) {
+    return <Provider store={store}>
+        <NumberInputControlsContent data={props.data}/>
+    </Provider>
+}
+
+
+export function NumberInputControlsContent(
+    props: { data: NumberInputBaseControls }
+) {
+
+    const pages = useAppSelector(selectPages);
+
+    useEffect(()=> {
+        // finds new index of page if it has been moved
+        if(props.data.pageName !== undefined) {
+            const result = pages.find((p)=>{
+                return p.title === props.data.pageName
+            });
+
+            props.data.pageName = result?.title ?? undefined;
+            props.data.update();
+        }
+    }, [pages, props.data])
+
+
     return <>
         <Drag.NoDrag>
             <MinimizeButton  onClick={()=>{
@@ -206,6 +235,16 @@ export function NumberInputControls(
 
                        })
                     }
+                    <DropdownSelection
+                        inputHint={"Select page"}
+                        selection={pages.find((page)=>page.title === props.data.pageName)?.ordering}
+                        dropdownAlternatives={pages.map((page)=>{return {label: page.title, value: page.ordering}})}
+                        onChange={(selected: number)=>{
+                            props.data.pageName = pages.find((page)=>page.ordering === selected)?.title;
+                            console.log("Selected page: ", props.data.pageName)
+                            props.data.update();
+                        }}
+                    />
                     </div>
                 }
             />
