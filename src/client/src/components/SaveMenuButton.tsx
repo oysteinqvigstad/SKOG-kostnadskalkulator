@@ -47,7 +47,7 @@ export function SaveMenuButton() {
                 </Modal.Header>
                 <Modal.Body>
                     Resultatene lagres lokalt i din nettleser og vil forsvinne ved sletting av nettleserdata.
-                    <br/>
+                    <hr/>
                     <Form.Label htmlFor={"lagreResultat"}>Lagre nytt resultat</Form.Label>
                     <InputGroup>
                         <Form.Control
