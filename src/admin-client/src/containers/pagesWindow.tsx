@@ -21,7 +21,6 @@ export function PageBox(
             <Button onClick={()=>{props.onMove(props.page.ordering+1)}}>Down</Button>
             <Button onClick={()=>{props.onDelete()}}>X</Button>
         </InputGroup>
-
     </Row>
 }
 
@@ -40,7 +39,7 @@ export function PagesWindow(
                 <Button onClick={()=>{dispatch(addPage({title: "", ordering: 1, subPages:[]}))}}>Add page</Button>
             </Row>
             {pages.map((page, index) => {
-                return <Row>
+                return <Row key={page.title}>
                     <PageBox
                         page={page}
                         onChange={(newTitle)=>{
