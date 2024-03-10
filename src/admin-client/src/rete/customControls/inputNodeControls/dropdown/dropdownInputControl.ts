@@ -1,23 +1,19 @@
 import {InputBaseData, InputBaseControl} from "../common/inputBaseControl";
 
+export interface DropdownInputControlData extends InputBaseData {
+    dropdownOptions: { value: number, label: string }[],
+}
+
 export class DropdownInputControl extends InputBaseControl{
 
     constructor(
-        baseData: InputBaseData,
-        public dropdownOptions: { value: number, label: string }[],
-        options: {
+        public data: DropdownInputControlData,
+        public options: {
             minimized: boolean,
-            onUpdate?: (input: InputBaseControl) => void,
+            onUpdate: (input: InputBaseControl) => void,
         },
         public defaultKey?: string
     ) {
-        super(
-            baseData.simpleInput,
-            options,
-            baseData.name,
-            baseData.defaultValue,
-            baseData.pageName,
-            baseData.infoText,
-        );
+        super(data, options);
     }
 }

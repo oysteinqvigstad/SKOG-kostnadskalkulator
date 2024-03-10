@@ -34,8 +34,7 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undef
         let parentNode = nodeSet.get(connection.target);
         const targetPortName = connection.targetInput;
 
-
-        if(parentNode !== undefined) {
+        if(parentNode !== undefined) { // TODO: check this
             if(targetPortName === "result") {
                 parentNode.child = connection.source;
             }
@@ -82,7 +81,7 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undef
  * @return The root node of the built tree represented as a ParseNode.
  */
 function populateTree(startNode: NodeConnection, connections: Map<string, NodeConnection>, nodes: Map<string, SkogNode>): ParseNode {
-
+    connections.forEach((conn)=>{console.log(conn)})
     const rootNodeData = nodes.get(startNode.id);
     if(!rootNodeData) { throw new Error("Start node not found in nodes map")}
 

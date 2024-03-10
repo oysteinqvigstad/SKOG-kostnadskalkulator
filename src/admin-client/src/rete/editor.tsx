@@ -22,6 +22,8 @@ import {NumberInputControlContainer} from "./customControls/inputNodeControls/nu
 import {OutputNodeControl} from "./customControls/outputNodeControls/outputNodeControl";
 import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
 import {DisplayPieNode} from "./nodes/displayPieNode";
+import {NumberControl} from "./customControls/numberControl/numberControl";
+import {NumberControlComponent} from "./customControls/numberControl/numberControlComponent";
 
 
 
@@ -184,11 +186,13 @@ export async function createEditor(container: HTMLElement) {
                     if(data.payload instanceof NumberInputControl) {
                         return NumberInputControlContainer;
                     }
-                    if (data.payload instanceof ClassicPreset.InputControl) {
-                        return Presets.classic.Control;
-                    }
+                    // @ts-ignore
                     if (data.payload instanceof OutputNodeControl) {
                         return OutputNodeControlContainer
+                    }
+                    // @ts-ignore
+                    if(data.payload instanceof NumberControl) {
+                        return NumberControlComponent
                     }
                     return null;
                 },

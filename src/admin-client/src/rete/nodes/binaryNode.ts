@@ -2,6 +2,7 @@ import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {getBinaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree"
+import {NumberControl} from "../customControls/numberControl/numberControl";
 
 /**
  * Node for use with any binary math operation, such as +,-, * amd pow.
@@ -9,7 +10,7 @@ import {ParseNode} from "@skogkalk/common/dist/src/parseTree"
 export class BinaryNode extends BaseNode<
     { left: ClassicPreset.Socket; right: ClassicPreset.Socket },
     { value: ClassicPreset.Socket },
-    { value: ClassicPreset.InputControl<"number">, description: ClassicPreset.InputControl<"text"> }
+    { c: NumberControl }
 >
 {
     binaryOperation: (left: number, right: number) => number;
@@ -23,15 +24,8 @@ export class BinaryNode extends BaseNode<
         this.binaryOperation = getBinaryOperation(type);
 
         this.addControl(
-            "value",
-            new ClassicPreset.InputControl("number", {
-                readonly: true
-            })
-        );
-
-        this.addControl(
-            "description",
-            new ClassicPreset.InputControl("text", { initial: "description" })
+            "c",
+            new NumberControl({value: 0, readonly: true}, {onUpdate: (data)=>{this.controls.c.data.value = data.value}, minimized: false})
         );
 
         this.addInput("left", new ClassicPreset.Input(new ClassicPreset.Socket("socket"), "Left"));
@@ -46,7 +40,7 @@ export class BinaryNode extends BaseNode<
             (right ? right[0] : 0 || 0)
         );
 
-        this.controls.value.setValue(value);
+        this.controls.c.data.value = value;
 
         this.updateNodeRendering(this.id);
 
@@ -57,7 +51,7 @@ export class BinaryNode extends BaseNode<
         return {
             id: this.id,
             type: this.type,
-            value: this.controls.value.value || 0
+            value: this.controls.c.data.value || 0
         }
     }
 

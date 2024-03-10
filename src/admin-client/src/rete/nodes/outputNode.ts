@@ -9,7 +9,7 @@ export class OutputNode extends BaseNode <
 { result: ClassicPreset.Socket },
 { output: ClassicPreset.Socket },
 {
-    control: OutputNodeControl
+    c: OutputNodeControl
 }
 > {
 
@@ -21,17 +21,17 @@ export class OutputNode extends BaseNode <
 
         this.addInput( "result", new ClassicPreset.Input(  new ClassicPreset.Socket("socket"),  "Result",  false))
         this.addOutput(  "output", new ClassicPreset.Output( new ClassicPreset.Socket("socket"), "Out", true));
-        this.addControl("control",
+        this.addControl("c",
             new OutputNodeControl(
                 {
                     name:"",
                     value: 0,
-
                 },
                 {
                     onUpdate: (newData)=> {
-                        this.controls.control.data = newData;
-                    }
+                        this.controls.c.data = newData;
+                    },
+                    minimized: false
                 }
             ))
     }
@@ -42,20 +42,20 @@ export class OutputNode extends BaseNode <
         if(result) {
             console.log("Hi")
             this.updateNodeRendering?.(this.id);
-            this.controls.control.data.value = result;
+            this.controls.c.data.value = result;
         }
-        return { output: { id: this.id, name: this.controls.control.data.name, value: this.controls.control.data.value }}
+        return { output: { id: this.id, name: this.controls.c.data.name, value: this.controls.c.data.value }}
     }
 
     toParseNode(): ParseOutputNode {
         return {
             id: this.id,
-            value: this.controls.control.data.value,
+            value: this.controls.c.data.value,
             type: NodeType.Output,
             child: {id:"", value: 0, type: NodeType.Number }, // Placeholder,
-            name: this.controls.control.data.name,
-            color: this.controls.control.data.color || "",
-            unit: this.controls.control.data.unit || "",
+            name: this.controls.c.data.name,
+            color: this.controls.c.data.color || "",
+            unit: this.controls.c.data.unit || "",
         }
     }
 

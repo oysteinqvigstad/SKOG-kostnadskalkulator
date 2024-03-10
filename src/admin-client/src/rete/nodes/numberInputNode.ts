@@ -14,7 +14,7 @@ export class NumberInputNode extends BaseNode<
     {},
     { value: ClassicPreset.Socket },
     {
-        baseInputData: NumberInputControl
+        c: NumberInputControl
     }
 > {
     legalValues: {min: number, max: number}[] = []
@@ -25,30 +25,31 @@ export class NumberInputNode extends BaseNode<
     ) {
         super(NodeType.NumberInput, 400, 400, "Number Input");
 
-        this.addControl( "baseInputData",new NumberInputControl(
+        this.addControl( "c",new NumberInputControl(
             {
                 name: "",
                 simpleInput: true,
                 defaultValue: 0,
+                legalValues: []
             },
-            [],
             {
                 onUpdate: (newValue: InputBaseControl) => {
                     if(!(newValue instanceof NumberInputControl)) {
                         throw new Error("Invalid instance of InputBasicControl in NumberInputNode constructor.");
                     }
-                    this.controls.baseInputData.name = newValue.name;
-                    this.controls.baseInputData.pageName = newValue.pageName;
-                    this.controls.baseInputData.simpleInput = newValue.simpleInput;
-                    this.controls.baseInputData.infoText = newValue.infoText;
-                    this.controls.baseInputData.legalValues = newValue.legalValues;
+                    const currentData = this.controls.c.data;
+                    currentData.name = newValue.data.name;
+                    currentData.pageName = newValue.data.pageName;
+                    currentData.simpleInput = newValue.data.simpleInput;
+                    currentData.infoText = newValue.data.infoText;
+                    currentData.legalValues = newValue.data.legalValues;
 
-                    if(this.controls.baseInputData.defaultValue !== undefined && newValue.legalValues.length > 0) {
-                        if(!newValue.legalValues.some((v) => {
-                            return isInRange(this.controls.baseInputData.defaultValue!, v);
+                    if(currentData.defaultValue !== undefined && newValue.data.legalValues.length > 0) {
+                        if(!newValue.data.legalValues.some((v) => {
+                            return isInRange(currentData.defaultValue!, v);
                         })) {
-                            this.controls.baseInputData.defaultValue =
-                                getLegalValueInRange(this.controls.baseInputData.defaultValue!, newValue.legalValues[0]);
+                            currentData.defaultValue =
+                                getLegalValueInRange(this.controls.c.data.defaultValue!, newValue.data.legalValues[0]);
                         }
                     }
 
@@ -58,7 +59,7 @@ export class NumberInputNode extends BaseNode<
                         this.height = this.originalHeight * 0.5;
                     } else {
                         this.width = this.originalWidth;
-                        this.height = this.originalHeight + this.controls.baseInputData.legalValues.length * 60;
+                        this.height = this.originalHeight + this.controls.c.data.legalValues.length * 60;
                     }
                     updateNodeRendering?.(this.id);
                     updateDataFlow?.();
@@ -73,24 +74,24 @@ export class NumberInputNode extends BaseNode<
 
     data(): { value: number } {
         return {
-            value: this.controls.baseInputData.defaultValue || 0
+            value: this.controls.c.data.defaultValue || 0
         };
     }
 
     toParseNode(): ParseNumberInputNode {
         return {
             id: this.id,
-            value: this.controls.baseInputData.defaultValue || 0,
+            value: this.controls.c.data.defaultValue || 0,
             type: NodeType.NumberInput,
             inputType: InputType.Float, //TODO: add to controller
-            defaultValue: this.controls.baseInputData.defaultValue || 0,
-            name: this.controls.baseInputData.name || "",
-            pageName: this.controls.baseInputData.pageName || "",
-            legalValues: this.controls.baseInputData.legalValues.map(legal=>{return {max: legal.max || null, min: legal.min || null}}) || [], //TODO: Change to undefined
+            defaultValue: this.controls.c.data.defaultValue || 0,
+            name: this.controls.c.data.name || "",
+            pageName: this.controls.c.data.pageName || "",
+            legalValues: this.controls.c.data.legalValues.map(legal=>{return {max: legal.max || null, min: legal.min || null}}) || [], //TODO: Change to undefined
             unit: "", //TODO: Add to controller,
-            infoText: this.controls.baseInputData.infoText || "",
+            infoText: this.controls.c.data.infoText || "",
             ordering: 0, // TODO: Add to controller,
-            simpleInput: this.controls.baseInputData.simpleInput
+            simpleInput: this.controls.c.data.simpleInput
         }
     }
 }

@@ -8,7 +8,7 @@ import {DisplayNode as ParseDisplayNode } from "@skogkalk/common/src/parseTree"
 export class DisplayPieNode extends BaseNode <
     { outputNodes: ClassicPreset.Socket },
     {},
-    { control: DisplayNodeControl }
+    { c: DisplayNodeControl }
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void
@@ -22,7 +22,7 @@ export class DisplayPieNode extends BaseNode <
                 "Result",
                 true))
 
-        this.addControl("control",
+        this.addControl("c",
             new DisplayNodeControl(
                 {
                     name: "",
@@ -30,7 +30,7 @@ export class DisplayPieNode extends BaseNode <
                 },
                 {
                     onUpdate: (data) => {
-                        this.controls.control.data = data;
+                        this.controls.c.data = data;
                         updateNodeRendering(this.id);
                     },
                     minimized: false
@@ -52,8 +52,8 @@ export class DisplayPieNode extends BaseNode <
             type: NodeType.Display,
             value: 0,
             inputs: [],
-            name: this.controls.control.data.name,
-            inputOrdering: this.controls.control.data.inputs.map(input=>{return {outputID: input.id, outputLabel: input.label}}),
+            name: this.controls.c.data.name,
+            inputOrdering: this.controls.c.data.inputs.map(input=>{return {outputID: input.id, outputLabel: input.label}}),
         }
     }
 

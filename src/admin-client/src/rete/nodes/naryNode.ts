@@ -1,6 +1,7 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {getNaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NumberControl} from "../customControls/numberControl/numberControl";
 
 
 /**
@@ -10,7 +11,7 @@ import {getNaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/p
 export class NaryNode extends BaseNode<
     { input: ClassicPreset.Socket },
     { value: ClassicPreset.Socket },
-    { value: ClassicPreset.InputControl<"number">, description: ClassicPreset.InputControl<"text"> }
+    { c: NumberControl }
 > {
     naryOperation: (inputs: number[]) => number;
 
@@ -23,15 +24,12 @@ export class NaryNode extends BaseNode<
         this.naryOperation = getNaryOperation(type);
 
         this.addControl(
-            "value",
-            new ClassicPreset.InputControl("number", {
-                readonly: true
-            })
-        );
-
-        this.addControl(
-            "description",
-            new ClassicPreset.InputControl("text", { initial: "description" })
+            "c",
+            new NumberControl({value: 0, readonly: true},
+                {
+                    onUpdate: (data)=>{ this.controls.c.data.value = data.value; },
+                    minimized: false
+                },)
         );
 
         this.addInput("input", new ClassicPreset.Input(new ClassicPreset.Socket("socket"), "In", true));
@@ -45,7 +43,7 @@ export class NaryNode extends BaseNode<
         const input = inputs.input;
         const value = (input ? this.naryOperation(input) : inputControl?.value || 0);
 
-        this.controls.value.setValue(value);
+        this.controls.c.data.value = value;
 
         this.updateNodeRendering?.(this.id);
 
@@ -56,7 +54,7 @@ export class NaryNode extends BaseNode<
         return {
             id: this.id,
             type: this.type,
-            value: this.controls.value.value || 0
+            value: this.controls.c.data.value || 0
         }
     }
 
