@@ -20,8 +20,8 @@ export class NumberInputNode extends BaseNode<
     legalValues: {min: number, max: number}[] = []
 
     constructor(
-        onValueChange?: () => void, // function to be called on user changing value
-        onNodeUpdate?: (nodeID: string) => void // function that updates node rendering
+        protected updateDataFlow: () => void,
+        protected updateNodeRendering: (nodeID: string) => void
     ) {
         super(NodeType.NumberInput, 400, 400, "Number Input");
 
@@ -60,8 +60,8 @@ export class NumberInputNode extends BaseNode<
                         this.width = this.originalWidth;
                         this.height = this.originalHeight + this.controls.baseInputData.legalValues.length * 60;
                     }
-                    onNodeUpdate?.(this.id);
-                    onValueChange?.();
+                    updateNodeRendering?.(this.id);
+                    updateDataFlow?.();
                 },
                 minimized: false
             }

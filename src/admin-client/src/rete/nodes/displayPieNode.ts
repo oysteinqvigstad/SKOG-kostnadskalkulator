@@ -11,7 +11,8 @@ export class DisplayPieNode extends BaseNode <
     { control: DisplayNodeControl }
 > {
     constructor(
-        private onNodeUpdate?: (nodeID: string) => void
+        protected updateNodeRendering: (nodeID: string) => void
+
     ) {
         super(NodeType.Display, 200, 200);
 
@@ -30,7 +31,7 @@ export class DisplayPieNode extends BaseNode <
                 {
                     onUpdate: (data) => {
                         this.controls.control.data = data;
-                        onNodeUpdate?.(this.id);
+                        updateNodeRendering(this.id);
                     },
                     minimized: false
                 }
@@ -40,18 +41,8 @@ export class DisplayPieNode extends BaseNode <
 
     data( inputs :{ outputNodes?: {name: string, value: number, id: string }[] }) : {} {
         const { outputNodes } = inputs
-        console.log(outputNodes)
-        // this.controls.control.data.inputs = outputNodes.map((node, index)=>{
-        //     return {
-        //         id: node.id,
-        //         name: index.toString(),
-        //         value: node.value,
-        //         color: "", // TODO
-        //         ordering: index
-        //     }
-        // });
 
-        this.onNodeUpdate?.(this.id);
+        this.updateNodeRendering?.(this.id);
         return {}
     }
 
@@ -65,4 +56,6 @@ export class DisplayPieNode extends BaseNode <
             inputOrdering: this.controls.control.data.inputs.map(input=>{return {outputID: input.id, outputLabel: input.label}}),
         }
     }
+
+    protected updateDataFlow: () => void = () => {}
 }

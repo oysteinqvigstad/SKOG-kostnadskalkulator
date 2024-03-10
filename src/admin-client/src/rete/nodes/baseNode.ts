@@ -38,6 +38,7 @@ export abstract class BaseNode<
     }
 
     abstract data( inputs: any ) : any;
-
     abstract toParseNode() : ParseNode;
+    protected abstract updateNodeRendering(nodeID: string) : void;
+    protected abstract updateDataFlow() : void;
 }

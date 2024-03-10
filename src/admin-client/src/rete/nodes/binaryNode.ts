@@ -16,7 +16,7 @@ export class BinaryNode extends BaseNode<
 
     constructor(
         type: NodeType,
-        private onNodeUpdate?: (control: ClassicPreset.InputControl<"number">) => void, // function called on node value change
+        protected updateNodeRendering: (id: string)=>void,
     ) {
         super(type, 230, 180);
 
@@ -48,7 +48,7 @@ export class BinaryNode extends BaseNode<
 
         this.controls.value.setValue(value);
 
-        this.onNodeUpdate?.(this.controls.value);
+        this.updateNodeRendering(this.id);
 
         return { value };
     }
@@ -60,4 +60,6 @@ export class BinaryNode extends BaseNode<
             value: this.controls.value.value || 0
         }
     }
+
+    protected updateDataFlow: () => void = ()=>{}
 }

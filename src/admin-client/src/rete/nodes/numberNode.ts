@@ -11,14 +11,18 @@ export class NumberNode extends BaseNode<
     { value: ClassicPreset.InputControl<"number">, description: ClassicPreset.InputControl<"text">}
 > {
     clone: () => NumberNode;
-    constructor(initialValue: number, onValueChange?: () => void) {
+    constructor(
+        initialValue: number,
+        protected updateNodeRendering: (id: string)=>void,
+        protected updateDataFlow: () => void
+    ) {
         super(NodeType.Number, 160, 180);
 
-        this.clone = () => new NumberNode(this.controls.value.value || 0);
+        this.clone = () => new NumberNode(this.controls.value.value || 0, this.updateNodeRendering, this.updateDataFlow);
 
         this.addControl(
             "value",
-            new ClassicPreset.InputControl("number", { initial: initialValue, change: onValueChange })
+            new ClassicPreset.InputControl("number", { initial: initialValue, change: updateDataFlow })
         );
         this.addControl(
             "description",
@@ -28,7 +32,7 @@ export class NumberNode extends BaseNode<
     }
 
     data(): { value: number } {
-        this.clone = () => new NumberNode(this.controls.value.value || 0);
+        this.clone = () => new NumberNode(this.controls.value.value || 0, this.updateNodeRendering, this.updateDataFlow);
         return {
             value: this.controls.value.value || 0
         };

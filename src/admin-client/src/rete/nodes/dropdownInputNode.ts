@@ -22,8 +22,8 @@ export class DropdownInputNode extends BaseNode<
     inputAlternatives: {label: string, value: number}[] = []
 
     constructor(
-        onValueChange?: () => void, // function to be called on user changing value
-        onNodeUpdate?: (nodeID: string) => void // function that updates node rendering
+        protected updateNodeRendering: (nodeID: string) => void, // function that updates node rendering
+        protected updateDataFlow: () => void, // function to be called on user changing value
     ) {
         super(NodeType.NumberInput, 400, 400, "Dropdown Input");
 
@@ -36,7 +36,7 @@ export class DropdownInputNode extends BaseNode<
             {
                 onUpdate: (newValue: InputBaseControl) => {
                     if(newValue instanceof DropdownInputControl) {
-                        onValueChange?.();
+                        this.updateDataFlow?.();
                         this.controls.baseInputData.name = newValue.name;
                         this.controls.baseInputData.simpleInput = newValue.simpleInput;
                         this.controls.baseInputData.infoText = newValue.infoText;
@@ -49,8 +49,8 @@ export class DropdownInputNode extends BaseNode<
                             this.width = this.originalWidth;
                             this.height = this.originalHeight;
                         }
-                        onNodeUpdate?.(this.id);
-                        onValueChange?.();
+                        this.updateNodeRendering?.(this.id);
+                        this.updateDataFlow?.();
                     } else {
                         throw new Error("Invalid instance of InputBasicControl in DropdownInputNode constructor.");
                     }
