@@ -16,10 +16,12 @@ import {BinaryNode} from "./nodes/binaryNode";
 import {NaryNode} from "./nodes/naryNode";
 import {NumberInputNode} from "./nodes/numberInputNode";
 import {OutputNode} from "./nodes/outputNode";
-import {LabelNode} from "./nodes/labelNode";
 import {DropdownInputNode} from "./nodes/dropdownInputNode";
 import {NumberInputControl} from "./customControls/inputNodeControls/number/numberInputControl";
 import {NumberInputControlContainer} from "./customControls/inputNodeControls/number/numberInputControlContainer";
+import {OutputNodeControl} from "./customControls/outputNodeControls/outputNodeControl";
+import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
+import {DisplayPieNode} from "./nodes/displayPieNode";
 
 
 
@@ -131,8 +133,8 @@ function createContextMenu(
     const updateNodeRender =
         (c:  ClassicPreset.InputControl<"number", number> | ClassicPreset.InputControl<"text", string>) => { area.update("control", c.id) }
     return new ContextMenuPlugin<Schemes>({
-        items: ContextMenuPresets.classic.setup(
-            [["Math",
+        items: ContextMenuPresets.classic.setup([
+            ["Math",
                 [["Number", () => new NumberNode(0, onInputChange)],
                 ["Add", () => new BinaryNode(NodeType.Add, updateNodeRender)],
                 ["Sub", () => new BinaryNode(NodeType.Sub, updateNodeRender)],
@@ -144,8 +146,9 @@ function createContextMenu(
             ["Inputs",
                 [["Dropdown", () => new DropdownInputNode(onInputChange, (id)=>{area.update("node", id)})],
                 ["Number", () => new NumberInputNode(onInputChange, (id)=>{area.update("node", id)})],]],
-            ["Output", () => new OutputNode(updateNodeRender)],
-            ["Label", ()=> new LabelNode(onInputChange)]
+            ["Output", () => new OutputNode((id)=>{area.update("node", id)})],
+            ["Pie Display", ()=> new DisplayPieNode((id)=>{area.update("node", id)})],
+            // ["Label", ()=> new LabelNode(onInputChange)]
         ])
     });
 }
@@ -183,6 +186,9 @@ export async function createEditor(container: HTMLElement) {
                     }
                     if (data.payload instanceof ClassicPreset.InputControl) {
                         return Presets.classic.Control;
+                    }
+                    if (data.payload instanceof OutputNodeControl) {
+                        return OutputNodeControlContainer
                     }
                     return null;
                 },
@@ -245,6 +251,7 @@ export async function createEditor(container: HTMLElement) {
 
         return context;
     });
+
 
 
 
