@@ -1,6 +1,6 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {getNaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {getNaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
 
 /**
@@ -50,5 +50,13 @@ export class NaryNode extends BaseNode<
         this.onNodeUpdate?.(this.controls.value);
 
         return { value };
+    }
+
+    toParseNode(): ParseNode {
+        return {
+            id: this.id,
+            type: this.type,
+            value: this.controls.value.value || 0
+        }
     }
 }

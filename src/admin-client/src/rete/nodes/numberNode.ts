@@ -1,6 +1,6 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
 /**
  * Node providing a simple number value that can be manually set. Represents a constant.
@@ -32,5 +32,13 @@ export class NumberNode extends BaseNode<
         return {
             value: this.controls.value.value || 0
         };
+    }
+
+    toParseNode(): ParseNode {
+        return {
+            id: this.id,
+            value: this.controls.value.value || 0,
+            type: this.type
+        }
     }
 }

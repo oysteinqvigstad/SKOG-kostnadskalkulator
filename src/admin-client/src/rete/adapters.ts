@@ -1,8 +1,6 @@
 import {Schemes, SkogNode} from "./nodes/types";
 import {NodeEditor} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {LabelNode} from "./nodes/labelNode";
-import {OutputNode} from "./nodes/outputNode";
 
 
 interface NodeConnection {
@@ -97,7 +95,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
     const stack: ParseNode[] = [rootNode];
 
     while (stack.length > 0) {
-        const currentNode = stack.pop();
+        let currentNode = stack.pop();
 
         if (!currentNode) {
             break;
@@ -108,13 +106,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
 
         if(currentSkogNode === undefined) {throw new Error("Node not found");}
 
-        currentNode.type = currentSkogNode.type;
-        if(currentSkogNode !instanceof LabelNode && currentSkogNode !instanceof OutputNode) {
-            //TODO: Need a more flexible way of declaring input and output controls dynamically
-            // and allowing these to be parsed
-            currentNode.value = currentSkogNode.controls.value.value ?? 0;
-        }
-        // currentNode.description = currentSkogNode.controls.description.value ?? "";
+        currentNode = currentSkogNode.toParseNode();
 
 
         if (currentConnection?.left) {
@@ -155,7 +147,7 @@ function populateTree(startNode: NodeConnection, connections: Map<string, NodeCo
                     type: NodeType.Number,
                     value: 0
                 }
-                currentNode.inputs?.push(node)
+                currentNode!.inputs?.push(node)
                 stack.push(node)
             })
         }

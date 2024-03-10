@@ -1,6 +1,7 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {getBinaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {ParseNode} from "@skogkalk/common/dist/src/parseTree"
 
 /**
  * Node for use with any binary math operation, such as +,-, * amd pow.
@@ -50,5 +51,13 @@ export class BinaryNode extends BaseNode<
         this.onNodeUpdate?.(this.controls.value);
 
         return { value };
+    }
+
+    toParseNode() : ParseNode {
+        return {
+            id: this.id,
+            type: this.type,
+            value: this.controls.value.value || 0
+        }
     }
 }

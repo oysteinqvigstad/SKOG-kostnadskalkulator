@@ -1,9 +1,9 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DropdownInputControl} from "../customControls/inputNodeControls/dropdown/dropdownInputControl";
 import {InputBaseControl} from "../customControls/inputNodeControls/common/inputBaseControl";
-
+import {DropdownInput} from "@skogkalk/common/src/parseTree"
 
 
 
@@ -71,5 +71,20 @@ export class DropdownInputNode extends BaseNode<
         return {
             value: this.controls.baseInputData.dropdownOptions.find((option)=>{return option.label === this.controls.baseInputData.defaultKey})?.value || 0
         };
+    }
+
+    toParseNode() : DropdownInput {
+        return { // TODO: Must implement controller
+            id: this.id,
+            value: this.controls.baseInputData.defaultValue || 0,
+            type: NodeType.DropdownInput,
+            defaultValue: this.controls.baseInputData.defaultValue || 0,
+            name: this.controls.baseInputData.name || "",
+            pageName: this.controls.baseInputData.pageName || "",
+            dropdownAlternatives: [],
+            infoText: this.controls.baseInputData.infoText || "",
+            ordering: 0, // TODO: Add to controller,
+            simpleInput: this.controls.baseInputData.simpleInput
+        }
     }
 }
