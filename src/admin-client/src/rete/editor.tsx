@@ -131,11 +131,11 @@ function createContextMenu(
     // NB: For a node to be copyable, it must implement clone() in a way
     // that does not require 'this' to be valid in its context.
     const updateNodeRender =
-        (c:  ClassicPreset.InputControl<"number", number> | ClassicPreset.InputControl<"text", string>) => { area.update("control", c.id) }
+        (id: string) => { area.update("node", id) }
     return new ContextMenuPlugin<Schemes>({
         items: ContextMenuPresets.classic.setup([
             ["Math",
-                [["Number", () => new NumberNode(0, onInputChange)],
+                [["Number", () => new NumberNode(0, updateNodeRender, onInputChange)],
                 ["Add", () => new BinaryNode(NodeType.Add, updateNodeRender)],
                 ["Sub", () => new BinaryNode(NodeType.Sub, updateNodeRender)],
                 ["Mul", () => new BinaryNode(NodeType.Mul, updateNodeRender)],
@@ -144,10 +144,10 @@ function createContextMenu(
                 ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
                 ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]]],
             ["Inputs",
-                [["Dropdown", () => new DropdownInputNode(onInputChange, (id)=>{area.update("node", id)})],
-                ["Number", () => new NumberInputNode(onInputChange, (id)=>{area.update("node", id)})],]],
-            ["Output", () => new OutputNode((id)=>{area.update("node", id)})],
-            ["Pie Display", ()=> new DisplayPieNode((id)=>{area.update("node", id)})],
+                [["Dropdown", () => new DropdownInputNode(updateNodeRender, onInputChange)],
+                ["Number", () => new NumberInputNode(updateNodeRender, onInputChange)],]],
+            ["Output", () => new OutputNode(updateNodeRender)],
+            ["Pie Display", ()=> new DisplayPieNode(updateNodeRender)],
             // ["Label", ()=> new LabelNode(onInputChange)]
         ])
     });
