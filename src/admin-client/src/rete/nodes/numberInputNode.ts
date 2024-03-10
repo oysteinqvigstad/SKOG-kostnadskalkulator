@@ -20,8 +20,8 @@ export class NumberInputNode extends BaseNode<
     legalValues: {min: number, max: number}[] = []
 
     constructor(
-        protected updateDataFlow: () => void,
-        protected updateNodeRendering: (nodeID: string) => void
+        protected updateNodeRendering: (nodeID: string) => void,
+        protected updateDataFlow: () => void
     ) {
         super(NodeType.NumberInput, 400, 400, "Number Input");
 
