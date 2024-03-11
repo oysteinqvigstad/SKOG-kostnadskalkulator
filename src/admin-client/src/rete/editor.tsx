@@ -309,6 +309,7 @@ export async function createEditor(container: HTMLElement) {
         testJSON: () => {
             currentJSONTree = createJSONGraph(editor);
             console.log(JSON.stringify(currentJSONTree, null, 2));
+            return currentJSONTree;
         },
         deleteSelected: async () => {
             const connections = editor.getConnections().filter(c => {
