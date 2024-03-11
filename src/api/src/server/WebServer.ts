@@ -34,7 +34,6 @@ export default class WebServer {
             .get('/api/v0/getCalculator', getCalculator(this.#config.database))
             .get('*', reactApp(this.#config.staticFilesPath))
             .post('/api/v0/addCalculator', addCalculator(this.#config.database))
-
         this.app.use(router)
     }
 

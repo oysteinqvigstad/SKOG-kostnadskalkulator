@@ -1,16 +1,27 @@
 import {IDatabase} from "../models/IDatabase";
-import {Formula} from "@skogkalk/common/dist/src/types/Formula";
+import {TreeState} from "@skogkalk/common/dist/src/parseTree";
 
 export class MockDatabase implements IDatabase {
-    #formulas = new Array<Formula>;
+    #formulas = new Map<string, TreeState[]>()
 
-    async addCalculator(formula: Formula): Promise<void> {
-        this.#formulas.push(formula);
+    async addCalculator(calculator: TreeState): Promise<void> {
+        const name = calculator.rootNode.formulaName
+        const existing = this.#formulas.get(name) ?? []
+        this.#formulas.set(name, [...existing, calculator])
     }
 
-    async getCalculator(name: string | undefined, version: string | undefined): Promise<Formula[]> {
-        return this.#formulas.filter(calc =>
-            (!name || calc.name === name) && (!version || calc.version === version)
-        )
+    async getCalculatorByName(name: string, version?: number): Promise<TreeState[]> {
+        return this.#formulas
+            .get(name)
+            ?.filter(calc => (!version || calc.rootNode.version === version))
+            ?? []
+    }
+
+    async getCalculatorsLatest(): Promise<TreeState[]> {
+        return Array
+            .from(this.#formulas.values())
+            .map(calcs => calcs.reduce((prev, current) =>
+                prev.rootNode.version > current.rootNode.version ? prev : current
+            ))
     }
 }
