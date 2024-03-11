@@ -1,4 +1,4 @@
-import {ConnProps, Schemes, SkogNode} from "./nodes/types";
+import {Schemes, SkogNode} from "./nodes/types";
 import {NodeEditor} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
