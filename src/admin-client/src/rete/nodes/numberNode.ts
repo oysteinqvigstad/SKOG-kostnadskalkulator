@@ -1,7 +1,7 @@
-import {BaseControl, BaseNode} from "./baseNode";
+import {NodeControl, BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {NumberControl} from "../customControls/numberControl/numberControl";
+import {NumberControlData} from "../customControls/numberControl/numberControlData";
 
 
 
@@ -13,7 +13,7 @@ import {NumberControl} from "../customControls/numberControl/numberControl";
 export class NumberNode extends BaseNode<
     {},
     { value: ClassicPreset.Socket },
-    { c: NumberControl }
+    { c: NodeControl<NumberControlData> }
 > {
     clone: () => NumberNode;
     constructor(
@@ -27,7 +27,8 @@ export class NumberNode extends BaseNode<
 
         this.addControl(
             "c",
-            new NumberControl({value:0, readonly: false},
+            new NodeControl(
+                {value:0, readonly: false} as NumberControlData,
                 {
                     onUpdate: data=>{
 
@@ -36,7 +37,9 @@ export class NumberNode extends BaseNode<
                         updateNodeRendering(this.id);
                     },
                     minimized: false
-                })
+                },
+                this.type
+            )
         );
         this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Number"));
     }

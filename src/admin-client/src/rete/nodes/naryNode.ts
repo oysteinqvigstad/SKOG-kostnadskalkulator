@@ -1,7 +1,7 @@
-import {BaseNode} from "./baseNode";
+import {BaseNode, NodeControl} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {getNaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {NumberControl} from "../customControls/numberControl/numberControl";
+import {NumberControlData} from "../customControls/numberControl/numberControlData";
 
 
 /**
@@ -11,7 +11,7 @@ import {NumberControl} from "../customControls/numberControl/numberControl";
 export class NaryNode extends BaseNode<
     { input: ClassicPreset.Socket },
     { value: ClassicPreset.Socket },
-    { c: NumberControl }
+    { c: NodeControl<NumberControlData> }
 > {
     naryOperation: (inputs: number[]) => number;
 
@@ -25,11 +25,14 @@ export class NaryNode extends BaseNode<
 
         this.addControl(
             "c",
-            new NumberControl({value: 0, readonly: true},
+            new NodeControl(
+                {value: 0, readonly: true} as NumberControlData,
                 {
                     onUpdate: (data)=>{ this.controls.c.data.value = data.value; },
                     minimized: false
-                },)
+                },
+                this.type
+                )
         );
 
         this.addInput("input", new ClassicPreset.Input(new ClassicPreset.Socket("socket"), "In", true));

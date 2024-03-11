@@ -1,14 +1,14 @@
-import {BaseNode} from "./baseNode";
+import {BaseNode, NodeControl} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {DisplayNodeControl} from "../customControls/displayNodeControls/common/displayNodeControl";
 import {DisplayNode as ParseDisplayNode } from "@skogkalk/common/src/parseTree"
+import {DisplayPieNodeData} from "../customControls/displayNodeControls/pieDisplayNode/displayPieNodeControlData";
 
 
 export class DisplayPieNode extends BaseNode <
     { outputNodes: ClassicPreset.Socket },
     {},
-    { c: DisplayNodeControl }
+    { c: NodeControl<DisplayPieNodeData> }
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void
@@ -23,18 +23,19 @@ export class DisplayPieNode extends BaseNode <
                 true))
 
         this.addControl("c",
-            new DisplayNodeControl(
+            new NodeControl(
                 {
                     name: "",
                     inputs: []
-                },
+                } as DisplayPieNodeData,
                 {
                     onUpdate: (data) => {
                         this.controls.c.data = data;
                         updateNodeRendering(this.id);
                     },
                     minimized: false
-                }
+                },
+                this.type
             )
         );
     }

@@ -1,15 +1,21 @@
 import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
-export abstract class BaseControl<T extends any> extends ClassicPreset.Control{
-    protected constructor(
+
+export class NodeControl<T extends any> extends ClassicPreset.Control{
+    constructor(
         public data: T,
         public options: {
             onUpdate: (data: T) => void,
             minimized: boolean
-        }
+        },
+        public type: NodeType,
     ) {
         super();
+    }
+
+    public update() : void {
+        this.options?.onUpdate?.(this.data);
     }
 }
 
@@ -20,7 +26,7 @@ export abstract class BaseControl<T extends any> extends ClassicPreset.Control{
 export abstract class BaseNode<
     Inputs extends Record<string, ClassicPreset.Socket>,
     Outputs extends Record<string, ClassicPreset.Socket>,
-    Controls extends Record<string, BaseControl<any>>
+    Controls extends Record<string, NodeControl<any>>
 > extends ClassicPreset.Node<Inputs, Outputs, Controls> {
     xTranslation: number = 0;
     yTranslation: number = 0;

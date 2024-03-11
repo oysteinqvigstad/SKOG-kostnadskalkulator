@@ -1,9 +1,10 @@
-import {OutputNodeControl} from "./outputNodeControl";
 import {TextInputField} from "../../../components/input/textInputField";
+import {OutputNodeControlData} from "./outputNodeControlData";
+import {NodeControl} from "../../nodes/baseNode";
 
 
 export function OutputNodeControlContainer(
-    props: { data: OutputNodeControl }
+    props: { data: NodeControl<OutputNodeControlData> }
 ) {
     return <>
         <TextInputField value={props.data.data.name} onChange={

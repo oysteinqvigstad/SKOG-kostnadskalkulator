@@ -1,9 +1,8 @@
-import {BaseNode} from "./baseNode";
+import {BaseNode, NodeControl} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {DropdownInputControl} from "../customControls/inputNodeControls/dropdown/dropdownInputControl";
-import {InputBaseControl} from "../customControls/inputNodeControls/common/inputBaseControl";
 import {DropdownInput} from "@skogkalk/common/src/parseTree"
+import {DropdownInputControlData} from "../customControls/inputNodeControls/dropdown/dropdownInputControlData";
 
 
 
@@ -14,7 +13,7 @@ export class DropdownInputNode extends BaseNode<
     {},
     { value: ClassicPreset.Socket },
     {
-        c: DropdownInputControl
+        c: NodeControl<DropdownInputControlData>
     }
 > {
     inputAlternatives: {label: string, value: number}[] = []
@@ -25,36 +24,34 @@ export class DropdownInputNode extends BaseNode<
     ) {
         super(NodeType.NumberInput, 400, 400, "Dropdown Input");
 
-        this.addControl("c", new DropdownInputControl(
+        this.addControl("c", new NodeControl(
             {
                 name: "",
                 simpleInput: true,
-                dropdownOptions: []
-            },
+                dropdownOptions: [],
+                defaultKey: "",
+            } as DropdownInputControlData,
             {
-                onUpdate: (newValue: InputBaseControl) => {
-                    if(newValue instanceof DropdownInputControl) {
-                        this.updateDataFlow();
-                        this.controls.c.data.name = newValue.data.name;
-                        this.controls.c.data.simpleInput = newValue.data.simpleInput;
-                        this.controls.c.data.infoText = newValue.data.infoText;
-                        this.controls.c.data.dropdownOptions = newValue.data.dropdownOptions;
+                onUpdate: (newValue: DropdownInputControlData) => {
+                    this.updateDataFlow();
+                    this.controls.c.data.name = newValue.name;
+                    this.controls.c.data.simpleInput = newValue.simpleInput;
+                    this.controls.c.data.infoText = newValue.infoText;
+                    this.controls.c.data.dropdownOptions = newValue.dropdownOptions;
 
-                        if(newValue.options.minimized) {
-                            this.width = this.originalWidth * 0.5;
-                            this.height = this.originalHeight * 0.5;
-                        } else {
-                            this.width = this.originalWidth;
-                            this.height = this.originalHeight;
-                        }
-                        this.updateNodeRendering(this.id);
-                        this.updateDataFlow();
+                    if(this.controls.c.options.minimized) {
+                        this.width = this.originalWidth * 0.5;
+                        this.height = this.originalHeight * 0.5;
                     } else {
-                        throw new Error("Invalid instance of InputBasicControl in DropdownInputNode constructor.");
+                        this.width = this.originalWidth;
+                        this.height = this.originalHeight;
                     }
+                    this.updateNodeRendering(this.id);
+                    this.updateDataFlow();
                 },
                 minimized: false
-            }
+            },
+            this.type
         ));
 
         this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Number"));
@@ -62,7 +59,7 @@ export class DropdownInputNode extends BaseNode<
 
     data(): { value: number } {
         return {
-            value: this.controls.c.data.dropdownOptions.find((option)=>{return option.label === this.controls.c.defaultKey})?.value || 0
+            value: this.controls.c.data.dropdownOptions.find((option)=>{return option.label === this.controls.c.data.defaultKey})?.value || 0
         };
     }
 
