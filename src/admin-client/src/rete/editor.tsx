@@ -24,6 +24,7 @@ import {
 import {NumberControlComponent} from "./customControls/numberControl/numberControlComponent";
 import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
 import {NumberInputControlContainer} from "./customControls/inputNodeControls/number/numberInputControlContainer";
+import {DropdownInputControlContainer} from "./customControls/inputNodeControls/dropdown/dropdownInputControlContainer";
 
 
 
@@ -187,6 +188,7 @@ export async function createEditor(container: HTMLElement) {
                         case NodeType.Display: return DisplayPieNodeControlContainer
                         case NodeType.NumberInput: return NumberInputControlContainer
                         case NodeType.Output: return OutputNodeControlContainer
+                        case NodeType.DropdownInput: return DropdownInputControlContainer
                     }
                     return NumberControlComponent;
                 },
