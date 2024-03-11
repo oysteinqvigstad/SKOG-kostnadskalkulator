@@ -90,7 +90,7 @@ function SavedResultsTable(props: {
                     placement={"top"}
                     delay={{show: 250, hide: 400}}
                 >
-                    <Button onClick={() => navigator.clipboard.writeText(link)}>
+                    <Button onClick={() => navigator.clipboard.writeText(window.location.origin + link)}>
                         <MdLink />
                     </Button>
                 </OverlayTrigger>
