@@ -1,6 +1,6 @@
 import {Schemes, SkogNode} from "./nodes/types";
 import {NodeEditor} from "rete";
-import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType, ParseNode, ReferenceNode} from "@skogkalk/common/dist/src/parseTree";
 
 
 interface NodeConnection {
@@ -59,7 +59,7 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode[] | und
         nodeChildrenCount.set(connection.target, (nodeChildrenCount.get(connection.target) ?? 0) + 1);
     });
 
-    const idToSkogNode = new Map(nodes.map((node) => [node.id, node]));
+    const idToSkogNode = new Map(nodes.map((node) => [node.id, {node: node, isRoot: isSubTreeRoot(node, nodeParentCount.get(node.id) || 0)}]));
     nodes.forEach((node) => { // Inserts roots and populates these.
         if (isSubTreeRoot(node, nodeParentCount.get(node.id) || 0)) {
             const subTree = populateTree( idToNodeConnection.get(node.id) ?? {id: node.id}, idToNodeConnection, idToSkogNode )
@@ -73,7 +73,6 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode[] | und
 
 function isSubTreeRoot(node: SkogNode, parentCount: number) {
     return [0, 2].includes(parentCount) || node.type === NodeType.Root;
-
 }
 
 
@@ -87,18 +86,28 @@ function isSubTreeRoot(node: SkogNode, parentCount: number) {
  * @param skogNodes A map from node IDs to actual node data.
  * @return The root node of the built tree represented as a ParseNode.
  */
-function populateTree(startNode: NodeConnection, nodeConnections: Map<string, NodeConnection>, skogNodes: Map<string, SkogNode>): ParseNode {
+function populateTree(startNode: NodeConnection, nodeConnections: Map<string, NodeConnection>, skogNodes: Map<string, {node: SkogNode, isRoot: boolean}>): ParseNode {
     const rootSkogNode = skogNodes.get(startNode.id);
     if(!rootSkogNode) { throw new Error("Start node not found in nodes map")}
 
-    const rootNode = rootSkogNode.toParseNode();
+    const rootNode = rootSkogNode.node.toParseNode();
 
     const stack: ParseNode[] = [rootNode];
 
     const parseNodeFromID: (id: string)=>ParseNode = (id: string) => {
         const result = skogNodes.get(id);
         if(!result) { throw new Error ("node not found in nodes map")}
-        return result.toParseNode();
+        const parseNode = result.node.toParseNode();
+        if(result.isRoot) {
+            return {
+                id: "",
+                value: parseNode.value,
+                type: NodeType.Reference,
+                referenceID: result.node.id
+            } as ReferenceNode
+        } else {
+            return parseNode;
+        }
     }
 
     while (stack.length > 0) {
