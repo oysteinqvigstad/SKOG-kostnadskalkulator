@@ -102,26 +102,27 @@ export function ResultContent() {
     return (
             <Stack className={"mb-3"} gap={3}>
                 <Row className={"row-gap-4"}>
-                    <Col md={6} lg={4}>
+                    <Col md={{span: 12, order: 1}} lg={{span: 8, order: 1}} className={"d-none d-md-block"}>
+                        <ResultParameters />
+                    </Col>
+                    <Col xs={{span: 12, order: 4}} md={{span: 6, order: 4}} lg={{span: 4, order: 2}}>
+                        <ResultGraph />
+                    </Col>
+                    <Col xs={{span: 12, order: 1}} md={{span: 6, order: 2}} lg={{span: 4, order: 3}}>
                         <ResultProductivityRadial
                             productivityItems={productivity}
                         />
                     </Col>
-                    <Col md={6} lg={4}>
+                    <Col xs={{span: 12, order: 2}} md={{span: 6, order: 3}} lg={{span: 4, order: 4}}>
                         <ResultCost
                             costCategories={costCategories}/>
                     </Col>
-                    <Col md={{span: 6, order: 2}} lg={{span: 4, order: 1}}>
+                    <Col xs={{span: 12, order: 3}} md={{span: 6, order: 5}} lg={{span: 4, order: 5}}>
                         <ResultTable
                             costItems={costLines}
                         />
                     </Col>
-                    <Col md={{span: 6, order: 3}} lg={{span: 8, order: 2}} className={"d-none d-md-block"}>
-                        <ResultParameters />
-                    </Col>
-                    <Col md={{span: 6, order: 1}} lg={{span: 4, order: 3}}>
-                        <ResultGraph />
-                    </Col>
+
                 </Row>
             </Stack>
     )

@@ -6,7 +6,7 @@ export function HomePage() {
             <Card className={"pt-5"}>
                 <Card.Body>
                     <Row className={"mx-auto"} style={{maxWidth: '800px'}}>
-                        <Col xs={8}>
+                        <Col xs={12} md={8}>
                             <h1 style={{fontWeight: 600}}>Beregn <span style={{color: '#ffa100'}}>produktivitet</span> og <span style={{color: '#ffa100'}}>kostnader</span> for skoghogst.
                             </h1>
                             <Row className={"mt-4 mb-4"}>

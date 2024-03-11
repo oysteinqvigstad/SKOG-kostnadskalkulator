@@ -2,10 +2,8 @@ import {Button, Col, Collapse, Container, Row} from "react-bootstrap";
 import '../App.css'
 import React, {useEffect, useState} from "react";
 import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
-import {MdArrowBackIosNew, MdClose, MdInfo, MdMenu} from "react-icons/md";
+import {MdArrowBackIosNew, MdClose, MdMenu} from "react-icons/md";
 import {ShareResultButton} from "../components/ShareResultButton";
-import {useAppDispatch} from "../state/hooks";
-import {setPage} from "../state/formSlice";
 import {SaveMenuButton} from "../components/SaveMenuButton";
 
 /**
@@ -23,8 +21,6 @@ export function NavBarNew() {
     // The navigation hook
     const navigate = useNavigate()
 
-    const dispatch = useAppDispatch()
-
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
 
     const updateMedia = () => {
@@ -36,6 +32,12 @@ export function NavBarNew() {
         return () => window.removeEventListener('resize', updateMedia);
     })
 
+    const extraNavbarButtons = (
+        <>
+            <SaveMenuButton />
+            <ShareResultButton />
+        </>
+    )
 
     return (
         <>
@@ -52,11 +54,7 @@ export function NavBarNew() {
                             <img src={"brand-banner.png"} alt={"Skogkurs Kostnadskalkulator"} />
                     </Col>
                     <Col xs={"auto"} className={"d-flex text-end"}>
-                        {!onMainPage && !isDesktop &&
-                            <NavBarButton icon={<MdInfo />} onClick={() => dispatch(setPage(0))} />
-                        }
-                        <SaveMenuButton />
-                        <ShareResultButton />
+                        {isDesktop && extraNavbarButtons}
                         <NavBarButton icon={!show ? <MdMenu /> : <MdClose />} onClick={onLinkClick} />
                     </Col>
                 </Row>
@@ -67,6 +65,7 @@ export function NavBarNew() {
                             <Link onClick={onLinkClick} to="/tallgrunnlag" style={{color: 'white'}}>Tallgrunnlag</Link>
                             <Link onClick={onLinkClick} to="/apiinfo" style={{color: 'white'}}>API</Link>
                             <Link onClick={onLinkClick} to="/tilbakemelding" style={{color: 'white'}}>Tilbakemelding</Link>
+                            {!isDesktop && <Col>{extraNavbarButtons}</Col>}
                         </Row>
                     </Collapse>
                 </Row>

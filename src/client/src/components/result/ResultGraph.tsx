@@ -184,7 +184,7 @@ function DrawGraph(
             options={chartOptions}
             series={props.series}
             type="line"
-            height={300}
+            height={250}
         />
     )
 
