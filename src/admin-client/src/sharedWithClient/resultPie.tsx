@@ -5,8 +5,6 @@ import {ApexOptions} from "apexcharts";
 import {ResultCard} from "./resultCard";
 import {DisplayNode} from "@skogkalk/common/dist/src/parseTree/nodes/displayNode";
 import {getNodeByID, TreeState} from "@skogkalk/common/dist/src/parseTree";
-import {isOutputNode} from "@skogkalk/common/dist/src/parseTree/nodes/outputNode";
-import {OutputNode} from "@skogkalk/common/dist/src/parseTree"
 /**
  * `ResultListItem` is an interface that is used to define the structure of the result list items.
  */
