@@ -19,7 +19,6 @@ export function isParseNode(node: any): node is ParseNode {
     return (
         typeof node.id === 'string' &&
         typeof node.type === 'string' &&
-        typeof node.value === 'number' &&
         (node.left === undefined || typeof node.left === 'object') &&
         (node.right === undefined || typeof node.right === 'object') &&
         (node.child === undefined || typeof node.child === 'object') &&
