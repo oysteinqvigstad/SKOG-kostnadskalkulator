@@ -4,13 +4,15 @@ import {Configuration} from "../src/types/Configuration";
 import {MockDatabase} from "../src/database/MockDatabase";
 import request from 'supertest'
 import path from "path";
-import {Formula} from "@skogkalk/common/dist/src/types/Formula";
+import {testTree, TreeState, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 
 let server: WebServer
 let database: IDatabase
+let calculator: TreeState
 
 beforeAll(() => {
     database = new MockDatabase()
+    calculator = treeStateFromData(testTree) as TreeState
     const config: Configuration = {
         database: database,
         httpPort: 4000,
@@ -46,61 +48,38 @@ describe('serve static files', () => {
 
 describe('api formulas', () => {
     test('GET /api/v0/getCalculator', async () => {
-        const formula: Formula = {
-            name: "Quadratic Formula",
-            version: "1.0.0",
-            formula: "x^2 + 2x + 1"
-        }
-        await database.addCalculator(formula)
+        await database.addCalculator(calculator)
         await request(server.app)
             .get('/api/v0/getCalculator')
             .expect('Content-Type', /json/)
-            .expect(200, [formula])
+            .expect(200, [calculator])
     })
 
     test('GET /api/v0/getCalculator?name=mycalc', async () => {
-        const formulas: Formula[] = [
-            {
-            name: "mycalculator",
-            version: "1.0.0",
-            formula: "x^2 + 2x + 1"
-            },
-            {
-            name: "mycalc",
-            version: "1.0.1",
-            formula: "x^2 + 2x + 1"
-            }
-        ]
-
-        await database.addCalculator(formulas[0])
-        await database.addCalculator(formulas[1])
+        const anotherCalculator = treeStateFromData(testTree)
+        anotherCalculator.rootNode.formulaName = 'mycalc'
+        await database.addCalculator(anotherCalculator)
 
         await request(server.app)
             .get('/api/v0/getCalculator?name=mycalc')
             .expect('Content-Type', /json/)
-            .expect(200, [formulas[1]])
+            .expect(200, [anotherCalculator])
     })
 
-    test('POST /api/v0/addCalculator', async () => {
-        const formula: Formula = {
-            name: "Quadratic Formula",
-            version: "1.0.0",
-            formula: "x^2 + 2x + 1"
-        }
+    test('POST /api/v0/addCalculator (same version)', async () => {
         await request(server.app)
             .post('/api/v0/addCalculator')
-            .send(formula)
+            .send(calculator)
+            .expect(409)
+    })
+
+    test('POST /api/v0/addCalculator (different version)', async () => {
+        const anotherCalculator = treeStateFromData(testTree)
+        anotherCalculator.rootNode.version = 5
+
+        await request(server.app)
+            .post('/api/v0/addCalculator')
+            .send(anotherCalculator)
             .expect(201)
-    })
-
-    test('POST /api/v0/addCalculator (missing field)', async () => {
-        const formula = {
-            name: "Quadratic Formula",
-            formula: "x^2 + 2x + 1"
-        }
-        await request(server.app)
-            .post('/api/v0/addCalculator')
-            .send(formula)
-            .expect(400)
     })
 })

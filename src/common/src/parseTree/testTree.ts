@@ -342,11 +342,7 @@ export const testTree = [
         value: 0,
         formulaName: "testformel",
         type: NodeType.Root,
-        version: {
-            major: 0,
-            minor: 1,
-            patch: 0
-        },
+        version: 1,
         pages: [
             {
                 pageName: "Sirkel",

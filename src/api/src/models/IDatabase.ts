@@ -1,6 +1,7 @@
-import {Formula} from "@skogkalk/common/dist/src/types/Formula";
+import {TreeState} from "@skogkalk/common/dist/src/parseTree";
 
 export interface IDatabase {
-    addCalculator(formula: Formula): Promise<void>;
-    getCalculator(name: string | undefined, version: string | undefined): Promise<Formula[]>;
+    addCalculator(tree: TreeState): Promise<void>;
+    getCalculatorByName(name: string, version?: number): Promise<TreeState[]>;
+    getCalculatorsLatest(): Promise<TreeState[]>;
 }
