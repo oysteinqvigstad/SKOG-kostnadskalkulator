@@ -1,9 +1,9 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DropdownInputControl} from "../customControls/inputNodeControls/dropdown/dropdownInputControl";
 import {InputBaseControl} from "../customControls/inputNodeControls/common/inputBaseControl";
-
+import {DropdownInput} from "@skogkalk/common/src/parseTree"
 
 
 
@@ -14,33 +14,31 @@ export class DropdownInputNode extends BaseNode<
     {},
     { value: ClassicPreset.Socket },
     {
-        value: ClassicPreset.InputControl<"number">,
-        description: ClassicPreset.InputControl<"text">,
-        baseInputData: DropdownInputControl
+        c: DropdownInputControl
     }
 > {
     inputAlternatives: {label: string, value: number}[] = []
 
     constructor(
-        onValueChange?: () => void, // function to be called on user changing value
-        onNodeUpdate?: (nodeID: string) => void // function that updates node rendering
+        protected updateNodeRendering: (nodeID: string) => void, // function that updates node rendering
+        protected updateDataFlow: () => void, // function to be called on user changing value
     ) {
         super(NodeType.NumberInput, 400, 400, "Dropdown Input");
 
-        this.addControl("baseInputData", new DropdownInputControl(
+        this.addControl("c", new DropdownInputControl(
             {
                 name: "",
                 simpleInput: true,
+                dropdownOptions: []
             },
-            [],
             {
                 onUpdate: (newValue: InputBaseControl) => {
                     if(newValue instanceof DropdownInputControl) {
-                        onValueChange?.();
-                        this.controls.baseInputData.name = newValue.name;
-                        this.controls.baseInputData.simpleInput = newValue.simpleInput;
-                        this.controls.baseInputData.infoText = newValue.infoText;
-                        this.controls.baseInputData.dropdownOptions = newValue.dropdownOptions;
+                        this.updateDataFlow();
+                        this.controls.c.data.name = newValue.data.name;
+                        this.controls.c.data.simpleInput = newValue.data.simpleInput;
+                        this.controls.c.data.infoText = newValue.data.infoText;
+                        this.controls.c.data.dropdownOptions = newValue.data.dropdownOptions;
 
                         if(newValue.options.minimized) {
                             this.width = this.originalWidth * 0.5;
@@ -49,8 +47,8 @@ export class DropdownInputNode extends BaseNode<
                             this.width = this.originalWidth;
                             this.height = this.originalHeight;
                         }
-                        onNodeUpdate?.(this.id);
-                        onValueChange?.();
+                        this.updateNodeRendering(this.id);
+                        this.updateDataFlow();
                     } else {
                         throw new Error("Invalid instance of InputBasicControl in DropdownInputNode constructor.");
                     }
@@ -59,17 +57,27 @@ export class DropdownInputNode extends BaseNode<
             }
         ));
 
-
-        this.addControl(
-            "description",
-            new ClassicPreset.InputControl("text", { initial: "description" })
-        );
         this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Number"));
     }
 
     data(): { value: number } {
         return {
-            value: this.controls.baseInputData.dropdownOptions.find((option)=>{return option.label === this.controls.baseInputData.defaultKey})?.value || 0
+            value: this.controls.c.data.dropdownOptions.find((option)=>{return option.label === this.controls.c.defaultKey})?.value || 0
         };
+    }
+
+    toParseNode() : DropdownInput {
+        return { // TODO: Must implement controller
+            id: this.id,
+            value: this.controls.c.data.defaultValue || 0,
+            type: NodeType.DropdownInput,
+            defaultValue: this.controls.c.data.defaultValue || 0,
+            name: this.controls.c.data.name || "",
+            pageName: this.controls.c.data.pageName || "",
+            dropdownAlternatives: [],
+            infoText: this.controls.c.data.infoText || "",
+            ordering: 0, // TODO: Add to controller,
+            simpleInput: this.controls.c.data.simpleInput
+        }
     }
 }

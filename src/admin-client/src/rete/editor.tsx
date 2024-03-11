@@ -16,12 +16,14 @@ import {BinaryNode} from "./nodes/binaryNode";
 import {NaryNode} from "./nodes/naryNode";
 import {NumberInputNode} from "./nodes/numberInputNode";
 import {OutputNode} from "./nodes/outputNode";
-import {LabelNode} from "./nodes/labelNode";
 import {DropdownInputNode} from "./nodes/dropdownInputNode";
 import {NumberInputControl} from "./customControls/inputNodeControls/number/numberInputControl";
 import {NumberInputControlContainer} from "./customControls/inputNodeControls/number/numberInputControlContainer";
-import {DropdownInputControl} from "./customControls/inputNodeControls/dropdown/dropdownInputControl";
-import {DropdownInputControlContainer} from "./customControls/inputNodeControls/dropdown/dropdownInputControlContainer";
+import {OutputNodeControl} from "./customControls/outputNodeControls/outputNodeControl";
+import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
+import {DisplayPieNode} from "./nodes/displayPieNode";
+import {NumberControl} from "./customControls/numberControl/numberControl";
+import {NumberControlComponent} from "./customControls/numberControl/numberControlComponent";
 
 
 
@@ -131,11 +133,11 @@ function createContextMenu(
     // NB: For a node to be copyable, it must implement clone() in a way
     // that does not require 'this' to be valid in its context.
     const updateNodeRender =
-        (c:  ClassicPreset.InputControl<"number", number> | ClassicPreset.InputControl<"text", string>) => { area.update("control", c.id) }
+        (id: string) => { area.update("node", id) }
     return new ContextMenuPlugin<Schemes>({
-        items: ContextMenuPresets.classic.setup(
-            [["Math",
-                [["Number", () => new NumberNode(0, onInputChange)],
+        items: ContextMenuPresets.classic.setup([
+            ["Math",
+                [["Number", () => new NumberNode(0, updateNodeRender, onInputChange)],
                 ["Add", () => new BinaryNode(NodeType.Add, updateNodeRender)],
                 ["Sub", () => new BinaryNode(NodeType.Sub, updateNodeRender)],
                 ["Mul", () => new BinaryNode(NodeType.Mul, updateNodeRender)],
@@ -144,10 +146,11 @@ function createContextMenu(
                 ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
                 ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]]],
             ["Inputs",
-                [["Dropdown", () => new DropdownInputNode(onInputChange, (id)=>{area.update("node", id)})],
-                ["Number", () => new NumberInputNode(onInputChange, (id)=>{area.update("node", id)})],]],
+                [["Dropdown", () => new DropdownInputNode(updateNodeRender, onInputChange)],
+                ["Number", () => new NumberInputNode(updateNodeRender, onInputChange)],]],
             ["Output", () => new OutputNode(updateNodeRender)],
-            ["Label", ()=> new LabelNode(onInputChange)]
+            ["Pie Display", ()=> new DisplayPieNode(updateNodeRender)],
+            // ["Label", ()=> new LabelNode(onInputChange)]
         ])
     });
 }
@@ -183,11 +186,13 @@ export async function createEditor(container: HTMLElement) {
                     if(data.payload instanceof NumberInputControl) {
                         return NumberInputControlContainer;
                     }
-                    if(data.payload instanceof DropdownInputControl) {
-                        return DropdownInputControlContainer;
+                    // @ts-ignore
+                    if (data.payload instanceof OutputNodeControl) {
+                        return OutputNodeControlContainer
                     }
-                    if (data.payload instanceof ClassicPreset.InputControl) {
-                        return Presets.classic.Control;
+                    // @ts-ignore
+                    if(data.payload instanceof NumberControl) {
+                        return NumberControlComponent
                     }
                     return null;
                 },
@@ -250,6 +255,7 @@ export async function createEditor(container: HTMLElement) {
 
         return context;
     });
+
 
 
 

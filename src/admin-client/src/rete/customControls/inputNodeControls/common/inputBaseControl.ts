@@ -1,4 +1,5 @@
 import {ClassicPreset} from "rete";
+import {BaseControl} from "../../../nodes/baseNode";
 
 export interface InputBaseData {
     name?: string,
@@ -9,27 +10,16 @@ export interface InputBaseData {
 }
 
 
-export abstract class InputBaseControl extends ClassicPreset.Control {
-    /**
-     * @param name
-     * @param defaultValue
-     * @param simpleInput
-     * @param pageName
-     * @param infoText
-     * @param options
-     */
+export abstract class InputBaseControl extends BaseControl {
+
     protected constructor(
-        public simpleInput: boolean,
+        public data: InputBaseData,
         public options: {
-            onUpdate?: (input: InputBaseControl) => void,
+            onUpdate: (input: InputBaseControl) => void,
             minimized: boolean,
         },
-        public name?: string,
-        public defaultValue?: number,
-        public pageName?: string,
-        public infoText?: string,
     ) {
-        super();
+        super(data, options);
     }
 
     public update() : void {

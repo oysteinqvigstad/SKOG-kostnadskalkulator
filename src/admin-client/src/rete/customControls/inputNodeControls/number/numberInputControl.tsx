@@ -1,30 +1,21 @@
 import {InputBaseData, InputBaseControl} from "../common/inputBaseControl";
 
 
+export interface NumberInputData extends InputBaseData {
+    legalValues: { min?: number, max?: number }[]
+
+}
+
 
 export class NumberInputControl extends InputBaseControl {
-    /**
-     *
-     * @param baseData
-     * @param legalValues
-     * @param options
-     */
     constructor(
-        baseData: InputBaseData,
-        public legalValues: { min?: number, max?: number }[],
-        options: {
-            onUpdate?: (input: InputBaseControl) => void,
+        public data: NumberInputData,
+        public options: {
+            onUpdate: (input: InputBaseControl) => void,
             minimized: boolean,
         }
     ) {
-        super(
-            baseData.simpleInput,
-            options,
-            baseData.name,
-            baseData.defaultValue,
-            baseData.pageName,
-            baseData.infoText,
-        );
+        super(data, options);
     }
 }
 

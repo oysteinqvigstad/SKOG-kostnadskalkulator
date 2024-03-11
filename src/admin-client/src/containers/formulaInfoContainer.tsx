@@ -11,9 +11,16 @@ export function FormulaInfoContainer(
     const formulaInfo = useAppSelector(selectFormulaInfo);
     const dispatch = useAppDispatch();
     return <InputGroup size="sm" className="mb-3">
-            <TextInputField value={formulaInfo.name} inputHint={"Formula name"} onChange={
-                (newName: string) => {dispatch(setName(newName))}
-            }/>
+            <TextInputField
+                value={formulaInfo.name}
+                inputHint={"Formula name"}
+                onChange={(newName: string, valid) => {
+                    if(valid){dispatch(setName(newName))}
+                }}
+                isValid={text=> { return text !== ""}}
+
+
+            />
             <InputGroup.Text id="inputGroup-sizing-sm">
                 {`Version: ${formulaInfo.version.major}.${formulaInfo.version.minor}.${formulaInfo.version.patch}`}
             </InputGroup.Text>
