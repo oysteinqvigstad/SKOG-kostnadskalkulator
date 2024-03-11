@@ -226,7 +226,7 @@ export async function createEditor(container: HTMLElement) {
 
 
     // For testing purposes
-    let currentJSONTree: ParseNode | undefined;
+    let currentJSONTree: ParseNode[] | undefined;
 
     editor.addPipe((context) => {
         if (["connectioncreated", "connectionremoved"].includes(context.type)) {
