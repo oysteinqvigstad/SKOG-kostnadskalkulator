@@ -4,13 +4,13 @@ export interface DropdownInputControlData extends InputBaseData {
     dropdownOptions: { value: number, label: string }[],
 }
 
-export class DropdownInputControl extends InputBaseControl{
+export class DropdownInputControl extends InputBaseControl<DropdownInputControlData>{
 
     constructor(
         public data: DropdownInputControlData,
         public options: {
             minimized: boolean,
-            onUpdate: (input: InputBaseControl) => void,
+            onUpdate: (input: DropdownInputControlData) => void,
         },
         public defaultKey?: string
     ) {
