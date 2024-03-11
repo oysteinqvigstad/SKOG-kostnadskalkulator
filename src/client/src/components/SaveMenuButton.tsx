@@ -1,5 +1,5 @@
-import {MdBookmarks, MdDelete, MdSave} from "react-icons/md";
-import {Button, Form, InputGroup, Modal, Table} from "react-bootstrap";
+import {MdBookmarkAdd, MdDelete, MdLink, MdPlaylistAdd} from "react-icons/md";
+import {Alert, Button, Form, InputGroup, Modal, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {SavedResult} from "../types/SavedResult";
 import {useAppSelector} from "../state/hooks";
@@ -38,32 +38,31 @@ export function SaveMenuButton() {
                 onClick={() => setShow(!show)}
                 style={{fontSize: '1.5em', color: "white"}}
             >
-                <MdBookmarks/>
+                <MdBookmarkAdd />
             </Button>
 
             <Modal show={show} onHide={() => setShow(false)} centered>
-                <Modal.Header>
+                <Modal.Header closeButton>
                     <Modal.Title>Lagrede resultater</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Resultatene lagres lokalt i din nettleser og vil forsvinne ved sletting av nettleserdata.
-                    <hr/>
+                    <Alert variant={"danger"} className={"mb-4"} dismissible>
+                        {"Resultatlisten vil forsvinne ved sletting av nettstedsdata. For trygg oppbevaring anbefales det å sikkerhetskopiere lenke"}
+                    </Alert>
+
                     <Form.Label htmlFor={"lagreResultat"}>Lagre nytt resultat</Form.Label>
-                    <InputGroup>
+                    <InputGroup className={"mb-4"}>
                         <Form.Control
                             id={"lagreResultat"}
-                            placeholder={"Navn på resultat"}
+                            placeholder={"Tittel"}
                             aria-label={"Navn på resultat"}
                             value={resultName}
                             onChange={handelNameChange}/>
                         <SaveButton results={results} fields={fields} resultName={resultName}/>
                     </InputGroup>
-                    <hr/>
-                    {results.length ? SavedResultsTable({
-                        results,
-                        handleClose,
-                        deleteSavedResult
-                    }) : "Ingen lagrede resultater"}
+                    <SavedResultsTable results={results} handleClose={handleClose} deleteSavedResult={deleteSavedResult} />
+                    {results.length === 0 && <em className={"ps-2"}>Tabellen er tom</em>}
+
                 </Modal.Body>
             </Modal>
         </>
@@ -77,13 +76,25 @@ function SavedResultsTable(props: {
     deleteSavedResult: (index: number) => void
 }) {
     const savedResults = props.results.map(({date, name, link}, index) =>
-        <tr>
+        <tr style={{verticalAlign: "middle"}}>
             <td>
                 <a href={link} onClick={() => props.handleClose(link)}>
                     {name}
                 </a>
             </td>
             <td>{new Date(date).toLocaleDateString()}</td>
+            <td>
+                <OverlayTrigger
+                    trigger={"click"}
+                    overlay={<Tooltip>Link kopiert til utklippstavle</Tooltip>}
+                    placement={"top"}
+                    delay={{show: 250, hide: 400}}
+                >
+                    <Button onClick={() => navigator.clipboard.writeText(link)}>
+                        <MdLink />
+                    </Button>
+                </OverlayTrigger>
+            </td>
             <td><Button onClick={() => props.deleteSavedResult(index)}>
                 <MdDelete/>
             </Button></td>
@@ -93,8 +104,10 @@ function SavedResultsTable(props: {
     return (<Table>
             <thead>
             <tr>
-                <th>Navn</th>
-                <th>Dato</th>
+                <th style={{width: '60%'}}>Navn</th>
+                <th style={{width: '20%'}}>Dato</th>
+                <th style={{width: '10%'}}>Lenke</th>
+                <th style={{width: '10%'}}>Slett</th>
             </tr>
             </thead>
             <tbody>
@@ -115,8 +128,8 @@ function SaveButton(props: { results: SavedResult[], fields: any, resultName: st
     }
 
     return (
-        <Button onClick={save}>
-            <MdSave/>
+        <Button className={"btn-toggle"} onClick={save}>
+            <MdPlaylistAdd />
         </Button>
     )
 }
