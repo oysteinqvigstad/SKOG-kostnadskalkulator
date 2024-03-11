@@ -38,12 +38,12 @@ export class OutputNode extends BaseNode <
             ))
     }
 
-    data( inputs :{ result?: number }) : { output: {name: string, value: number, id: string }} {
+    data( inputs :{ result?: number[] }) : { output: {name: string, value: number, id: string }} {
 
         const { result } = inputs
         if(result) {
             this.updateNodeRendering?.(this.id);
-            this.controls.c.data.value = result;
+            this.controls.c.data.value = result[0];
         }
         return { output: { id: this.id, name: this.controls.c.data.name, value: this.controls.c.data.value }}
     }
@@ -51,7 +51,7 @@ export class OutputNode extends BaseNode <
     toParseNode(): ParseOutputNode {
         return {
             id: this.id,
-            value: this.controls.c.data.value,
+            value: this.controls.c.data.value, // TODO: Somehow turns into an array with the actual value
             type: NodeType.Output,
             child: {id:"", value: 0, type: NodeType.Number }, // Placeholder,
             name: this.controls.c.data.name,
