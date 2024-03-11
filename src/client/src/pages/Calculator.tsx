@@ -5,7 +5,7 @@ import {Button} from "react-bootstrap";
 import {ResultParameters} from "../components/result/ResultParameters";
 import {ResultPeek} from "../components/result/ResultPeek";
 
-export function LandingPage() {
+export function Calculator() {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
 
     const updateMedia = () => {

@@ -47,6 +47,11 @@ body {
   border-color: #5e7461;
 }
 
+.btn-secondary {
+  color: white !important;
+  background-color: #5e7461 !important;
+  border-color: #425443 !important;
+}
 
 .btn-toggle {
   border-color: lightgray !important;
@@ -158,6 +163,9 @@ body {
     background-color: #E8E8E8 !important;
   }
 
+  .btn-secondary:hover {
+    background-color: #526953 !important;
+  }
   .reset-button:hover {
     background-color: transparent !important;
   }
