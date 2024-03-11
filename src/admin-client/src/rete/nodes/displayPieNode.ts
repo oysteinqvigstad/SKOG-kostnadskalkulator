@@ -6,7 +6,7 @@ import {DisplayPieNodeData} from "../customControls/displayNodeControls/pieDispl
 
 
 export class DisplayPieNode extends BaseNode <
-    { outputNodes: ClassicPreset.Socket },
+    { input: ClassicPreset.Socket },
     {},
     { c: NodeControl<DisplayPieNodeData> }
 > {
@@ -16,7 +16,7 @@ export class DisplayPieNode extends BaseNode <
     ) {
         super(NodeType.Display, 200, 200);
 
-        this.addInput("outputNodes",
+        this.addInput("input",
             new ClassicPreset.Input(
                 new ClassicPreset.Socket("socket"),
                 "Result",
@@ -40,9 +40,11 @@ export class DisplayPieNode extends BaseNode <
         );
     }
 
-    data( inputs :{ outputNodes?: {name: string, value: number, id: string }[] }) : {} {
-        const { outputNodes } = inputs
-
+    data( inputs :{ input?: {name: string, value: number, id: string }[] }) : {} {
+        const { input } = inputs
+        if(input) {
+            this.controls.c.data.inputs = input.map((node, index)=>{return { label: node.name, id: node.id, value: node.value, color: "", ordering: index}});
+        }
         this.updateNodeRendering?.(this.id);
         return {}
     }
