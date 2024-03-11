@@ -1,4 +1,3 @@
-import {ClassicPreset} from "rete";
 import {BaseControl} from "../../../nodes/baseNode";
 
 export interface InputBaseData {
@@ -10,12 +9,12 @@ export interface InputBaseData {
 }
 
 
-export abstract class InputBaseControl extends BaseControl {
+export abstract class InputBaseControl<T extends InputBaseData> extends BaseControl {
 
     protected constructor(
-        public data: InputBaseData,
+        public data: T,
         public options: {
-            onUpdate: (input: InputBaseControl) => void,
+            onUpdate: (input: T) => void,
             minimized: boolean,
         },
     ) {
@@ -23,6 +22,6 @@ export abstract class InputBaseControl extends BaseControl {
     }
 
     public update() : void {
-        this.options?.onUpdate?.(this);
+        this.options?.onUpdate?.(this.data);
     }
 }
