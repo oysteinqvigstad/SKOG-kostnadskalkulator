@@ -6,9 +6,7 @@ import {process} from "./editor";
 import {getSkogNodeFromNodeType} from "./utility/utility";
 import {NumberNode} from "./nodes/numberNode";
 import {BinaryNode} from "./nodes/binaryNode";
-import {OutputNode} from "./nodes/outputNode";
-import {LabelNode} from "./nodes/labelNode";
-import {NumberInputNode} from "./nodes/numberInputNode";
+import {BaseControl} from "./nodes/baseNode";
 
 
 export async function importGraph(
@@ -17,9 +15,8 @@ export async function importGraph(
     engine:DataflowEngine<Schemes>,
     area: AreaPlugin<Schemes, any>
 ){
-
     return new Promise<void>(async (resolve, reject) => {
-
+        console.log(data);
 
         if(!data) {
             reject();
@@ -27,28 +24,17 @@ export async function importGraph(
         }
 
         const onValueUpdate = process(engine, editor);
-        const updateNodeRender = (c:  ClassicPreset.InputControl<"number", number>) => { area.update("control",c.id) }
+        const updateNodeRender = (id: string) => { area.update("node", id) }
 
         let totalConnections: ConnProps[]  = [];
 
         for await (const { id, controls, type, xy , connections} of data.nodes) {
-            let node = getSkogNodeFromNodeType(
-                type,
-                onValueUpdate,
-                updateNodeRender
-            );
+            let node = getSkogNodeFromNodeType( type, onValueUpdate, updateNodeRender);
 
             if(!node) {
                 reject("Invalid node type found in file");
             } else {
-                if(!(node instanceof OutputNode) && !(node instanceof LabelNode) && !(node instanceof NumberInputNode)) {
-                    node.controls.value.setValue(controls.value.value);
-                    console.log("Not instance of input or output")
-                } else {
-                    console.log("Instance of input or output")
-                }
-
-                // node.controls.description.setValue(controls.description.value);
+                node.controls.c.data = controls.c.data;
                 node.id = id;
                 node.xTranslation = xy[0];
                 node.yTranslation = xy[1];
@@ -140,6 +126,11 @@ function serializeControl(control: ClassicPreset.Control) {
             type: control.type,
             value: control.value
         };
+    }
+    if (control instanceof BaseControl) {
+        return {
+            data: control.data
+        }
     }
     return null;
 }

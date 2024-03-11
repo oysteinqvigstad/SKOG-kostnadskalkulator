@@ -4,10 +4,10 @@ import {BinaryNode} from "./binaryNode";
 import {NaryNode} from "./naryNode";
 import {NumberInputNode} from "./numberInputNode";
 import {OutputNode} from "./outputNode";
-import {LabelNode} from "./labelNode";
 import {DropdownInputNode} from "./dropdownInputNode";
+import {DisplayPieNode} from "./displayPieNode";
 
-export type SkogNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | LabelNode | DropdownInputNode;
+export type SkogNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode;
 
 export class Connection<
     A extends SkogNode,
@@ -21,7 +21,6 @@ export type ConnProps = // Defines which nodes will signal which nodes
     | Connection<NumberNode, BinaryNode>
     | Connection<NumberNode, NaryNode>
     | Connection<NumberNode, OutputNode>
-    | Connection<LabelNode, OutputNode>
     | Connection<BinaryNode, OutputNode>
     | Connection<NaryNode, OutputNode>
 

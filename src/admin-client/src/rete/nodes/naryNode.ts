@@ -1,6 +1,7 @@
 import {BaseNode} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {getNaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {getNaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NumberControl} from "../customControls/numberControl/numberControl";
 
 
 /**
@@ -10,28 +11,25 @@ import {getNaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
 export class NaryNode extends BaseNode<
     { input: ClassicPreset.Socket },
     { value: ClassicPreset.Socket },
-    { value: ClassicPreset.InputControl<"number">, description: ClassicPreset.InputControl<"text"> }
+    { c: NumberControl }
 > {
     naryOperation: (inputs: number[]) => number;
 
     constructor(
         type: NodeType,
-        private onNodeUpdate?: (control: ClassicPreset.InputControl<"number">) => void
+        protected updateNodeRendering: (id: string) => void
     ) {
         super(type, 190, 180);
 
         this.naryOperation = getNaryOperation(type);
 
         this.addControl(
-            "value",
-            new ClassicPreset.InputControl("number", {
-                readonly: true
-            })
-        );
-
-        this.addControl(
-            "description",
-            new ClassicPreset.InputControl("text", { initial: "description" })
+            "c",
+            new NumberControl({value: 0, readonly: true},
+                {
+                    onUpdate: (data)=>{ this.controls.c.data.value = data.value; },
+                    minimized: false
+                },)
         );
 
         this.addInput("input", new ClassicPreset.Input(new ClassicPreset.Socket("socket"), "In", true));
@@ -45,10 +43,21 @@ export class NaryNode extends BaseNode<
         const input = inputs.input;
         const value = (input ? this.naryOperation(input) : inputControl?.value || 0);
 
-        this.controls.value.setValue(value);
+        this.controls.c.data.value = value;
 
-        this.onNodeUpdate?.(this.controls.value);
+        this.updateNodeRendering?.(this.id);
 
         return { value };
     }
+
+    toParseNode(): ParseNode {
+        return {
+            id: this.id,
+            type: this.type,
+            value: this.controls.c.data.value || 0
+        }
+    }
+
+    protected updateDataFlow: () => void = ()=>{}
+
 }
