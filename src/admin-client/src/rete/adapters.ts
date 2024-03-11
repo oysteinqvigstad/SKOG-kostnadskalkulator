@@ -100,7 +100,7 @@ function populateTree(startNode: NodeConnection, nodeConnections: Map<string, No
         const parseNode = result.node.toParseNode();
         if(result.isRoot) {
             return {
-                id: "",
+                id: (Math.round(Math.random()*1000000000)).toString(),
                 value: parseNode.value,
                 type: NodeType.Reference,
                 referenceID: result.node.id
