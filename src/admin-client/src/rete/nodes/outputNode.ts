@@ -1,7 +1,7 @@
-import {BaseNode} from "./baseNode";
+import {BaseNode, NodeControl} from "./baseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ClassicPreset} from "rete";
-import {OutputNodeControl} from "../customControls/outputNodeControls/outputNodeControl";
+import {OutputNodeControlData} from "../customControls/outputNodeControls/outputNodeControlData";
 import {OutputNode as ParseOutputNode} from "@skogkalk/common/src/parseTree"
 
 
@@ -9,7 +9,7 @@ export class OutputNode extends BaseNode <
 { result: ClassicPreset.Socket },
 { output: ClassicPreset.Socket },
 {
-    c: OutputNodeControl
+    c: NodeControl<OutputNodeControlData>
 }
 > {
 
@@ -22,17 +22,19 @@ export class OutputNode extends BaseNode <
         this.addInput( "result", new ClassicPreset.Input(  new ClassicPreset.Socket("socket"),  "Result",  false))
         this.addOutput(  "output", new ClassicPreset.Output( new ClassicPreset.Socket("socket"), "Out", true));
         this.addControl("c",
-            new OutputNodeControl(
+            new NodeControl(
                 {
+                    id: "",
                     name:"",
                     value: 0,
-                },
+                } as OutputNodeControlData,
                 {
                     onUpdate: (newData)=> {
                         this.controls.c.data = newData;
                     },
                     minimized: false
-                }
+                },
+                this.type
             ))
     }
 
@@ -40,7 +42,6 @@ export class OutputNode extends BaseNode <
 
         const { result } = inputs
         if(result) {
-            console.log("Hi")
             this.updateNodeRendering?.(this.id);
             this.controls.c.data.value = result;
         }

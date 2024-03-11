@@ -1,8 +1,9 @@
-import {NumberControl, NumberControlData} from "./numberControl";
+import {NumberControlData} from "./numberControlData";
 import {NumberInputField} from "../../../components/input/numberInputField";
+import {NodeControl} from "../../nodes/baseNode";
 
 export function NumberControlComponent(
-    props: {data: NumberControl }
+    props: {data: NodeControl<NumberControlData> }
 ) {
     return <>
         <NumberInputField

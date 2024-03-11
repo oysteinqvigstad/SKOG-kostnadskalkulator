@@ -1,5 +1,5 @@
 import {createRoot} from "react-dom/client";
-import {ClassicPreset, NodeEditor} from "rete";
+import {NodeEditor} from "rete";
 import {AreaExtensions, AreaPlugin} from "rete-area-plugin";
 import {ConnectionPlugin, Presets as ConnectionPresets} from "rete-connection-plugin";
 import {Presets, ReactArea2D, ReactPlugin} from "rete-react-plugin";
@@ -17,13 +17,13 @@ import {NaryNode} from "./nodes/naryNode";
 import {NumberInputNode} from "./nodes/numberInputNode";
 import {OutputNode} from "./nodes/outputNode";
 import {DropdownInputNode} from "./nodes/dropdownInputNode";
-import {NumberInputControl} from "./customControls/inputNodeControls/number/numberInputControl";
-import {NumberInputControlContainer} from "./customControls/inputNodeControls/number/numberInputControlContainer";
-import {OutputNodeControl} from "./customControls/outputNodeControls/outputNodeControl";
-import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
 import {DisplayPieNode} from "./nodes/displayPieNode";
-import {NumberControl} from "./customControls/numberControl/numberControl";
+import {
+    DisplayPieNodeControlContainer
+} from "./customControls/displayNodeControls/pieDisplayNode/displayPieNodeControlContainer";
 import {NumberControlComponent} from "./customControls/numberControl/numberControlComponent";
+import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
+import {NumberInputControlContainer} from "./customControls/inputNodeControls/number/numberInputControlContainer";
 
 
 
@@ -183,18 +183,12 @@ export async function createEditor(container: HTMLElement) {
         Presets.classic.setup({
             customize: {
                 control(data) {
-                    if(data.payload instanceof NumberInputControl) {
-                        return NumberInputControlContainer;
+                    switch(data.payload.type) {
+                        case NodeType.Display: return DisplayPieNodeControlContainer
+                        case NodeType.NumberInput: return NumberInputControlContainer
+                        case NodeType.Output: return OutputNodeControlContainer
                     }
-                    // @ts-ignore
-                    if (data.payload instanceof OutputNodeControl) {
-                        return OutputNodeControlContainer
-                    }
-                    // @ts-ignore
-                    if(data.payload instanceof NumberControl) {
-                        return NumberControlComponent
-                    }
-                    return null;
+                    return NumberControlComponent;
                 },
                 node() {
                     // Custom node goes here

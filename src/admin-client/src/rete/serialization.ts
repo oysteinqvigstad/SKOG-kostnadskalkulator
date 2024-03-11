@@ -6,7 +6,7 @@ import {process} from "./editor";
 import {getSkogNodeFromNodeType} from "./utility/utility";
 import {NumberNode} from "./nodes/numberNode";
 import {BinaryNode} from "./nodes/binaryNode";
-import {BaseControl} from "./nodes/baseNode";
+import {NodeControl} from "./nodes/baseNode";
 
 
 export async function importGraph(
@@ -127,7 +127,7 @@ function serializeControl(control: ClassicPreset.Control) {
             value: control.value
         };
     }
-    if (control instanceof BaseControl) {
+    if (control instanceof NodeControl) {
         return {
             data: control.data
         }
