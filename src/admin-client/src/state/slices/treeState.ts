@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {
-    TreeState
+    ParseNode,
+    TreeState, treeStateFromData
 } from "@skogkalk/common/dist/src/parseTree";
 
 export interface TreeSliceState {
@@ -13,8 +14,8 @@ export const treeStateSlice = createSlice({
         tree: undefined
     } as TreeSliceState,
     reducers: {
-        updateTree: (state, action: PayloadAction<TreeState>) => {
-            state.tree = action.payload;
+        updateTree: (state, action: PayloadAction<ParseNode[]>) => {
+            state.tree = treeStateFromData(action.payload) ?? state.tree;
         }
     }
 })
