@@ -18,7 +18,6 @@ export function LandingPage() {
     })
 
 
-
     return (
         <>
             {isDesktop ? (

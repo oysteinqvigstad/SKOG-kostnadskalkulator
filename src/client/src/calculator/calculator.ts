@@ -78,31 +78,6 @@ export function logHarvesterCostCalculator(
     terrainData: DrivingData,
 ) : Result<Calculation, FormInputErrorCode[]> {
 
-    // let errors: FormInputErrorCode[] = [];
-    //
-    // if (isNaN(harvesterCost)) {
-    //     errors.push(FormInputErrorCode.HARVESTER_HOUR_COST_G15)
-    // }
-    // if (isNaN(treeData.timberTrees)) {
-    //     errors.push(FormInputErrorCode.TIMBER_TREES_1000_SQM)
-    // }
-    // if (isNaN(terrainData.drivingConditions)) {
-    //     errors.push(FormInputErrorCode.DRIVING_CONDITIONS)
-    // }
-    // if (isNaN(treeData.clearanceTrees)) {
-    //     errors.push(FormInputErrorCode.CLEARANCE_TREES_1000_SQM)
-    // }
-    // if (isNaN(terrainData.incline)) {
-    //     errors.push(FormInputErrorCode.INCLINE)
-    // }
-    // if (isNaN(treeData.sellableTimberVolume)) {
-    //     errors.push(FormInputErrorCode.SELLABLE_TIMBER_VOLUME)
-    // }
-    // // If any errors, return them
-    // if(errors.length > 0) {
-    //     return { ok: false, error: errors }
-    // }
-
 
     const middleStem = treeData.sellableTimberVolume / treeData.timberTrees;
 
@@ -116,9 +91,6 @@ export function logHarvesterCostCalculator(
     const timberM3PerG15Hour = 3600 / (secondsUsedPerTreeG15 / middleStem)
     const costPerM3Timber = harvesterCost / timberM3PerG15Hour
 
-    // if (isNaN(costPerM3Timber) || isNaN(timberM3PerG15Hour)) {
-    //     return { ok: false, error: [] }
-    // }
 
     return {
         ok: true,

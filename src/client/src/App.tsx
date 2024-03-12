@@ -18,10 +18,14 @@ import {NavBarNew} from "./containers/NavBarNew";
 import {LandingPage} from "./pages/LandingPage";
 import {initiateTree} from "./state/treeSlice";
 import {testTree, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
+// import {useAddCalculatorMutation, useGetCalculatorQuery} from "./state/store";
 
 function App() {
 
     const dispatch = useAppDispatch()
+    // const [addCalculator, addCalculatorStatus] = useAddCalculatorMutation()
+    // const {data, error, isLoading} = useGetCalculatorQuery({name: 'testformel'})
+
 
     // Keep track of whether the default values have been loaded
     const [haveDefaultsBeenLoaded, setHaveDefaultsBeenLoaded] = useState(false)
@@ -37,13 +41,20 @@ function App() {
                     dispatch(setField({title: fieldData.title, value: fieldData.default}))
                 }
             })
-            // read tree data
-            dispatch(initiateTree({tree: treeStateFromData(testTree)}))
 
             // sets default values for calculator data
             dispatch(setCalculatorData(staticCalculatorData[0]))
+
+            // read tree data
+            dispatch(initiateTree({tree: treeStateFromData(testTree)}))
+
             setHaveDefaultsBeenLoaded(true)
         }
+
+        // if (data) {
+        //     dispatch(initiateTree({tree: data}))
+        // }
+        // addCalculator(treeStateFromData(testTree))
     }, [dispatch, haveDefaultsBeenLoaded]);
 
 

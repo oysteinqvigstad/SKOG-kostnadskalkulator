@@ -2,7 +2,8 @@ import { configureStore } from '@reduxjs/toolkit'
 import formReducer from "./formSlice";
 import treeReducer from "./treeSlice"
 import calculatorReducer from "./calculatorSlice";
-import {apiService} from "@skogkalk/common/dist/src/services/apiService";
+import {apiService} from "./apiService";
+
 
 
 /**
@@ -19,7 +20,7 @@ export const store = configureStore({
 })
 
 // importing auto generated hooks from the redux toolkit
-export const { useGetCalculatorsQuery, useAddCalculatorMutation } = apiService
+export const { useGetCalculatorQuery, useAddCalculatorMutation } = apiService
 
 // types that our hooks use, don't use these directly in components
 export type RootState = ReturnType<typeof store.getState>
