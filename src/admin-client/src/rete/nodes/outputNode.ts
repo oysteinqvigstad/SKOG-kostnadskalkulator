@@ -17,7 +17,7 @@ export class OutputNode extends BaseNode <
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
     ) {
-        super(NodeType.Output, 200, 200);
+        super(NodeType.Output, 240, 200);
 
         this.addInput( "result", new ClassicPreset.Input(  new ClassicPreset.Socket("socket"),  "Result",  false))
         this.addOutput(  "output", new ClassicPreset.Output( new ClassicPreset.Socket("socket"), "Out", true));
@@ -31,6 +31,7 @@ export class OutputNode extends BaseNode <
                 {
                     onUpdate: (newData)=> {
                         this.controls.c.data = newData;
+                        this.updateNodeRendering(this.id);
                     },
                     minimized: false
                 },
@@ -38,14 +39,20 @@ export class OutputNode extends BaseNode <
             ))
     }
 
-    data( inputs :{ result?: number[] }) : { output: {name: string, value: number, id: string }} {
-
+    data( inputs :{ result?: number[] }) : { output: {name: string, value: number, id: string, color: string }} {
+        //TODO: Data flow update on name/color change
         const { result } = inputs
         if(result) {
             this.updateNodeRendering?.(this.id);
             this.controls.c.data.value = result[0];
         }
-        return { output: { id: this.id, name: this.controls.c.data.name, value: this.controls.c.data.value }}
+        return {
+            output: {
+                id: this.id,
+                name: this.controls.c.data.name,
+                value: this.controls.c.data.value, color: this.controls.c.data.color || ""
+            }
+        }
     }
 
     toParseNode(): ParseOutputNode {

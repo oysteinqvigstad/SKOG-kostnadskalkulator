@@ -40,10 +40,10 @@ export class DisplayPieNode extends BaseNode <
         );
     }
 
-    data( inputs :{ input?: {name: string, value: number, id: string }[] }) : {} {
+    data( inputs :{ input?: {name: string, value: number, id: string , color: string}[] }) : {} {
         const { input } = inputs
         if(input) {
-            this.controls.c.data.inputs = input.map((node, index)=>{return { label: node.name, id: node.id, value: node.value, color: "", ordering: index}});
+            this.controls.c.data.inputs = input.map((node, index)=>{return { label: node.name, id: node.id, value: node.value, color: node.color, ordering: index}});
         }
         this.updateNodeRendering?.(this.id);
         return {}
