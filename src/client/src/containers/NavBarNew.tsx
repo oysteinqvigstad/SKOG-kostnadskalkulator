@@ -51,7 +51,7 @@ export function NavBarNew() {
                     }
                     <Col className={"pt-2 flex-grow-1"}
                          style={{fontSize: '1.5em', fontFamily: 'Arial', color: 'White', minWidth: 0}}>
-                            <img src={"brand-banner.png"} alt={"Skogkurs Kostnadskalkulator"} />
+                        <img src={'brand-banner.svg'} alt={"Skogkurs Kostnadskalkulator"} height={'40px'} style={{cursor: 'pointer' }} onClick={() => navigate('/')} />
                     </Col>
                     <Col xs={"auto"} className={"d-flex text-end"}>
                         {isDesktop && extraNavbarButtons}
