@@ -12,7 +12,7 @@ export function SaveMenuButton() {
 
     useEffect(() => {
         getSavedResults()
-    }, [results]);
+    }, []);
 
     function getSavedResults() {
         setResults(JSON.parse(localStorage.getItem("savedResults") as string ?? "[]"))
@@ -25,6 +25,7 @@ export function SaveMenuButton() {
     function deleteSavedResult(index: number) {
         results.splice(index, 1)
         localStorage.setItem("savedResults", JSON.stringify(results))
+        getSavedResults()
     }
 
     function handleClose() {
@@ -58,7 +59,7 @@ export function SaveMenuButton() {
                             aria-label={"Navn på resultat"}
                             value={resultName}
                             onChange={handelNameChange}/>
-                        <SaveButton results={results} fields={fields} resultName={resultName}/>
+                        <SaveButton results={results} fields={fields} resultName={resultName} onSave={getSavedResults}/>
                     </InputGroup>
                     <SavedResultsTable results={results} handleClose={handleClose} deleteSavedResult={deleteSavedResult} />
                     {results.length === 0 && <em className={"ps-2"}>Tabellen er tom</em>}
@@ -117,7 +118,7 @@ function SavedResultsTable(props: {
     )
 }
 
-function SaveButton(props: { results: SavedResult[], fields: any, resultName: string }) {
+function SaveButton(props: { results: SavedResult[], fields: any, resultName: string, onSave: () => void }) {
     function save() {
         const queries = Object.entries(props.fields).map(([key, value]) => {
             return `${encodeURI(key)}=${value}`
@@ -125,6 +126,7 @@ function SaveButton(props: { results: SavedResult[], fields: any, resultName: st
         const url = `/resultat?${queries}`
         props.results.unshift({date: Date.now(), name: props.resultName, link: url})
         localStorage.setItem("savedResults", JSON.stringify(props.results))
+        props.onSave()
     }
 
     return (
