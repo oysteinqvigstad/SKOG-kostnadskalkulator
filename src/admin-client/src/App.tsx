@@ -1,7 +1,7 @@
-import { createEditor } from "./rete/editor";
-import { useRete } from "rete-react-plugin";
+import {createEditor} from "./rete/editor";
+import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
-import {Card, Col, Form, Nav, Navbar, NavDropdown, Row} from "react-bootstrap";
+import {Card, Col, Nav, Navbar, NavDropdown, Row} from "react-bootstrap";
 import {useEffect} from "react";
 import {Provider} from "react-redux";
 import {PagesWindow} from "./containers/pagesWindow";
@@ -9,7 +9,7 @@ import {selectFormulaInfo, selectPages, selectTreeState, store} from "./state/st
 import {FormulaInfoContainer} from "./containers/formulaInfoContainer";
 import {useAppDispatch, useAppSelector} from "./state/hooks";
 import {updateTree} from "./state/slices/treeState";
-import {NodeType, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
 
 
