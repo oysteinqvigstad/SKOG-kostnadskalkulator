@@ -31,6 +31,7 @@ export class OutputNode extends BaseNode <
                 {
                     onUpdate: (newData)=> {
                         this.controls.c.data = newData;
+                        this.updateDataFlow();
                         this.updateNodeRendering(this.id);
                     },
                     minimized: false
@@ -40,7 +41,6 @@ export class OutputNode extends BaseNode <
     }
 
     data( inputs :{ result?: number[] }) : { output: {name: string, value: number, id: string, color: string }} {
-        //TODO: Data flow update on name/color change
         const { result } = inputs
         if(result) {
             this.updateNodeRendering?.(this.id);
