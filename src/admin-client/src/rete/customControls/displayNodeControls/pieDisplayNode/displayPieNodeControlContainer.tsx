@@ -1,6 +1,5 @@
 import {DisplayPieNodeData} from "./displayPieNodeControlData";
 import React from "react";
-import {ResultPie} from "../../../../sharedWithClient/resultPie";
 import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
@@ -9,6 +8,7 @@ import {Provider} from "react-redux";
 import {isReferenceNode} from "@skogkalk/common/dist/src/parseTree/nodes/referenceNode";
 import {isOutputNode} from "@skogkalk/common/dist/src/parseTree/nodes/outputNode";
 import {OutputNode as ParseOutputNode} from "@skogkalk/common/src/parseTree"
+import {ResultPie} from "@skogkalk/common/dist/src/visual/resultPie";
 
 export function DisplayPieNodeControlContainer(
     props: { data: NodeControl<DisplayPieNodeData> }

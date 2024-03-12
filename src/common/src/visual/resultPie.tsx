@@ -3,8 +3,7 @@ import React from "react";
 import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
 import {ResultCard} from "./resultCard";
-import {DisplayNode} from "@skogkalk/common/dist/src/parseTree/nodes/displayNode";
-import {getNodeByID, TreeState} from "@skogkalk/common/dist/src/parseTree";
+import {DisplayNode, getNodeByID, TreeState} from "../parseTree";
 /**
  * `ResultListItem` is an interface that is used to define the structure of the result list items.
  */
