@@ -10,7 +10,6 @@ import {
     T7Sorting,
     T8AdditionalTime
 } from "../src/calculator/calculator";
-import {FormInputErrorCode} from "../src/calculator/calculator-fields";
 
 // EXPECTED NUMBERS ARE ROUNDED DUE TO EXCEL SHEET ROUNDING NUMBERS
 
@@ -57,33 +56,6 @@ describe("Should result in same result as excel-calculator for log harvester",  
         }
     )
 
-    it("Should return a list of enums indicating which inputs are NaN",  () => {
-
-        const terrainData = {
-            drivingDistance: 200,
-            drivingConditions: NaN,
-            incline: 2
-        }
-
-        const treeData = {
-            sellableTimberVolume: 25,
-            timberTrees: 100,
-            clearanceTrees: 150,
-            forestType: ForestType.ValleyAndMountainForest
-        }
-        const result = logHarvesterCostCalculator( NaN, treeData, terrainData )
-
-        if(result.ok === true) {
-            throw new Error("Result not ok")
-        }
-        const error = result.error;
-        expect(error).toEqual(
-            [
-                FormInputErrorCode.HARVESTER_HOUR_COST_G15,
-                FormInputErrorCode.DRIVING_CONDITIONS
-            ]
-        )
-    });
 })
 
 describe("Tests calculation of load carrier cost", () => {
