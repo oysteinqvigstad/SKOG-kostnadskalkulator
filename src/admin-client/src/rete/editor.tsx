@@ -176,6 +176,7 @@ export async function createEditor(container: HTMLElement) {
 
     let selectedNode: string = "";
 
+
     AreaExtensions.selectableNodes(area, AreaExtensions.selector(), {
         accumulating: AreaExtensions.accumulateOnCtrl()
     });
@@ -318,22 +319,22 @@ export async function createEditor(container: HTMLElement) {
             return currentJSONTree;
         },
         deleteSelected: async () => {
-            const connections = editor.getConnections().filter(c => {
-                return c.source === selectedNode || c.target === selectedNode
-            })
-
-            for (const connection of connections) {
-                await editor.removeConnection(connection.id)
+            if(editor.getNode(selectedNode)) {
+                const connections = editor.getConnections().filter(c => {
+                    return c.source === selectedNode || c.target === selectedNode
+                })
+                for (const connection of connections) {
+                    await editor.removeConnection(connection.id)
+                }
+                editor.removeNode(selectedNode).then(()=>{});
             }
-            await editor.removeNode(selectedNode)
-            editor.removeNode(selectedNode).then(()=>{});
         },
         viewControllers: {
             resetView: () => {
                 AreaExtensions.zoomAt(area, editor.getNodes()).then(() => {});
             },
             focusSelectedNode: () => {
-                AreaExtensions.zoomAt(area, [editor.getNode(selectedNode)]).then(() => {});
+                AreaExtensions.zoomAt(area, [editor.getNode(selectedNode)]).catch(()=>{}).then(() => {});
             },
             zoomIn: () => {
             }
