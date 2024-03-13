@@ -1,6 +1,6 @@
 import {BaseNode, NodeControl} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DropdownInput} from "@skogkalk/common/src/parseTree"
 import {DropdownInputControlData} from "../customControls/inputNodeControls/dropdown/dropdownInputControlData";
 
@@ -35,8 +35,7 @@ export class DropdownInputNode extends BaseNode<
         this.addControl("c", new NodeControl(
             initialControlData,
             {
-                onUpdate: (newValue: DropdownInputControlData) => {
-
+                onUpdate: () => {
                     if(this.controls.c.options.minimized) {
                         this.width = this.originalWidth * 0.5;
                         this.height = this.originalHeight * 0.5;
