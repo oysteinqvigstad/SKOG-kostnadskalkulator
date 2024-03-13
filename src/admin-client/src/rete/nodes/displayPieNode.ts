@@ -11,8 +11,8 @@ export class DisplayPieNode extends BaseNode <
     { c: NodeControl<DisplayPieNodeData> }
 > {
     constructor(
-        protected updateNodeRendering: (nodeID: string) => void
-
+        protected updateNodeRendering: (nodeID: string) => void,
+        private updateStore: () => void
     ) {
         super(NodeType.Display, 600, 400);
 
@@ -35,6 +35,7 @@ export class DisplayPieNode extends BaseNode <
                 {
                     onUpdate: () => {
                         updateNodeRendering(this.id);
+
                     },
                     minimized: false
                 },
@@ -47,6 +48,7 @@ export class DisplayPieNode extends BaseNode <
         const { input } = inputs
         if(input) {
             this.controls.c.set({inputs: input.map((node, index)=>{return { label: node.name, id: node.id, value: node.value, color: node.color, ordering: index}})});
+            this.updateStore();
         }
         this.updateNodeRendering?.(this.id);
         return {}

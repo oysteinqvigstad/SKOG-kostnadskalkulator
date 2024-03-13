@@ -74,10 +74,17 @@ export function treeStateFromData(data: any): TreeState {
         });
     });
 
-    if (roots.length !== 1) { throw new Error("None or multiple root nodes found in tree")}
 
     return {
-        rootNode: roots[0],
+        rootNode: roots[0] ||  {
+        id: "0",
+        type: NodeType.Root,
+        value: 0,
+        formulaName: "",
+        version:0,
+        pages: [],
+        inputs:[]
+    } as RootNode,
         displayNodes: displays,
         inputs: inputs,
         outputs: outputs,

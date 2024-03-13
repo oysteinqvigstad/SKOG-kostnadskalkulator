@@ -46,8 +46,8 @@ export function process (engine: DataflowEngine<Schemes>, editor: NodeEditor<Sch
         engine.reset();
         editor
             .getNodes()
-            .forEach((node) => {
-                engine.fetch(node.id).catch(() => {});
+            .forEach(async (node) => {
+                await engine.fetch(node.id).catch(() => {});
             });
     }
 }
@@ -66,16 +66,17 @@ async function  loadGraphFromLocalStorage(
     editor: NodeEditor<Schemes>,
     engine: DataflowEngine<Schemes>,
     area: AreaPlugin<Schemes, AreaExtra>,
-) : Promise<void> {
+    callback: () =>void
+) : Promise<ParseNode[] | undefined> {
     return new Promise((resolve, reject) => {
         if(!localStorage) {
             reject("Local storage not available");
         }
         const graph = localStorage.getItem(fileName);
         if(graph) {
-            importGraph(JSON.parse(graph), editor, engine, area)
+            importGraph(JSON.parse(graph), editor, engine, area, callback)
                 .then(() => {
-                    resolve();
+                    resolve(createJSONGraph(editor));
                 })
                 .catch(() => {
                     reject("Failed to load graph from existing file");
@@ -129,7 +130,8 @@ async function saveGraphToLocalStorage(
 function createContextMenu(
     editor: NodeEditor<Schemes>,
     area: AreaPlugin<Schemes, AreaExtra>,
-    updateDataFlow: () => void
+    updateDataFlow: () => void,
+    updateStore: () => void
 ) : ContextMenuPlugin<Schemes> {
     // NB: For a node to be copyable, it must implement clone() in a way
     // that does not require 'this' to be valid in its context.
@@ -149,8 +151,8 @@ function createContextMenu(
             ["Inputs",
                 [["Dropdown", () => new DropdownInputNode(updateNodeRender, updateDataFlow)],
                 ["Number", () => new NumberInputNode(updateNodeRender, updateDataFlow)],]],
-            ["Output", () => new OutputNode(updateNodeRender)],
-            ["Pie Display", ()=> new DisplayPieNode(updateNodeRender)],
+            ["Output", () => new OutputNode(updateNodeRender, updateDataFlow)],
+            ["Pie Display", ()=> new DisplayPieNode(updateNodeRender, updateStore)],
             // ["Label", ()=> new LabelNode(onInputChange)]
         ])
     });
@@ -163,6 +165,7 @@ function createContextMenu(
  * Creates a new editor and returns a promise with an object containing functions to
  * control the editor.
  * @param container HTML element to contain the editor
+ * @param signal object with a counter which is counted up whenever the rete state changes
  * @returns Promise with an object containing functions destroy(), load(), save(), clear() and testJSON()
  */
 export async function createEditor(container: HTMLElement) {
@@ -174,7 +177,11 @@ export async function createEditor(container: HTMLElement) {
     const engine = new DataflowEngine<Schemes>();
     const scopes = new ScopesPlugin<Schemes>();
 
+
     let selectedNode: string = "";
+    const onReteStateChangeWrapper = {
+        call: ()=>{}
+    }
 
 
     AreaExtensions.selectableNodes(area, AreaExtensions.selector(), {
@@ -202,8 +209,6 @@ export async function createEditor(container: HTMLElement) {
     );
 
 
-
-
     // context menu can be customized here by adding a Customize object inside
     // object passed to setup(), with customize : { ... }
     render.addPreset(Presets.contextMenu.setup({delay:10}));
@@ -224,7 +229,14 @@ export async function createEditor(container: HTMLElement) {
 
 
     area.use(connection);
-    area.use(createContextMenu(editor, area, process(engine, editor)));
+
+    const updateParseTree = ()=> {
+        console.log('updating currentJSONTree');
+        currentJSONTree = createJSONGraph(editor)
+        onReteStateChangeWrapper.call();
+    }
+
+    area.use(createContextMenu(editor, area, process(engine, editor), updateParseTree));
     area.use(render);
 
     area.use(scopes);
@@ -249,6 +261,7 @@ export async function createEditor(container: HTMLElement) {
         }
         return context;
     })
+
 
     area.addPipe((context) => {
 
@@ -290,9 +303,11 @@ export async function createEditor(container: HTMLElement) {
             onLoading();
             await editor.clear();
 
-            loadGraphFromLocalStorage("graph", editor, engine, area)
+            loadGraphFromLocalStorage("graph", editor, engine, area, updateParseTree)
                 .then(async () => {
                     onLoaded();
+                    currentJSONTree = createJSONGraph(editor);
+                    onReteStateChangeWrapper.call();
                 })
                 .catch(() => {onFailedToLoad()});
         },
@@ -329,6 +344,9 @@ export async function createEditor(container: HTMLElement) {
                 editor.removeNode(selectedNode).then(()=>{});
             }
         },
+        registerCallBack(newCallback: () => void) {
+            onReteStateChangeWrapper.call = newCallback;
+        },
         viewControllers: {
             resetView: () => {
                 AreaExtensions.zoomAt(area, editor.getNodes()).then(() => {});
@@ -339,6 +357,6 @@ export async function createEditor(container: HTMLElement) {
             zoomIn: () => {
             }
         },
-        jsonState: currentJSONTree
+        getCurrentTree: ()=> currentJSONTree
     };
 }
