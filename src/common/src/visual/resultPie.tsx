@@ -20,6 +20,7 @@ export function ResultPie(props: {
 
     const labels = nodes.map(node=>node.label);
     const values = nodes.map(node=>node.value);
+    const colors = nodes.map(node=>node.color);
 
     const totalCost = Math.round(
         values.reduce((acc, cost) => acc + cost, 0)
@@ -31,6 +32,7 @@ export function ResultPie(props: {
             type: props.displayData.pieType || "donut",
         },
         labels: labels,
+        colors: colors,
         title: {
             text: totalCost.toString(),
             align: 'center',
