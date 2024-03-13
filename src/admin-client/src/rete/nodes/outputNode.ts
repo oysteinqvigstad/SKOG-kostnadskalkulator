@@ -16,6 +16,7 @@ export class OutputNode extends BaseNode <
 
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
+        protected updateDataFlow: ()=>void
     ) {
         super(NodeType.Output, 240, 200);
 
@@ -46,7 +47,7 @@ export class OutputNode extends BaseNode <
         const { result } = inputs
         if(result) {
             this.updateNodeRendering?.(this.id);
-            this.controls.c.set({value: result[0]});
+            this.controls.c.setNoUpdate({value: result[0]});
         }
         return {
             output: {
@@ -69,6 +70,4 @@ export class OutputNode extends BaseNode <
             unit: this.controls.c.get('unit') || "",
         }
     }
-
-    protected updateDataFlow: () => void = () => {}
 }
