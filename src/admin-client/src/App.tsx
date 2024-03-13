@@ -30,7 +30,6 @@ export default function App() {
         }
         if (e.key === 'Delete') {
             e.preventDefault();
-            console.log("Delete");
             functions?.deleteSelected();
         }
         if (e.key === 'a' && (e.ctrlKey || e.metaKey)) {
@@ -39,7 +38,6 @@ export default function App() {
         }
         if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
-            console.log("focus")
             functions?.viewControllers.focusSelectedNode();
         }
     });
@@ -89,9 +87,7 @@ export default function App() {
                                                       inputs:[]
                                                   }
                                                   data.push(root);
-                                                  console.log(data);
                                                   dispatch(updateTree(data));
-                                                  console.log(treeState.tree)
                                               }
                                           } catch(e) {
                                               console.log(e);
