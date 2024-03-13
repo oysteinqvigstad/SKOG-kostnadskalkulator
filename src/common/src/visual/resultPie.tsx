@@ -3,54 +3,24 @@ import React from "react";
 import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
 import {ResultCard} from "./resultCard";
-import {DisplayNode, getNodeByID, TreeState} from "../parseTree";
-/**
- * `ResultListItem` is an interface that is used to define the structure of the result list items.
- */
-export interface ResultListItem {
-    text: string
-    value: number
-    unit: string
-    percentage?: number
-    color?: string
-}
+import {DisplayPieNode, getNodeByID, TreeState} from "../parseTree";
+import {ResultRowBoxes} from "./ResultRowBoxes";
+import {OutputNode as ParseOutputNode} from "../parseTree";
 
 
-export interface DisplayPieNode extends DisplayNode {
-    unit: string
-    pieType: "pie" | "donut"
-}
 
 export function ResultPie(props: {
     treeState: TreeState | undefined,
     displayData: DisplayPieNode,
 }) {
-    // const outputs = props.displayData.inputs.map(node=>{
-    //     if(isOutputNode(node)) {
-    //         return node as OutputNode
-    //     } else {
-    //         const derefNode = getNodeByID(props.treeState, node.referenceID);
-    //         if(derefNode !== undefined && isOutputNode(derefNode)) {
-    //             return derefNode as OutputNode;
-    //         }
-    //     }
-    //     throw new Error("Invalid node type found in input to visualization");
-    // })
+    const nodes = props.displayData.inputOrdering.map((value)=>{
+        const node = getNodeByID(props.treeState!, value.outputID) as ParseOutputNode;
+        return { color: node.color, ordering: value.ordering, label: value.outputLabel, value: node.value, unit: props.displayData.unit }
+    }).sort((a, b)=>(a.ordering ?? 0) - (b.ordering??0));
 
-    const labels = props.displayData.inputOrdering
-        .sort((a, b)=>{ return (a.ordering ?? 0) - (b.ordering ?? 0)})
-        .map((value)=>{
-            return value.outputLabel
-        });
-    const values = props
-        .displayData.inputOrdering
-        .map((value)=>{
-            if(props.treeState) {
-                return getNodeByID(props.treeState, value.outputID)?.value || 0
-            } else {
-                return 0;
-            }
-        })
+    const labels = nodes.map(node=>node.label);
+    const values = nodes.map(node=>node.value);
+
     const totalCost = Math.round(
         values.reduce((acc, cost) => acc + cost, 0)
     )
@@ -126,10 +96,13 @@ export function ResultPie(props: {
     return (
         <ResultCard
             icon={<FcSalesPerformance />}
-            title={"Kostnad"}
+            title={props.displayData.name}
         >
             {children}
-            {/*<ResultRowBoxes listItems={props.costCategories} />*/}
+            <ResultRowBoxes
+                result={nodes.map(node=>{return {color: node.color, label: node.label, value: node.value}})}
+                unit={props.displayData.unit}
+            />
         </ResultCard>
 
     )
