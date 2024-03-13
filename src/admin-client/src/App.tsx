@@ -1,18 +1,26 @@
-import { createEditor } from "./rete/editor";
-import { useRete } from "rete-react-plugin";
+import {createEditor} from "./rete/editor";
+import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
-import {Card, Col, Form, Nav, Navbar, NavDropdown, Row} from "react-bootstrap";
+import {Card, Col, Nav, Navbar, NavDropdown, Row} from "react-bootstrap";
 import {useEffect} from "react";
 import {Provider} from "react-redux";
 import {PagesWindow} from "./containers/pagesWindow";
-import {store} from "./state/store";
+import {selectFormulaInfo, selectPages, selectTreeState, store} from "./state/store";
 import {FormulaInfoContainer} from "./containers/formulaInfoContainer";
+import {useAppDispatch, useAppSelector} from "./state/hooks";
+import {updateTree} from "./state/slices/treeState";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
 
 
 
 
 export default function App() {
   const [ref, functions] = useRete(createEditor);
+  const treeState = useAppSelector(selectTreeState);
+  const formulaInfo = useAppSelector(selectFormulaInfo);
+  const pagesInfo = useAppSelector(selectPages)
+  const dispatch = useAppDispatch();
 
   useEffect(()=> {
     document.addEventListener('keydown', (e) => {
@@ -67,7 +75,27 @@ export default function App() {
                                   </NavDropdown>
                                   <NavDropdown title={"Test"} id={"file-dropdown"}>
                                       <NavDropdown.Item onClick={() => {
-                                          functions?.testJSON()
+                                          try {
+                                              const data = functions?.testJSON();
+                                              if(data) {
+                                                  const version = formulaInfo.version;
+                                                  const root: RootNode =  {
+                                                      id: "0",
+                                                      type: NodeType.Root,
+                                                      value: 0,
+                                                      formulaName: formulaInfo.name,
+                                                      version: version.major * 1000000 + version.minor * 1000 + version.patch,
+                                                      pages: pagesInfo.map((page, index)=>{return {pageName: page.title, ordering: index }}),
+                                                      inputs:[]
+                                                  }
+                                                  data.push(root);
+                                                  console.log(data);
+                                                  dispatch(updateTree(data));
+                                                  console.log(treeState.tree)
+                                              }
+                                          } catch(e) {
+                                              console.log(e);
+                                          }
                                       }}>Test JSON</NavDropdown.Item>
                                   </NavDropdown>
                                   <Navbar.Collapse className="justify-content-end">

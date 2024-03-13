@@ -1,17 +1,21 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import type {Formula} from "../types/Formula";
-import {apiBaseUrl} from "../config/config";
+import {apiBaseUrl} from "@skogkalk/common/dist/src/config/config";
+import {TreeState} from "@skogkalk/common/dist/src/parseTree";
 
 export const apiService = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: apiBaseUrl }),
     endpoints: (builder) => ({
-        getCalculators: builder.query<Formula[], void>({
+        getCalculators: builder.query<TreeState, void>({
             query: () => 'getCalculators',
             // transformResponse: (response: {data: Formula[]}, nodeMeta, arg) => response.data,
             // transformErrorResponse: (response: {status: string | number}, nodeMeta, arg) => response.status,
         }),
-        addCalculator: builder.mutation<void, Formula>({
+        getCalculator: builder.query<TreeState, {name: string}>({
+            query: ({name}) => `getCalculator?name=${name}`,
+            transformResponse: (response: TreeState[]) => response[0],
+        }),
+        addCalculator: builder.mutation<void, TreeState>({
             query: (body) => ({
                 url: 'addCalculator',
                 method: 'POST',

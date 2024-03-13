@@ -20,7 +20,7 @@ export function ResultParser() {
         if (tree) {
             dispatch(initiateTree({tree}))
         }
-        navigate("/")
+        navigate("/kalkulator")
     } catch (e) {
         if (e instanceof Error) {
             return <Alert>{e.message}</Alert>

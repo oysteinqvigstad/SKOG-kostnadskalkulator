@@ -20,11 +20,29 @@ export class FirestoreDatabase implements IDatabase {
     }
 
     async addCalculator(calculator: TreeState): Promise<void> {
-        await this.#db
-            .collection(`calculators`)
+        const ref = this.#db
+            .collection('calculators')
             .doc(calculator.rootNode.formulaName)
             .collection('treeNodes')
-            .add(calculator)
+            .doc(calculator.rootNode.version.toString())
+
+        try {
+            await this.#db.runTransaction(async (t) => {
+                const doc = await t.get(ref)
+                if (doc.exists) {
+                    throw new Error('Calculator already exists')
+                }
+                t.set(ref, calculator)
+            })
+        } catch (e) {
+            throw new Error('An error occurred while adding the calculator')
+        }
+
+        // await this.#db
+        //     .collection(`calculators`)
+        //     .doc(calculator.rootNode.formulaName)
+        //     .collection('treeNodes')
+        //     .add(calculator)
     }
 
     async getCalculatorByName(name: string, version?: number): Promise<TreeState[]> {

@@ -228,7 +228,7 @@ export async function createEditor(container: HTMLElement) {
 
 
     // For testing purposes
-    let currentJSONTree: ParseNode | undefined;
+    let currentJSONTree: ParseNode[] | undefined;
 
     editor.addPipe((context) => {
         if (["connectioncreated", "connectionremoved"].includes(context.type)) {
@@ -311,6 +311,7 @@ export async function createEditor(container: HTMLElement) {
         testJSON: () => {
             currentJSONTree = createJSONGraph(editor);
             console.log(JSON.stringify(currentJSONTree, null, 2));
+            return currentJSONTree;
         },
         deleteSelected: async () => {
             const connections = editor.getConnections().filter(c => {

@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {DevelopmentHeaderWarning} from "./components/DevelopmentHeaderWarning";
-import {NavBar} from "./containers/NavBar";
 import {useAppDispatch} from "./state/hooks";
 import {setField} from "./state/formSlice";
 import {staticFieldDescriptions} from "./data/staticFieldDescriptions";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import {FormPage} from "./pages/FormPage";
 import {InformationalScientificSourcesPage} from "./pages/InformationalScientificSourcesPage";
 import {InformationalDefaultValuesPage} from "./pages/InformationalDefaultValuesPage";
 import {InformationalApiPage} from "./pages/InformationalApiPage";
@@ -14,14 +12,19 @@ import {FeedbackPage} from "./pages/FeedbackPage";
 import {ResultParser} from "./pages/ResultParser";
 import {setCalculatorData} from "./state/calculatorSlice";
 import {staticCalculatorData} from "./data/staticCalculatorData";
-import {NavBarNew} from "./containers/NavBarNew";
 import {LandingPage} from "./pages/LandingPage";
 import {initiateTree} from "./state/treeSlice";
 import {testTree, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
+import {HomePage} from "./pages/HomePage";
+import {NavBar} from "./containers/NavBar";
+// import {useAddCalculatorMutation, useGetCalculatorQuery} from "./state/store";
 
 function App() {
 
     const dispatch = useAppDispatch()
+    // const [addCalculator, addCalculatorStatus] = useAddCalculatorMutation()
+    // const {data, error, isLoading} = useGetCalculatorQuery({name: 'testformel'})
+
 
     // Keep track of whether the default values have been loaded
     const [haveDefaultsBeenLoaded, setHaveDefaultsBeenLoaded] = useState(false)
@@ -37,13 +40,20 @@ function App() {
                     dispatch(setField({title: fieldData.title, value: fieldData.default}))
                 }
             })
-            // read tree data
-            dispatch(initiateTree({tree: treeStateFromData(testTree)}))
 
             // sets default values for calculator data
             dispatch(setCalculatorData(staticCalculatorData[0]))
+
+            // read tree data
+            dispatch(initiateTree({tree: treeStateFromData(testTree)}))
+
             setHaveDefaultsBeenLoaded(true)
         }
+
+        // if (data) {
+        //     dispatch(initiateTree({tree: data}))
+        // }
+        // addCalculator(treeStateFromData(testTree))
     }, [dispatch, haveDefaultsBeenLoaded]);
 
 
@@ -51,19 +61,16 @@ function App() {
     <Router>
             <DevelopmentHeaderWarning />
             <Routes>
-                <Route element={<NavBarNew/>}>
-                    <Route path={"/"} element={<LandingPage />}/>
+                <Route element={<NavBar />}>
+                    <Route path={"/"} element={<HomePage />}/>
+                    <Route path={"/kalkulator"} element={<LandingPage />}/>
+
                     <Route path="/forskningsgrunnlag" element={<InformationalScientificSourcesPage />} />
                     <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />
                     <Route path="/apiinfo" element={<InformationalApiPage />} />
                     <Route path="/tilbakemelding" element={<FeedbackPage />} />
                     <Route path="/resultat" element={<ResultParser />} />
                 </Route>
-                <Route element={<NavBar/>}>
-                    <Route path="/kalkulator" element={<FormPage />} />
-                </Route>
-
-
             </Routes>
     </Router>
     )
