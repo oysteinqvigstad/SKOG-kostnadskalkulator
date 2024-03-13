@@ -14,7 +14,7 @@ export class DisplayPieNode extends BaseNode <
         protected updateNodeRendering: (nodeID: string) => void
 
     ) {
-        super(NodeType.Display, 500, 400);
+        super(NodeType.Display, 600, 400);
 
         this.addInput("input",
             new ClassicPreset.Input(
