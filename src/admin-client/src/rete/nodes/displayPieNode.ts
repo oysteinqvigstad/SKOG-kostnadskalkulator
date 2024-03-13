@@ -33,7 +33,7 @@ export class DisplayPieNode extends BaseNode <
             new NodeControl(
                 initialControlData,
                 {
-                    onUpdate: (data) => {
+                    onUpdate: () => {
                         updateNodeRendering(this.id);
                     },
                     minimized: false
