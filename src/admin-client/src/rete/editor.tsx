@@ -124,12 +124,12 @@ async function saveGraphToLocalStorage(
  * new nodes with the set schemes.
  * @param editor
  * @param area
- * @param onInputChange
+ * @param updateDataFlow
  */
 function createContextMenu(
     editor: NodeEditor<Schemes>,
     area: AreaPlugin<Schemes, AreaExtra>,
-    onInputChange: () => void
+    updateDataFlow: () => void
 ) : ContextMenuPlugin<Schemes> {
     // NB: For a node to be copyable, it must implement clone() in a way
     // that does not require 'this' to be valid in its context.
@@ -138,7 +138,7 @@ function createContextMenu(
     return new ContextMenuPlugin<Schemes>({
         items: ContextMenuPresets.classic.setup([
             ["Math",
-                [["Number", () => new NumberNode(0, updateNodeRender, onInputChange)],
+                [["Number", () => new NumberNode(0, updateNodeRender, updateDataFlow)],
                 ["Add", () => new BinaryNode(NodeType.Add, updateNodeRender)],
                 ["Sub", () => new BinaryNode(NodeType.Sub, updateNodeRender)],
                 ["Mul", () => new BinaryNode(NodeType.Mul, updateNodeRender)],
@@ -147,8 +147,8 @@ function createContextMenu(
                 ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
                 ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]]],
             ["Inputs",
-                [["Dropdown", () => new DropdownInputNode(updateNodeRender, onInputChange)],
-                ["Number", () => new NumberInputNode(updateNodeRender, onInputChange)],]],
+                [["Dropdown", () => new DropdownInputNode(updateNodeRender, updateDataFlow)],
+                ["Number", () => new NumberInputNode(updateNodeRender, updateDataFlow)],]],
             ["Output", () => new OutputNode(updateNodeRender)],
             ["Pie Display", ()=> new DisplayPieNode(updateNodeRender)],
             // ["Label", ()=> new LabelNode(onInputChange)]
