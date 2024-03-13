@@ -175,7 +175,8 @@ export function getResultsForInputs(tree: TreeState, inputID: string, values: nu
  * @param nodeID The node id.
  * @returns A shallow copy of the matching node, otherwise undefined.
  */
-export function getNodeByID(tree: TreeState, nodeID: string) : ParseNode | undefined {
+export function getNodeByID(tree: TreeState | undefined, nodeID: string) : ParseNode | undefined {
+    if(!tree) { return undefined }
     let matchNode: ParseNode | undefined;
     tree.subTrees.forEach((root)=> {
         forEachNode(root, (n)=>{

@@ -26,9 +26,11 @@ function DisplayPieNodeContent(
 ) {
     const treeState = useAppSelector(selectTreeState)
     const nodeID = props.data.get('nodeID');
-    const [displayNode, setDisplayNode] = useState(getNodeByID(treeState.tree!, props.data.id) as ParseDisplayNode);
+    const [displayNode, setDisplayNode] = useState(getNodeByID(treeState.tree, props.data.id) as ParseDisplayNode | undefined);
     useEffect(()=> {
-        setDisplayNode(getNodeByID(treeState.tree!, props.data.get('nodeID')) as ParseDisplayNode);
+        if(treeState.tree) {
+            setDisplayNode(getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode);
+        }
     }, [treeState.tree, nodeID, displayNode])
 
 
