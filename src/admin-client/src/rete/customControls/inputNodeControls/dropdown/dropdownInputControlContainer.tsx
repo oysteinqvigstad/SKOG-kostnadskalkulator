@@ -3,11 +3,10 @@ import {HiddenOnMinimized, MinimizeButton} from "../common/sharedComponents";
 import {TextInputField} from "../../../../components/input/textInputField";
 import {Provider} from "react-redux";
 import {store} from "../../../../state/store";
-import {Col, DropdownButton, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {NumberInputField} from "../../../../components/input/numberInputField";
 import {InputGroup} from "react-bootstrap";
-import {Dropdown} from "react-bootstrap";
 import {NodeControl} from "../../../nodes/baseNode";
 import {DropdownInputControlData} from "./dropdownInputControlData";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
@@ -77,9 +76,9 @@ export function DropdownInputControlContent(
                                             onChange={(newLabel) => {
                                                 data.dropdownOptions[index].label = newLabel
                                                 // TODO: Må endre tegn for tegn om denne er med:
-                                                props.data.update();
-                                            }
-                                            }/>
+                                                //props.data.update();
+                                            }}
+                                        />
                                         <NumberInputField
                                             inputHint={"value"}
                                             value={data.dropdownOptions[index].value}
@@ -126,7 +125,10 @@ export function DropdownInputControlContent(
                                 <DropdownSelection
                                     inputHint={"Set default selection"}
                                     dropdownAlternatives={data.dropdownOptions}
-                                    selection={data.dropdownOptions.findIndex(item => item.label === data.defaultKey)}
+                                    selection={
+                                    data.dropdownOptions.findIndex(item =>
+                                        item.label === data.defaultKey
+                                    )}
                                     onChange={(index) => {
                                         data.defaultKey = data.dropdownOptions[index].label;
                                         data.defaultValue = data.dropdownOptions[index].value;
@@ -135,16 +137,6 @@ export function DropdownInputControlContent(
                                     }}
                                 />
 
-                                <DropdownButton title={'Preview'} id={'preview'}>
-                                    {data.dropdownOptions.map((item) => {
-                                        return <Dropdown.Item onChange={() => {
-                                            data.defaultKey = item.label;
-                                            data.defaultValue = item.value;
-                                            props.data.update();
-                                            console.log(data.defaultKey)
-                                        }}>{item.label}</Dropdown.Item>
-                                    })}
-                                </DropdownButton>
 
 
                             </Col>
