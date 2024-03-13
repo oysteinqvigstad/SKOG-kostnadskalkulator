@@ -40,8 +40,8 @@ export class BinaryNode extends BaseNode<
     data(inputs: { left?: number[]; right?: number[] }): { value: number } {
         const { left, right } = inputs;
         const value = this.binaryOperation(
-            (left ? left[0] : 0 || 0),
-            (right ? right[0] : 0 || 0)
+            (left ? left[0] : 0),
+            (right ? right[0] : 0)
         );
 
         this.controls.c.set({ value })
