@@ -187,8 +187,8 @@ export async function createEditor(container: HTMLElement) {
                     switch(data.payload.type) {
                         case NodeType.Display: return DisplayPieNodeControlContainer
                         case NodeType.NumberInput: return NumberInputControlContainer
-                        case NodeType.Output: return OutputNodeControlContainer
                         case NodeType.DropdownInput: return DropdownInputControlContainer
+                        case NodeType.Output: return OutputNodeControlContainer
                     }
                     return NumberControlComponent;
                 },
@@ -214,6 +214,10 @@ export async function createEditor(container: HTMLElement) {
 
     editor.use(area);
     editor.use(engine);
+    editor.addPipe((context) => {
+        currentJSONTree = createJSONGraph(editor);
+        return context;
+    });
 
     scopes.addPreset(ScopesPresets.classic.setup());
 
@@ -333,6 +337,7 @@ export async function createEditor(container: HTMLElement) {
             },
             zoomIn: () => {
             }
-        }
+        },
+        jsonState: currentJSONTree
     };
 }

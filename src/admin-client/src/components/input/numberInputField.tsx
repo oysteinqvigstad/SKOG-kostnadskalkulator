@@ -22,7 +22,7 @@ export function NumberInputField(
         value: number | undefined,
         onChange: (value: number)=>void,
         onIllegalValue: (value: number)=>void,
-        legalRanges: {min?: number, max?: number}[],
+        legalRanges: readonly {min?: number, max?: number}[],
     }
 ) {
 

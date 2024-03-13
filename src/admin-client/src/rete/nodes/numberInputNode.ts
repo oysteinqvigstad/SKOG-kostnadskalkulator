@@ -33,19 +33,12 @@ export class NumberInputNode extends BaseNode<
             } as NumberInputData,
             {
                 onUpdate: (newValue: NumberInputData) => {
-                    const currentData = this.controls.c.data;
-                    currentData.name = newValue.name;
-                    currentData.pageName = newValue.pageName;
-                    currentData.simpleInput = newValue.simpleInput;
-                    currentData.infoText = newValue.infoText;
-                    currentData.legalValues = newValue.legalValues;
-
-                    if(currentData.defaultValue !== undefined && newValue.legalValues.length > 0) {
+                    const defaultValue = this.controls.c.get('defaultValue');
+                    if(defaultValue !== undefined && newValue.legalValues.length > 0) {
                         if(!newValue.legalValues.some((v) => {
-                            return isInRange(currentData.defaultValue!, v);
+                            return isInRange(defaultValue!, v);
                         })) {
-                            currentData.defaultValue =
-                                getLegalValueInRange(this.controls.c.data.defaultValue!, newValue.legalValues[0]);
+                            this.controls.c.setNoUpdate({defaultValue: getLegalValueInRange(defaultValue, newValue.legalValues[0])})
                         }
                     }
 
@@ -55,7 +48,7 @@ export class NumberInputNode extends BaseNode<
                         this.height = this.originalHeight * 0.5;
                     } else {
                         this.width = this.originalWidth;
-                        this.height = this.originalHeight + this.controls.c.data.legalValues.length * 60;
+                        this.height = this.originalHeight + this.controls.c.get('legalValues').length * 60;
                     }
                     updateNodeRendering?.(this.id);
                     updateDataFlow?.();
@@ -70,24 +63,24 @@ export class NumberInputNode extends BaseNode<
 
     data(): { value: number } {
         return {
-            value: this.controls.c.data.defaultValue || 0
+            value: this.controls.c.get('defaultValue') || 0
         };
     }
 
     toParseNode(): ParseNumberInputNode {
         return {
             id: this.id,
-            value: this.controls.c.data.defaultValue || 0,
+            value: this.controls.c.get('defaultValue') || 0,
             type: NodeType.NumberInput,
             inputType: InputType.Float, //TODO: add to controller
-            defaultValue: this.controls.c.data.defaultValue || 0,
-            name: this.controls.c.data.name || "",
-            pageName: this.controls.c.data.pageName || "",
-            legalValues: this.controls.c.data.legalValues.map(legal=>{return {max: legal.max || null, min: legal.min || null}}) || [], //TODO: Change to undefined
+            defaultValue: this.controls.c.get('defaultValue') || 0,
+            name: this.controls.c.get('name') || "",
+            pageName: this.controls.c.get('pageName') || "",
+            legalValues: this.controls.c.get('legalValues').map(legal=>{return {max: legal.max || null, min: legal.min || null}}) || [], //TODO: Change to undefined
             unit: "", //TODO: Add to controller,
-            infoText: this.controls.c.data.infoText || "",
+            infoText: this.controls.c.get('infoText') || "",
             ordering: 0, // TODO: Add to controller,
-            simpleInput: this.controls.c.data.simpleInput
+            simpleInput: this.controls.c.get('simpleInput') || false,
         }
     }
 }

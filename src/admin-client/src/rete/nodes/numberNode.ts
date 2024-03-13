@@ -23,7 +23,7 @@ export class NumberNode extends BaseNode<
     ) {
         super(NodeType.Number, 160, 180);
 
-        this.clone = () => new NumberNode(this.controls.c.data.value || 0, this.updateNodeRendering, this.updateDataFlow);
+        this.clone = () => new NumberNode(this.controls.c.get('value') || 0, this.updateNodeRendering, this.updateDataFlow);
 
         this.addControl(
             "c",
@@ -31,8 +31,6 @@ export class NumberNode extends BaseNode<
                 {value:0, readonly: false} as NumberControlData,
                 {
                     onUpdate: data=>{
-
-                        this.controls.c.data.value = data.value;
                         updateDataFlow();
                         updateNodeRendering(this.id);
                     },
@@ -45,16 +43,16 @@ export class NumberNode extends BaseNode<
     }
 
     data(): { value: number } {
-        this.clone = () => new NumberNode(this.controls.c.data.value || 0, this.updateNodeRendering, this.updateDataFlow);
+        this.clone = () => new NumberNode(this.controls.c.get('value') || 0, this.updateNodeRendering, this.updateDataFlow);
         return {
-            value: this.controls.c.data.value || 0
+            value: this.controls.c.get('value') || 0
         };
     }
 
     toParseNode(): ParseNode {
         return {
             id: this.id,
-            value: this.controls.c.data.value || 0,
+            value: this.controls.c.get('value') || 0,
             type: this.type
         }
     }

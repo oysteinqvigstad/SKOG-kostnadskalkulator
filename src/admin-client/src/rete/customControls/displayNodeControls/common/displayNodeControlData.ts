@@ -9,6 +9,8 @@ export interface OutputData {
 }
 
 export interface DisplayControlData {
+    nodeID: string,
     name: string,
+    unit: string,
     inputs: OutputData[],
 }

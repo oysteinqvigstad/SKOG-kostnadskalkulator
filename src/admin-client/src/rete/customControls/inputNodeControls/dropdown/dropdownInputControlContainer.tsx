@@ -25,8 +25,7 @@ export function DropdownInputControlContainer(
 export function DropdownInputControlContent(
     props: { data: NodeControl<DropdownInputControlData> }
 ) {
-    const data = props.data.data;
-    const options = props.data.options;
+    const data = props.data.getData();
     return <>
         <Drag.NoDrag>
             <MinimizeButton onClick={() => {
@@ -39,8 +38,7 @@ export function DropdownInputControlContent(
                 inputHint={'Input Name'}
                 onChange={
                     (value: string) => {
-                        data.name = value;
-                        options.onUpdate(data);
+                        props.data.set({name: value});
                     }
                 }/>
 
@@ -62,7 +60,7 @@ export function DropdownInputControlContent(
                                             value: 0,
                                             label: `option ${data.dropdownOptions.length + 1}`
                                         })
-                                        options.onUpdate(data);
+                                        props.data.set({dropdownOptions: data.dropdownOptions})
                                     }}
                                 >
                                     Add option
@@ -75,6 +73,7 @@ export function DropdownInputControlContent(
                                             inputHint={"name"}
                                             onChange={(newLabel) => {
                                                 data.dropdownOptions[index].label = newLabel
+                                                props.data.set({dropdownOptions: data.dropdownOptions})
                                                 // TODO: Må endre tegn for tegn om denne er med:
                                                 //props.data.update();
                                             }}
@@ -84,11 +83,9 @@ export function DropdownInputControlContent(
                                             value={data.dropdownOptions[index].value}
                                             onChange={(value) => {
                                                 data.dropdownOptions[index].value = value;
-                                                props.data.update();
+                                                props.data.set({dropdownOptions: data.dropdownOptions})
                                             }}
-                                            onIllegalValue={() => {
-                                                return
-                                            }}
+                                            onIllegalValue={() => {}}
                                             // TODO: Fjern magisk tall (lagt inn for testing)
                                             legalRanges={[{max: 100}]
                                             }/>
@@ -106,39 +103,37 @@ export function DropdownInputControlContent(
                                         >X</Button>
                                         <Button onClick={() => {
                                             if (index >= 0 && index < data.dropdownOptions.length - 1) {
-                                                [data.dropdownOptions[index], data.dropdownOptions[index + 1]] = [data.dropdownOptions[index + 1], data.dropdownOptions[index]]
+                                                [data.dropdownOptions[index], data.dropdownOptions[index + 1]] =
+                                                    [data.dropdownOptions[index + 1], data.dropdownOptions[index]]
+                                                props.data.set({dropdownOptions: data.dropdownOptions})
                                             }
                                             props.data.update();
                                         }}>Down</Button>
                                         <Button onClick={() => {
                                             if (index > 0) {
-                                                [data.dropdownOptions[index], data.dropdownOptions[index - 1]] = [data.dropdownOptions[index - 1], data.dropdownOptions[index]]
+                                                [data.dropdownOptions[index], data.dropdownOptions[index - 1]] =
+                                                    [data.dropdownOptions[index - 1], data.dropdownOptions[index]]
+                                                props.data.set({dropdownOptions: data.dropdownOptions})
                                             }
-                                            props.data.update();
                                         }}>Up</Button>
-
                                     </InputGroup>
-
-
                                 })}
 
                                 <DropdownSelection
-                                    inputHint={"Set default selection"}
+                                    inputHint={"Default Selection"}
                                     dropdownAlternatives={data.dropdownOptions}
                                     selection={
                                     data.dropdownOptions.findIndex(item =>
                                         item.label === data.defaultKey
                                     )}
                                     onChange={(index) => {
-                                        data.defaultKey = data.dropdownOptions[index].label;
-                                        data.defaultValue = data.dropdownOptions[index].value;
-                                        props.data.update();
+                                        props.data.set({
+                                            defaultKey: data.dropdownOptions[index].label,
+                                            defaultValue: data.dropdownOptions[index].value
+                                        })
                                         console.log(data.defaultKey)
                                     }}
                                 />
-
-
-
                             </Col>
                         </Row>
                     </>

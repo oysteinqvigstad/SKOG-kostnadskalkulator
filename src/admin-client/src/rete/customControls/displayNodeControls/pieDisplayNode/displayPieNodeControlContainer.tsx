@@ -1,5 +1,5 @@
 import {DisplayPieNodeData} from "./displayPieNodeControlData";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
@@ -9,6 +9,9 @@ import {isReferenceNode} from "@skogkalk/common/dist/src/parseTree/nodes/referen
 import {isOutputNode} from "@skogkalk/common/dist/src/parseTree/nodes/outputNode";
 import {OutputNode as ParseOutputNode} from "@skogkalk/common/src/parseTree"
 import {ResultPie} from "@skogkalk/common/dist/src/visual/resultPie";
+import Container from "react-bootstrap/Container";
+import {TextInputField} from "../../../../components/input/textInputField";
+import { DisplayPieNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
 
 export function DisplayPieNodeControlContainer(
     props: { data: NodeControl<DisplayPieNodeData> }
@@ -22,31 +25,42 @@ function DisplayPieNodeContent(
     props: { data: NodeControl<DisplayPieNodeData>}
 ) {
     const treeState = useAppSelector(selectTreeState)
-    const inputs = getNodeByID(treeState.tree!, props.data.id)?.inputs
-        ?.map(node=> {
-            if(isReferenceNode(node) ) {
-                const deref = getNodeByID(treeState.tree!, node.referenceID);
-                if(isOutputNode(deref!)) {
-                    return deref as ParseOutputNode;
-                }
-            } else {
-                return node as ParseOutputNode;
-            }
-        }) as ParseOutputNode[] | undefined;
+    const nodeID = props.data.get('nodeID');
+    const [displayNode, setDisplayNode] = useState(getNodeByID(treeState.tree!, props.data.id) as ParseDisplayNode);
+    useEffect(()=> {
+        setDisplayNode(getNodeByID(treeState.tree!, props.data.get('nodeID')) as ParseDisplayNode);
+    }, [treeState.tree, nodeID, displayNode])
+
 
     return <>
-        <ResultPie
-            displayData={{
-                id:"",
-                name: props.data.data.name,
-                inputs: inputs ?? [],
-                unit: "",
-                pieType: "donut",
-                inputOrdering: props.data.data.inputs.map((input, index)=>{return {outputID: input.id, outputLabel: input.label, ordering: index}}),
-                type: NodeType.Display,
-                value: 0
-            }}
-            treeState={treeState.tree}
-        />
+        <Container>
+            <ResultPie
+                displayData={displayNode? displayNode : {
+                    id:"",
+                    value: 0,
+                    type: NodeType.Display,
+                    inputOrdering: [],
+                    name: "",
+                    unit: "",
+                    pieType: "donut",
+                    inputs:[],
+
+                }}
+                treeState={treeState.tree}
+            />
+            <TextInputField
+                inputHint={"Name"}
+                value={props.data.get('name')}
+                onChange={(value)=>{
+                    props.data.set({name: value});
+                }}/>
+            <TextInputField
+                inputHint={"Unit"}
+                value={props.data.get('unit')}
+                onChange={(value)=>{
+                    props.data.set({unit: value});
+                }}/>
+        </Container>
+
     </>
 }

@@ -22,22 +22,20 @@ export class DropdownInputNode extends BaseNode<
         protected updateNodeRendering: (nodeID: string) => void, // function that updates node rendering
         protected updateDataFlow: () => void, // function to be called on user changing value
     ) {
-        super(NodeType.NumberInput, 400, 400, "Dropdown Input");
+        super(NodeType.DropdownInput, 400, 400, "Dropdown Input");
+
+        const initialControlData: DropdownInputControlData = {
+            name: "",
+            simpleInput: true,
+            dropdownOptions: [],
+            defaultKey: "",
+            defaultValue: 0,
+        }
 
         this.addControl("c", new NodeControl(
-            {
-                name: "",
-                simpleInput: true,
-                dropdownOptions: [],
-                defaultKey: "",
-            } as DropdownInputControlData,
+            initialControlData,
             {
                 onUpdate: (newValue: DropdownInputControlData) => {
-                    this.updateDataFlow();
-                    this.controls.c.data.name = newValue.name;
-                    this.controls.c.data.simpleInput = newValue.simpleInput;
-                    this.controls.c.data.infoText = newValue.infoText;
-                    this.controls.c.data.dropdownOptions = newValue.dropdownOptions;
 
                     if(this.controls.c.options.minimized) {
                         this.width = this.originalWidth * 0.5;
@@ -59,22 +57,22 @@ export class DropdownInputNode extends BaseNode<
 
     data(): { value: number } {
         return {
-            value: this.controls.c.data.dropdownOptions.find((option)=>{return option.label === this.controls.c.data.defaultKey})?.value || 0
+            value: this.controls.c.get('dropdownOptions').find((option)=>{return option.label === this.controls.c.get('defaultKey')})?.value || 0
         };
     }
 
     toParseNode() : DropdownInput {
         return { // TODO: Must implement controller
             id: this.id,
-            value: this.controls.c.data.defaultValue || 0,
+            value: this.controls.c.get('defaultValue') || 0,
             type: NodeType.DropdownInput,
-            defaultValue: this.controls.c.data.defaultValue || 0,
-            name: this.controls.c.data.name || "",
-            pageName: this.controls.c.data.pageName || "",
+            defaultValue: this.controls.c.get('defaultValue') || 0,
+            name: this.controls.c.get('name') || "",
+            pageName: this.controls.c.get('pageName') || "",
             dropdownAlternatives: [],
-            infoText: this.controls.c.data.infoText || "",
+            infoText: this.controls.c.get('infoText') || "",
             ordering: 0, // TODO: Add to controller,
-            simpleInput: this.controls.c.data.simpleInput
+            simpleInput: this.controls.c.get('simpleInput') || false,
         }
     }
 }

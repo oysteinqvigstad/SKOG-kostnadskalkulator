@@ -14,22 +14,20 @@ export function OutputNodeControlContainer(
     return <>
         <Drag.NoDrag>
             <TextInputField
-                value={props.data.data.name}
+                value={props.data.get('name')}
                 onChange={
                     (newName)=>{
-                        props.data.data.name = newName;
-                        props.data.options.onUpdate?.(props.data.data);
+                        props.data.set({name: newName})
                     }}
                 inputHint={"Output Name"}
             />
             <ColorPicker
                 onChange={(color)=>{
-                    props.data.data.color = color;
-                    props.data.options.onUpdate?.(props.data.data);
+                    props.data.set({color: color});
                     setShow(false);
                 }}
                 show={show}
-                color={props.data.data.color || "#FFFFFF"}
+                color={props.data.get('color') || "#FFFFFF"}
             />
         </Drag.NoDrag>
     </>

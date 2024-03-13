@@ -8,11 +8,10 @@ export function NumberControlComponent(
     return <>
         <NumberInputField
             inputHint={"value"}
-            value={props.data.data.value}
+            value={props.data.get('value')}
             onChange={(n)=>{
-                if(!props.data.data.readonly) {
-                    props.data.data.value = n;
-                    props.data.options.onUpdate(props.data.data);
+                if(!props.data.get('readonly')) {
+                    props.data.set({value: n});
                 }
             }}
             onIllegalValue={()=>{}}

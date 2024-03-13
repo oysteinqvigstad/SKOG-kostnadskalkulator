@@ -21,16 +21,18 @@ export class OutputNode extends BaseNode <
 
         this.addInput( "result", new ClassicPreset.Input(  new ClassicPreset.Socket("socket"),  "Result",  false))
         this.addOutput(  "output", new ClassicPreset.Output( new ClassicPreset.Socket("socket"), "Out", true));
+
+        const initialState: OutputNodeControlData = {
+            name: "",
+            value: 0,
+            color: "#AAAAAA",
+            unit: "",
+        }
         this.addControl("c",
             new NodeControl(
-                {
-                    id: "",
-                    name:"",
-                    value: 0,
-                } as OutputNodeControlData,
+                initialState,
                 {
                     onUpdate: (newData)=> {
-                        this.controls.c.data = newData;
                         this.updateDataFlow();
                         this.updateNodeRendering(this.id);
                     },
@@ -44,13 +46,14 @@ export class OutputNode extends BaseNode <
         const { result } = inputs
         if(result) {
             this.updateNodeRendering?.(this.id);
-            this.controls.c.data.value = result[0];
+            this.controls.c.set({value: result[0]});
         }
         return {
             output: {
                 id: this.id,
-                name: this.controls.c.data.name,
-                value: this.controls.c.data.value, color: this.controls.c.data.color || ""
+                name: this.controls.c.get('name'),
+                value: this.controls.c.get('value') || 0,
+                color: this.controls.c.get('color') || ""
             }
         }
     }
@@ -58,12 +61,12 @@ export class OutputNode extends BaseNode <
     toParseNode(): ParseOutputNode {
         return {
             id: this.id,
-            value: this.controls.c.data.value, // TODO: Somehow turns into an array with the actual value
+            value: this.controls.c.get('value'), // TODO: Somehow turns into an array with the actual value
             type: NodeType.Output,
             child: {id:"", value: 0, type: NodeType.Number }, // Placeholder,
-            name: this.controls.c.data.name,
-            color: this.controls.c.data.color || "",
-            unit: this.controls.c.data.unit || "",
+            name: this.controls.c.get('name'),
+            color: this.controls.c.get('color') || "",
+            unit: this.controls.c.get('unit') || "",
         }
     }
 
