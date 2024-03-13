@@ -45,7 +45,7 @@ export class NodeControl<T extends {}> extends ClassicPreset.Control{
 }
 
 
-
+type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T];
 
 /**
  * Adds extra metadata properties to the Rete.js Node class.
@@ -83,7 +83,7 @@ export abstract class BaseNode<
         this.originalWidth = this.width = width;
     }
 
-    abstract data( inputs: any ) : any;
+    abstract data( inputs: Record<KeysOfType<Inputs, any>, any[]>) : Record<KeysOfType<Outputs, any>, any>;
     abstract toParseNode() : ParseNode;
     protected abstract updateNodeRendering(nodeID: string) : void;
     protected abstract updateDataFlow() : void;
