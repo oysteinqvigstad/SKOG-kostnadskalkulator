@@ -35,6 +35,7 @@ export class DisplayPieNode extends BaseNode <
                 {
                     onUpdate: () => {
                         updateNodeRendering(this.id);
+                        updateStore();
 
                     },
                     minimized: false
@@ -47,7 +48,7 @@ export class DisplayPieNode extends BaseNode <
     data( inputs :{ input?: {name: string, value: number, id: string , color: string}[] }) : {} {
         const { input } = inputs
         if(input) {
-            this.controls.c.set({inputs: input.map((node, index)=>{return { label: node.name, id: node.id, value: node.value, color: node.color, ordering: index}})});
+            this.controls.c.setNoUpdate({inputs: input.map((node, index)=>{return { label: node.name, id: node.id, value: node.value, color: node.color, ordering: index}})});
             this.updateStore();
         }
         this.updateNodeRendering?.(this.id);
@@ -55,7 +56,7 @@ export class DisplayPieNode extends BaseNode <
     }
 
     toParseNode() : ParseDisplayPieNode {
-        this.controls.c.set({nodeID: this.id})
+        this.controls.c.setNoUpdate({nodeID: this.id})
         return {
             id: this.id,
             pieType: this.controls.c.get("pieType"),
