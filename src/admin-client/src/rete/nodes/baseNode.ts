@@ -2,9 +2,9 @@ import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
 
-export class NodeControl<T extends any> extends ClassicPreset.Control{
+export class NodeControl<T extends {}> extends ClassicPreset.Control{
     constructor(
-        public data: T,
+        private data: T,
         public options: {
             onUpdate: (data: T) => void,
             minimized: boolean
@@ -17,7 +17,34 @@ export class NodeControl<T extends any> extends ClassicPreset.Control{
     public update() : void {
         this.options?.onUpdate?.(this.data);
     }
+
+    public set(data: Partial<T>) : void {
+        for (const key in this.data) {
+            if (Object.prototype.hasOwnProperty.call(data, key)) {
+                (this.data as any)[key] = data[key];
+            }
+        }
+        this.update();
+    }
+
+    public setNoUpdate(data: Partial<T>) : void {
+        for (const key in this.data) {
+            if (Object.prototype.hasOwnProperty.call(data, key)) {
+                (this.data as any)[key] = data[key];
+            }
+        }
+    }
+
+    public get<K extends keyof T>(key: K) : Readonly<T[K]> {
+        return (this.data as any)[key];
+    }
+
+    public getData() : Readonly<T> {
+        return this.data;
+    }
 }
+
+
 
 
 /**
