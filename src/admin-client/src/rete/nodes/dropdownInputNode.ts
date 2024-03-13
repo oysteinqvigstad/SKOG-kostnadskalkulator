@@ -22,7 +22,7 @@ export class DropdownInputNode extends BaseNode<
         protected updateNodeRendering: (nodeID: string) => void, // function that updates node rendering
         protected updateDataFlow: () => void, // function to be called on user changing value
     ) {
-        super(NodeType.NumberInput, 400, 400, "Dropdown Input");
+        super(NodeType.DropdownInput, 400, 400, "Dropdown Input");
 
         this.addControl("c", new NodeControl(
             {
@@ -32,13 +32,7 @@ export class DropdownInputNode extends BaseNode<
                 defaultKey: "",
             } as DropdownInputControlData,
             {
-                onUpdate: (newValue: DropdownInputControlData) => {
-                    this.updateDataFlow();
-                    this.controls.c.data.name = newValue.name;
-                    this.controls.c.data.simpleInput = newValue.simpleInput;
-                    this.controls.c.data.infoText = newValue.infoText;
-                    this.controls.c.data.dropdownOptions = newValue.dropdownOptions;
-
+                onUpdate: () => {
                     if(this.controls.c.options.minimized) {
                         this.width = this.originalWidth * 0.5;
                         this.height = this.originalHeight * 0.5;
