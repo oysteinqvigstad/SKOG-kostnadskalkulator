@@ -2,7 +2,7 @@ import {Drag} from "rete-react-plugin"
 import {HiddenOnMinimized, MinimizeButton} from "../common/sharedComponents";
 import {TextInputField} from "../../../../components/input/textInputField";
 import {Provider} from "react-redux";
-import {store} from "../../../../state/store";
+import {selectPages, store} from "../../../../state/store";
 import {Col, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {NumberInputField} from "../../../../components/input/numberInputField";
@@ -10,6 +10,8 @@ import {InputGroup} from "react-bootstrap";
 import {NodeControl} from "../../../nodes/baseNode";
 import {DropdownInputControlData} from "./dropdownInputControlData";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
+import {OptionSwitch} from "../../../../components/input/optionSwitch";
+import {useAppSelector} from "../../../../state/hooks";
 
 
 export function DropdownInputControlContainer(
@@ -27,6 +29,7 @@ export function DropdownInputControlContent(
 ) {
     const data = props.data.data;
     const options = props.data.options;
+    const pages = useAppSelector(selectPages);
     return <>
         <Drag.NoDrag>
             <MinimizeButton onClick={() => {
@@ -50,6 +53,30 @@ export function DropdownInputControlContent(
                     <>
                         <Row>
                             <Col>
+                                <DropdownSelection
+                                    inputHint={"Set default selection"}
+                                    dropdownAlternatives={data.dropdownOptions}
+                                    selection={
+                                        data.dropdownOptions.findIndex(item =>
+                                            item.label === data.defaultKey
+                                        )}
+                                    onChange={(index) => {
+                                        data.defaultKey = data.dropdownOptions[index].label;
+                                        data.defaultValue = data.dropdownOptions[index].value;
+                                        props.data.update();
+                                        console.log(data.defaultKey)
+                                    }}
+                                />
+                            </Col>
+                            <Col>
+                                <OptionSwitch on={props.data.data.simpleInput} onChange={
+                                    (on: boolean) => {
+                                        data.simpleInput = on;
+                                        props.data.update();
+                                    }
+                                } />
+                            </Col>
+                        </Row>
                                 <Button
                                     onDoubleClick={(e) => {
                                         e.stopPropagation()
@@ -121,26 +148,16 @@ export function DropdownInputControlContent(
 
 
                                 })}
+                        <DropdownSelection
+                            inputHint={"Select page"}
+                            selection={pages.find((page) => page.title === data.pageName)?.ordering}
+                            dropdownAlternatives={pages.map((page) => {return {label: page.title, value: page.ordering}})}
+                            onChange={(selected: number) => {
+                                data.pageName = pages.find((page) => page.ordering === selected)?.title;
+                                props.data.update()
+                            }}
+                        />
 
-                                <DropdownSelection
-                                    inputHint={"Set default selection"}
-                                    dropdownAlternatives={data.dropdownOptions}
-                                    selection={
-                                    data.dropdownOptions.findIndex(item =>
-                                        item.label === data.defaultKey
-                                    )}
-                                    onChange={(index) => {
-                                        data.defaultKey = data.dropdownOptions[index].label;
-                                        data.defaultValue = data.dropdownOptions[index].value;
-                                        props.data.update();
-                                        console.log(data.defaultKey)
-                                    }}
-                                />
-
-
-
-                            </Col>
-                        </Row>
                     </>
                 }
             />

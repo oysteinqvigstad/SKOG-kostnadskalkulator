@@ -1,6 +1,6 @@
 import {BaseNode, NodeControl} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DropdownInput} from "@skogkalk/common/src/parseTree"
 import {DropdownInputControlData} from "../customControls/inputNodeControls/dropdown/dropdownInputControlData";
 
