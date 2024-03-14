@@ -152,7 +152,7 @@ export function DropdownInputControlContent(
                             selection={pages.find((page) => page.title === data.pageName)?.ordering}
                             dropdownAlternatives={pages.map((page) => {return {label: page.title, value: page.ordering}})}
                             onChange={(selected: number) => {
-                                props.data.set ({pageName: pages.find((page) => page.ordering === selected)?.title;});
+                                props.data.set ({pageName: pages.find((page) => page.ordering === selected)?.title});
                                 props.data.update()
                             }}
                         />
