@@ -28,7 +28,7 @@ export class NaryNode extends BaseNode<
             new NodeControl(
                 {value: 0, readonly: true} as NumberControlData,
                 {
-                    onUpdate: (data)=>{ this.controls.c.data.value = data.value; },
+                    onUpdate: (data)=>{},
                     minimized: false
                 },
                 this.type
@@ -46,7 +46,7 @@ export class NaryNode extends BaseNode<
         const input = inputs.input;
         const value = (input ? this.naryOperation(input) : inputControl?.value || 0);
 
-        this.controls.c.data.value = value;
+        this.controls.c.set({ value });
 
         this.updateNodeRendering?.(this.id);
 
@@ -57,7 +57,7 @@ export class NaryNode extends BaseNode<
         return {
             id: this.id,
             type: this.type,
-            value: this.controls.c.data.value || 0
+            value: this.controls.c.get('value') || 0
         }
     }
 

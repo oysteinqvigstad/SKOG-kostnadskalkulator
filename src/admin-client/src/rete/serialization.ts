@@ -13,10 +13,10 @@ export async function importGraph(
     data: any,
     editor: NodeEditor<Schemes>,
     engine:DataflowEngine<Schemes>,
-    area: AreaPlugin<Schemes, any>
+    area: AreaPlugin<Schemes, any>,
+    updateStore: () =>void
 ){
     return new Promise<void>(async (resolve, reject) => {
-        console.log(data);
 
         if(!data) {
             reject();
@@ -29,12 +29,12 @@ export async function importGraph(
         let totalConnections: ConnProps[]  = [];
 
         for await (const { id, controls, type, xy , connections} of data.nodes) {
-            let node = getSkogNodeFromNodeType( type, onValueUpdate, updateNodeRender);
+            let node = getSkogNodeFromNodeType( type, onValueUpdate, updateNodeRender, updateStore);
 
             if(!node) {
                 reject("Invalid node type found in file");
             } else {
-                node.controls.c.data = controls.c.data;
+                node.controls.c.set(controls.c.data);
                 node.id = id;
                 node.xTranslation = xy[0];
                 node.yTranslation = xy[1];
@@ -129,7 +129,7 @@ function serializeControl(control: ClassicPreset.Control) {
     }
     if (control instanceof NodeControl) {
         return {
-            data: control.data
+            data: control.getData()
         }
     }
     return null;

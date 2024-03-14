@@ -31,13 +31,15 @@ export function NumberInputControlsContent(
 
     useEffect(()=> {
         // finds new index of page if it has been moved
-        if(props.data.data.pageName !== undefined) {
+        if(props.data.get('pageName') !== undefined) {
+            const page = props.data.get('pageName');
             const result = pages.find((p)=>{
-                return p.title === props.data.data.pageName
+                return p.title === page;
             });
 
-            props.data.data.pageName = result?.title ?? undefined;
-            props.data.update();
+            if(result) {
+                props.data.set({pageName: result.title});
+            }
         }
     }, [pages, props.data])
 
@@ -48,10 +50,9 @@ export function NumberInputControlsContent(
                 props.data.options.minimized = !props.data.options.minimized;
                 props.data.update()
             }}/>
-            <TextInputField value={props.data.data.name} inputHint={'Input Name'} onChange={
+            <TextInputField value={props.data.get('name')} inputHint={'Input Name'} onChange={
                 (value)=>{
-                    props.data.data.name = value;
-                    props.data.update();
+                    props.data.set({name: value});
                 }
             }/>
             <HiddenOnMinimized
@@ -62,20 +63,18 @@ export function NumberInputControlsContent(
                             <Col>
                                 <NumberInputField
                                     inputHint={"Default value"}
-                                    value={props.data.data.defaultValue}
+                                    value={props.data.get('defaultValue')}
                                     onChange={(value)=> {
-                                        props.data.data.defaultValue = value;
-                                        props.data.update();
+                                        props.data.set({defaultValue: value});
                                     }}
                                     onIllegalValue={(value)=>{console.log("Illegal value: ", value)}}
-                                    legalRanges={props.data.data.legalValues}
+                                    legalRanges={props.data.get('legalValues')}
                                 />
                             </Col>
                             <Col>
-                                <OptionSwitch on={props.data.data.simpleInput} onChange={
+                                <OptionSwitch on={props.data.get('simpleInput')} onChange={
                                     (on: boolean)=> {
-                                        props.data.data.simpleInput = on;
-                                        props.data.update();
+                                        props.data.set({simpleInput: on});
                                     }
                                 }/>
                             </Col>
@@ -84,38 +83,38 @@ export function NumberInputControlsContent(
                             onDoubleClick={(e) => {e.stopPropagation()}}
                             onPointerDown={(e) => {e.stopPropagation()}}
                             onClick={()=>{
-                                props.data.data.legalValues.push({ min: 0, max: 0 });
-                                props.data.update();
+                                const legalValues = [...props.data.get('legalValues')];
+                                legalValues.push({min: 0, max: 0});
+                                props.data.set({legalValues: legalValues});
                             }}
                         >
                             Add legal range
                         </Button>
-                        {props.data.data.legalValues.map((value, index) => {
+                        {props.data.get('legalValues').map((value, index) => {
                             return <InputGroup className="mb-3">
                                 <NumberInputField
                                     inputHint={"min"}
-                                    value={props.data.data.legalValues[index].min}
+                                    value={props.data.get('legalValues')[index].min}
                                     onChange={ (value)=> {
-                                        props.data.data.legalValues[index].min = value;
+                                        props.data.get('legalValues')[index].min = value;
                                         props.data.update();
                                     }}
                                     onIllegalValue={(value)=>{console.log("Illegal value: ", value)}}
-                                    legalRanges={[{max: props.data.data.legalValues[index].max}]}
+                                    legalRanges={[{max: props.data.get('legalValues')[index].max}]}
                                 />
                                 <NumberInputField
                                     inputHint={"max"}
-                                    value={props.data.data.legalValues[index].max}
+                                    value={props.data.get('legalValues')[index].max}
                                     onChange={ (value)=> {
-                                        props.data.data.legalValues[index].max = value;
+                                        props.data.get('legalValues')[index].max = value;
                                         props.data.update();
                                     }}
                                     onIllegalValue={(value)=>{console.log("Illegal value: ", value)}}
-                                    legalRanges={[{min: props.data.data.legalValues[index].min}]}
+                                    legalRanges={[{min: props.data.get('legalValues')[index].min}]}
                                 />
                                 <Button
                                     onClick={()=>{
-                                        props.data.data.legalValues.splice(index, 1);
-                                        props.data.update();
+                                        props.data.set({legalValues: [...props.data.get('legalValues')].splice(index, 1)});
                                     }}
                                     onPointerDown={(e)=>{e.stopPropagation()}}
                                     onDoubleClick={e=>{e.stopPropagation()}}
@@ -127,12 +126,11 @@ export function NumberInputControlsContent(
                         }
                         <DropdownSelection
                             inputHint={"Select page"}
-                            selection={pages.find((page)=>page.title === props.data.data.pageName)?.ordering}
+                            selection={pages.find((page)=>page.title === props.data.get('pageName'))?.ordering}
                             dropdownAlternatives={pages.map((page)=>{return {label: page.title, value: page.ordering}})}
                             onChange={(selected: number)=>{
-                                props.data.data.pageName = pages.find((page)=>page.ordering === selected)?.title;
-                                console.log("Selected page: ", props.data.data.pageName)
-                                props.data.update();
+                                const pageName = pages.find((page)=>page.ordering === selected)?.title;
+                                props.data.set({pageName: pageName});
                             }}
                         />
                     </div>

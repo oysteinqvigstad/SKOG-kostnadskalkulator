@@ -27,7 +27,7 @@ export class BinaryNode extends BaseNode<
             "c",
             new NodeControl(
                 {value: 0, readonly: true} as NumberControlData,
-                {onUpdate: (data)=>{this.controls.c.data.value = data.value}, minimized: false},
+                {onUpdate: ()=>{}, minimized: false},
                 this.type,
             )
         );
@@ -40,11 +40,11 @@ export class BinaryNode extends BaseNode<
     data(inputs: { left?: number[]; right?: number[] }): { value: number } {
         const { left, right } = inputs;
         const value = this.binaryOperation(
-            (left ? left[0] : 0 || 0),
-            (right ? right[0] : 0 || 0)
+            (left ? left[0] : 0),
+            (right ? right[0] : 0)
         );
 
-        this.controls.c.data.value = value;
+        this.controls.c.set({ value })
 
         this.updateNodeRendering(this.id);
 
@@ -55,7 +55,7 @@ export class BinaryNode extends BaseNode<
         return {
             id: this.id,
             type: this.type,
-            value: this.controls.c.data.value || 0
+            value: this.controls.c.get('value') || 0
         }
     }
 

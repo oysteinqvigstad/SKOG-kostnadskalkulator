@@ -27,8 +27,7 @@ export function DropdownInputControlContainer(
 export function DropdownInputControlContent(
     props: { data: NodeControl<DropdownInputControlData> }
 ) {
-    const data = props.data.data;
-    const options = props.data.options;
+    const data = props.data.getData();
     const pages = useAppSelector(selectPages);
     return <>
         <Drag.NoDrag>
@@ -42,8 +41,7 @@ export function DropdownInputControlContent(
                 inputHint={'Input Name'}
                 onChange={
                     (value: string) => {
-                        data.name = value;
-                        options.onUpdate(data);
+                        props.data.set({name: value});
                     }
                 }/>
 
@@ -61,18 +59,20 @@ export function DropdownInputControlContent(
                                             item.label === data.defaultKey
                                         )}
                                     onChange={(index) => {
-                                        data.defaultKey = data.dropdownOptions[index].label;
-                                        data.defaultValue = data.dropdownOptions[index].value;
-                                        props.data.update();
+                                        props.data.set({
+                                            defaultKey: data.dropdownOptions[index].label,
+                                            defaultValue: data.dropdownOptions[index].value}
+                                        )
+                                        
                                         console.log(data.defaultKey)
                                     }}
                                 />
                             </Col>
                             <Col>
-                                <OptionSwitch on={props.data.data.simpleInput} onChange={
+                                <OptionSwitch on={data.simpleInput} onChange={
                                     (on: boolean) => {
-                                        data.simpleInput = on;
-                                        props.data.update();
+                                        props.data.set({simpleInput: on});
+                                        
                                     }
                                 } />
                             </Col>
@@ -89,7 +89,7 @@ export function DropdownInputControlContent(
                                             value: 0,
                                             label: `option ${data.dropdownOptions.length + 1}`
                                         })
-                                        options.onUpdate(data);
+                                        props.data.set({dropdownOptions: data.dropdownOptions})
                                     }}
                                 >
                                     Add option
@@ -102,6 +102,7 @@ export function DropdownInputControlContent(
                                             inputHint={"name"}
                                             onChange={(newLabel) => {
                                                 data.dropdownOptions[index].label = newLabel
+                                                props.data.set({dropdownOptions: data.dropdownOptions})
                                                 // TODO: Må endre tegn for tegn om denne er med:
                                                 //props.data.update();
                                             }}
@@ -111,11 +112,9 @@ export function DropdownInputControlContent(
                                             value={data.dropdownOptions[index].value}
                                             onChange={(value) => {
                                                 data.dropdownOptions[index].value = value;
-                                                props.data.update();
+                                                props.data.set({dropdownOptions: data.dropdownOptions})
                                             }}
-                                            onIllegalValue={() => {
-                                                return
-                                            }}
+                                            onIllegalValue={() => {}}
                                             // TODO: Fjern magisk tall (lagt inn for testing)
                                             legalRanges={[{max: 100}]
                                             }/>
@@ -133,27 +132,27 @@ export function DropdownInputControlContent(
                                         >X</Button>
                                         <Button onClick={() => {
                                             if (index >= 0 && index < data.dropdownOptions.length - 1) {
-                                                [data.dropdownOptions[index], data.dropdownOptions[index + 1]] = [data.dropdownOptions[index + 1], data.dropdownOptions[index]]
+                                                [data.dropdownOptions[index], data.dropdownOptions[index + 1]] =
+                                                    [data.dropdownOptions[index + 1], data.dropdownOptions[index]]
+                                                props.data.set({dropdownOptions: data.dropdownOptions})
                                             }
                                             props.data.update();
                                         }}>Down</Button>
                                         <Button onClick={() => {
                                             if (index > 0) {
-                                                [data.dropdownOptions[index], data.dropdownOptions[index - 1]] = [data.dropdownOptions[index - 1], data.dropdownOptions[index]]
+                                                [data.dropdownOptions[index], data.dropdownOptions[index - 1]] =
+                                                    [data.dropdownOptions[index - 1], data.dropdownOptions[index]]
+                                                props.data.set({dropdownOptions: data.dropdownOptions})
                                             }
-                                            props.data.update();
                                         }}>Up</Button>
-
                                     </InputGroup>
-
-
                                 })}
                         <DropdownSelection
                             inputHint={"Select page"}
                             selection={pages.find((page) => page.title === data.pageName)?.ordering}
                             dropdownAlternatives={pages.map((page) => {return {label: page.title, value: page.ordering}})}
                             onChange={(selected: number) => {
-                                data.pageName = pages.find((page) => page.ordering === selected)?.title;
+                                props.data.set ({pageName: pages.find((page) => page.ordering === selected)?.title;});
                                 props.data.update()
                             }}
                         />

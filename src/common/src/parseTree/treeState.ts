@@ -74,10 +74,17 @@ export function treeStateFromData(data: any): TreeState {
         });
     });
 
-    if (roots.length !== 1) { throw new Error("None or multiple root nodes found in tree")}
 
     return {
-        rootNode: roots[0],
+        rootNode: roots[0] ||  {
+        id: "0",
+        type: NodeType.Root,
+        value: 0,
+        formulaName: "",
+        version:0,
+        pages: [],
+        inputs:[]
+    } as RootNode,
         displayNodes: displays,
         inputs: inputs,
         outputs: outputs,
@@ -175,7 +182,8 @@ export function getResultsForInputs(tree: TreeState, inputID: string, values: nu
  * @param nodeID The node id.
  * @returns A shallow copy of the matching node, otherwise undefined.
  */
-export function getNodeByID(tree: TreeState, nodeID: string) : ParseNode | undefined {
+export function getNodeByID(tree: TreeState | undefined, nodeID: string) : ParseNode | undefined {
+    if(!tree) { return undefined }
     let matchNode: ParseNode | undefined;
     tree.subTrees.forEach((root)=> {
         forEachNode(root, (n)=>{

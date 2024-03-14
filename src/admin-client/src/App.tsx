@@ -2,7 +2,7 @@ import {createEditor} from "./rete/editor";
 import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
 import {Card, Col, Nav, Navbar, NavDropdown, Row} from "react-bootstrap";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Provider} from "react-redux";
 import {PagesWindow} from "./containers/pagesWindow";
 import {selectFormulaInfo, selectPages, selectTreeState, store} from "./state/store";
@@ -14,15 +14,18 @@ import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
 
 
 
-
 export default function App() {
-  const [ref, functions] = useRete(createEditor);
-  const treeState = useAppSelector(selectTreeState);
-  const formulaInfo = useAppSelector(selectFormulaInfo);
-  const pagesInfo = useAppSelector(selectPages)
-  const dispatch = useAppDispatch();
+    const [change, setChange] = useState(0);
+    const [ref, functions] = useRete(createEditor);
+    const formulaInfo = useAppSelector(selectFormulaInfo);
+    const pagesInfo = useAppSelector(selectPages)
+    const dispatch = useAppDispatch();
 
-  useEffect(()=> {
+    function increment() {
+        setChange(a => a + 1);
+    }
+
+    useEffect(()=> {
     document.addEventListener('keydown', (e) => {
         if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
@@ -30,7 +33,6 @@ export default function App() {
         }
         if (e.key === 'Delete') {
             e.preventDefault();
-            console.log("Delete");
             functions?.deleteSelected();
         }
         if (e.key === 'a' && (e.ctrlKey || e.metaKey)) {
@@ -39,12 +41,38 @@ export default function App() {
         }
         if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
-            console.log("focus")
             functions?.viewControllers.focusSelectedNode();
         }
     });
-  },
+
+    functions?.registerCallBack(()=>{
+        increment();
+    })
+
+    },
      [functions] );
+
+    useEffect(()=>{
+        console.log(change);
+        console.log(functions?.getCurrentTree())
+        const data = functions?.getCurrentTree();
+        if(data) {
+            const version = formulaInfo.version;
+            const root: RootNode =  {
+                id: "0",
+                type: NodeType.Root,
+                value: 0,
+                formulaName: formulaInfo.name,
+                version: version.major * 1000000 + version.minor * 1000 + version.patch,
+                pages: pagesInfo.map((page, index)=>{return {pageName: page.title, ordering: index }}),
+                inputs:[]
+            }
+            data.push(root);
+            dispatch(updateTree(data));
+        }
+    }, [change, functions])
+
+
 
   return (
       <Provider store={store}>
@@ -89,9 +117,7 @@ export default function App() {
                                                       inputs:[]
                                                   }
                                                   data.push(root);
-                                                  console.log(data);
                                                   dispatch(updateTree(data));
-                                                  console.log(treeState.tree)
                                               }
                                           } catch(e) {
                                               console.log(e);

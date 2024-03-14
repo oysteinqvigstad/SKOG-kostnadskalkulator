@@ -17,4 +17,5 @@ export {
     type TreeState
 } from "./treeState";
 export {testTree} from "./testTree"
+export {type DisplayPieNode} from "./nodes/displayNode"
 

@@ -46,8 +46,8 @@ export function process (engine: DataflowEngine<Schemes>, editor: NodeEditor<Sch
         engine.reset();
         editor
             .getNodes()
-            .forEach((node) => {
-                engine.fetch(node.id).catch(() => {});
+            .forEach(async (node) => {
+                await engine.fetch(node.id).catch(() => {});
             });
     }
 }
@@ -66,16 +66,17 @@ async function  loadGraphFromLocalStorage(
     editor: NodeEditor<Schemes>,
     engine: DataflowEngine<Schemes>,
     area: AreaPlugin<Schemes, AreaExtra>,
-) : Promise<void> {
+    callback: () =>void
+) : Promise<ParseNode[] | undefined> {
     return new Promise((resolve, reject) => {
         if(!localStorage) {
             reject("Local storage not available");
         }
         const graph = localStorage.getItem(fileName);
         if(graph) {
-            importGraph(JSON.parse(graph), editor, engine, area)
+            importGraph(JSON.parse(graph), editor, engine, area, callback)
                 .then(() => {
-                    resolve();
+                    resolve(createJSONGraph(editor));
                 })
                 .catch(() => {
                     reject("Failed to load graph from existing file");
@@ -124,12 +125,13 @@ async function saveGraphToLocalStorage(
  * new nodes with the set schemes.
  * @param editor
  * @param area
- * @param onInputChange
+ * @param updateDataFlow
  */
 function createContextMenu(
     editor: NodeEditor<Schemes>,
     area: AreaPlugin<Schemes, AreaExtra>,
-    onInputChange: () => void
+    updateDataFlow: () => void,
+    updateStore: () => void
 ) : ContextMenuPlugin<Schemes> {
     // NB: For a node to be copyable, it must implement clone() in a way
     // that does not require 'this' to be valid in its context.
@@ -138,7 +140,7 @@ function createContextMenu(
     return new ContextMenuPlugin<Schemes>({
         items: ContextMenuPresets.classic.setup([
             ["Math",
-                [["Number", () => new NumberNode(0, updateNodeRender, onInputChange)],
+                [["Number", () => new NumberNode(0, updateNodeRender, updateDataFlow)],
                 ["Add", () => new BinaryNode(NodeType.Add, updateNodeRender)],
                 ["Sub", () => new BinaryNode(NodeType.Sub, updateNodeRender)],
                 ["Mul", () => new BinaryNode(NodeType.Mul, updateNodeRender)],
@@ -147,10 +149,10 @@ function createContextMenu(
                 ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
                 ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]]],
             ["Inputs",
-                [["Dropdown", () => new DropdownInputNode(updateNodeRender, onInputChange)],
-                ["Number", () => new NumberInputNode(updateNodeRender, onInputChange)],]],
-            ["Output", () => new OutputNode(updateNodeRender)],
-            ["Pie Display", ()=> new DisplayPieNode(updateNodeRender)],
+                [["Dropdown", () => new DropdownInputNode(updateNodeRender, updateDataFlow)],
+                ["Number", () => new NumberInputNode(updateNodeRender, updateDataFlow)],]],
+            ["Output", () => new OutputNode(updateNodeRender, updateDataFlow)],
+            ["Pie Display", ()=> new DisplayPieNode(updateNodeRender, updateStore)],
             // ["Label", ()=> new LabelNode(onInputChange)]
         ])
     });
@@ -163,6 +165,7 @@ function createContextMenu(
  * Creates a new editor and returns a promise with an object containing functions to
  * control the editor.
  * @param container HTML element to contain the editor
+ * @param signal object with a counter which is counted up whenever the rete state changes
  * @returns Promise with an object containing functions destroy(), load(), save(), clear() and testJSON()
  */
 export async function createEditor(container: HTMLElement) {
@@ -174,7 +177,12 @@ export async function createEditor(container: HTMLElement) {
     const engine = new DataflowEngine<Schemes>();
     const scopes = new ScopesPlugin<Schemes>();
 
+
     let selectedNode: string = "";
+    const onReteStateChangeWrapper = {
+        call: ()=>{}
+    }
+
 
     AreaExtensions.selectableNodes(area, AreaExtensions.selector(), {
         accumulating: AreaExtensions.accumulateOnCtrl()
@@ -187,8 +195,8 @@ export async function createEditor(container: HTMLElement) {
                     switch(data.payload.type) {
                         case NodeType.Display: return DisplayPieNodeControlContainer
                         case NodeType.NumberInput: return NumberInputControlContainer
-                        case NodeType.Output: return OutputNodeControlContainer
                         case NodeType.DropdownInput: return DropdownInputControlContainer
+                        case NodeType.Output: return OutputNodeControlContainer
                     }
                     return NumberControlComponent;
                 },
@@ -199,8 +207,6 @@ export async function createEditor(container: HTMLElement) {
             }
         })
     );
-
-
 
 
     // context menu can be customized here by adding a Customize object inside
@@ -214,12 +220,23 @@ export async function createEditor(container: HTMLElement) {
 
     editor.use(area);
     editor.use(engine);
+    editor.addPipe((context) => {
+        currentJSONTree = createJSONGraph(editor);
+        return context;
+    });
 
     scopes.addPreset(ScopesPresets.classic.setup());
 
 
     area.use(connection);
-    area.use(createContextMenu(editor, area, process(engine, editor)));
+
+    const updateParseTree = ()=> {
+        console.log('updating currentJSONTree');
+        currentJSONTree = createJSONGraph(editor)
+        onReteStateChangeWrapper.call();
+    }
+
+    area.use(createContextMenu(editor, area, process(engine, editor), updateParseTree));
     area.use(render);
 
     area.use(scopes);
@@ -244,6 +261,7 @@ export async function createEditor(container: HTMLElement) {
         }
         return context;
     })
+
 
     area.addPipe((context) => {
 
@@ -285,9 +303,11 @@ export async function createEditor(container: HTMLElement) {
             onLoading();
             await editor.clear();
 
-            loadGraphFromLocalStorage("graph", editor, engine, area)
+            loadGraphFromLocalStorage("graph", editor, engine, area, updateParseTree)
                 .then(async () => {
                     onLoaded();
+                    currentJSONTree = createJSONGraph(editor);
+                    onReteStateChangeWrapper.call();
                 })
                 .catch(() => {onFailedToLoad()});
         },
@@ -314,25 +334,29 @@ export async function createEditor(container: HTMLElement) {
             return currentJSONTree;
         },
         deleteSelected: async () => {
-            const connections = editor.getConnections().filter(c => {
-                return c.source === selectedNode || c.target === selectedNode
-            })
-
-            for (const connection of connections) {
-                await editor.removeConnection(connection.id)
+            if(editor.getNode(selectedNode)) {
+                const connections = editor.getConnections().filter(c => {
+                    return c.source === selectedNode || c.target === selectedNode
+                })
+                for (const connection of connections) {
+                    await editor.removeConnection(connection.id)
+                }
+                editor.removeNode(selectedNode).then(()=>{});
             }
-            await editor.removeNode(selectedNode)
-            editor.removeNode(selectedNode).then(()=>{});
+        },
+        registerCallBack(newCallback: () => void) {
+            onReteStateChangeWrapper.call = newCallback;
         },
         viewControllers: {
             resetView: () => {
                 AreaExtensions.zoomAt(area, editor.getNodes()).then(() => {});
             },
             focusSelectedNode: () => {
-                AreaExtensions.zoomAt(area, [editor.getNode(selectedNode)]).then(() => {});
+                AreaExtensions.zoomAt(area, [editor.getNode(selectedNode)]).catch(()=>{}).then(() => {});
             },
             zoomIn: () => {
             }
-        }
+        },
+        getCurrentTree: ()=> currentJSONTree
     };
 }
