@@ -25,6 +25,7 @@ export class NumberInputNode extends BaseNode<
         super(NodeType.NumberInput, 400, 400, "Number Input");
 
         const initialData: NumberInputData = {
+            id: this.id,
             name: "",
             simpleInput: true,
             defaultValue: 0,
@@ -72,6 +73,7 @@ export class NumberInputNode extends BaseNode<
     }
 
     toParseNode(): ParseNumberInputNode {
+        this.controls.c.setNoUpdate({id: this.id})
         return {
             id: this.id,
             value: this.controls.c.get('defaultValue') || 0,

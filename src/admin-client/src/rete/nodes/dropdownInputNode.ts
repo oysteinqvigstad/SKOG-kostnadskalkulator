@@ -25,6 +25,7 @@ export class DropdownInputNode extends BaseNode<
         super(NodeType.DropdownInput, 400, 400, "Dropdown Input");
 
         const initialControlData: DropdownInputControlData = {
+            id: this.id,
             name: "",
             simpleInput: true,
             dropdownOptions: [],
@@ -63,6 +64,7 @@ export class DropdownInputNode extends BaseNode<
     }
 
     toParseNode() : DropdownInput {
+        this.controls.c.setNoUpdate({id: this.id})
         return { // TODO: Must implement controller
             id: this.id,
             value: this.controls.c.get('defaultValue') || 0,
