@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {Form} from "react-bootstrap";
 
 export function TextInputField(
@@ -10,11 +10,6 @@ export function TextInputField(
         isValid?: (text: string)=>boolean
     }
 ) {
-    const [value, setValue] =
-        useState(props.value ?? "");
-    const [valid, setValid] =
-        useState(props.isValid?.(props.value ?? "") ?? true);
-
 
 
     return <>
@@ -30,14 +25,12 @@ export function TextInputField(
                 className={"field"}
                 type={"text"}
                 size={props.size}
-                value={value}
+                value={props.value}
                 inputMode={"text"}
-                isInvalid={!valid}
+                isInvalid={!(props.isValid?.(props.value ?? "") ?? true)}
                 onChange={(e)=> {
                     const textIsValid = props.isValid?.(e.currentTarget.value) ?? true
                     props.onChange(e.currentTarget.value, textIsValid);
-                    setValid(textIsValid)
-                    setValue(e.currentTarget.value);
                 }}
                 required
             />
