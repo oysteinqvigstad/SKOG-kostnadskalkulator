@@ -12,9 +12,10 @@ export class DisplayPieNode extends BaseNode <
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
-        private updateStore: () => void
+        private updateStore: () => void,
+        id?: string,
     ) {
-        super(NodeType.Display, 600, 400);
+        super(NodeType.Display, 600, 400, "Pie Chart", id);
 
         this.addInput("input",
             new ClassicPreset.Input(

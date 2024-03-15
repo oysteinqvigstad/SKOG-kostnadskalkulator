@@ -18,8 +18,9 @@ export class BinaryNode extends BaseNode<
     constructor(
         type: NodeType,
         protected updateNodeRendering: (id: string)=>void,
+        id?: string,
     ) {
-        super(type, 230, 180);
+        super(type, 230, 180, type.toString(), id);
 
         this.binaryOperation = getBinaryOperation(type);
 

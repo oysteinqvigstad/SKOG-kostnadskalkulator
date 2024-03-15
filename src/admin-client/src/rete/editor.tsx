@@ -60,13 +60,14 @@ export function process (engine: DataflowEngine<Schemes>, editor: NodeEditor<Sch
  * @param editor editor
  * @param engine engine
  * @param area area
+ * @param updateStore function to call when rete has updated treeState data
  */
 async function  loadGraphFromLocalStorage(
     fileName: string,
     editor: NodeEditor<Schemes>,
     engine: DataflowEngine<Schemes>,
     area: AreaPlugin<Schemes, AreaExtra>,
-    callback: () =>void
+    updateStore: () =>void
 ) : Promise<ParseNode[] | undefined> {
     return new Promise((resolve, reject) => {
         if(!localStorage) {
@@ -74,7 +75,7 @@ async function  loadGraphFromLocalStorage(
         }
         const graph = localStorage.getItem(fileName);
         if(graph) {
-            importGraph(JSON.parse(graph), editor, engine, area, callback)
+            importGraph(JSON.parse(graph), editor, engine, area, updateStore)
                 .then(() => {
                     resolve(createJSONGraph(editor));
                 })
@@ -126,6 +127,7 @@ async function saveGraphToLocalStorage(
  * @param editor
  * @param area
  * @param updateDataFlow
+ * @param updateStore
  */
 function createContextMenu(
     editor: NodeEditor<Schemes>,
@@ -165,7 +167,6 @@ function createContextMenu(
  * Creates a new editor and returns a promise with an object containing functions to
  * control the editor.
  * @param container HTML element to contain the editor
- * @param signal object with a counter which is counted up whenever the rete state changes
  * @returns Promise with an object containing functions destroy(), load(), save(), clear() and testJSON()
  */
 export async function createEditor(container: HTMLElement) {
@@ -354,8 +355,6 @@ export async function createEditor(container: HTMLElement) {
             focusSelectedNode: () => {
                 AreaExtensions.zoomAt(area, [editor.getNode(selectedNode)]).catch(()=>{}).then(() => {});
             },
-            zoomIn: () => {
-            }
         },
         getCurrentTree: ()=> currentJSONTree
     } as ReteFunctions;
@@ -372,8 +371,7 @@ export interface ReteFunctions {
     registerCallBack: (newCallback: () => void) => void,
     viewControllers: {
         resetView: () => void,
-        focusSelectedNode: () => void,
-        zoomIn: () => void
+        focusSelectedNode: () => void
     },
     getCurrentTree: () => ParseNode[] | undefined
 }

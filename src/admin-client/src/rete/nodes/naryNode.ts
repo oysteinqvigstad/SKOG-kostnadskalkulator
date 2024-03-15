@@ -17,9 +17,10 @@ export class NaryNode extends BaseNode<
 
     constructor(
         type: NodeType,
-        protected updateNodeRendering: (id: string) => void
+        protected updateNodeRendering: (id: string) => void,
+        id?: string
     ) {
-        super(type, 190, 180);
+        super(type, 190, 180, type.toString(), id);
 
         this.naryOperation = getNaryOperation(type);
 
@@ -28,7 +29,7 @@ export class NaryNode extends BaseNode<
             new NodeControl(
                 {value: 0, readonly: true} as NumberControlData,
                 {
-                    onUpdate: (data)=>{},
+                    onUpdate: ()=>{},
                     minimized: false
                 },
                 this.type

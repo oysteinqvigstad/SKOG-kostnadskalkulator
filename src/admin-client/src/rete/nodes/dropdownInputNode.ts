@@ -21,9 +21,10 @@ export class DropdownInputNode extends BaseNode<
     constructor(
         protected updateNodeRendering: (nodeID: string) => void, // function that updates node rendering
         protected updateDataFlow: () => void, // function to be called on user changing value
-        private updateStore: () => void
+        private updateStore: () => void,
+        id?: string,
     ) {
-        super(NodeType.DropdownInput, 400, 400, "Dropdown Input");
+        super(NodeType.DropdownInput, 400, 400, "Dropdown Input", id);
 
         const initialControlData: DropdownInputControlData = {
             id: this.id,
@@ -57,6 +58,7 @@ export class DropdownInputNode extends BaseNode<
         ));
 
         this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Number"));
+        this.updateStore();
     }
 
     data(): { value: number } {
