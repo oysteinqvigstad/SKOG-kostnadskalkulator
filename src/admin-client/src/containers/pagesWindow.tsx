@@ -5,7 +5,6 @@ import {selectPages} from "../state/store";
 import {TextInputField} from "../components/input/textInputField";
 import {addPage, movePage, Page, removePage, setPageSelection, updatePage} from "../state/slices/pages";
 import Button from "react-bootstrap/Button";
-import {useState} from "react";
 
 export function PageBox(
     props: {
