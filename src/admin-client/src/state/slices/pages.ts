@@ -4,10 +4,12 @@ export interface Page {
     title: string;
     ordering: number;
     subPages: string[];
+    inputIds: string[];
 }
 
 export interface PagesState {
     pages: {id: number, page:Page}[];
+    selected: number | undefined;
 }
 
 function updateOrdering(pagesWithID: {id: number, page: Page}[]) {
@@ -20,7 +22,8 @@ function updateOrdering(pagesWithID: {id: number, page: Page}[]) {
 export const pageSlice = createSlice({
     name: 'pages',
     initialState: {
-        pages: []
+        pages: [],
+        selected: undefined
     } as PagesState,
     reducers: {
         addPage: (state, action: PayloadAction<Page> ) => {
@@ -42,9 +45,20 @@ export const pageSlice = createSlice({
             [state.pages[oldIndex], state.pages[newIndex]] =
                 [state.pages[newIndex], state.pages[oldIndex]];
             updateOrdering(state.pages);
-        }
+        },
+        addInputToPage: (state, action: PayloadAction<{ nodeID: string, pageName: string }>) => {
+            state.pages.forEach(({ page })=>{
+                page.inputIds = page.inputIds.filter(id=>id !== action.payload.nodeID)
+                if(page.title === action.payload.pageName) {
+                    page.inputIds.push(action.payload.nodeID);
+                }
+            })
+            console.log(state.pages.map(({page})=> {
+                return { page: (page.title), inputs: (page.inputIds)}
+            }))
+        },
     }
 });
 
-export const {addPage, removePage, updatePage, movePage} = pageSlice.actions;
+export const {addPage, removePage, updatePage, movePage, addInputToPage} = pageSlice.actions;
 export const pagesReducer = pageSlice.reducer;
