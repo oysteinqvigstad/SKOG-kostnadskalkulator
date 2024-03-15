@@ -16,7 +16,6 @@ import {useState} from "react";
 import {addInputToPage} from "../../../../state/slices/pages";
 
 
-
 export function DropdownInputControlContainer(
     props: { data: NodeControl<DropdownInputControlData> }
 ) {
@@ -100,7 +99,7 @@ export function DropdownInputControlContent(
                                     key: nextId,
                                 })
                                 props.data.set({dropdownOptions: data.dropdownOptions})
-                                setNextId(nextId+1);
+                                setNextId(nextId + 1);
                                 console.log(nextId);
                             }}
                         >
@@ -131,9 +130,9 @@ export function DropdownInputControlContent(
                                         data.dropdownOptions[index].value = value;
                                         props.data.set({dropdownOptions: data.dropdownOptions})
                                     }}
-                                    onIllegalValue={() => {
+                                    onIllegalValue={(value) => {
+                                        console.log("Illegal value", value)
                                     }}
-                                    // TODO: Fjern magisk tall (lagt inn for testing)
                                     legalRanges={[]}
                                 />
                                 <Button
@@ -167,15 +166,15 @@ export function DropdownInputControlContent(
                         })}
                         <DropdownSelection
                             inputHint={"Select page"}
-                            selection={pages.find(({ page }) => page.title === data.pageName)?.page.ordering}
+                            selection={pages.find(({page}) => page.title === data.pageName)?.page.ordering}
                             dropdownAlternatives={pages.map(({page}) => {
                                 return {label: page.title, value: page.ordering}
                             })}
                             onChange={(selected: number) => {
-                                const pageName = pages.find(({ page }) => page.ordering === selected)?.page.title;
+                                const pageName = pages.find(({page}) => page.ordering === selected)?.page.title;
                                 props.data.set({pageName: pageName});
                                 props.data.update();
-                                if(pageName) {
+                                if (pageName) {
                                     dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: pageName}))
                                 }
                             }}
