@@ -7,11 +7,11 @@ export interface Page {
 }
 
 export interface PagesState {
-    pages: Page[];
+    pages: {id: number, page:Page}[];
 }
 
-function updateOrdering(pages: Page[]) {
-    pages.forEach((page, index) => {
+function updateOrdering(pagesWithID: {id: number, page: Page}[]) {
+    pagesWithID.forEach(( {id, page}, index) => {
         page.ordering = index;
     });
 }
@@ -25,7 +25,7 @@ export const pageSlice = createSlice({
     reducers: {
         addPage: (state, action: PayloadAction<Page> ) => {
             action.payload.ordering = state.pages.length;
-            state.pages.push(action.payload);
+            state.pages.push({id: ( Math.random() * 1000000 + 1000000), page: action.payload});
         },
         removePage: (state, action: PayloadAction<number>) => {
             const tail = state.pages.slice(action.payload + 1);
@@ -34,7 +34,7 @@ export const pageSlice = createSlice({
             updateOrdering(state.pages);
         },
         updatePage: (state, action: PayloadAction<Page>) => {
-            state.pages[action.payload.ordering] = action.payload;
+            state.pages[action.payload.ordering].page = action.payload;
         },
         movePage: (state, action: PayloadAction<{oldIndex: number, newIndex: number}>) => {
             const {oldIndex, newIndex} = action.payload;

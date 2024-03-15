@@ -5,6 +5,7 @@ import {selectPages} from "../state/store";
 import {TextInputField} from "../components/input/textInputField";
 import {addPage, movePage, Page, removePage, updatePage} from "../state/slices/pages";
 import Button from "react-bootstrap/Button";
+import {useState} from "react";
 
 export function PageBox(
     props: {
@@ -16,7 +17,7 @@ export function PageBox(
 ) {
     return <Row>
         <InputGroup>
-            <TextInputField value={props.page.title} inputHint={"Page name"} onChange={(newTitle) => {props.onChange(newTitle)}}/>
+            <TextInputField value={props.page.title} inputHint={"Page name"} onChange={(newTitle) => {props.onChange(newTitle);}}/>
             <Button onClick={()=>{props.onMove(props.page.ordering-1)}}>Up</Button>
             <Button onClick={()=>{props.onMove(props.page.ordering+1)}}>Down</Button>
             <Button onClick={()=>{props.onDelete()}}>X</Button>
@@ -25,12 +26,9 @@ export function PageBox(
 }
 
 
-export function PagesWindow(
-    props: {}
-) {
+export function PagesWindow() {
     const pages = useAppSelector(selectPages);
     const dispatch = useAppDispatch();
-
 
 
     return <>
@@ -38,8 +36,8 @@ export function PagesWindow(
             <Row>
                 <Button onClick={()=>{dispatch(addPage({title: "", ordering: 1, subPages:[]}))}}>Add page</Button>
             </Row>
-            {pages.map((page, index) => {
-                return <Row key={page.title}>
+            {pages.map(({id, page}, index) => {
+                return <Row key={id}>
                     <PageBox
                         page={page}
                         onChange={(newTitle)=>{
@@ -47,7 +45,6 @@ export function PagesWindow(
                         }}
                         onMove={(newIndex)=>{
                             dispatch(movePage({oldIndex: page.ordering, newIndex: newIndex}))
-                            console.log(pages.map((p)=>p.title))
                         }}
                         onDelete={()=>{dispatch(removePage(page.ordering))}}
                     />
