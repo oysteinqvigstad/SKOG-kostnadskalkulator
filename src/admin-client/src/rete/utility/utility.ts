@@ -13,21 +13,22 @@ export function getSkogNodeFromNodeType(
     type:NodeType,
     onValueUpdate: ()=>void,
     updateNodeRender: (nodeID: string) => void,
-    updateStore: () => void
+    updateStore: () => void,
+    id?: string
 ) : SkogNode | undefined {
     switch(type) {
-        case NodeType.Output: return new OutputNode(updateNodeRender, onValueUpdate);
-        case NodeType.Number: return new NumberNode(0, updateNodeRender, onValueUpdate);
-        case NodeType.NumberInput: return new NumberInputNode(updateNodeRender, onValueUpdate, updateStore);
-        case NodeType.DropdownInput: return new DropdownInputNode(updateNodeRender, onValueUpdate, updateStore);
-        case NodeType.Display: return new DisplayPieNode(updateNodeRender, updateStore)
-        case NodeType.Add: return new BinaryNode(NodeType.Add, updateNodeRender);
-        case NodeType.Sub: return new BinaryNode(NodeType.Sub, updateNodeRender);
-        case NodeType.Mul: return new BinaryNode(NodeType.Mul, updateNodeRender);
-        case NodeType.Pow: return new BinaryNode(NodeType.Pow, updateNodeRender);
-        case NodeType.Div: return new BinaryNode(NodeType.Div, updateNodeRender);
-        case NodeType.Sum: return new NaryNode(NodeType.Sum, updateNodeRender);
-        case NodeType.Prod: return new NaryNode(NodeType.Prod, updateNodeRender);
+        case NodeType.Output: return new OutputNode(updateNodeRender, onValueUpdate, id);
+        case NodeType.Number: return new NumberNode(0, updateNodeRender, onValueUpdate, id);
+        case NodeType.NumberInput: return new NumberInputNode(updateNodeRender, onValueUpdate, updateStore, id);
+        case NodeType.DropdownInput: return new DropdownInputNode(updateNodeRender, onValueUpdate, updateStore, id);
+        case NodeType.Display: return new DisplayPieNode(updateNodeRender, updateStore, id)
+        case NodeType.Add: return new BinaryNode(NodeType.Add, updateNodeRender, id);
+        case NodeType.Sub: return new BinaryNode(NodeType.Sub, updateNodeRender, id);
+        case NodeType.Mul: return new BinaryNode(NodeType.Mul, updateNodeRender, id);
+        case NodeType.Pow: return new BinaryNode(NodeType.Pow, updateNodeRender, id);
+        case NodeType.Div: return new BinaryNode(NodeType.Div, updateNodeRender, id);
+        case NodeType.Sum: return new NaryNode(NodeType.Sum, updateNodeRender, id);
+        case NodeType.Prod: return new NaryNode(NodeType.Prod, updateNodeRender, id);
         default: return undefined;
     }
 }

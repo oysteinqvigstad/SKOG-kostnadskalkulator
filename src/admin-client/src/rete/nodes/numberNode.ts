@@ -19,9 +19,10 @@ export class NumberNode extends BaseNode<
     constructor(
         initialValue: number,
         protected updateNodeRendering: (id: string)=>void,
-        protected updateDataFlow: () => void
+        protected updateDataFlow: () => void,
+        id?: string
     ) {
-        super(NodeType.Number, 160, 180);
+        super(NodeType.Number, 160, 180, "Constant", id);
 
         this.clone = () => new NumberNode(this.controls.c.get('value') || 0, this.updateNodeRendering, this.updateDataFlow);
 

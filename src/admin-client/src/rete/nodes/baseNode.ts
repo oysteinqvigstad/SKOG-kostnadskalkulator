@@ -70,17 +70,22 @@ export abstract class BaseNode<
      * @param height height of the node
      * @param width width of the node
      * @param name
+     * @param id
      */
     protected constructor(
         type: NodeType,
         height: number,
         width: number,
         name?: string,
+        id?: string,
     ) {
         super(name ?? type.toString());
         this.type = type;
         this.originalHeight = this.height = height;
         this.originalWidth = this.width = width;
+        if(id) {
+            this.id = id;
+        }
     }
 
     abstract data( inputs: Record<KeysOfType<Inputs, any>, any[]>) : Record<KeysOfType<Outputs, any>, any>;
