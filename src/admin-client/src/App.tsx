@@ -44,6 +44,10 @@ export default function App() {
             e.preventDefault();
             functions?.viewControllers.focusSelectedNode();
         }
+        if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            functions?.load();
+        }
     });
 
     functions?.registerCallBack(()=>{
