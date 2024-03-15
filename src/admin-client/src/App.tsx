@@ -11,6 +11,7 @@ import {useAppDispatch, useAppSelector} from "./state/hooks";
 import {updateTree} from "./state/slices/treeState";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
+import {PageEditor} from "./containers/pageEditor";
 
 
 
@@ -146,7 +147,14 @@ export default function App() {
                               <Card.Body>
                                   <Tabs>
                                       <Tab eventKey="Pages" title="Pages">
-                                          <PagesWindow/>
+                                          <Container fluid={true} style={{height: "80vh", justifyContent: ""}}>
+                                              <Row style={{height: "50%"}}>
+                                                  <PagesWindow/>
+                                              </Row>
+                                              <Row style={{height: "50%"}}>
+                                                  <PageEditor/>
+                                              </Row>
+                                          </Container>
                                       </Tab>
                                       <Tab eventKey="Inputs" title="Inputs">
                                             <div>
@@ -164,5 +172,4 @@ export default function App() {
       </Provider>
   );
 }
-
 

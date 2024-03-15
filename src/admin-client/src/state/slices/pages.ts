@@ -57,8 +57,11 @@ export const pageSlice = createSlice({
                 return { page: (page.title), inputs: (page.inputIds)}
             }))
         },
+        setPageSelection: (state, action: PayloadAction<number>) => {
+            state.selected = action.payload;
+        }
     }
 });
 
-export const {addPage, removePage, updatePage, movePage, addInputToPage} = pageSlice.actions;
+export const {addPage, removePage, updatePage, movePage, addInputToPage, setPageSelection} = pageSlice.actions;
 export const pagesReducer = pageSlice.reducer;

@@ -1,27 +1,56 @@
 import {IDatabase} from "../models/IDatabase";
-import {TreeState} from "@skogkalk/common/dist/src/parseTree";
+import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 
 export class MockDatabase implements IDatabase {
-    #formulas = new Map<string, TreeState[]>()
+    #calculators: Record<string, Record<number, Calculator>> = {}
 
-    async addCalculator(calculator: TreeState): Promise<void> {
-        const name = calculator.rootNode.formulaName
-        const existing = this.#formulas.get(name) ?? []
-        this.#formulas.set(name, [...existing, calculator])
+    /**
+     * Adds a calculator to the database
+     */
+    async addCalculator(c: Calculator): Promise<void> {
+        // overwrites any existing calculators
+        if (!this.#calculators[c.name]) {
+            this.#calculators[c.name] = {}
+        }
+        this.#calculators[c.name][c.version] = c
     }
 
-    async getCalculatorByName(name: string, version?: number): Promise<TreeState[]> {
-        return this.#formulas
-            .get(name)
-            ?.filter(calc => (!version || calc.rootNode.version === version))
-            ?? []
+    /**
+     * Returns metainfo on all calculator versions in the database
+     */
+    async getCalculatorsInfo(): Promise<Calculator[]> {
+        return Object
+            .values(this.#calculators)
+            .flatMap(calculators => Object.values(calculators))
+            .map(c => {
+                // remove reteSchema and treeNodes
+                const {reteSchema, treeNodes, ...rest} = c
+                return rest
+            })
     }
 
-    async getCalculatorsLatest(): Promise<TreeState[]> {
-        return Array
-            .from(this.#formulas.values())
-            .map(calcs => calcs.reduce((prev, current) =>
-                prev.rootNode.version > current.rootNode.version ? prev : current
-            ))
+    /**
+     * Returns the parse tree of a specific calculator version
+     */
+    async getCalculatorTree(name: string, version: number): Promise<ParseNode[]> {
+        const calculator = this.#calculators[name]?.[version]
+        if (!calculator) throw new Error('Calculator not found')
+
+        const tree = calculator.treeNodes
+        if (!tree) throw new Error('Tree not found')
+        return tree
+    }
+
+    /**
+     * Returns the rete schema of a specific calculator version
+     */
+    async getCalculatorSchema(name: string, version: number): Promise<any> {
+        const calculator = this.#calculators[name]?.[version]
+        if (!calculator) throw new Error('Calculator not found')
+
+        const schema = calculator.reteSchema
+        if (!schema) throw new Error('Schema not found')
+        return schema
     }
 }

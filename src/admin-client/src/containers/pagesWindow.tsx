@@ -3,7 +3,7 @@ import {InputGroup, Row} from "react-bootstrap";
 import {useAppDispatch, useAppSelector} from "../state/hooks";
 import {selectPages} from "../state/store";
 import {TextInputField} from "../components/input/textInputField";
-import {addPage, movePage, Page, removePage, updatePage} from "../state/slices/pages";
+import {addPage, movePage, Page, removePage, setPageSelection, updatePage} from "../state/slices/pages";
 import Button from "react-bootstrap/Button";
 import {useState} from "react";
 
@@ -15,12 +15,17 @@ export function PageBox(
         onDelete: () => void
     }
 ) {
+    const dispatch = useAppDispatch();
+
+
+
     return <Row>
         <InputGroup>
             <TextInputField value={props.page.title} inputHint={"Page name"} onChange={(newTitle) => {props.onChange(newTitle);}}/>
             <Button onClick={()=>{props.onMove(props.page.ordering-1)}}>Up</Button>
             <Button onClick={()=>{props.onMove(props.page.ordering+1)}}>Down</Button>
             <Button onClick={()=>{props.onDelete()}}>X</Button>
+            <Button onClick={()=>{dispatch(setPageSelection(props.page.ordering))}}>Edit</Button>
         </InputGroup>
     </Row>
 }
