@@ -18,8 +18,8 @@ export function getSkogNodeFromNodeType(
     switch(type) {
         case NodeType.Output: return new OutputNode(updateNodeRender, onValueUpdate);
         case NodeType.Number: return new NumberNode(0, updateNodeRender, onValueUpdate);
-        case NodeType.NumberInput: return new NumberInputNode(updateNodeRender, onValueUpdate);
-        case NodeType.DropdownInput: return new DropdownInputNode(updateNodeRender, onValueUpdate);
+        case NodeType.NumberInput: return new NumberInputNode(updateNodeRender, onValueUpdate, updateStore);
+        case NodeType.DropdownInput: return new DropdownInputNode(updateNodeRender, onValueUpdate, updateStore);
         case NodeType.Display: return new DisplayPieNode(updateNodeRender, updateStore)
         case NodeType.Add: return new BinaryNode(NodeType.Add, updateNodeRender);
         case NodeType.Sub: return new BinaryNode(NodeType.Sub, updateNodeRender);

@@ -149,8 +149,8 @@ function createContextMenu(
                 ["Sum", () => new NaryNode(NodeType.Sum, updateNodeRender)],
                 ["Prod", () => new NaryNode(NodeType.Prod, updateNodeRender)]]],
             ["Inputs",
-                [["Dropdown", () => new DropdownInputNode(updateNodeRender, updateDataFlow)],
-                ["Number", () => new NumberInputNode(updateNodeRender, updateDataFlow)],]],
+                [["Dropdown", () => new DropdownInputNode(updateNodeRender, updateDataFlow, updateStore)],
+                ["Number", () => new NumberInputNode(updateNodeRender, updateDataFlow, updateStore)],]],
             ["Output", () => new OutputNode(updateNodeRender, updateDataFlow)],
             ["Pie Display", ()=> new DisplayPieNode(updateNodeRender, updateStore)],
             // ["Label", ()=> new LabelNode(onInputChange)]
