@@ -357,5 +357,22 @@ export async function createEditor(container: HTMLElement) {
             },
         },
         getCurrentTree: ()=> currentJSONTree
-    };
+    } as ReteFunctions;
+}
+
+
+export interface ReteFunctions {
+    destroy: () => void,
+    load: (onLoading?: () => void, onLoaded?: () => void, onUnsavedProgress?: () => void, onPotentialOverwrite?: () => void, onFailedToLoad?: () => void) => Promise<void>,
+    save: () => void,
+    clear: () => void,
+    testJSON: () => ParseNode[] | undefined,
+    deleteSelected: () => void,
+    registerCallBack: (newCallback: () => void) => void,
+    viewControllers: {
+        resetView: () => void,
+        focusSelectedNode: () => void,
+        zoomIn: () => void
+    },
+    getCurrentTree: () => ParseNode[] | undefined
 }
