@@ -1,10 +1,11 @@
-import {Card, Col, Row} from "react-bootstrap";
+import {ButtonGroup, Card, Col, Row} from "react-bootstrap";
 import {selectPages, selectPageSelection, selectTreeState} from "../state/store";
 import {useAppSelector} from "../state/hooks";
 import Container from "react-bootstrap/Container";
 import {getNodeByID, InputNode} from "@skogkalk/common/dist/src/parseTree";
 import {InputFieldPreview} from "@skogkalk/common/dist/src/visual/inputField/InputField";
 import Button from "react-bootstrap/Button";
+import {SlArrowDown, SlArrowUp} from "react-icons/sl";
 
 
 export function PageEditor() {
@@ -24,15 +25,19 @@ export function PageEditor() {
                         console.log(id);
                         if(tree.tree) {
                             const input = getNodeByID(tree.tree, id) as InputNode;
-                            if(!input) { return null }
-                            return <Row key={id}  >
-                                <Col lg={10}>
+                            if (!input) {
+                                return null
+                            }
+                            return <Row key={id}>
+                                <Col md={8}>
                                     <InputFieldPreview node={input}/>
                                 </Col>
-                                <Col lg={2}>
-                                    <Button>Up</Button>
+                                <Col>
+                                    <ButtonGroup>
+                                        <Button><SlArrowUp/></Button>
+                                        <Button><SlArrowDown/></Button>
+                                    </ButtonGroup>
                                 </Col>
-
                             </Row>
                         } else {
                             throw new Error("Tree not loaded");
