@@ -21,6 +21,7 @@ export class DropdownInputNode extends BaseNode<
     constructor(
         protected updateNodeRendering: (nodeID: string) => void, // function that updates node rendering
         protected updateDataFlow: () => void, // function to be called on user changing value
+        private updateStore: () => void
     ) {
         super(NodeType.DropdownInput, 400, 400, "Dropdown Input");
 
@@ -48,6 +49,7 @@ export class DropdownInputNode extends BaseNode<
                     }
                     this.updateNodeRendering(this.id);
                     this.updateDataFlow();
+                    this.updateStore();
                 },
                 minimized: false
             },
@@ -72,7 +74,7 @@ export class DropdownInputNode extends BaseNode<
             defaultValue: this.controls.c.get('defaultValue') || 0,
             name: this.controls.c.get('name') || "",
             pageName: this.controls.c.get('pageName') || "",
-            dropdownAlternatives: [],
+            dropdownAlternatives: this.controls.c.get('dropdownOptions')?.map(({value, label})=>{return {value, label}}) || [],
             infoText: this.controls.c.get('infoText') || "",
             ordering: 0, // TODO: Add to controller,
             simpleInput: this.controls.c.get('simpleInput') || false,
