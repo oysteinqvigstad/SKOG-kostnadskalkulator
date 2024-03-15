@@ -18,3 +18,5 @@ export type AppDispatch = typeof store.dispatch;
 export const selectPages = (state: RootState) => state.pages.pages;
 export const selectFormulaInfo = (state: RootState) => state.formulaInfo;
 export const selectTreeState = (state: RootState) => state.treeState;
+
+export const selectPageSelection = (state: RootState) => state.pages.selected;
