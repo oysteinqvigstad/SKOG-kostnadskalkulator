@@ -21,9 +21,10 @@ export class NumberInputNode extends BaseNode<
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
         protected updateDataFlow: () => void,
-        private updateStore: () => void
+        private updateStore: () => void,
+        id?: string
     ) {
-        super(NodeType.NumberInput, 400, 400, "Number Input");
+        super( NodeType.NumberInput, 400, 400, "Number Input", id);
 
         const initialData: NumberInputData = {
             id: this.id,
@@ -66,6 +67,7 @@ export class NumberInputNode extends BaseNode<
         ));
 
         this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Number"));
+        this.updateStore();
     }
 
     data(): { value: number } {

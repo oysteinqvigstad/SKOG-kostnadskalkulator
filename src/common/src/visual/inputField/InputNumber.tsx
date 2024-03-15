@@ -1,5 +1,5 @@
-import React, {useEffect} from "react";
-import {Button, Form, InputGroup} from "react-bootstrap";
+import React from "react";
+import {Form, InputGroup} from "react-bootstrap";
 import {NumberInputNode} from "../../parseTree/nodes/inputNode";
 
 /**

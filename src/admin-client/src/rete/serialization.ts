@@ -29,13 +29,13 @@ export async function importGraph(
         let totalConnections: ConnProps[]  = [];
 
         for await (const { id, controls, type, xy , connections} of data.nodes) {
-            let node = getSkogNodeFromNodeType( type, onValueUpdate, updateNodeRender, updateStore);
+            let node = getSkogNodeFromNodeType( type, onValueUpdate, updateNodeRender, updateStore, id);
 
             if(!node) {
                 reject("Invalid node type found in file");
             } else {
-                node.controls.c.set(controls.c.data);
                 node.id = id;
+                node.controls.c.set(controls.c.data);
                 node.xTranslation = xy[0];
                 node.yTranslation = xy[1];
 

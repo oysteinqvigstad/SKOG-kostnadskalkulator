@@ -1,17 +1,17 @@
 import {createEditor} from "./rete/editor";
 import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
-import {Card, Col, Nav, Navbar, NavDropdown, Row, Tab, Tabs} from "react-bootstrap";
+import {Card, Col, Row, Tab, Tabs} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {Provider} from "react-redux";
 import {PagesWindow} from "./containers/pagesWindow";
-import {selectFormulaInfo, selectPages, selectTreeState, store} from "./state/store";
-import {FormulaInfoContainer} from "./containers/formulaInfoContainer";
+import {selectFormulaInfo, selectPages, store} from "./state/store";
 import {useAppDispatch, useAppSelector} from "./state/hooks";
 import {updateTree} from "./state/slices/treeState";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
 import {PageEditor} from "./containers/pageEditor";
+import {NavBar} from "./containers/navbar/NavBar";
 
 
 
@@ -81,58 +81,7 @@ export default function App() {
               <Container style={{maxWidth: '100%'}}>
                   <Row>
                       <Col>
-                          <Navbar className="bg-body-tertiary">
-                              <Navbar.Brand>
-                                  Rete
-                              </Navbar.Brand>
-                              <Nav className="me-auto">
-                                  <NavDropdown title={"File"} id={"file-dropdown"}>
-                                      <NavDropdown.Item onClick={() => {
-                                          functions?.save()
-                                      }}>Save</NavDropdown.Item>
-                                      <NavDropdown.Item onClick={() => {
-                                          functions?.load()
-                                      }}>Load</NavDropdown.Item>
-                                      <NavDropdown.Item onClick={() => {
-                                          functions?.clear()
-                                      }}>Clear</NavDropdown.Item>
-                                  </NavDropdown>
-                                  <NavDropdown title={"View"} id={"view-dropdown"}>
-                                      <NavDropdown.Item onClick={() => {
-                                          functions?.viewControllers.resetView();
-                                      }}>Reset</NavDropdown.Item>
-                                  </NavDropdown>
-                                  <NavDropdown title={"Test"} id={"file-dropdown"}>
-                                      <NavDropdown.Item onClick={() => {
-                                          try {
-                                              const data = functions?.testJSON();
-                                              if(data) {
-                                                  const version = formulaInfo.version;
-                                                  const root: RootNode =  {
-                                                      id: "0",
-                                                      type: NodeType.Root,
-                                                      value: 0,
-                                                      formulaName: formulaInfo.name,
-                                                      version: version.major * 1000000 + version.minor * 1000 + version.patch,
-                                                      pages: pagesInfo.map(({id, page}, index)=>{return {pageName: page.title, ordering: index }}),
-                                                      inputs:[]
-                                                  }
-                                                  data.push(root);
-                                                  dispatch(updateTree(data));
-                                              }
-                                          } catch(e) {
-                                              console.log(e);
-                                          }
-                                      }}>Test JSON</NavDropdown.Item>
-                                  </NavDropdown>
-                                  <Navbar.Collapse className="justify-content-end">
-                                      <Navbar.Text>
-                                          <FormulaInfoContainer/>
-                                      </Navbar.Text>
-
-                                  </Navbar.Collapse>
-                              </Nav>
-                          </Navbar>
+                          <NavBar functions={functions} />
                       </Col>
                   </Row>
                   <Row>

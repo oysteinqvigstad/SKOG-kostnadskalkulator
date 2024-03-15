@@ -16,9 +16,10 @@ export class OutputNode extends BaseNode <
 
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
-        protected updateDataFlow: ()=>void
+        protected updateDataFlow: ()=>void,
+        id?: string
     ) {
-        super(NodeType.Output, 240, 200);
+        super(NodeType.Output, 240, 200, "Output", id);
 
         this.addInput( "result", new ClassicPreset.Input(  new ClassicPreset.Socket("socket"),  "Result",  false))
         this.addOutput(  "output", new ClassicPreset.Output( new ClassicPreset.Socket("socket"), "Out", true));
@@ -33,7 +34,7 @@ export class OutputNode extends BaseNode <
             new NodeControl(
                 initialState,
                 {
-                    onUpdate: (newData)=> {
+                    onUpdate: ()=> {
                         this.updateDataFlow();
                         this.updateNodeRendering(this.id);
                     },
