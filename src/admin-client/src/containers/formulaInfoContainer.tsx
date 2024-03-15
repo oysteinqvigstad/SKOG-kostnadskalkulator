@@ -14,8 +14,8 @@ export function FormulaInfoContainer(
             <TextInputField
                 value={formulaInfo.name}
                 inputHint={"Formula name"}
-                onChange={(newName: string, valid) => {
-                    if(valid){dispatch(setName(newName))}
+                onChange={(newName: string) => {
+                    dispatch(setName(newName));
                 }}
                 isValid={text=> { return text !== ""}}
 
