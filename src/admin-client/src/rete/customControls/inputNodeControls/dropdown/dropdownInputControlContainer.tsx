@@ -117,12 +117,11 @@ export function DropdownInputControlContent(
                                         data.dropdownOptions.filter((filteredItem) =>
                                             filteredItem !== item).every((entry) =>
                                             newLabel !== entry.label)}
-                                    // TODO: Endre validering så oppdatering bare kan skje med valid navn?
+
                                     onChange={(newLabel) => {
                                         data.dropdownOptions[index].label = newLabel
                                         props.data.set({dropdownOptions: data.dropdownOptions})
-                                        // TODO: Må endre tegn for tegn om denne er med:
-                                        //props.data.update();
+
                                     }}
                                 />
                                 <NumberInputField
@@ -135,8 +134,8 @@ export function DropdownInputControlContent(
                                     onIllegalValue={() => {
                                     }}
                                     // TODO: Fjern magisk tall (lagt inn for testing)
-                                    legalRanges={[{max: 100}]
-                                    }/>
+                                    legalRanges={[]}
+                                />
                                 <Button
                                     onClick={() => {
                                         data.dropdownOptions.splice(index, 1);
@@ -176,7 +175,9 @@ export function DropdownInputControlContent(
                                 const pageName = pages.find(({ page }) => page.ordering === selected)?.page.title;
                                 props.data.set({pageName: pageName});
                                 props.data.update();
-                                dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: props.data.get('pageName')}))
+                                if(pageName) {
+                                    dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: pageName}))
+                                }
                             }}
                         />
 
