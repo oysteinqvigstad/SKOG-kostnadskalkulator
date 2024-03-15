@@ -40,7 +40,7 @@ export function PagesWindow() {
             <Row>
                 <Button onClick={()=>{dispatch(addPage({title: "", ordering: 1, subPages:[], inputIds:[]}))}}>Add page</Button>
             </Row>
-            {pages.map(({id, page}, index) => {
+            {pages.map(({id, page}) => {
                 return <Row key={id}>
                     <PageBox
                         page={page}

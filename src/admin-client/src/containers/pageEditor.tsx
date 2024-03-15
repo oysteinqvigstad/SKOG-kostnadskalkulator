@@ -19,7 +19,7 @@ export function PageEditor() {
             </Card.Title>
             <Card.Body>
                 <Container>
-                    {selectedPage?.inputIds.map((id, index) => {
+                    {selectedPage?.inputIds.map((id) => {
                         console.log(id);
                         if(tree.tree) {
                             const input = getNodeByID(tree.tree, id) as InputNode;

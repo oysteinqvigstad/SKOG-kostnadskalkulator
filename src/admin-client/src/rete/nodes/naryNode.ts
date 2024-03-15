@@ -29,7 +29,7 @@ export class NaryNode extends BaseNode<
             new NodeControl(
                 {value: 0, readonly: true} as NumberControlData,
                 {
-                    onUpdate: (data)=>{},
+                    onUpdate: ()=>{},
                     minimized: false
                 },
                 this.type

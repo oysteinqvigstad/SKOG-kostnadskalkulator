@@ -31,7 +31,7 @@ export class NumberNode extends BaseNode<
             new NodeControl(
                 {value:0, readonly: false} as NumberControlData,
                 {
-                    onUpdate: data=>{
+                    onUpdate: ()=>{
                         updateDataFlow();
                         updateNodeRendering(this.id);
                     },

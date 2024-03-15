@@ -1,5 +1,4 @@
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {ClassicPreset} from "rete";
 import {SkogNode} from "../nodes/types";
 import {NumberNode} from "../nodes/numberNode";
 import {BinaryNode} from "../nodes/binaryNode";

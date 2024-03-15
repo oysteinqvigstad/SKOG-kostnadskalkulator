@@ -34,7 +34,7 @@ export class OutputNode extends BaseNode <
             new NodeControl(
                 initialState,
                 {
-                    onUpdate: (newData)=> {
+                    onUpdate: ()=> {
                         this.updateDataFlow();
                         this.updateNodeRendering(this.id);
                     },
