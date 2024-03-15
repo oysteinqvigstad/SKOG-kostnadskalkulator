@@ -1,16 +1,22 @@
-import FirebaseFirestore, {Query} from "@google-cloud/firestore";
+import FirebaseFirestore, {DocumentSnapshot} from "@google-cloud/firestore";
 import {IDatabase} from "../models/IDatabase";
 import {FirestoreConfiguration} from "../types/FirestoreConfiguration";
-import {TreeState} from "@skogkalk/common/dist/src/parseTree";
+import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 
 export class FirestoreDatabase implements IDatabase {
     #db: FirebaseFirestore.Firestore
 
+    /**
+     * Creates a new FirestoreDatabase instance
+     * @param config
+     */
     constructor(config: FirestoreConfiguration) {
         this.#db = new FirebaseFirestore.Firestore({
             projectId: config.projectId
         })
 
+        // use local emulator if not in production
         if (process.env.NODE_ENV !== 'production') {
             this.#db.settings({
                 host: 'localhost:8080',
@@ -19,59 +25,96 @@ export class FirestoreDatabase implements IDatabase {
         }
     }
 
-    async addCalculator(calculator: TreeState): Promise<void> {
+    /**
+     * Adds a calculator to the database
+     */
+    async addCalculator(c: Calculator): Promise<void> {
         const ref = this.#db
             .collection('calculators')
-            .doc(calculator.rootNode.formulaName)
-            .collection('treeNodes')
-            .doc(calculator.rootNode.version.toString())
+            .doc(c.name)
+            .collection('versions')
+            .doc(c.version.toString())
 
-        try {
-            await this.#db.runTransaction(async (t) => {
-                const doc = await t.get(ref)
-                if (doc.exists) {
-                    throw new Error('Calculator already exists')
-                }
-                t.set(ref, calculator)
-            })
-        } catch (e) {
-            throw new Error('An error occurred while adding the calculator')
-        }
-
-        // await this.#db
-        //     .collection(`calculators`)
-        //     .doc(calculator.rootNode.formulaName)
-        //     .collection('treeNodes')
-        //     .add(calculator)
+        // TODO: implement conflict checking/resolution with transaction
+        //  (e.g. if a calculator with the same name and version already exists)
+        //  right now it just overwrites the existing calculator
+        await this.#db.runTransaction(async (t) => { t.set(ref, c) })
+            .catch(() => { throw new Error('An error occurred while adding the calculator') })
     }
 
-    async getCalculatorByName(name: string, version?: number): Promise<TreeState[]> {
-        let query: Query = this.#db.collection('calculators').doc(name).collection('treeNodes')
 
-        if (version) {
-            query = query.where('rootNode.version', '==', version)
+    /**
+     * Returns metainfo on all calculator versions in the database
+     */
+    async getCalculatorsInfo(): Promise<Calculator[]> {
+        const calculators = await this.#getAllCalculators();
+        return calculators
+            .map(({treeNodes, reteSchema, ...rest}) => {
+                return {...rest};
+            });
+
+    }
+
+    /**
+     * Returns the parse tree of a specific calculator version
+     */
+    async getCalculatorTree(name: string, version: number): Promise<ParseNode[]> {
+        const doc = await this.#getCalculatorByNameAndVersion(name, version);
+        return this.#getCalculatorField(doc, 'treeNodes');
+    }
+
+    /**
+     * Returns the rete schema of a specific calculator version
+     */
+    async getCalculatorSchema(name: string, version: number): Promise<any> {
+        const doc = await this.#getCalculatorByNameAndVersion(name, version);
+        return this.#getCalculatorField(doc, 'reteSchema');
+    }
+
+
+    /**
+     * Returns all calculator versions in the database
+     * @private
+     */
+    async #getAllCalculators(): Promise<Calculator[]> {
+         return this.#db
+            .collectionGroup('versions')
+            .get()
+            .then(snapshot => snapshot.docs.map(doc => doc.data() as Calculator))
+            .catch(() => { throw new Error('An error occurred while getting the calculators') })
+
+
+    }
+
+    /**
+     * Returns a specific calculator version from the database
+     * @private
+     */
+    async #getCalculatorByNameAndVersion(name: string, version: number): Promise<DocumentSnapshot> {
+        return this.#db
+            .collection('calculators')
+            .doc(name)
+            .collection('versions')
+            .doc(version.toString())
+            .get()
+            .then(doc => {
+                if (doc.exists) return doc
+                throw new Error('Calculator not found') })
+            .catch(() => { throw new Error('An error occurred while getting the calculator') })
+    }
+
+    /**
+     * Returns a specific field from a calculator document
+     * @param doc - the calculator document from Firestore
+     * @param fieldName - a string representing the field name
+     * @private
+     */
+    #getCalculatorField(doc: DocumentSnapshot, fieldName: string): any {
+        const data = doc.data()
+        if (data && data.hasOwnProperty(fieldName)) {
+            return data[fieldName]
         } else {
-            query = query.orderBy('rootNode.version', 'desc')
+            throw new Error(`Field ${fieldName} not found on calculator`)
         }
-        let snapshot = await query.get()
-        return snapshot.docs.map(doc => doc.data() as TreeState)
-    }
-
-    async getCalculatorsLatest(): Promise<TreeState[]> {
-        let snapshot = await this.#db.collectionGroup('treeNodes').get()
-
-        return snapshot.docs.reduce((acc: TreeState[], doc) => {
-            const current = doc.data() as TreeState
-            const existingIndex = acc.findIndex(e => e.rootNode.formulaName === current.rootNode.formulaName)
-            if (existingIndex > -1) {
-                const existing = acc[existingIndex]
-                if (existing.rootNode.version < current.rootNode.version) {
-                    acc[existingIndex] = current
-                }
-            } else {
-                acc.push(current)
-            }
-            return acc
-        }, [])
     }
 }
