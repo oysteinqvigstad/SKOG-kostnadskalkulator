@@ -12,6 +12,7 @@ import {DropdownInputControlData} from "./dropdownInputControlData";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
 import {OptionSwitch} from "../../../../components/input/optionSwitch";
 import {useAppSelector} from "../../../../state/hooks";
+import {useState} from "react";
 
 
 
@@ -30,6 +31,8 @@ export function DropdownInputControlContent(
 ) {
     const data = props.data.getData();
     const pages = useAppSelector(selectPages);
+    const [nextId, setNextId] = useState(0);
+
     return <>
         <Drag.NoDrag>
             <MinimizeButton onClick={() => {
@@ -87,17 +90,21 @@ export function DropdownInputControlContent(
                                 e.stopPropagation()
                             }}
                             onClick={() => {
+
                                 data.dropdownOptions.push({
                                     value: 0,
-                                    label: `option ${data.dropdownOptions.length + 1}`
+                                    label: `option ${data.dropdownOptions.length + 1}`,
+                                    key: nextId,
                                 })
                                 props.data.set({dropdownOptions: data.dropdownOptions})
+                                setNextId(nextId+1);
+                                console.log(nextId);
                             }}
                         >
                             Add option
                         </Button>
                         {data.dropdownOptions.map((item, index) => {
-                            return <InputGroup key={item.label} className="mb-3">
+                            return <InputGroup key={item.key} className="mb-3">
 
                                 <TextInputField
                                     value={item.label}
@@ -158,12 +165,12 @@ export function DropdownInputControlContent(
                         })}
                         <DropdownSelection
                             inputHint={"Select page"}
-                            selection={pages.find((page) => page.title === data.pageName)?.ordering}
-                            dropdownAlternatives={pages.map((page) => {
+                            selection={pages.find(({ page }) => page.title === data.pageName)?.page.ordering}
+                            dropdownAlternatives={pages.map(({page}) => {
                                 return {label: page.title, value: page.ordering}
                             })}
                             onChange={(selected: number) => {
-                                props.data.set({pageName: pages.find((page) => page.ordering === selected)?.title});
+                                props.data.set({pageName: pages.find(({ page }) => page.ordering === selected)?.page.title});
                                 props.data.update()
                             }}
                         />

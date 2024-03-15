@@ -30,6 +30,8 @@ export class DropdownInputNode extends BaseNode<
             dropdownOptions: [],
             defaultKey: "",
             defaultValue: 0,
+            pageName: "",
+            infoText: ""
         }
 
         this.addControl("c", new NodeControl(
