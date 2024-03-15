@@ -1,6 +1,6 @@
 import {BaseNode, NodeControl} from "./baseNode";
 import {ClassicPreset} from "rete";
-import {InputType, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {NumberInputData} from "../customControls/inputNodeControls/number/numberInputControlData";
 import {getLegalValueInRange, isInRange} from "../../components/input/numberInputField";
 import {NumberInputNode as ParseNumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
@@ -20,7 +20,8 @@ export class NumberInputNode extends BaseNode<
 
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
-        protected updateDataFlow: () => void
+        protected updateDataFlow: () => void,
+        private updateStore: () => void
     ) {
         super(NodeType.NumberInput, 400, 400, "Number Input");
 
@@ -55,8 +56,9 @@ export class NumberInputNode extends BaseNode<
                         this.width = this.originalWidth;
                         this.height = this.originalHeight + this.controls.c.get('legalValues').length * 60;
                     }
-                    updateNodeRendering?.(this.id);
-                    updateDataFlow?.();
+                    this.updateNodeRendering?.(this.id);
+                    this.updateDataFlow?.();
+                    this.updateStore();
                 },
                 minimized: false
             },
