@@ -32,13 +32,13 @@ export function NumberInputControlsContent(
     useEffect(()=> {
         // finds new index of page if it has been moved
         if(props.data.get('pageName') !== undefined) {
-            const page = props.data.get('pageName');
-            const result = pages.find((p)=>{
-                return p.title === page;
+            const pageName = props.data.get('pageName');
+            const result = pages.find(({id, page})=>{
+                return page.title === pageName;
             });
 
             if(result) {
-                props.data.set({pageName: result.title});
+                props.data.set({pageName: result.page.title});
             }
         }
     }, [pages, props.data])
@@ -126,10 +126,12 @@ export function NumberInputControlsContent(
                         }
                         <DropdownSelection
                             inputHint={"Select page"}
-                            selection={pages.find((page)=>page.title === props.data.get('pageName'))?.ordering}
-                            dropdownAlternatives={pages.map((page)=>{return {label: page.title, value: page.ordering}})}
+                            selection={pages.findIndex(({page})=>page.title === props.data.get('pageName'))}
+                            dropdownAlternatives={pages.map(({ page })=>{return {label: page.title, value: page.ordering}})}
                             onChange={(selected: number)=>{
-                                const pageName = pages.find((page)=>page.ordering === selected)?.title;
+                                console.log("pageName", props.data.get('pageName'))
+                                const pageName = pages.find(({ page })=>page.ordering === selected)?.page.title;
+                                console.log("Selected page: ", pageName);
                                 props.data.set({pageName: pageName});
                             }}
                         />

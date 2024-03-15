@@ -64,7 +64,7 @@ export default function App() {
                 value: 0,
                 formulaName: formulaInfo.name,
                 version: version.major * 1000000 + version.minor * 1000 + version.patch,
-                pages: pagesInfo.map((page, index)=>{return {pageName: page.title, ordering: index }}),
+                pages: pagesInfo.map(({id, page}, index)=>{return {pageName: page.title, ordering: index }}),
                 inputs:[]
             }
             data.push(root);
@@ -113,7 +113,7 @@ export default function App() {
                                                       value: 0,
                                                       formulaName: formulaInfo.name,
                                                       version: version.major * 1000000 + version.minor * 1000 + version.patch,
-                                                      pages: pagesInfo.map((page, index)=>{return {pageName: page.title, ordering: index }}),
+                                                      pages: pagesInfo.map(({id, page}, index)=>{return {pageName: page.title, ordering: index }}),
                                                       inputs:[]
                                                   }
                                                   data.push(root);

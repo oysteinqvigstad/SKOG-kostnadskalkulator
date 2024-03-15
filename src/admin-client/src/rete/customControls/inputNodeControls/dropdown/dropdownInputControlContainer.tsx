@@ -165,12 +165,12 @@ export function DropdownInputControlContent(
                         })}
                         <DropdownSelection
                             inputHint={"Select page"}
-                            selection={pages.find((page) => page.title === data.pageName)?.ordering}
-                            dropdownAlternatives={pages.map((page) => {
+                            selection={pages.find(({ page }) => page.title === data.pageName)?.page.ordering}
+                            dropdownAlternatives={pages.map(({page}) => {
                                 return {label: page.title, value: page.ordering}
                             })}
                             onChange={(selected: number) => {
-                                props.data.set({pageName: pages.find((page) => page.ordering === selected)?.title});
+                                props.data.set({pageName: pages.find(({ page }) => page.ordering === selected)?.page.title});
                                 props.data.update()
                             }}
                         />

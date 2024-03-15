@@ -24,13 +24,17 @@ export class NumberInputNode extends BaseNode<
     ) {
         super(NodeType.NumberInput, 400, 400, "Number Input");
 
+        const initialData: NumberInputData = {
+            name: "",
+            simpleInput: true,
+            defaultValue: 0,
+            legalValues: [],
+            pageName: "",
+            infoText: ""
+        }
+
         this.addControl( "c",new NodeControl(
-            {
-                name: "",
-                simpleInput: true,
-                defaultValue: 0,
-                legalValues: []
-            } as NumberInputData,
+            initialData,
             {
                 onUpdate: (newValue: NumberInputData) => {
                     const defaultValue = this.controls.c.get('defaultValue');
