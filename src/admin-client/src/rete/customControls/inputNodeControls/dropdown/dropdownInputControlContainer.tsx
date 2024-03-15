@@ -11,8 +11,9 @@ import {NodeControl} from "../../../nodes/baseNode";
 import {DropdownInputControlData} from "./dropdownInputControlData";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
 import {OptionSwitch} from "../../../../components/input/optionSwitch";
-import {useAppSelector} from "../../../../state/hooks";
+import {useAppDispatch, useAppSelector} from "../../../../state/hooks";
 import {useState} from "react";
+import {addInputToPage} from "../../../../state/slices/pages";
 
 
 
@@ -31,6 +32,8 @@ export function DropdownInputControlContent(
 ) {
     const data = props.data.getData();
     const pages = useAppSelector(selectPages);
+    const dispatch = useAppDispatch();
+
     const [nextId, setNextId] = useState(0);
 
     return <>
@@ -170,8 +173,10 @@ export function DropdownInputControlContent(
                                 return {label: page.title, value: page.ordering}
                             })}
                             onChange={(selected: number) => {
-                                props.data.set({pageName: pages.find(({ page }) => page.ordering === selected)?.page.title});
-                                props.data.update()
+                                const pageName = pages.find(({ page }) => page.ordering === selected)?.page.title;
+                                props.data.set({pageName: pageName});
+                                props.data.update();
+                                dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: props.data.get('pageName')}))
                             }}
                         />
 

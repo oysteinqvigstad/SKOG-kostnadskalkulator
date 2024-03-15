@@ -1,6 +1,6 @@
 import {Provider} from "react-redux";
 import {selectPages, store} from "../../../../state/store";
-import {useAppSelector} from "../../../../state/hooks";
+import {useAppDispatch, useAppSelector} from "../../../../state/hooks";
 import React, {useEffect} from "react";
 import {Drag} from "rete-react-plugin";
 import {TextInputField} from "../../../../components/input/textInputField";
@@ -12,6 +12,7 @@ import {DropdownSelection} from "../../../../components/input/dropdownSelection"
 import {HiddenOnMinimized, MinimizeButton} from "../common/sharedComponents";
 import {NodeControl} from "../../../nodes/baseNode";
 import {NumberInputData} from "./numberInputControlData";
+import {addInputToPage} from "../../../../state/slices/pages";
 
 
 export function NumberInputControlContainer(
@@ -28,6 +29,7 @@ export function NumberInputControlsContent(
 ) {
 
     const pages = useAppSelector(selectPages);
+    const dispatch = useAppDispatch();
 
     useEffect(()=> {
         // finds new index of page if it has been moved
@@ -133,6 +135,9 @@ export function NumberInputControlsContent(
                                 const pageName = pages.find(({ page })=>page.ordering === selected)?.page.title;
                                 console.log("Selected page: ", pageName);
                                 props.data.set({pageName: pageName});
+                                if(pageName) {
+                                    dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: pageName}))
+                                }
                             }}
                         />
                     </div>
