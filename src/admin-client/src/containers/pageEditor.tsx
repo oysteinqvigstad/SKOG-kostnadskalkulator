@@ -18,7 +18,6 @@ export function PageEditor() {
                 {`Page: ${selectedPage?.title || "No page selected"}`}
             </Card.Title>
             <Card.Body>
-                <div>{selectedPage?.inputIds.length}</div>
                 <Container>
                     {selectedPage?.inputIds.map((id, index) => {
                         console.log(id);
