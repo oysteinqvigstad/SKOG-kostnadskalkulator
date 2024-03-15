@@ -42,7 +42,6 @@ export function SaveMenuButton() {
             >
                 <MdBookmarkAdd />
             </Button>
-
             <Modal show={show} onHide={() => setShow(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Lagrede resultater</Modal.Title>

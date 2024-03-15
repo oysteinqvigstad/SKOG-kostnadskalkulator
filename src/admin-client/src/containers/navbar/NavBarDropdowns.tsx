@@ -7,24 +7,24 @@ import {ReteFunctions} from "../../rete/editor";
 import {selectFormulaInfo, selectPages} from "../../state/store";
 import React from "react";
 import {NavBarLoadDialogue} from "./NavBarLoadDialogue";
+import {NavBarSaveDialogue} from "./NavBarSaveDialogue";
 
 export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
     const dispatch = useAppDispatch();
     const formulaInfo = useAppSelector(selectFormulaInfo);
     const pagesInfo = useAppSelector(selectPages)
     const [showLoadMenu, setShowLoadMenu] = React.useState(false);
+    const [showSaveMenu, setShowSaveMenu] = React.useState(false);
 
 
 
     return (
         <>
             <NavDropdown title={"File"} id={"file-dropdown"}>
-                <NavDropdown.Item onClick={() => {
-                    props.functions?.save()
-                }}>Save</NavDropdown.Item>
-                <NavDropdown.Item
-                    onClick={() => { setShowLoadMenu(!showLoadMenu) }}
-                >
+                <NavDropdown.Item onClick={() => { setShowSaveMenu(!showSaveMenu)}}>
+                    {"Save"}
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => { setShowLoadMenu(!showLoadMenu) }}>
                     {"Load"}
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => {
@@ -64,6 +64,11 @@ export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
             <NavBarLoadDialogue
                 show={showLoadMenu}
                 onHide={() => setShowLoadMenu(false)}
+                functions={props.functions}
+            />
+            <NavBarSaveDialogue
+                show={showSaveMenu}
+                onHide={() => setShowSaveMenu(false)}
                 functions={props.functions}
             />
         </>
