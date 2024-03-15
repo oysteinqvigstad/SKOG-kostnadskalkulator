@@ -5,6 +5,7 @@ import {selectPages} from "../state/store";
 import {TextInputField} from "../components/input/textInputField";
 import {addPage, movePage, Page, removePage, setPageSelection, updatePage} from "../state/slices/pages";
 import Button from "react-bootstrap/Button";
+import {SlArrowDown, SlArrowUp, SlCloudUpload, SlPencil} from "react-icons/sl";
 
 export function PageBox(
     props: {
@@ -21,10 +22,10 @@ export function PageBox(
     return <Row>
         <InputGroup>
             <TextInputField value={props.page.title} inputHint={"Page name"} onChange={(newTitle) => {props.onChange(newTitle);}}/>
-            <Button onClick={()=>{props.onMove(props.page.ordering-1)}}>Up</Button>
-            <Button onClick={()=>{props.onMove(props.page.ordering+1)}}>Down</Button>
+            <Button onClick={()=>{props.onMove(props.page.ordering-1)}}><SlArrowUp/></Button>
+            <Button onClick={()=>{props.onMove(props.page.ordering+1)}}><SlArrowDown/></Button>
             <Button onClick={()=>{props.onDelete()}}>X</Button>
-            <Button onClick={()=>{dispatch(setPageSelection(props.page.ordering))}}>Edit</Button>
+            <Button onClick={()=>{dispatch(setPageSelection(props.page.ordering))}}><SlPencil/></Button>
         </InputGroup>
     </Row>
 }
