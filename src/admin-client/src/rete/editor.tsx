@@ -371,8 +371,7 @@ export interface ReteFunctions {
     registerCallBack: (newCallback: () => void) => void,
     viewControllers: {
         resetView: () => void,
-        focusSelectedNode: () => void,
-        zoomIn: () => void
+        focusSelectedNode: () => void
     },
     getCurrentTree: () => ParseNode[] | undefined
 }
