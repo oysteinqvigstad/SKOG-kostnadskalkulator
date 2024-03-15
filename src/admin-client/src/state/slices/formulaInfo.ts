@@ -15,6 +15,9 @@ export const formulaInfoSlice = createSlice(
             dateCreated: 0,
         } as FormulaInfoState,
         reducers: {
+            setFormulaInfoState: (state, action: PayloadAction<FormulaInfoState>) => {
+                return action.payload;
+            },
             setName: (state, action: PayloadAction<string>) => {
                 state.name = action.payload;
             },
@@ -38,6 +41,6 @@ export const formulaInfoSlice = createSlice(
     }
 )
 
-export const {setName, increaseMajorVersion, increaseMinorVersion, increasePatchVersion, setDateCreated} = formulaInfoSlice.actions;
+export const {setName, increaseMajorVersion, increaseMinorVersion, increasePatchVersion, setDateCreated, setFormulaInfoState} = formulaInfoSlice.actions;
 
 export const formulaInfoReducer = formulaInfoSlice.reducer;

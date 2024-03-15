@@ -26,6 +26,9 @@ export const pageSlice = createSlice({
         selected: undefined
     } as PagesState,
     reducers: {
+        setPagesState: (state, action: PayloadAction<PagesState>) => {
+            return action.payload;
+        },
         addPage: (state, action: PayloadAction<Page> ) => {
             action.payload.ordering = state.pages.length;
             state.pages.push({id: ( Math.random() * 1000000 + 1000000), page: action.payload});
@@ -63,5 +66,5 @@ export const pageSlice = createSlice({
     }
 });
 
-export const {addPage, removePage, updatePage, movePage, addInputToPage, setPageSelection} = pageSlice.actions;
+export const {addPage, removePage, updatePage, movePage, addInputToPage, setPageSelection, setPagesState} = pageSlice.actions;
 export const pagesReducer = pageSlice.reducer;

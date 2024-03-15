@@ -14,12 +14,15 @@ export const treeStateSlice = createSlice({
         tree: undefined
     } as TreeSliceState,
     reducers: {
+        setTreeState: (state, action: PayloadAction<TreeSliceState>) => {
+            return action.payload;
+        },
         updateTree: (state, action: PayloadAction<ParseNode[]>) => {
             state.tree = treeStateFromData(action.payload) ?? state.tree;
         }
     }
 })
 
-export const {updateTree} = treeStateSlice.actions;
+export const {updateTree, setTreeState} = treeStateSlice.actions;
 export const treeStateReducer = treeStateSlice.reducer;
 

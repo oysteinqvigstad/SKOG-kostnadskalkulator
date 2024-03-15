@@ -5,13 +5,15 @@ import {Card, Col, Row, Tab, Tabs} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {Provider} from "react-redux";
 import {PagesWindow} from "./containers/pagesWindow";
-import {selectFormulaInfo, selectPages, store} from "./state/store";
+import {selectFormulaInfo, selectPages, selectTreeState, store, StoreState} from "./state/store";
 import {useAppDispatch, useAppSelector} from "./state/hooks";
-import {updateTree} from "./state/slices/treeState";
+import {setTreeState, updateTree} from "./state/slices/treeState";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
 import {PageEditor} from "./containers/pageEditor";
 import {NavBar} from "./containers/navbar/NavBar";
+import {setPagesState} from "./state/slices/pages";
+import {setFormulaInfoState} from "./state/slices/formulaInfo";
 
 
 
@@ -20,6 +22,7 @@ export default function App() {
     const [ref, functions] = useRete(createEditor);
     const formulaInfo = useAppSelector(selectFormulaInfo);
     const pagesInfo = useAppSelector(selectPages)
+    const treeState = useAppSelector(selectTreeState);
     const dispatch = useAppDispatch();
 
     function increment() {
@@ -31,6 +34,9 @@ export default function App() {
         if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             functions?.save();
+            if(localStorage) {
+                localStorage.setItem('store', JSON.stringify(store.getState()));
+            }
         }
         if (e.key === 'Delete') {
             e.preventDefault();
@@ -47,6 +53,15 @@ export default function App() {
         if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             functions?.load();
+            if(localStorage) {
+                const reduxState = localStorage.getItem('store');
+                if(reduxState) {
+                    const state = JSON.parse(reduxState) as StoreState;
+                    dispatch(setTreeState(state.treeState));
+                    dispatch(setPagesState(state.pages));
+                    dispatch(setFormulaInfoState(state.formulaInfo));
+                }
+            }
         }
     });
 
@@ -73,6 +88,7 @@ export default function App() {
                 inputs:[]
             }
             data.push(root);
+
             dispatch(updateTree(data));
         }
     }, [change, functions])

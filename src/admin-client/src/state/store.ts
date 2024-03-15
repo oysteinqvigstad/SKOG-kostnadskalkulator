@@ -1,7 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
-import { pagesReducer } from "./slices/pages";
-import {formulaInfoReducer} from "./slices/formulaInfo";
-import {treeStateReducer} from "./slices/treeState";
+import {pagesReducer, PagesState} from "./slices/pages";
+import {formulaInfoReducer, FormulaInfoState} from "./slices/formulaInfo";
+import {TreeSliceState, treeStateReducer} from "./slices/treeState";
+
+export interface StoreState {
+    pages: PagesState,
+    formulaInfo: FormulaInfoState,
+    treeState: TreeSliceState
+}
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +16,7 @@ export const store = configureStore({
         treeState: treeStateReducer
     }
 });
+
 
 
 export type RootState = ReturnType<typeof store.getState>;
