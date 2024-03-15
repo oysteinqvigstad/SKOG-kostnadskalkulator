@@ -23,6 +23,7 @@ export function PageEditor() {
                         console.log(id);
                         if(tree.tree) {
                             const input = getNodeByID(tree.tree, id) as InputNode;
+                            if(!input) { return null }
                             return <Row key={id}>
                                 <InputFieldPreview node={input}/>
                             </Row>
