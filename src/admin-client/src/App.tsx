@@ -1,7 +1,7 @@
 import {createEditor} from "./rete/editor";
 import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
-import {Card, Col, Nav, Navbar, NavDropdown, Row} from "react-bootstrap";
+import {Card, Col, Nav, Navbar, NavDropdown, Row, Tab, Tabs} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {Provider} from "react-redux";
 import {PagesWindow} from "./containers/pagesWindow";
@@ -144,7 +144,16 @@ export default function App() {
                                   Properties
                               </Card.Title>
                               <Card.Body>
-                                  <PagesWindow/>
+                                  <Tabs>
+                                      <Tab eventKey="Pages" title="Pages">
+                                          <PagesWindow/>
+                                      </Tab>
+                                      <Tab eventKey="Inputs" title="Inputs">
+                                            <div>
+                                                WIP
+                                            </div>
+                                      </Tab>
+                                  </Tabs>
                               </Card.Body>
                           </Card>
                       </Col>
@@ -153,6 +162,7 @@ export default function App() {
 
           </div>
       </Provider>
-
   );
 }
+
+
