@@ -1,67 +1,70 @@
 import {IDatabase} from "../models/IDatabase";
 import express from "express";
 import path from "path";
-import {TreeState} from "@skogkalk/common/dist/src/parseTree";
+import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 
-export function getCalculator(db: IDatabase) {
-    return async function(req: express.Request, res: express.Response) {
-        // parse the query
-        const {name, version} = req.query as {name?: string, version?: string}
-        let response: TreeState[] = []
 
-        // fetch the data
-        try {
-            response = name ? await db.getCalculatorByName(name, version ? parseInt(version) : undefined)
-                            : await db.getCalculatorsLatest()
-        } catch (e) {
-            return res.status(500).json({ error: 'An error occurred while fetching the calculator data' })
-        }
-
-        if (response.length) {
-            res.status(200).json(response)
-        } else {
-            return res.status(404).json({ error: "Calculator not found" })
-        }
-    }
-}
-
+/**
+ * Adds a calculator to the database
+ */
 export function addCalculator(db: IDatabase) {
     return async function(req: express.Request, res: express.Response) {
-        let data: TreeState
-        try {
-            data = req.body as TreeState
-        } catch (e) {
-            return res.status(400).json("Invalid JSON")
+        const c: Calculator = req.body
+        if (!c.reteSchema || !c.treeNodes) {
+            return res.status(400).json({ error: "fields reteSchema and treeNodes are required" })
+        } else if (!c.name || !c.version || isNaN(c.version)) {
+            return res.status(400).json({ error: "fields name and version cannot be empty or zero" })
         }
 
-        let existing: TreeState[] | undefined = undefined
-        try {
-            existing = await db.getCalculatorByName(data.rootNode.formulaName, data.rootNode.version)
-        } catch (e) {
-            return res.status(500).json({ error: "An error occurred while adding the calculator" })
-        }
-
-        if (!existing.length) {
-            await db.addCalculator(data)
-                .then(() => res.status(201).send())
-                .catch(() => res.status(500).json({ error: "An error occurred while adding the calculator" }).send())
-        } else {
-            return res.status(409).json({ error: "Calculator already exists"} )
-        }
-
-
-
+        await handleDatabaseOperation(db.addCalculator(c), res)
     }
 }
 
+/**
+ * Returns metainfo on all calculator versions in the database
+ */
+export function getCalculatorsInfo(db: IDatabase) {
+    return async function(req: express.Request, res: express.Response) {
+        await handleDatabaseOperation(db.getCalculatorsInfo(), res)
+    }
+}
 
+/**
+ * Returns the parse tree of a specific calculator version
+ */
+export function getCalculatorTree(db: IDatabase) {
+    return async function(req: express.Request, res: express.Response) {
+        const queryParams = validateQueryNameAndVersion(req, res)
+        if (!queryParams) return
 
+        await handleDatabaseOperation(db.getCalculatorTree(queryParams.name, queryParams.version), res)
+    }
+}
+
+/**
+ * Returns the rete schema of a specific calculator version
+ */
+export function getCalculatorSchema(db: IDatabase) {
+    return async function(req: express.Request, res: express.Response) {
+        const queryParams = validateQueryNameAndVersion(req, res)
+        if (!queryParams) return
+
+        await handleDatabaseOperation(db.getCalculatorSchema(queryParams.name, queryParams.version), res)
+    }
+}
+
+/**
+ * Serves the react app
+ */
 export function reactApp(staticFilesPath: string) {
     return async function(_req: express.Request, res: express.Response) {
         res.sendFile(path.join(staticFilesPath, 'index.html'));
     }
 }
 
+/**
+ * Adds CORS headers to the response
+ */
 export function cors() {
     return function(_req: express.Request, res: express.Response, next: express.NextFunction) {
         res.header("Access-Control-Allow-Origin", "*")
@@ -70,12 +73,36 @@ export function cors() {
     }
 }
 
-export function calculate(_db: IDatabase) {
-    return async function(req: express.Request, _res: express.Response) {
-        const queries = Object.entries(req.query) as [string, string][]
-        const _numberedList = queries
-            .map(([key, value]) => [key, value?.split(',').map(parseFloat) ?? []])
-
+/**
+ * Validates the query parameters for the getCalculatorTree and getCalculatorSchema endpoints
+ */
+function validateQueryNameAndVersion(req: express.Request, res: express.Response): {name: string, version: number} | null {
+    const { name, version } = req.query as { name: string, version: string }
+    if (!name || isNaN(parseInt(version))) {
+        res.status(400).json({ error: "Name and version are required" }).send()
+        return null
     }
+    return { name, version: parseInt(version) };
+}
 
+
+/**
+ * Wrapper function to handle the database operation and catch errors
+ */
+async function handleDatabaseOperation(operation: Promise<any>, res: express.Response) {
+    try {
+        const result = await operation;
+        res.status(200).send(result);
+    } catch (e) {
+        switch ((e as Error).message) {
+            case 'Calculator not found':
+                res.status(404).json({ error: "Calculator not found" }).send(); break
+            case 'Schema not found':
+                res.status(404).json({ error: "Calculator Schema not found" }).send(); break
+            case 'Tree not found':
+                res.status(404).json({ error: "Calculator Tree not found" }).send(); break
+            default:
+                res.status(500).json({ error: "Database error" }).send()
+        }
+    }
 }

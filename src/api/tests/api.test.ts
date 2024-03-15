@@ -4,15 +4,23 @@ import {Configuration} from "../src/types/Configuration";
 import {MockDatabase} from "../src/database/MockDatabase";
 import request from 'supertest'
 import path from "path";
-import {testTree, TreeState, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
+import {testTree, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
+import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 
 let server: WebServer
 let database: IDatabase
-let calculator: TreeState
+let calculator: Calculator
 
 beforeAll(() => {
     database = new MockDatabase()
-    calculator = treeStateFromData(testTree) as TreeState
+    calculator = {
+        name: "testMy",
+        version: 1,
+        dateCreated: Date.now(),
+        published: false,
+        reteSchema: "test",
+        treeNodes: treeStateFromData(testTree).subTrees
+    }
     const config: Configuration = {
         database: database,
         httpPort: 4000,
@@ -46,40 +54,40 @@ describe('serve static files', () => {
     })
 })
 
-describe('api formulas', () => {
-    test('GET /api/v0/getCalculator', async () => {
-        await database.addCalculator(calculator)
-        await request(server.app)
-            .get('/api/v0/getCalculator')
-            .expect('Content-Type', /json/)
-            .expect(200, [calculator])
-    })
+describe('api calculator', () => {
 
-    test('GET /api/v0/getCalculator?name=mycalc', async () => {
-        const anotherCalculator = treeStateFromData(testTree)
-        anotherCalculator.rootNode.formulaName = 'mycalc'
-        await database.addCalculator(anotherCalculator)
-
-        await request(server.app)
-            .get('/api/v0/getCalculator?name=mycalc')
-            .expect('Content-Type', /json/)
-            .expect(200, [anotherCalculator])
-    })
-
-    test('POST /api/v0/addCalculator (same version)', async () => {
+    test('POST /api/v0/addCalculator', async () => {
         await request(server.app)
             .post('/api/v0/addCalculator')
             .send(calculator)
-            .expect(409)
+            .expect(200)
     })
 
-    test('POST /api/v0/addCalculator (different version)', async () => {
-        const anotherCalculator = treeStateFromData(testTree)
-        anotherCalculator.rootNode.version = 5
-
+    test('GET /api/v0/getCalculatorsInfo', async () => {
+        const {reteSchema, treeNodes, ...rest} = calculator
         await request(server.app)
-            .post('/api/v0/addCalculator')
-            .send(anotherCalculator)
-            .expect(201)
+            .get('/api/v0/getCalculatorsInfo')
+            .expect(200, [rest])
+            .expect('Content-Type', /json/)
+    })
+
+    test('GET /api/v0/getCalculatorTree?name=testMy (no version)', async () => {
+        await request(server.app)
+            .get('/api/v0/getCalculatorTree?name=testMy')
+            .expect(400)
+    })
+
+    test('GET /api/v0/getCalculatorTree?name=testMy&version=1', async () => {
+        const {treeNodes} = calculator
+        await request(server.app)
+            .get('/api/v0/getCalculatorTree?name=testMy&version=1')
+            .expect(200, treeNodes)
+    })
+
+    test('GET /api/v0/getCalculatorSchema?name=testMy&version=1', async () => {
+        const {reteSchema} = calculator
+        await request(server.app)
+            .get('/api/v0/getCalculatorSchema?name=testMy&version=1')
+            .expect(200, reteSchema)
     })
 })

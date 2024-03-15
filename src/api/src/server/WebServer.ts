@@ -1,6 +1,13 @@
 import {Configuration} from "../types/Configuration";
 import express, {Express} from "express";
-import {addCalculator, cors, getCalculator, reactApp} from "./controllers";
+import {
+    addCalculator,
+    cors,
+    getCalculatorSchema,
+    getCalculatorsInfo,
+    getCalculatorTree,
+    reactApp
+} from "./controllers";
 import * as http from "http";
 
 export default class WebServer {
@@ -31,9 +38,25 @@ export default class WebServer {
             .use(express.static(this.#config.staticFilesPath))
             .use(express.json())
             .use(cors()) // temprory during development to allow CORS
-            .get('/api/v0/getCalculator', getCalculator(this.#config.database))
+            .get('/api/v0/getCalculatorsInfo', getCalculatorsInfo(this.#config.database))
+            .get('/api/v0/getCalculatorTree', getCalculatorTree(this.#config.database))
+            .get('/api/v0/getCalculatorSchema', getCalculatorSchema(this.#config.database))
             .get('*', reactApp(this.#config.staticFilesPath))
             .post('/api/v0/addCalculator', addCalculator(this.#config.database))
+
+        // TODO: Remove this after implementing a proper way to add calculators in admin console
+        // const c: Calculator = {
+        //         name: "Kostnadskalkulator",
+        //         version: 11,
+        //         dateCreated: Date.now(),
+        //         published: true,
+        //         reteSchema: "test",
+        //         treeNodes: treeStateFromData(testTree).subTrees
+        //     }
+        // this.#config.database.addCalculator(c)
+        //     .then(() => console.log('Added test calculator'))
+        //     .catch(err => console.error('Error adding test calculator', err))
+
         this.app.use(router)
     }
 

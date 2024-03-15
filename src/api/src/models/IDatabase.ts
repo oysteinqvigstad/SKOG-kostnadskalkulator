@@ -1,7 +1,12 @@
-import {TreeState} from "@skogkalk/common/dist/src/parseTree";
+import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 
+/**
+ * Database methods that are used by the API
+ */
 export interface IDatabase {
-    addCalculator(tree: TreeState): Promise<void>;
-    getCalculatorByName(name: string, version?: number): Promise<TreeState[]>;
-    getCalculatorsLatest(): Promise<TreeState[]>;
+    addCalculator(calculator: Calculator): Promise<void>
+    getCalculatorsInfo(): Promise<Calculator[]>
+    getCalculatorTree(name: string, version: number): Promise<ParseNode[]>
+    getCalculatorSchema(name: string, version: number): Promise<any>
 }
