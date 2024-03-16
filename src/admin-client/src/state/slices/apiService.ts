@@ -11,9 +11,13 @@ export const apiService = createApi({
             // transformResponse: (response: {data: Formula[]}, nodeMeta, arg) => response.data,
             // transformErrorResponse: (response: {status: string | number}, nodeMeta, arg) => response.status,
         }),
-        addCalculator: builder.mutation<void, {name: string, version: string}>({
+        getCalculatorSchema: builder.query<Calculator["reteSchema"], {name: string, version: number}>({
+            query: ({name, version}) => `getCalculatorSchema?name=${name}&version=${version}`,
+
+        }),
+        addCalculator: builder.mutation<void, Calculator>({
             query: (body) => ({
-                url: `addCalculator?name=${body.name}&version=${body.version}`,
+                url: `addCalculator`,
                 method: 'POST',
                 body,
             }),

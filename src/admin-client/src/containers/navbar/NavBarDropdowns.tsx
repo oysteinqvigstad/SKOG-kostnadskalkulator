@@ -6,26 +6,21 @@ import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {ReteFunctions} from "../../rete/editor";
 import {selectFormulaInfo, selectPages} from "../../state/store";
 import React from "react";
-import {NavBarLoadDialogue} from "./NavBarLoadDialogue";
-import {NavBarSaveDialogue} from "./NavBarSaveDialogue";
+import {ImportExportDialogue} from "../ImportExportDialogue";
 
 export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
     const dispatch = useAppDispatch();
     const formulaInfo = useAppSelector(selectFormulaInfo);
     const pagesInfo = useAppSelector(selectPages)
-    const [showLoadMenu, setShowLoadMenu] = React.useState(false);
-    const [showSaveMenu, setShowSaveMenu] = React.useState(false);
+    const [showImportExportMenu, setShowImportExportMenu] = React.useState(false);
 
 
 
     return (
         <>
             <NavDropdown title={"File"} id={"file-dropdown"}>
-                <NavDropdown.Item onClick={() => { setShowSaveMenu(!showSaveMenu)}}>
-                    {"Save"}
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => { setShowLoadMenu(!showLoadMenu) }}>
-                    {"Load"}
+                <NavDropdown.Item onClick={() => { setShowImportExportMenu(!showImportExportMenu)}}>
+                    {"Import/Export"}
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => {
                     props.functions?.clear()
@@ -48,7 +43,7 @@ export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
                                 value: 0,
                                 formulaName: formulaInfo.name,
                                 version: version.major * 1000000 + version.minor * 1000 + version.patch,
-                                pages: pagesInfo.map(({id, page}, index)=>{return {pageName: page.title, ordering: index }}),
+                                pages: pagesInfo.map(({page}, index)=>{return {pageName: page.title, ordering: index }}),
                                 inputs:[]
                             }
                             data.push(root);
@@ -61,14 +56,9 @@ export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
             </NavDropdown>
 
 
-            <NavBarLoadDialogue
-                show={showLoadMenu}
-                onHide={() => setShowLoadMenu(false)}
-                functions={props.functions}
-            />
-            <NavBarSaveDialogue
-                show={showSaveMenu}
-                onHide={() => setShowSaveMenu(false)}
+            <ImportExportDialogue
+                show={showImportExportMenu}
+                onHide={() => setShowImportExportMenu(false)}
                 functions={props.functions}
             />
         </>

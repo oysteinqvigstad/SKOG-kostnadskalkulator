@@ -23,6 +23,9 @@ export async function importGraph(
             return;
         }
 
+        engine.reset();
+        await editor.clear();
+
         const onValueUpdate = process(engine, editor);
         const updateNodeRender = (id: string) => { area.update("node", id) }
 
@@ -56,7 +59,7 @@ export async function importGraph(
 }
 
 
-export async function exportGraph(editor: NodeEditor<Schemes>) : Promise<any> {
+export function exportGraph(editor: NodeEditor<Schemes>) : any {
 
     const data: any = { nodes: [] };
     const nodes = editor.getNodes() as SkogNode[];

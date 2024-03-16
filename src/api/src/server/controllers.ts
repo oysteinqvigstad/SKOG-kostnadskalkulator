@@ -11,6 +11,7 @@ export function addCalculator(db: IDatabase) {
     return async function(req: express.Request, res: express.Response) {
         const c: Calculator = req.body
         if (!c.reteSchema || !c.treeNodes) {
+            console.log(c.treeNodes)
             return res.status(400).json({ error: "fields reteSchema and treeNodes are required" })
         } else if (!c.name || !c.version || isNaN(c.version)) {
             return res.status(400).json({ error: "fields name and version cannot be empty or zero" })

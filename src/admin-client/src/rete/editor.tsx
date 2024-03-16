@@ -102,22 +102,39 @@ async function saveGraphToLocalStorage(
     editor: NodeEditor<Schemes>
 ): Promise<void> {
     return new Promise((resolve, reject) => {
-        exportGraph(editor)
-            .catch((e) => console.log("error", e))
-            .then((data) => {
-                    if (localStorage) {
-                        if(localStorage.getItem(fileName) &&
-                            !onOverwriteVerification()) {
-                            reject();
-                        } else {
-                            localStorage.setItem(fileName, JSON.stringify(data));
-                            resolve();
-                        }
-                    } else {
-                        reject("Local storage not available");
-                    }
+        try {
+            const data = exportGraph(editor)
+            if (localStorage) {
+                if(localStorage.getItem(fileName) &&
+                    !onOverwriteVerification()) {
+                    reject();
+                } else {
+                    localStorage.setItem(fileName, JSON.stringify(data));
+                    resolve();
                 }
-            );
+            } else {
+                reject("Local storage not available");
+            }
+        } catch (e) {
+            console.log("error", e)
+        }
+
+        // exportGraph(editor)
+        //     .catch((e) => console.log("error", e))
+        //     .then((data) => {
+        //             if (localStorage) {
+        //                 if(localStorage.getItem(fileName) &&
+        //                     !onOverwriteVerification()) {
+        //                     reject();
+        //                 } else {
+        //                     localStorage.setItem(fileName, JSON.stringify(data));
+        //                     resolve();
+        //                 }
+        //             } else {
+        //                 reject("Local storage not available");
+        //             }
+        //         }
+        //     );
     });
 }
 
@@ -312,6 +329,15 @@ export async function createEditor(container: HTMLElement) {
 
             editor.clear();
         },
+        import: (data: any) => {
+            importGraph(data, editor, engine, area, updateParseTree)
+        },
+        export: () => {
+            return {
+                graph: exportGraph(editor),
+                parseNodes: currentJSONTree ?? []
+            }
+        },
         testJSON: () => {
             currentJSONTree = createJSONGraph(editor);
             console.log(JSON.stringify(currentJSONTree, null, 2));
@@ -349,6 +375,8 @@ export interface ReteFunctions {
     load: (onLoading?: () => void, onLoaded?: () => void, onUnsavedProgress?: () => void, onPotentialOverwrite?: () => void, onFailedToLoad?: () => void) => Promise<void>,
     save: () => void,
     clear: () => void,
+    import: (data: any) => void,
+    export: () => {graph: any, parseNodes: ParseNode[]},
     testJSON: () => ParseNode[] | undefined,
     deleteSelected: () => void,
     registerCallBack: (newCallback: () => void) => void,
