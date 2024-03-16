@@ -223,7 +223,10 @@ export async function createEditor(container: HTMLElement) {
     editor.use(area);
     editor.use(engine);
     editor.addPipe((context) => {
-        currentJSONTree = createJSONGraph(editor);
+        if (["connectioncreated", "connectionremoved"].includes(context.type)) {
+            process(engine, editor)();
+            currentJSONTree = createJSONGraph(editor);
+        }
         return context;
     });
 
@@ -249,33 +252,11 @@ export async function createEditor(container: HTMLElement) {
     // For testing purposes
     let currentJSONTree: ParseNode[] | undefined;
 
-    editor.addPipe((context) => {
-        if (["connectioncreated", "connectionremoved"].includes(context.type)) {
-            process(engine, editor)();
-        }
-        return context;
-    });
 
     area.addPipe((context)=> {
         if(context.type === "nodepicked") {
-            currentJSONTree = createJSONGraph(editor);
             selectedNode = context.data.id;
         }
-        return context;
-    })
-
-
-    area.addPipe((context) => {
-
-
-
-        return context;
-    });
-
-
-
-
-    area.addPipe((context) => {
         if (context.type === "nodetranslated") {
             const x = context.data.position.x;
             const y = context.data.position.y;
@@ -284,7 +265,8 @@ export async function createEditor(container: HTMLElement) {
             node.xTranslation = x;
         }
         return context;
-    });
+    })
+
 
 
     AreaExtensions.zoomAt(area, editor.getNodes()).then(() => {});
