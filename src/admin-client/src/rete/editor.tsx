@@ -25,11 +25,12 @@ import {NumberControlComponent} from "./customControls/numberControl/numberContr
 import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
 import {NumberInputControlContainer} from "./customControls/inputNodeControls/number/numberInputControlContainer";
 import {DropdownInputControlContainer} from "./customControls/inputNodeControls/dropdown/dropdownInputControlContainer";
+import {Module, Modules} from "./nodes/moduleSystem/modules";
 
 
 
 
-type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
+export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
 
 
 /**
