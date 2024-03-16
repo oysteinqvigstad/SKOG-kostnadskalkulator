@@ -22,7 +22,6 @@ export function PageEditor() {
             <Card.Body>
                 <Container>
                     {selectedPage?.inputIds.map((id) => {
-                        console.log(id);
                         if(tree.tree) {
                             const input = getNodeByID(tree.tree, id) as InputNode;
                             if (!input) {
