@@ -58,4 +58,8 @@ export enum NodeType {
     Sum = "Sum",
     Prod = "Prod",
     Div = "Div",
+
+    Module = "Module",
+    ModuleOutput = "ModuleOutput",
+    ModuleInput = "ModuleInput"
 }
