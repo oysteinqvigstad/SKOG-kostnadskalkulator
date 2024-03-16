@@ -1,37 +1,54 @@
 import {createEditor} from "./rete/editor";
 import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
-import {Card, Col, Row, Tab, Tabs} from "react-bootstrap";
-import {useEffect, useState} from "react";
+import {Col, Row} from "react-bootstrap";
+import {useCallback, useEffect, useRef} from "react";
 import {Provider} from "react-redux";
-import {PagesWindow} from "./containers/pagesWindow";
 import {store, StoreState} from "./state/store";
 import {useAppDispatch, useAppSelector} from "./state/hooks";
 import {setTreeState, updateTree} from "./state/slices/treeState";
-import {PageEditor} from "./containers/pageEditor";
 import {NavBar} from "./containers/navbar/NavBar";
 import {setPagesState} from "./state/slices/pages";
 import {setFormulaInfoState} from "./state/slices/formulaInfo";
 import {selectRootNode} from "./state/selectors";
+import {SidePanel} from "./containers/panels/SidePanel";
+import {RetePanel} from "./containers/panels/RetePanel";
 
 
 
 export default function App() {
-    const [change, setChange] = useState(0);
-    const [ref, functions] = useRete(createEditor);
+    const [reteRef, functions] = useRete(createEditor);
     const rootNode = useAppSelector(selectRootNode)
     const dispatch = useAppDispatch();
 
-    function increment() {
-        setChange(a => a + 1);
-    }
+    // keeping a reference to the root node is necessary for breaking the dependency cycle
+    // between the rete editor and the redux store, such that the returned rootNode does not
+    // trigger updateTreeState()
+    const refRootNode = useRef(rootNode)
+    // keep the refence up to date
+    useEffect(() => {
+        refRootNode.current = rootNode;
+    }, [rootNode]);
+
+
+    // callback for updating the tree state in the redux store from rete
+    const updateTreeState = useCallback(() => {
+        const reteNodes = functions?.getCurrentTree();
+        if(reteNodes && refRootNode.current) {
+            dispatch(updateTree([refRootNode.current, ...reteNodes]));
+        }
+    }, [functions, dispatch, refRootNode])
+
 
     useEffect(()=> {
-        document.addEventListener('keydown', (e) => {
+        // ensures that the tree state is updated when certain changes occur
+        functions?.registerCallBack('store', updateTreeState)
+
+        const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 functions?.save();
-                if(localStorage) {
+                if (localStorage) {
                     localStorage.setItem('store', JSON.stringify(store.getState()));
                 }
             }
@@ -50,9 +67,9 @@ export default function App() {
             if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 functions?.load();
-                if(localStorage) {
+                if (localStorage) {
                     const reduxState = localStorage.getItem('store');
-                    if(reduxState) {
+                    if (reduxState) {
                         const state = JSON.parse(reduxState) as StoreState;
                         dispatch(setTreeState(state.treeState));
                         dispatch(setPagesState(state.pages));
@@ -60,22 +77,17 @@ export default function App() {
                     }
                 }
             }
-        });
-
-        functions?.registerCallBack('store', ()=>{
-            increment();
-        })
-
-    }, [functions] );
-
-    useEffect(()=>{
-        console.log(change);
-        console.log(functions?.getCurrentTree())
-        const reteNodes = functions?.getCurrentTree();
-        if(reteNodes && rootNode) {
-            dispatch(updateTree([rootNode, ...reteNodes]));
         }
-    }, [change, functions])
+        // register the event listener
+        document.addEventListener('keydown', handleKeyDown);
+        // return a cleanup function that removes the event listener when component is rerendered,
+        // otherwise it can cause multiple event listener registrations and memory leaks
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+        }
+
+    }, [functions, dispatch, updateTreeState])
+
 
 
 
@@ -86,37 +98,13 @@ export default function App() {
               <Container style={{maxWidth: '100%'}}>
                   <Row>
                       <Col style={{padding: 0}}>
-                          <div ref={ref} style={{height: "100vh", width: "80vw"}}></div>
+                          <RetePanel reteRef={reteRef} />
                       </Col>
                       <Col style={{ padding: 0}}>
-                          <Card style={{ height: '100%'}} className="mb-3">
-                              <Card.Title>
-                                  Properties
-                              </Card.Title>
-                              <Card.Body>
-                                  <Tabs>
-                                      <Tab eventKey="Pages" title="Pages">
-                                          <Container fluid={true} style={{height: "80vh", justifyContent: ""}}>
-                                              <Row style={{height: "50%"}}>
-                                                  <PagesWindow/>
-                                              </Row>
-                                              <Row style={{height: "50%"}}>
-                                                  <PageEditor/>
-                                              </Row>
-                                          </Container>
-                                      </Tab>
-                                      <Tab eventKey="Inputs" title="Inputs">
-                                            <div>
-                                                WIP
-                                            </div>
-                                      </Tab>
-                                  </Tabs>
-                              </Card.Body>
-                          </Card>
+                          <SidePanel />
                       </Col>
                   </Row>
               </Container>
-
           </div>
       </Provider>
   );

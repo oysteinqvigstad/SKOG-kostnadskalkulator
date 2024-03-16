@@ -18,8 +18,9 @@ export const treeStateSlice = createSlice({
             return action.payload;
         },
         updateTree: (state, action: PayloadAction<ParseNode[]>) => {
+            console.log("updating TreeState")
             state.tree = treeStateFromData(action.payload) ?? state.tree;
-        }
+        },
     }
 })
 
