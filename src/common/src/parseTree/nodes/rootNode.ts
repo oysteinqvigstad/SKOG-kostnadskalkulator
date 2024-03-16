@@ -6,11 +6,7 @@ import type {DisplayNode} from "./displayNode";
 export interface RootNode extends ParseNode {
     type: NodeType.Root
     formulaName: string
-    version: {
-        major: number
-        minor: number
-        patch: number
-    }
+    version: number
     pages: {
         icon?: string,
         pageName: string,

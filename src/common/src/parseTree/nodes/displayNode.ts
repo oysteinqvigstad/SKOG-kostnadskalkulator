@@ -6,7 +6,7 @@ import {NodeType} from "./parseNode";
 
 export interface DisplayNode extends ParseNode {
     name: string
-    inputs: OutputNode[] | ReferenceNode[]
+    inputs: (OutputNode | ReferenceNode)[]
     inputOrdering: {
         outputID: string,
         outputLabel: string,
@@ -17,4 +17,10 @@ export interface DisplayNode extends ParseNode {
 
 export function isDisplayNode (node: ParseNode) : node is DisplayNode {
     return node.type === NodeType.Display
+}
+
+
+export interface DisplayPieNode extends DisplayNode {
+    unit: string
+    pieType: "pie" | "donut"
 }
