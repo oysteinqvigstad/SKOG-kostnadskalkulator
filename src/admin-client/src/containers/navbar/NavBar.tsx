@@ -6,17 +6,12 @@ import {ReteFunctions} from "../../rete/editor";
 export function NavBar(props: {functions: ReteFunctions | null}) {
     return (
         <Navbar className="bg-body-tertiary">
-            <Navbar.Brand>
+            <Navbar.Brand className={"ms-4"}>
                 Rete
             </Navbar.Brand>
-            <Nav className="me-auto">
+            <Nav className="me-auto align-items-center">
                 <NavBarDropdowns functions={props.functions} />
-                <Navbar.Collapse className="justify-content-end">
-                    <Navbar.Text>
-                        <FormulaInfoContainer/>
-                    </Navbar.Text>
-
-                </Navbar.Collapse>
+                <FormulaInfoContainer/>
             </Nav>
         </Navbar>
     )

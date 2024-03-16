@@ -5,24 +5,21 @@ import {Card, Col, Row, Tab, Tabs} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {Provider} from "react-redux";
 import {PagesWindow} from "./containers/pagesWindow";
-import {selectFormulaInfo, selectPages, selectTreeState, store, StoreState} from "./state/store";
+import {store, StoreState} from "./state/store";
 import {useAppDispatch, useAppSelector} from "./state/hooks";
 import {setTreeState, updateTree} from "./state/slices/treeState";
-import {NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
 import {PageEditor} from "./containers/pageEditor";
 import {NavBar} from "./containers/navbar/NavBar";
 import {setPagesState} from "./state/slices/pages";
 import {setFormulaInfoState} from "./state/slices/formulaInfo";
+import {selectRootNode} from "./state/selectors";
 
 
 
 export default function App() {
     const [change, setChange] = useState(0);
     const [ref, functions] = useRete(createEditor);
-    const formulaInfo = useAppSelector(selectFormulaInfo);
-    const pagesInfo = useAppSelector(selectPages)
-    const treeState = useAppSelector(selectTreeState);
+    const rootNode = useAppSelector(selectRootNode)
     const dispatch = useAppDispatch();
 
     function increment() {
@@ -30,66 +27,53 @@ export default function App() {
     }
 
     useEffect(()=> {
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
-            e.preventDefault();
-            functions?.save();
-            if(localStorage) {
-                localStorage.setItem('store', JSON.stringify(store.getState()));
-            }
-        }
-        if (e.key === 'Delete') {
-            e.preventDefault();
-            functions?.deleteSelected();
-        }
-        if (e.key === 'a' && (e.ctrlKey || e.metaKey)) {
-            e.preventDefault();
-            functions?.viewControllers.resetView();
-        }
-        if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
-            e.preventDefault();
-            functions?.viewControllers.focusSelectedNode();
-        }
-        if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
-            e.preventDefault();
-            functions?.load();
-            if(localStorage) {
-                const reduxState = localStorage.getItem('store');
-                if(reduxState) {
-                    const state = JSON.parse(reduxState) as StoreState;
-                    dispatch(setTreeState(state.treeState));
-                    dispatch(setPagesState(state.pages));
-                    dispatch(setFormulaInfoState(state.formulaInfo));
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                functions?.save();
+                if(localStorage) {
+                    localStorage.setItem('store', JSON.stringify(store.getState()));
                 }
             }
-        }
-    });
+            if (e.key === 'Delete') {
+                e.preventDefault();
+                functions?.deleteSelected();
+            }
+            if (e.key === 'a' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                functions?.viewControllers.resetView();
+            }
+            if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                functions?.viewControllers.focusSelectedNode();
+            }
+            if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                functions?.load();
+                if(localStorage) {
+                    const reduxState = localStorage.getItem('store');
+                    if(reduxState) {
+                        const state = JSON.parse(reduxState) as StoreState;
+                        dispatch(setTreeState(state.treeState));
+                        dispatch(setPagesState(state.pages));
+                        dispatch(setFormulaInfoState(state.formulaInfo));
+                    }
+                }
+            }
+        });
 
-    functions?.registerCallBack(()=>{
-        increment();
-    })
+        functions?.registerCallBack(()=>{
+            increment();
+        })
 
-    },
-     [functions] );
+    }, [functions] );
 
     useEffect(()=>{
         console.log(change);
         console.log(functions?.getCurrentTree())
-        const data = functions?.getCurrentTree();
-        if(data) {
-            const version = formulaInfo.version;
-            const root: RootNode =  {
-                id: "0",
-                type: NodeType.Root,
-                value: 0,
-                formulaName: formulaInfo.name,
-                version: version.major * 1000000 + version.minor * 1000 + version.patch,
-                pages: pagesInfo.map(({id, page}, index)=>{return {pageName: page.title, ordering: index }}),
-                inputs:[]
-            }
-            data.push(root);
-
-            dispatch(updateTree(data));
+        const reteNodes = functions?.getCurrentTree();
+        if(reteNodes && rootNode) {
+            dispatch(updateTree([rootNode, ...reteNodes]));
         }
     }, [change, functions])
 
@@ -98,12 +82,8 @@ export default function App() {
   return (
       <Provider store={store}>
           <div className="App">
+              <NavBar functions={functions} />
               <Container style={{maxWidth: '100%'}}>
-                  <Row>
-                      <Col>
-                          <NavBar functions={functions} />
-                      </Col>
-                  </Row>
                   <Row>
                       <Col style={{padding: 0}}>
                           <div ref={ref} style={{height: "100vh", width: "80vw"}}></div>

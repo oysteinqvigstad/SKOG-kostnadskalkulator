@@ -8,6 +8,9 @@ export interface Calculator {
     version: number,
     dateCreated: number,
     published: boolean,
-    reteSchema?: any,           // required when saving, optional when fetching
+    reteSchema?: {
+        store: any,
+        graph: any
+    },           // required when saving, optional when fetching
     treeNodes?: ParseNode[],    // required when saving, optional when fetching
 }
