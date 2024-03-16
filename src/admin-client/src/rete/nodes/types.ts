@@ -6,8 +6,11 @@ import {NumberInputNode} from "./numberInputNode";
 import {OutputNode} from "./outputNode";
 import {DropdownInputNode} from "./dropdownInputNode";
 import {DisplayPieNode} from "./displayPieNode";
+import {ModuleInput} from "./moduleSystem/moduleInput";
+import {ModuleOutput} from "./moduleSystem/moduleOutput";
+import {ModuleNode} from "./moduleSystem/moduleNode";
 
-export type SkogNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode;
+export type SkogNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | ModuleInput | ModuleOutput | ModuleNode;
 
 export class Connection<
     A extends SkogNode,
