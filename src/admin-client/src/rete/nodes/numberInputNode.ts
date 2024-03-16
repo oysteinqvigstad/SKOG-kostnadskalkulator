@@ -39,15 +39,16 @@ export class NumberInputNode extends BaseNode<
         this.addControl( "c",new NodeControl(
             initialData,
             {
-                onUpdate: (newValue: NumberInputData) => {
+                onUpdate: (newValue: Partial<NumberInputData>) => {
                     const defaultValue = this.controls.c.get('defaultValue');
-                    if(defaultValue !== undefined && newValue.legalValues.length > 0) {
+                    if(newValue.legalValues !== undefined && defaultValue !== undefined && newValue.legalValues.length > 0) {
                         if(!newValue.legalValues.some((v) => {
                             return isInRange(defaultValue!, v);
                         })) {
                             this.controls.c.setNoUpdate({defaultValue: getLegalValueInRange(defaultValue, newValue.legalValues[0])})
                         }
                     }
+
 
 
                     if(this.controls.c.options.minimized) {

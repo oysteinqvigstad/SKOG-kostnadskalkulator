@@ -7,7 +7,7 @@ export class NodeControl<T extends {}> extends ClassicPreset.Control {
     constructor(
         private data: T,
         public options: {
-            onUpdate: (data: T) => void,
+            onUpdate: (data: Partial<T>) => void,
             minimized: boolean
         },
         public type: NodeType,
@@ -25,7 +25,7 @@ export class NodeControl<T extends {}> extends ClassicPreset.Control {
                 (this.data as any)[key] = data[key];
             }
         }
-        this.update();
+        this.options?.onUpdate?.(data);
     }
 
     public setNoUpdate(data: Partial<T>) : void {
