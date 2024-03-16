@@ -1,8 +1,8 @@
-import {ClassicPreset, NodeEditor} from "rete";
-import {Connection, ConnProps, Schemes, SkogNode} from "./nodes/types";
+import {NodeEditor} from "rete";
+import {Schemes, SkogNode} from "./nodes/types";
 import {AreaExtensions, AreaPlugin} from "rete-area-plugin";
 import {ConnectionPlugin, Presets as ConnectionPresets} from "rete-connection-plugin";
-import {Presets, ReactPlugin} from "rete-react-plugin";
+import {Presets, ReactArea2D, ReactPlugin} from "rete-react-plugin";
 import {DataflowEngine} from "rete-engine";
 import {Presets as ScopesPresets, ScopesPlugin} from "rete-scopes-plugin";
 import {AutoArrangePlugin, Presets as ArrangePresets} from "rete-auto-arrange-plugin";
@@ -10,7 +10,7 @@ import {createJSONGraph} from "./adapters";
 import {createRoot} from "react-dom/client";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ItemDefinition} from "rete-context-menu-plugin/_types/presets/classic/types";
-import {ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
+import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
 import {
     DisplayPieNodeControlContainer
 } from "./customControls/displayNodeControls/pieDisplayNode/displayPieNodeControlContainer";
@@ -18,22 +18,11 @@ import {NumberInputControlContainer} from "./customControls/inputNodeControls/nu
 import {DropdownInputControlContainer} from "./customControls/inputNodeControls/dropdown/dropdownInputControlContainer";
 import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
 import {NumberControlComponent} from "./customControls/numberControl/numberControlComponent";
-import {AreaExtra, process} from "./editor";
 import {ModuleManager} from "./nodes/moduleSystem/moduleManager";
-import {ModuleOutput} from "./nodes/moduleSystem/moduleOutput";
-import {ModuleNode} from "./nodes/moduleSystem/moduleNode";
-import {ModuleInput} from "./nodes/moduleSystem/moduleInput";
-import {OutputNode} from "./nodes/outputNode";
-import {NumberNode} from "./nodes/numberNode";
-import {NumberInputNode} from "./nodes/numberInputNode";
-import {DropdownInputNode} from "./nodes/dropdownInputNode";
-import {DisplayPieNode} from "./nodes/displayPieNode";
-import {BinaryNode} from "./nodes/binaryNode";
-import {NaryNode} from "./nodes/naryNode";
-import {NodeControl} from "./nodes/baseNode";
+import {GraphSerializer} from "./serialization";
 
 
-
+export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
 
 export interface EditorContext {
     editor: NodeEditor<Schemes>,
@@ -55,6 +44,7 @@ export class Editor {
     private onChangeCalls: {id: string, call: ()=>void}[] = []
     private loading = false;
     public readonly moduleManager: ModuleManager;
+    private serializer: GraphSerializer;
 
     public destroyArea = () => {this.context.area.destroy()}
 
@@ -89,8 +79,18 @@ export class Editor {
         this.setUpScopes();
         this.setUpAutoArrange();
 
+        this.serializer = new GraphSerializer(
+            this.context.editor,
+            this.moduleManager,
+            this.context.engine,
+            this.context.area,
+            this.signalOnChange
+        )
+
         AreaExtensions.zoomAt(this.context.area, this.context.editor.getNodes()).then(() => {});
     }
+
+
 
 
 
@@ -98,15 +98,13 @@ export class Editor {
     /**
      * Causes an update of values throughout the tree structure
      */
-    private updateDataFlow: () => void = ()=>{process(this.context.engine, this.context.editor)()}
-
-
-    /**
-     * Updates the react rendering of a node
-     * @param id id of node
-     */
-    private updateNodeRendering: (id: string)=>void = (id: string)=>{
-        this.context.area.update('node', id).then();
+    private updateDataFlow() {
+        this.context.engine.reset();
+        this.context.editor
+            .getNodes()
+            .forEach(async (node) => {
+                await this.context.engine.fetch(node.id).catch(() => {});
+            });
     }
 
 
@@ -148,6 +146,8 @@ export class Editor {
 
 
 
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     // DATA SERIALIZATION AND UTILITIES
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,141 +160,13 @@ export class Editor {
         this.loading = true;
         this.context.engine.reset();
         await this.context.editor.clear();
-        this.nodesFromData(data)
+        this.serializer.importNodes(data)
             .catch(()=>{this.loading = false;})
             .then(()=>{this.loading = false;});
     }
 
-
-    private async nodesFromData(data: any){
-        return new Promise<void>(async (resolve, reject) => {
-
-            if(!data) {
-                reject();
-                return;
-            }
-
-            let totalConnections: ConnProps[]  = [];
-
-            for await (const { id, controls, type, xy , connections} of data.nodes) {
-                let node = this.createNode(type, id);
-
-                if(!node) {
-                    reject("Invalid node type found in file");
-                } else {
-                    node.id = id;
-                    node.controls.c.set(controls.c.data);
-                    node.xTranslation = xy[0];
-                    node.yTranslation = xy[1];
-
-                    totalConnections.push(...connections);
-                    await this.context.editor.addNode(node);
-                    await this.context.area.translate(node.id, { x: node.xTranslation, y: node.yTranslation });
-                }
-            }
-
-            for await (const connection of totalConnections) {
-                this.context.editor.addConnection(connection)
-                    .catch((e) => console.log(e))
-                    .then(() => {});
-            }
-
-            resolve();
-        });
-    }
-
-
-    /**
-     * Exports node structure as a data structure that can later be read with importNodes()
-     */
-    public async exportNodes() : Promise<any> {
-
-        const data: any = { nodes: [] };
-        const nodes = this.context.editor.getNodes() as SkogNode[];
-        const connections = this.context.editor.getConnections() as Connection<NumberNode, BinaryNode>[];
-
-        for (const node of nodes) {
-            const inputsEntries = Object.entries(node.inputs).map(([key, input]) => {
-                return [key, input && this.serializePort(input)];
-            });
-            const outputsEntries = Object.entries(node.outputs).map(([key, output]) => {
-                return [key, output && this.serializePort(output)];
-            });
-            const controlsEntries = Object.entries(node.controls).map(
-                ([key, control]) => {
-                    return [key, control && this.serializeControl(control)];
-                }
-            );
-
-            data.nodes.push({
-                id: node.id,
-                label: node.label,
-                xy: [node.xTranslation, node.yTranslation],
-                type: node.type,
-                outputs: Object.fromEntries(outputsEntries),
-                inputs: Object.fromEntries(inputsEntries),
-                controls: Object.fromEntries(controlsEntries),
-                connections: []
-            });
-
-            data.nodes.map((node: any) => {
-                for(const connection of connections){
-                    if(
-                        connection.source === node.id &&
-                        node.connections.find((e:any)=>e.id === connection.id) === undefined
-                    ) {
-
-                        node.connections.push(this.serializeConnection(connection));
-                    }
-                }
-                return node;
-            });
-        }
-        return data;
-    }
-
-    private serializePort(
-        port:
-            | ClassicPreset.Input<ClassicPreset.Socket>
-            | ClassicPreset.Output<ClassicPreset.Socket>
-    ) {
-        return {
-            id: port.id,
-            label: port.label,
-            socket: {
-                name: port.socket.name
-            }
-        };
-    }
-
-    private serializeControl(control: ClassicPreset.Control) {
-        if (control instanceof ClassicPreset.InputControl) {
-            return {
-                __type: "ClassicPreset.InputControl" as const,
-                id: control.id,
-                readonly: control.readonly,
-                type: control.type,
-                value: control.value
-            };
-        }
-        if (control instanceof NodeControl) {
-            return {
-                data: control.getData()
-            }
-        }
-        return null;
-    }
-
-    private serializeConnection(
-        connection: Connection<NumberNode, BinaryNode>
-    ) {
-        return {
-            id: connection.id,
-            source: connection.source,
-            sourceOutput: connection.sourceOutput,
-            target: connection.target,
-            targetInput: connection.targetInput
-        };
+    public exportNodes() {
+        return this.serializer.exportNodes();
     }
 
 
@@ -328,13 +200,15 @@ export class Editor {
     private async removeNodeConnections(nodeID: string) {
         if( this.context.editor.getNode(nodeID) ) {
             const connections = this.context.editor.getConnections().filter(c => {
-                return c.source === this.selectedNode || c.target === this.selectedNode
+                return c.source === nodeID || c.target === nodeID
             })
             for (const connection of connections) {
                 await this.context.editor.removeConnection(connection.id)
             }
         }
     }
+
+
 
 
 
@@ -363,6 +237,9 @@ export class Editor {
 
 
 
+
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     // NODE CREATION
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,7 +251,7 @@ export class Editor {
     private createContextMenu() {
         const nodeTypesToDefinition : (nodeTypes: NodeType[])=>ItemDefinition<Schemes>[] = (types) =>{
             return types.map(node=>{
-                return [node.toString(), ()=>{return this.createNode(node) as SkogNode}]
+                return [node.toString(), ()=>{return this.serializer.createNode(node) as SkogNode}]
             })
         }
         const mathNodes = nodeTypesToDefinition ([
@@ -408,37 +285,6 @@ export class Editor {
                 ["Module", moduleNodes]
             ])
         });
-    }
-
-    /**
-     * Constructs a node based on type
-     * @param type
-     * @param id
-     * @private
-     */
-    private createNode(type: NodeType, id?: string) : SkogNode | undefined {
-        const updateNodeRender = this.updateNodeRendering;
-        const onValueUpdate = this.updateDataFlow;
-        const removeConnections = this.removeNodeConnections;
-        const updateStore = this.signalOnChange;
-        switch(type) {
-            case NodeType.ModuleOutput: return new ModuleOutput(updateNodeRender, onValueUpdate);
-            case NodeType.Module: return new ModuleNode(this.moduleManager, removeConnections, updateNodeRender, onValueUpdate);
-            case NodeType.ModuleInput: return new ModuleInput(updateNodeRender, onValueUpdate )
-            case NodeType.Output: return new OutputNode(updateNodeRender, onValueUpdate, id);
-            case NodeType.Number: return new NumberNode(0, updateNodeRender, onValueUpdate, id);
-            case NodeType.NumberInput: return new NumberInputNode(updateNodeRender, onValueUpdate, updateStore, id);
-            case NodeType.DropdownInput: return new DropdownInputNode(updateNodeRender, onValueUpdate, updateStore, id);
-            case NodeType.Display: return new DisplayPieNode(updateNodeRender, updateStore, id)
-            case NodeType.Add: return new BinaryNode(NodeType.Add, updateNodeRender, id);
-            case NodeType.Sub: return new BinaryNode(NodeType.Sub, updateNodeRender, id);
-            case NodeType.Mul: return new BinaryNode(NodeType.Mul, updateNodeRender, id);
-            case NodeType.Pow: return new BinaryNode(NodeType.Pow, updateNodeRender, id);
-            case NodeType.Div: return new BinaryNode(NodeType.Div, updateNodeRender, id);
-            case NodeType.Sum: return new NaryNode(NodeType.Sum, updateNodeRender, id);
-            case NodeType.Prod: return new NaryNode(NodeType.Prod, updateNodeRender, id);
-            default: return undefined;
-        }
     }
 
 

@@ -62,7 +62,7 @@ export default function App() {
             }
         });
 
-        functions?.registerCallBack(()=>{
+        functions?.registerCallBack('store', ()=>{
             increment();
         })
 

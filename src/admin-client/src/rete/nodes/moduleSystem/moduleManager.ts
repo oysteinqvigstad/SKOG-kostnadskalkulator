@@ -1,10 +1,10 @@
 import {Modules} from "./modules";
 import {Schemes} from "../types";
-import {exportGraph, importGraph} from "../../serialization";
 import {NodeEditor} from "rete";
 import {AreaPlugin} from "rete-area-plugin";
 import {DataflowEngine} from "rete-engine";
-import {AreaExtra} from "../../editor";
+import {AreaExtra} from "../../editorClass";
+import {GraphSerializer} from "../../serialization";
 
 
 export class ModuleManager {
@@ -13,28 +13,24 @@ export class ModuleManager {
     }
     private currentModule: string = "root"
     private modules: Modules<Schemes>
+    private serializer: GraphSerializer;
 
     constructor(
         private editorContext: Context
     ) {
+        this.serializer = new GraphSerializer(this.editorContext.editor, this);
         this.modules = new Modules<Schemes>(
             (name: string) => {
                 return name in this.moduleData
             },
-            async (name: string) => {
+            async (name: string, editor: NodeEditor<Schemes>) => {
                 return new Promise<void>((resolve, reject)=>{
                     const data = this.moduleData[name];
                     if(!data) {
                         reject()
                     }
-
-                    importGraph(
-                        data,
-                        this.editorContext.editor,
-                        this.editorContext.engine,
-                        this.editorContext.area,
-                        this.editorContext.signalChange
-                    );
+                    const serializer = new GraphSerializer(editor, this)
+                    serializer.importNodes(data);
                     resolve();
                 })
             }
@@ -56,7 +52,7 @@ export class ModuleManager {
 
     public saveModuleState() {
         this.moduleData[this.currentModule] = {
-            nodes: exportGraph(this.editorContext.editor)
+            nodes: this.serializer.exportNodes()
         }
     }
 
