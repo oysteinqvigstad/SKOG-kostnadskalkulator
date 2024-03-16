@@ -63,7 +63,7 @@ function App() {
             <Routes>
                 <Route element={<NavBar />}>
                     <Route path={"/"} element={<HomePage />}/>
-                    <Route path={"/kalkulator"} element={<LandingPage />}/>
+                    <Route path={"/kalkulator/:name/:version"} element={<LandingPage />}/>
 
                     <Route path="/forskningsgrunnlag" element={<InformationalScientificSourcesPage />} />
                     <Route path="/tallgrunnlag" element={<InformationalDefaultValuesPage />} />

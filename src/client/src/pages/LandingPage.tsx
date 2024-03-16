@@ -4,6 +4,11 @@ import React, {useEffect, useState} from "react";
 import {Button} from "react-bootstrap";
 import {ResultParameters} from "../components/result/ResultParameters";
 import {ResultPeek} from "../components/result/ResultPeek";
+import {useParams} from "react-router-dom";
+import {useGetCalculatorTreeQuery} from "../state/store";
+import {initiateTree} from "../state/treeSlice";
+import {treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
+import {useAppDispatch} from "../state/hooks";
 
 export function LandingPage() {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
@@ -17,14 +22,28 @@ export function LandingPage() {
         return () => window.removeEventListener('resize', updateMedia);
     })
 
+    const dispatch = useAppDispatch()
+    const {name, version} = useParams()
+    const validParams = name && version && !isNaN(parseInt(version))
+
+    const {data, error, isLoading} = useGetCalculatorTreeQuery({name: name!, version: parseInt(version!)}, {skip: !validParams})
+
+    useEffect(() => {
+        if (data) {
+            dispatch(initiateTree({tree: treeStateFromData(data)}))
+        }
+    }, [data, dispatch]);
+
+
 
     return (
         <>
-            {isDesktop ? (
-                <DesktopView />
-            ) : (
-                <MobileView />
-            )}
+            {data && isDesktop && <DesktopView />}
+            {data && !isDesktop && <MobileView />}
+            {isLoading && <p>{"Laster inn kalkulator"}</p>}
+            {error && <p>{"En feil oppstod ved henting av kalkulator"}</p>}
+            {!validParams && <p>{"Ugyldig nettaddresse, sjekk navn på kalkulator og versjon"}</p>}
+
         </>
     )
 }

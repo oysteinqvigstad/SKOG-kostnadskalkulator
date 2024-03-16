@@ -1,5 +1,6 @@
 import {Button, Card, Col, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import {useGetCalculatorsInfoQuery} from "../state/store";
 
 export function HomePage() {
     return (
@@ -24,26 +25,26 @@ export function HomePage() {
 
 function CalculatorPicker() {
     const navigate = useNavigate()
+    const {data, error, isLoading} = useGetCalculatorsInfoQuery()
+
 
     return (
         <>
-            <Row className={"mt-2 mb-5"}>
-                <Col xs={6}>
-                    <CalculatorButton
-                        title={"Åpen hogst"}
-                        description={"Fjerner alle trær fra et område."}
-                        onclick={() => {navigate("/kalkulator")}}
-                        disabled={false}/>
-                </Col>
-                <Col xs={6}>
-                    <CalculatorButton
-                        title={"Lukket hogst"}
-                        description={"Kommer senere"}
-                        onclick={() => {}}
-                        disabled={true}/>
-                </Col>
-            </Row>
-
+            {isLoading && <p>{"Laster inn..."}</p>}
+            {data && data.length === 0 && <p>{"Ingen kalkulatorer funnet"}</p>}
+            {error && <p>{"En feil oppstod ved henting av kalkulatorer"}</p>}
+            {data && data.map((calculator) => {
+                return (
+                    <Col xs={6}>
+                        <CalculatorButton
+                            title={calculator.name}
+                            description={"Kort beskrivelse"}
+                            onclick={() => {navigate(`/kalkulator/${encodeURI(calculator.name)}/${calculator.version}`)}}
+                            disabled={false}/>
+                    </Col>
+                )
+            })
+            }
         </>
     )
 }

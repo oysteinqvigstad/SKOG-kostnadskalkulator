@@ -18,7 +18,10 @@ beforeAll(() => {
         version: 1,
         dateCreated: Date.now(),
         published: false,
-        reteSchema: "test",
+        reteSchema: {
+            graph: "test",
+            store: "test",
+        },
         treeNodes: treeStateFromData(testTree).subTrees
     }
     const config: Configuration = {
