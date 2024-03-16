@@ -6,7 +6,7 @@ import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {ReteFunctions} from "../../rete/editor";
 import {selectFormulaInfo, selectPages} from "../../state/store";
 import React from "react";
-import {ImportExportDialogue} from "../ImportExportDialogue";
+import {ImportExportModal} from "../importExportModal/ImportExportModal";
 
 export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
     const dispatch = useAppDispatch();
@@ -56,7 +56,7 @@ export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
             </NavDropdown>
 
 
-            <ImportExportDialogue
+            <ImportExportModal
                 show={showImportExportMenu}
                 onHide={() => setShowImportExportMenu(false)}
                 functions={props.functions}
