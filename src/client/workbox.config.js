@@ -8,13 +8,13 @@ module.exports = {
     mode: 'debug',
     runtimeCaching: [
         {
-            urlPattern: /\*/i,
+            urlPattern: new RegExp('.*'),
             handler: 'NetworkFirst',
             options: {
                 cacheName: 'all',
                 expiration: {
-                    maxEntries: 10,
-                    maxAgeSeconds: 60,
+                    maxEntries: 100,
+                    maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
                 },
             },
         },
