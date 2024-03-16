@@ -277,12 +277,14 @@ export class Editor {
             NodeType.Display
         ])
 
+
         return new ContextMenuPlugin<Schemes>({
             items: ContextMenuPresets.classic.setup([
                 ["Math", mathNodes],
                 ["Inputs", inputNodes],
                 ["Displays", displayNodes],
-                ["Module", moduleNodes]
+                ["Module", moduleNodes],
+                ["Output", ()=>{ return this.serializer.createNode(NodeType.Output) as SkogNode}]
             ])
         });
     }
