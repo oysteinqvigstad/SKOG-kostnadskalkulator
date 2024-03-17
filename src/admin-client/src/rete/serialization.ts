@@ -1,4 +1,4 @@
-import {ClassicPreset, NodeEditor} from "rete";
+import {ClassicPreset, getUID, NodeEditor} from "rete";
 import {Connection, ConnProps, Schemes, SkogNode} from "./nodes/types";
 import {DataflowEngine} from "rete-engine";
 import {AreaPlugin} from "rete-area-plugin";
@@ -43,9 +43,9 @@ export class GraphSerializer {
         const removeConnections = this.removeNodeConnections;
         const updateStore = this.signalOnChange;
         switch(type) {
-            case NodeType.ModuleOutput: return new ModuleOutput(updateNodeRender, onValueUpdate);
-            case NodeType.Module: return new ModuleNode(this.moduleManager, removeConnections, updateNodeRender, onValueUpdate);
-            case NodeType.ModuleInput: return new ModuleInput(updateNodeRender, onValueUpdate )
+            case NodeType.ModuleOutput: return new ModuleOutput(updateNodeRender, onValueUpdate, "", id);
+            case NodeType.Module: return new ModuleNode(this.moduleManager, removeConnections, updateNodeRender, onValueUpdate, id);
+            case NodeType.ModuleInput: return new ModuleInput(updateNodeRender, onValueUpdate, "", id)
             case NodeType.Output: return new OutputNode(updateNodeRender, onValueUpdate, id);
             case NodeType.Number: return new NumberNode(0, updateNodeRender, onValueUpdate, id);
             case NodeType.NumberInput: return new NumberInputNode(updateNodeRender, onValueUpdate, updateStore, id);
@@ -65,8 +65,9 @@ export class GraphSerializer {
     /**
      * imports nodes from data exported by exportNodes
      * @param data
+     * @param freshIDs if true, IDs are replaced with new UIDs
      */
-    public async importNodes(data: any){
+    public async importNodes(data: any, freshIDs?: boolean){
         return new Promise<void>(async (resolve, reject) => {
 
             if(!data) {
@@ -76,18 +77,26 @@ export class GraphSerializer {
 
             let totalConnections: ConnProps[]  = [];
 
+            const idMap = new Map<string, string>();
+
             for await (const { id, controls, type, xy , connections} of data.nodes) {
+
                 let node = this.createNode(type, id);
 
                 if(!node) {
                     reject("Invalid node type found in file");
                 } else {
-                    node.id = id;
                     node.controls.c.set(controls.c.data);
                     node.xTranslation = xy[0];
                     node.yTranslation = xy[1];
+                    if(freshIDs) {
+                        const newID = getUID();
+                        idMap.set(node.id, newID);
+                        node.id = newID;
+                    }
 
                     totalConnections.push(...connections);
+
                     await this.editor.addNode(node);
                     if(this.area) {
                         await this.area.translate(node.id, { x: node.xTranslation, y: node.yTranslation });
@@ -96,9 +105,17 @@ export class GraphSerializer {
             }
 
             for await (const connection of totalConnections) {
+                if(freshIDs) {
+                    connection.source = idMap.get(connection.source) || "";
+                    connection.target = idMap.get(connection.target) || "";
+                }
                 this.editor.addConnection(connection)
                     .catch((e) => console.log(e))
                     .then(() => {});
+            }
+
+            if(freshIDs) {
+                this.editor.getNodes().forEach(node=>{node.id = ""})
             }
 
             resolve();
