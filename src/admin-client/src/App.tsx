@@ -2,7 +2,7 @@ import {createEditor} from "./rete/editor";
 import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
 import {Col, Row} from "react-bootstrap";
-import {useCallback, useEffect, useRef} from "react";
+import {useEffect} from "react";
 import {Provider} from "react-redux";
 import {store, StoreState} from "./state/store";
 import {useAppDispatch, useAppSelector} from "./state/hooks";
