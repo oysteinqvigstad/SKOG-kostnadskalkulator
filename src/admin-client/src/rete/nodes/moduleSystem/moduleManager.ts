@@ -125,8 +125,6 @@ export class ModuleManager {
             }
             const serializer = new GraphSerializer(editor, this)
             serializer.importNodes(data).catch(()=>{reject()}).then(()=>{
-                console.log("loadToEditor nodecount", editor.getNodes().length)
-                console.log("loadToEditor data", data);
                 resolve();
             });
         })
@@ -162,14 +160,11 @@ export class ModuleManager {
         const inputNodes = moduleGraph.filter(
             (node): node is ModuleInput => node instanceof ModuleInput
         );
-        console.log('inject inputs', inputNodes);
 
         inputNodes.forEach((node) => {
             const key = node.controls.c.get('inputName');
-            console.log('key', key);
             if (key) {
                 node.value = inputData[key] && inputData[key][0];
-                console.log('key value', key, node.value);
             }
         });
     }
@@ -193,8 +188,6 @@ export class ModuleManager {
             })
         );
 
-        console.log("retrieve outputs", Object.fromEntries(moduleOutputKeyWithValues))
-
         return Object.fromEntries(moduleOutputKeyWithValues);
     }
 
@@ -203,13 +196,8 @@ export class ModuleManager {
      * @param editor
      */
     public static getPorts(editor: NodeEditor<Schemes>) {
-
         const nodes = editor.getNodes();
-        console.log("getPorts, nodecount", nodes.length)
-        nodes.forEach(node=>{
-            console.log("Node is input", node instanceof ModuleInput)
-            console.log("Node is output", node instanceof ModuleOutput)
-        })
+
         const inputNames = nodes
             .filter((n): n is ModuleInput => n instanceof ModuleInput)
             .map((n) => n.controls.c.get('inputName') as string);
