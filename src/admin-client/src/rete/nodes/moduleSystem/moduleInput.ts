@@ -34,7 +34,9 @@ export class ModuleInput extends BaseNode<
         this.addControl("c", new NodeControl<ModuleInputControlData>(
             initialState,
             {
-                onUpdate: (data: Partial<ModuleInputControlData>) => {},
+                onUpdate: (data: Partial<ModuleInputControlData>) => {
+                    this.updateNodeRendering(this.id)
+                },
                 minimized: false
             },
             this.type
@@ -50,7 +52,11 @@ export class ModuleInput extends BaseNode<
     }
 
     toParseNode(): ParseNode {
-        throw new Error("This node is not meant to go in parseTree structure");
-        return {} as ParseNode;
+        // throw new Error("This node is not meant to go in parseTree structure");
+        return {
+            id:"",
+            value: 0,
+            type: NodeType.Module
+        }
     }
 }
