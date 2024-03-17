@@ -34,23 +34,27 @@ export default function App() {
 
     useEffect(()=> {
         const handleKeyDown = (e: KeyboardEvent) => {
-            e.preventDefault();
             if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
                 functions?.save();
                 if (localStorage) {
                     localStorage.setItem('store', JSON.stringify(store.getState()));
                 }
             }
             if (e.key === 'Delete') {
+                e.preventDefault();
                 functions?.deleteSelected();
             }
             if (e.key === 'a' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
                 functions?.viewControllers.resetView();
             }
             if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
                 functions?.viewControllers.focusSelectedNode();
             }
             if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
                 functions?.load();
                 if (localStorage) {
                     const reduxState = localStorage.getItem('store');
