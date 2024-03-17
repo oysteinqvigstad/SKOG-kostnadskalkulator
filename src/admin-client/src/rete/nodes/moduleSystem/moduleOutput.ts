@@ -1,7 +1,7 @@
 import {ClassicPreset, ClassicPreset as Classic} from "rete";
-import { DataflowNode } from "rete-engine";
+import {DataflowNode} from "rete-engine";
 import {BaseNode, NodeControl} from "../baseNode";
-import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 
 
 export interface ModuleOutputControlData {
@@ -33,7 +33,7 @@ export class ModuleOutput extends BaseNode<
         this.addControl("c", new NodeControl(
             initialState,
             {
-                onUpdate: (data: Partial<ModuleOutputControlData>) => {
+                onUpdate: () => {
                     this.updateNodeRendering(this.id)
                 },
                 minimized: false,

@@ -3,7 +3,6 @@ import {NodeControl} from "../baseNode";
 import {TextInputField} from "../../../components/input/textInputField";
 import {ModuleOutputControlData} from "./moduleOutput";
 import {ModuleNodeControlData} from "./moduleNode";
-import {DropdownSelection} from "../../../components/input/dropdownSelection";
 import {FloatingLabel, FormSelect} from "react-bootstrap";
 import React from "react";
 

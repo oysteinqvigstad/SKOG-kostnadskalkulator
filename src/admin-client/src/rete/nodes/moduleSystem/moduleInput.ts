@@ -34,7 +34,7 @@ export class ModuleInput extends BaseNode<
         this.addControl("c", new NodeControl<ModuleInputControlData>(
             initialState,
             {
-                onUpdate: (data: Partial<ModuleInputControlData>) => {
+                onUpdate: () => {
                     this.updateNodeRendering(this.id)
                 },
                 minimized: false

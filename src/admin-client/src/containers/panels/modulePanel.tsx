@@ -1,6 +1,6 @@
 import {Editor} from "../../rete/editorClass";
 import {Button} from "react-bootstrap";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 
 export function ModulePanel( props: { editor: Editor | undefined }) {
