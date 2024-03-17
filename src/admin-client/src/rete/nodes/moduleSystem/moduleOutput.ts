@@ -34,7 +34,7 @@ export class ModuleOutput extends BaseNode<
             initialState,
             {
                 onUpdate: (data: Partial<ModuleOutputControlData>) => {
-
+                    this.updateNodeRendering(this.id)
                 },
                 minimized: false,
             },
@@ -48,8 +48,12 @@ export class ModuleOutput extends BaseNode<
     }
 
     toParseNode() {
-        throw new Error("This node is not meant to go in parseNode tree structure")
-        return {} as ParseNode;
+        // throw new Error("This node is not meant to go in parseNode tree structure")
+        return {
+            id:"",
+            value: 0,
+            type: NodeType.Module
+        }
     }
 
 }
