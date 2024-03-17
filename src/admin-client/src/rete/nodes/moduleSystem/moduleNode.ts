@@ -17,6 +17,7 @@ export class ModuleNode extends BaseNode<
         { c: NodeControl<ModuleNodeControlData> }
     > {
     module: null | Module<Schemes> = null;
+    editor: NodeEditor<Schemes> | undefined;
 
     constructor(
         private moduleManager: ModuleManager,
@@ -43,7 +44,6 @@ export class ModuleNode extends BaseNode<
                                 this.updateNodeRendering(this.id);
                                 this.updateDataFlow();
                             });
-
                         }
                     },
                     minimized: false
@@ -54,22 +54,36 @@ export class ModuleNode extends BaseNode<
         this.setModuleAndRefreshPorts();
     }
 
-    async setModuleAndRefreshPorts() {
+    public getNodes() {
+        if(this.editor) {
+            return this.editor.getNodes();
+        }
+        return []
+    }
+
+    public getConnections() {
+        if(this.editor) {
+            return this.editor.getConnections();
+        }
+        return []
+    }
+
+    private async setModuleAndRefreshPorts() {
         this.module = this.moduleManager.getModule(this.controls.c.get('currentModule'));
 
         await this.removeConnections(this.id);
         if (this.module) {
             const editor = new NodeEditor<Schemes>();
             await this.module.apply(editor);
+            this.editor = editor;
             const { inputs, outputs } = ModuleManager.getPorts(editor);
-            console.log("This module has: ", inputs, outputs)
             this.syncPortsWithModule(inputs, outputs);
         } else this.syncPortsWithModule([], []);
     }
 
 
 
-    syncPortsWithModule(inputs: string[], outputs: string[]) {
+    private syncPortsWithModule(inputs: string[], outputs: string[]) {
         Object.keys(this.inputs).forEach((key: keyof typeof this.inputs) =>
             this.removeInput(key)
         );
@@ -86,7 +100,7 @@ export class ModuleNode extends BaseNode<
         this.setHeightFromPorts();
     }
 
-    setHeightFromPorts() {
+    private setHeightFromPorts() {
         this.height =
             110 +
             25 * (Object.keys(this.inputs).length + Object.keys(this.outputs).length);
