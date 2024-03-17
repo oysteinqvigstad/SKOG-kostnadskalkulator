@@ -109,7 +109,7 @@ export class GraphSerializer {
     /**
      * Exports node structure as a data structure that can later be read with importNodes()
      */
-    public async exportNodes() : Promise<any> {
+    public exportNodes() : any {
 
         const data: any = { nodes: [] };
         const nodes = this.editor.getNodes() as SkogNode[];
