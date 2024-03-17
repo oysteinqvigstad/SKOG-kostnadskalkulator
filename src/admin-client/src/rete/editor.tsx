@@ -50,7 +50,7 @@ export async function createEditor(container: HTMLElement) {
         deleteSelected: async () => {
             editor.deleteSelected().then();
         },
-        registerCallBack: (id: string, newCallback: () => void) => {
+        registerCallBack: (id: string, newCallback: (nodes?: ParseNode[]) => void) => {
             editor.registerOnChangeCallback({id: id, call: newCallback})
         },
         viewControllers: {
@@ -77,7 +77,7 @@ export interface ReteFunctions {
     export: () => {graph: any, parseNodes: ParseNode[]},
     testJSON: () => ParseNode[] | undefined,
     deleteSelected: () => void,
-    registerCallBack: (id: string, newCallback: () => void) => void,
+    registerCallBack: (id: string, newCallback: (nodes?: ParseNode[]) => void) => void,
     viewControllers: {
         resetView: () => void,
         focusSelectedNode: () => void

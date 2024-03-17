@@ -8,7 +8,7 @@ import {Presets as ScopesPresets, ScopesPlugin} from "rete-scopes-plugin";
 import {AutoArrangePlugin, Presets as ArrangePresets} from "rete-auto-arrange-plugin";
 import {createJSONGraph} from "./adapters";
 import {createRoot} from "react-dom/client";
-import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {ItemDefinition} from "rete-context-menu-plugin/_types/presets/classic/types";
 import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
 import {
@@ -41,7 +41,7 @@ export class Editor {
 
     private context: EditorContext;
     private selectedNode: string | undefined;
-    private onChangeCalls: {id: string, call: ()=>void}[] = []
+    private onChangeCalls: {id: string, call: (nodes?: ParseNode[])=>void}[] = []
     private loading = false;
     public readonly moduleManager: ModuleManager;
     private serializer: GraphSerializer;
@@ -137,8 +137,9 @@ export class Editor {
      */
     private signalOnChange = ()=>{
         if(!this.loading) {
+            const nodes = this.exportAsParseTree()
             this.onChangeCalls.forEach(({call})=>{
-                call()
+                call(nodes)
             })
         }
     }

@@ -13,6 +13,7 @@ import {setFormulaInfoState} from "./state/slices/formulaInfo";
 import {selectRootNode} from "./state/selectors";
 import {SidePanel} from "./containers/panels/SidePanel";
 import {RetePanel} from "./containers/panels/RetePanel";
+import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
 
 
@@ -21,29 +22,17 @@ export default function App() {
     const rootNode = useAppSelector(selectRootNode)
     const dispatch = useAppDispatch();
 
-    // keeping a reference to the root node is necessary for breaking the dependency cycle
-    // between the rete editor and the redux store, such that the returned rootNode does not
-    // trigger updateTreeState()
-    const refRootNode = useRef(rootNode)
-    // keep the refence up to date
     useEffect(() => {
-        refRootNode.current = rootNode;
-    }, [rootNode]);
-
-
-    // callback for updating the tree state in the redux store from rete
-    const updateTreeState = useCallback(() => {
-        const reteNodes = functions?.getCurrentTree();
-        if(reteNodes && refRootNode.current) {
-            dispatch(updateTree([refRootNode.current, ...reteNodes]));
-        }
-    }, [functions, dispatch, refRootNode])
+        // ensures that the tree state is updated when certain changes occur
+        functions?.registerCallBack('store', (nodes?: ParseNode[]) => {
+            if(nodes && rootNode) {
+                dispatch(updateTree([rootNode, ...nodes]));
+            }
+        })
+    }, [functions, dispatch, rootNode]);
 
 
     useEffect(()=> {
-        // ensures that the tree state is updated when certain changes occur
-        functions?.registerCallBack('store', updateTreeState)
-
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
@@ -86,7 +75,8 @@ export default function App() {
             document.removeEventListener('keydown', handleKeyDown)
         }
 
-    }, [functions, dispatch, updateTreeState])
+    // }, [functions, dispatch, updateTreeState])
+}, [functions, dispatch, rootNode])
 
 
 
