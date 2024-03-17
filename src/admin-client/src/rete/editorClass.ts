@@ -6,7 +6,7 @@ import {Presets, ReactArea2D, ReactPlugin} from "rete-react-plugin";
 import {DataflowEngine} from "rete-engine";
 import {Presets as ScopesPresets, ScopesPlugin} from "rete-scopes-plugin";
 import {AutoArrangePlugin, Presets as ArrangePresets} from "rete-auto-arrange-plugin";
-import {createJSONGraph} from "./adapters";
+import {createParseNodeGraph} from "./adapters";
 import {createRoot} from "react-dom/client";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {ItemDefinition} from "rete-context-menu-plugin/_types/presets/classic/types";
@@ -100,18 +100,16 @@ export class Editor {
     }
 
     public loadModule(name: string) {
-        console.log("module exists", this.moduleManager.hasModule(name))
         if(this.currentModule === name || !this.moduleManager.hasModule(name)) { return }
         if(this.currentModule === 'main') { this.stashedMain = this.exportNodes() }
-        console.log("importing")
         this.currentModule = name;
-        this.importNodes(this.moduleManager.getModuleData(name))
-        this.resetView();
+        this.importNodes(this.moduleManager.getModuleData(name)).then(()=>{
+            this.resetView();
+        })
     }
 
     public saveCurrentModule() {
         if(this.currentModule === 'main' || !this.moduleManager.hasModule(this.currentModule)) { return }
-        console.log("saving", this.exportNodes());
         this.moduleManager.setModuleData(this.currentModule, this.exportNodes());
     }
 
@@ -236,7 +234,7 @@ export class Editor {
         if(this.currentModule !== 'main') { //TODO: logic for exporting parse tree of main only
             const tempEditor = new NodeEditor<Schemes>();
         }
-        return createJSONGraph(this.context.editor);
+        return createParseNodeGraph(this.context.editor);
     }
 
 
@@ -244,7 +242,10 @@ export class Editor {
      * Removes all nodes from the current canvas
      */
     public clearNodes() {
-        this.context.editor.clear().then();
+        this.context.editor.clear().then(()=>{
+            this.moduleManager.overwriteModuleData([])
+            }
+        );
     }
 
 
@@ -426,6 +427,7 @@ export class Editor {
         this.context.area.addPipe((context)=> {
             if(context.type === "nodepicked") {
                 this.selectedNode = context.data.id;
+                console.log("selected:", context.data.id);
             }
             if (context.type === "nodetranslated") {
                 const node = this.context.editor.getNode(context.data.id);
