@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import {SavedResult} from "../../types/SavedResult";
 import { useAppSelector } from "../../state/hooks";
 import {selectURLQueries} from "../../state/treeSelectors";
+import {useParams} from "react-router-dom";
 
 export function SaveMenuButton() {
     const [show, setShow] = useState(false)
@@ -120,9 +121,10 @@ function SavedResultsTable(props: {
 
 function SaveButton(props: { results: SavedResult[], fields: any, resultName: string, onSave: () => void }) {
     const queries = useAppSelector(selectURLQueries(','))
+    const {name, version} = useParams()
 
     function save() {
-        const url = `${window.location.origin}/resultat?${queries}`
+        const url = `${window.location.origin}/kalkulator/${name}/${version}?${queries}`
         console.log(url)
         props.results.unshift({date: Date.now(), name: props.resultName, link: url})
         localStorage.setItem("savedResults", JSON.stringify(props.results))

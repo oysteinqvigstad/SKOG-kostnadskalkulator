@@ -2,7 +2,7 @@ import {Button, Card, Col, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {useGetCalculatorsInfoQuery} from "../state/store";
 
-export function HomePage() {
+export function StartPage() {
     return (
             <Card className={"pt-5"}>
                 <Card.Body>
@@ -33,17 +33,20 @@ function CalculatorPicker() {
             {isLoading && <p>{"Laster inn..."}</p>}
             {data && data.length === 0 && <p>{"Ingen kalkulatorer funnet"}</p>}
             {error && <p>{"En feil oppstod ved henting av kalkulatorer"}</p>}
-            {data && data.map((calculator) => {
-                return (
-                    <Col xs={6}>
-                        <CalculatorButton
-                            title={calculator.name}
-                            description={"Kort beskrivelse"}
-                            onclick={() => {navigate(`/kalkulator/${encodeURI(calculator.name)}/${calculator.version}`)}}
-                            disabled={false}/>
-                    </Col>
-                )
-            })
+            {data &&
+                <Row>
+                    {data.map((calculator) => {
+                        return (
+                            <Col xs={6}>
+                                <CalculatorButton
+                                    title={calculator.name}
+                                    description={"Kort beskrivelse"}
+                                    onclick={() => {navigate(`/kalkulator/${encodeURI(calculator.name)}/${calculator.version}`)}}
+                                    disabled={false}/>
+                            </Col>
+                        )
+                    })}
+                </Row>
             }
         </>
     )

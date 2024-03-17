@@ -1,23 +1,20 @@
 import {Button, OverlayTrigger, Tooltip} from "react-bootstrap";
 import {MdShare} from "react-icons/md"
 import React from "react";
-import {useAppSelector} from "../state/hooks";
-import {selectURLQueries} from "../state/treeSelectors";
+import {useAppSelector} from "../../state/hooks";
+import {selectURLQueries} from "../../state/treeSelectors";
+import {useParams} from "react-router-dom";
 
 /**
  * ShareResultButton is a button that copies the current url to the clipboard
  */
 export function ShareResultButton() {
-    // Get the fields from the store
-    // const fields = useAppSelector((state) => state.form.fields)
     const queries = useAppSelector(selectURLQueries(','))
+    const {name, version} = useParams()
 
     const share = async () => {
-        // create share url
-        // const queries = Object.entries(fields).map(([key, value]) => {
-        //     return `${key.replaceAll(" ", "%20")}=${value}`
-        // }).join("&")
-        const url = `${window.location.origin}/resultat?${queries}`
+
+        const url = `${window.location.origin}/kalkulator/${name}/${version}?${queries}`
 
         try {
             // copy to clipboard
