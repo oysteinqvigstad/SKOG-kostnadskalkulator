@@ -20,6 +20,7 @@ import {OutputNodeControlContainer} from "./customControls/outputNodeControls/ou
 import {NumberControlComponent} from "./customControls/numberControl/numberControlComponent";
 import {ModuleManager} from "./nodes/moduleSystem/moduleManager";
 import {GraphSerializer} from "./serialization";
+import {ModuleInputControl, ModuleNodeControl, ModuleOutputControl} from "./nodes/moduleSystem/moduleControls";
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
@@ -35,6 +36,10 @@ export interface EditorContext {
 }
 
 
+export interface EditorDataPackage {
+    main: any,
+    modules: {name: string, data: any}[]
+}
 
 
 export class Editor {
@@ -43,8 +48,10 @@ export class Editor {
     private selectedNode: string | undefined;
     private onChangeCalls: {id: string, call: (nodes?: ParseNode[])=>void}[] = []
     private loading = false;
-    public readonly moduleManager: ModuleManager;
+    private readonly moduleManager: ModuleManager;
     private serializer: GraphSerializer;
+    private stashedMain: any | undefined;
+    private currentModule = "main";
 
     public destroyArea = () => {this.context.area.destroy()}
 
@@ -64,12 +71,7 @@ export class Editor {
             scopes: new ScopesPlugin<Schemes>()
         };
 
-        this.moduleManager = new ModuleManager({
-            editor: this.context.editor,
-            area: this.context.area,
-            engine: this.context.engine,
-            signalChange: this.signalOnChange
-        });
+        this.moduleManager = new ModuleManager();
 
         this.setUpEditor();
         this.setUpDataflowEngine();
@@ -89,6 +91,48 @@ export class Editor {
 
         AreaExtensions.zoomAt(this.context.area, this.context.editor.getNodes()).then(() => {});
     }
+
+    public loadMainGraph() {
+        if(this.currentModule === "main") { return }
+        this.currentModule = 'main';
+        this.importNodes(this.stashedMain);
+        this.resetView();
+    }
+
+    public loadModule(name: string) {
+        console.log("module exists", this.moduleManager.hasModule(name))
+        if(this.currentModule === name || !this.moduleManager.hasModule(name)) { return }
+        if(this.currentModule === 'main') { this.stashedMain = this.exportNodes() }
+        console.log("importing")
+        this.currentModule = name;
+        this.importNodes(this.moduleManager.getModuleData(name))
+        this.resetView();
+    }
+
+    public saveCurrentModule() {
+        if(this.currentModule === 'main' || !this.moduleManager.hasModule(this.currentModule)) { return }
+        console.log("saving", this.exportNodes());
+        this.moduleManager.setModuleData(this.currentModule, this.exportNodes());
+    }
+
+    public getModuleNames = ()=>{return this.moduleManager.getModuleNames()}
+
+    public addNewModule(name?: string) {
+        if(name === 'main') { return }
+        if(this.currentModule === 'main') {
+            this.stashedMain = this.exportNodes()
+        }
+        this.context.editor.clear();
+        this.currentModule = name || ""
+        this.moduleManager.addModuleData(name || "");
+        this.loadModule(name || "")
+    }
+
+    public getCurrentModuleName() {
+        return this.currentModule;
+    }
+
+
 
 
 
@@ -136,7 +180,7 @@ export class Editor {
      * Invokes all callbacks if not in the process of loading a file.
      */
     private signalOnChange = ()=>{
-        if(!this.loading) {
+        if(!this.loading && this.currentModule === 'main') {
             const nodes = this.exportAsParseTree()
             this.onChangeCalls.forEach(({call})=>{
                 call(nodes)
@@ -170,11 +214,28 @@ export class Editor {
         return this.serializer.exportNodes();
     }
 
+    public exportWithModules() : EditorDataPackage {
+        this.loadMainGraph();
+        return {
+            main: this.exportNodes(),
+            modules: this.moduleManager.getAllModuleData()
+        }
+    }
+
+    public importWithModules(data: EditorDataPackage) {
+        this.importNodes(data.main);
+        this.currentModule = 'main';
+        this.moduleManager.overwriteModuleData(data.modules);
+    }
+
 
     /**
      * Exports the current data structure as its equivalent ParseNode structure
      */
     public exportAsParseTree() {
+        if(this.currentModule !== 'main') { //TODO: logic for exporting parse tree of main only
+            const tempEditor = new NodeEditor<Schemes>();
+        }
         return createJSONGraph(this.context.editor);
     }
 
@@ -327,6 +388,9 @@ export class Editor {
                             case NodeType.NumberInput: return NumberInputControlContainer
                             case NodeType.DropdownInput: return DropdownInputControlContainer
                             case NodeType.Output: return OutputNodeControlContainer
+                            case NodeType.Module: return ModuleNodeControl
+                            case NodeType.ModuleInput: return ModuleInputControl
+                            case NodeType.ModuleOutput: return ModuleOutputControl
                         }
                         return NumberControlComponent;
                     },
