@@ -2,7 +2,7 @@ import {createEditor} from "./rete/editor";
 import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
 import {Col, Row} from "react-bootstrap";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Provider} from "react-redux";
 import {store, StoreState} from "./state/store";
 import {useAppDispatch, useAppSelector} from "./state/hooks";
@@ -14,6 +14,7 @@ import {selectRootNode} from "./state/selectors";
 import {SidePanel} from "./containers/panels/SidePanel";
 import {RetePanel} from "./containers/panels/RetePanel";
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {ModulePanel} from "./containers/panels/modulePanel";
 
 
 
@@ -30,6 +31,7 @@ export default function App() {
             }
         })
     }, [functions, dispatch, rootNode]);
+
 
 
     useEffect(()=> {
@@ -88,6 +90,7 @@ export default function App() {
               <Container style={{maxWidth: '100%'}}>
                   <Row>
                       <Col style={{padding: 0}}>
+                          <ModulePanel editor={functions?.editor}></ModulePanel>
                           <RetePanel reteRef={reteRef} />
                       </Col>
                       <Col style={{ padding: 0}}>
