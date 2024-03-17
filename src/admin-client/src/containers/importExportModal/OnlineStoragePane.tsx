@@ -14,7 +14,6 @@ export function OnlineStoragePane(props: {
 
     // fetch metadata of stored calculators from the API
     const {data, error, isLoading, refetch} = useGetCalculatorsInfoQuery()
-
     return (
         <>
             <h3>{"Database Storage"}</h3>
@@ -23,7 +22,7 @@ export function OnlineStoragePane(props: {
             </p>
             <Stack className={"mb-4"} direction={"horizontal"} gap={3}>
                 <FormulaInfoContainer/>
-                <SaveToAPIButton onSaved={() => refetch()} calculator={props.calculator} />
+                <SaveToAPI onSaved={() => refetch()} calculator={props.calculator} />
             </Stack>
             <h5>{"Database stored calculators"}</h5>
             <Table size={"sm"}>
@@ -35,7 +34,7 @@ export function OnlineStoragePane(props: {
                 </tr>
                 </thead>
                 <tbody>
-                {data && data.map((calculator) => <TableRow onLoad={props.onLoad} calculator={calculator} />)}
+                {data && data.map((calculator) => <TableRow key={calculator.name + calculator.version} onLoad={props.onLoad} calculator={calculator} />)}
                 {data && !data.length &&
                     <tr>
                         <td colSpan={3}>
@@ -44,11 +43,9 @@ export function OnlineStoragePane(props: {
                     </tr>
                 }
                 </tbody>
-                {isLoading && <Spinner/>}
-                {error &&
-                    <p>{"Error in communication with API"}</p>
-                }
             </Table>
+            {error && <p>{"Error in communication with API"}</p>}
+            {isLoading && <Spinner />}
             <Button onClick={refetch}>
                 {"Force Refresh"}
             </Button>
@@ -61,7 +58,7 @@ export function OnlineStoragePane(props: {
  * A button for saving the current calculator to the online database through the API
  * @param props.onSaved A callback function to be called when the calculator is saved
  */
-function SaveToAPIButton(props: {
+function SaveToAPI(props: {
     calculator: Calculator,
     onSaved: () => void,
 }) {
@@ -98,21 +95,14 @@ function SaveToAPIButton(props: {
         }
     }, [addCalculatorStatus])
 
-    const title = (
-        <>
-            {"Export"}
-            {addCalculatorStatus.isLoading && <Spinner size={"sm"} />}
-        </>
-    )
 
     return (
-
-        <tr>
-            <DropdownButton id={"save options"} as={ButtonGroup} title={title} style={{height: '58px'}}>
+        <>
+            <DropdownButton id={"save options"} as={ButtonGroup} title={addCalculatorStatus.isLoading ? "Exporting..." : "Export"} style={{height: '58px'}}>
                 <Dropdown.Item onClick={() => sendToAPI(false)}>Save only</Dropdown.Item>
                 <Dropdown.Item onClick={() => sendToAPI(true)}>Save and publish</Dropdown.Item>
             </DropdownButton>
-        </tr>
+        </>
     )
 
 }
@@ -160,7 +150,7 @@ function TableRow(props: {
                 <Button variant={'link'} onClick={() => setHaltFetch(false)}>
                     {props.calculator.name}
                 </Button>
-                {isLoading && <Spinner/>}
+                {isLoading && " (loading...)"}
             </td>
             <td className={"text-end"}>{version}</td>
             <td className={"text-end"}>{props.calculator.published ? '✓' : ''}</td>
