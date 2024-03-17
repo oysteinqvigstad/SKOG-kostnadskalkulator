@@ -366,7 +366,7 @@ export class Editor {
             if (context.type === "nodetranslated") {
                 const node = this.context.editor.getNode(context.data.id);
                 if(node) {
-                    [node.yTranslation, node.xTranslation] = [context.data.position.x, context.data.position.y]
+                    [node.yTranslation, node.xTranslation] = [context.data.position.y, context.data.position.x]
                 }
             }
             return context;
