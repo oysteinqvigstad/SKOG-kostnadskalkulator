@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit'
-import formReducer from "./formSlice";
 import treeReducer from "./treeSlice"
 import calculatorReducer from "./calculatorSlice";
 import {apiService} from "./apiService";
@@ -11,7 +10,6 @@ import {apiService} from "./apiService";
  */
 export const store = configureStore({
     reducer: {
-        form: formReducer,
         tree: treeReducer,
         calculator: calculatorReducer,
         [apiService.reducerPath]: apiService.reducer

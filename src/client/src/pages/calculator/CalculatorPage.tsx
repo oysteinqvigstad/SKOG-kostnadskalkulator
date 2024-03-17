@@ -7,7 +7,7 @@ import {ResultPeek} from "../../components/result/ResultPeek";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useGetCalculatorTreeQuery} from "../../state/store";
 import {initiateTree} from "../../state/treeSlice";
-import {testTree, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
+import {treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 import {useAppDispatch} from "../../state/hooks";
 import {setInputsByURLQueries} from "@skogkalk/common/dist/src/parseTree/treeState";
 
@@ -43,7 +43,7 @@ export function CalculatorPage() {
             dispatch(initiateTree({tree}))
             navigate(`/kalkulator/${name}/${version}`, {replace: true})
         }
-    }, [data, dispatch]);
+    }, [data, dispatch, location.search, name, navigate, version]);
 
 
     return (

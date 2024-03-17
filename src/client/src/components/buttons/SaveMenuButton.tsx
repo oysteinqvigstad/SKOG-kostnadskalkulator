@@ -10,7 +10,6 @@ export function SaveMenuButton() {
     const [show, setShow] = useState(false)
     const [results, setResults] = useState<SavedResult[]>([])
     const [resultName, setResultName] = useState("")
-    const fields = useAppSelector((state) => state.form.fields)
 
     useEffect(() => {
         getSavedResults()
@@ -60,7 +59,7 @@ export function SaveMenuButton() {
                             aria-label={"Navn på resultat"}
                             value={resultName}
                             onChange={handelNameChange}/>
-                        <SaveButton results={results} fields={fields} resultName={resultName} onSave={getSavedResults}/>
+                        <SaveButton results={results} resultName={resultName} onSave={getSavedResults}/>
                     </InputGroup>
                     <SavedResultsTable results={results} handleClose={handleClose} deleteSavedResult={deleteSavedResult} />
                     {results.length === 0 && <em className={"ps-2"}>Tabellen er tom</em>}
@@ -119,7 +118,7 @@ function SavedResultsTable(props: {
     )
 }
 
-function SaveButton(props: { results: SavedResult[], fields: any, resultName: string, onSave: () => void }) {
+function SaveButton(props: { results: SavedResult[], resultName: string, onSave: () => void }) {
     const queries = useAppSelector(selectURLQueries(','))
     const {name, version} = useParams()
 
