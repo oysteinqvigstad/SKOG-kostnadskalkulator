@@ -1,9 +1,8 @@
 import {ClassicPreset, ClassicPreset as Classic, NodeEditor} from "rete";
 import {Schemes} from "../types";
-import {Module, Modules} from "./modules";
 import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {ModuleManager} from "./moduleManager";
+import {Module, ModuleManager} from "./moduleManager";
 
 
 export interface ModuleNodeControlData {
@@ -40,9 +39,11 @@ export class ModuleNode extends BaseNode<
                 {
                     onUpdate: (data: Partial<ModuleNodeControlData>)=>{
                         if('currentModule' in data) {
-                            this.setModuleAndRefreshPorts();
-                            this.updateNodeRendering(this.id);
-                            this.updateDataFlow();
+                            this.setModuleAndRefreshPorts().then(()=>{
+                                this.updateNodeRendering(this.id);
+                                this.updateDataFlow();
+                            });
+
                         }
                     },
                     minimized: false
@@ -60,8 +61,8 @@ export class ModuleNode extends BaseNode<
         if (this.module) {
             const editor = new NodeEditor<Schemes>();
             await this.module.apply(editor);
-
-            const { inputs, outputs } = Modules.getPorts(editor);
+            const { inputs, outputs } = ModuleManager.getPorts(editor);
+            console.log("This module has: ", inputs, outputs)
             this.syncPortsWithModule(inputs, outputs);
         } else this.syncPortsWithModule([], []);
     }
@@ -99,7 +100,11 @@ export class ModuleNode extends BaseNode<
 
     toParseNode() {
         //TODO: exporting subtree here: Challenge; subtrees
-        throw new Error("Module node is not supposed to go in ParseTree")
-        return {} as ParseNode
+        // throw new Error("Module node is not supposed to go in ParseTree")
+        return {
+            id:"",
+            value: 0,
+            type: NodeType.Module
+        }
     }
 }
