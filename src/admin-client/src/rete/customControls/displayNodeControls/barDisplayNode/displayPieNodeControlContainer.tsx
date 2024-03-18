@@ -66,10 +66,8 @@ function DisplayBarNodeContent(
                 onChange={(value)=>{
                     props.data.set({max: value});
                 }}
-                onIllegalValue={(value)=> {
-                    console.log("Illegal value", value)
-                }}
-                legalRanges={[{min: 0}]}
+                onIllegalValue={()=>{}}
+                legalRanges={[]}
             />
 
         </Container>
