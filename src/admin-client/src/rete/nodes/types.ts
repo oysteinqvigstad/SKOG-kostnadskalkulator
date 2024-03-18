@@ -9,8 +9,9 @@ import {DisplayPieNode} from "./displayPieNode";
 import {ModuleInput} from "./moduleSystem/moduleInput";
 import {ModuleOutput} from "./moduleSystem/moduleOutput";
 import {ModuleNode} from "./moduleSystem/moduleNode";
+import {DisplayBarNode} from "./displayBarNode";
 
-export type SkogNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | ModuleInput | ModuleOutput | ModuleNode;
+export type SkogNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | DisplayBarNode | ModuleInput | ModuleOutput | ModuleNode;
 
 export class Connection<
     A extends SkogNode,

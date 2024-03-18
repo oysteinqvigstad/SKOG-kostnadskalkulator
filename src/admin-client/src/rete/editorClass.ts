@@ -22,6 +22,9 @@ import {ModuleManager} from "./nodes/moduleSystem/moduleManager";
 import {GraphSerializer} from "./serialization";
 import {ModuleInputControl, ModuleNodeControl, ModuleOutputControl} from "./nodes/moduleSystem/moduleControls";
 import {canCreateConnection, getConnectionSockets, ResultSocketComponent} from "./sockets/sockets";
+import {
+    DisplayBarNodeControlContainer
+} from "./customControls/displayNodeControls/barDisplayNode/displayPieNodeControlContainer";
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
@@ -338,7 +341,8 @@ export class Editor {
             NodeType.ModuleOutput
         ])
         const displayNodes = nodeTypesToDefinition ( [
-            NodeType.Display
+            NodeType.Display,
+            NodeType.BarDisplay
         ])
 
 
@@ -390,6 +394,7 @@ export class Editor {
                     control(data) {
                         switch(data.payload.type) {
                             case NodeType.Display: return DisplayPieNodeControlContainer
+                            case NodeType.BarDisplay: return DisplayBarNodeControlContainer
                             case NodeType.NumberInput: return NumberInputControlContainer
                             case NodeType.DropdownInput: return DropdownInputControlContainer
                             case NodeType.Output: return OutputNodeControlContainer

@@ -16,11 +16,15 @@ export interface DisplayNode extends ParseNode {
 }
 
 export function isDisplayNode (node: ParseNode) : node is DisplayNode {
-    return node.type === NodeType.Display
+    return node.type === NodeType.Display || node.type === NodeType.BarDisplay
 }
 
 
 export interface DisplayPieNode extends DisplayNode {
     unit: string
     pieType: "pie" | "donut"
+}
+
+export interface DisplayBarNode extends DisplayNode {
+    unit: string
 }

@@ -15,6 +15,7 @@ import {DropdownInputNode} from "./nodes/dropdownInputNode";
 import {DisplayPieNode} from "./nodes/displayPieNode";
 import {NaryNode} from "./nodes/naryNode";
 import {ModuleManager} from "./nodes/moduleSystem/moduleManager";
+import {DisplayBarNode} from "./nodes/displayBarNode";
 
 
 /**
