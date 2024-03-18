@@ -34,7 +34,8 @@ export class DropdownInputNode extends BaseNode<
             defaultKey: "",
             defaultValue: 0,
             pageName: "",
-            infoText: ""
+            infoText: "",
+            pageOrdering: 0,
         }
 
         this.addControl("c", new NodeControl(

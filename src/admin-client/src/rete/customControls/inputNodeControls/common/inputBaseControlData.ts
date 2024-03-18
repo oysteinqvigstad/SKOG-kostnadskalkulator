@@ -7,4 +7,5 @@ export interface InputBaseData {
     simpleInput: boolean,
     pageName: string,
     infoText: string,
+    pageOrdering: number,
 }

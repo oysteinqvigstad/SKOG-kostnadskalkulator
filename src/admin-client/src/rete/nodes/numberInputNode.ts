@@ -33,7 +33,8 @@ export class NumberInputNode extends BaseNode<
             defaultValue: 0,
             legalValues: [],
             pageName: "",
-            infoText: ""
+            infoText: "",
+            pageOrdering: 0,
         }
 
         this.addControl( "c",new NodeControl(
