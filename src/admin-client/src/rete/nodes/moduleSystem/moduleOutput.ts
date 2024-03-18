@@ -2,6 +2,7 @@ import {ClassicPreset, ClassicPreset as Classic} from "rete";
 import {DataflowNode} from "rete-engine";
 import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NumberSocket} from "../../sockets/sockets";
 
 
 export interface ModuleOutputControlData {
@@ -9,7 +10,7 @@ export interface ModuleOutputControlData {
     value: number | undefined
 }
 export class ModuleOutput extends BaseNode<
-        { value: Classic.Socket },
+        { value: NumberSocket },
         {},
         { c: NodeControl<ModuleOutputControlData> }
     >
@@ -40,7 +41,7 @@ export class ModuleOutput extends BaseNode<
             },
             this.type
         ));
-        this.addInput("value", new Classic.Input(new ClassicPreset.Socket("Number"), "Number"));
+        this.addInput("value", new Classic.Input(new NumberSocket(), "Number"));
     }
 
     data() {

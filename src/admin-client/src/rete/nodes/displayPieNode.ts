@@ -3,10 +3,11 @@ import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DisplayPieNode as ParseDisplayPieNode } from "@skogkalk/common/src/parseTree"
 import {DisplayPieNodeData} from "../customControls/displayNodeControls/pieDisplayNode/displayPieNodeControlData";
+import {ResultSocket} from "../sockets/sockets";
 
 
 export class DisplayPieNode extends BaseNode <
-    { input: ClassicPreset.Socket },
+    { input: ResultSocket},
     {},
     { c: NodeControl<DisplayPieNodeData> }
 > {
@@ -19,7 +20,7 @@ export class DisplayPieNode extends BaseNode <
 
         this.addInput("input",
             new ClassicPreset.Input(
-                new ClassicPreset.Socket("socket"),
+                new ResultSocket(),
                 "Result",
                 true))
 

@@ -3,11 +3,12 @@ import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ClassicPreset} from "rete";
 import {OutputNodeControlData} from "../customControls/outputNodeControls/outputNodeControlData";
 import {OutputNode as ParseOutputNode} from "@skogkalk/common/src/parseTree"
+import {NumberSocket, ResultSocket} from "../sockets/sockets";
 
 
 export class OutputNode extends BaseNode <
-{ result: ClassicPreset.Socket },
-{ output: ClassicPreset.Socket },
+{ result: NumberSocket },
+{ output: ResultSocket },
 {
     c: NodeControl<OutputNodeControlData>
 }
@@ -21,8 +22,8 @@ export class OutputNode extends BaseNode <
     ) {
         super(NodeType.Output, 240, 200, "Output", id);
 
-        this.addInput( "result", new ClassicPreset.Input(  new ClassicPreset.Socket("socket"),  "Result",  false))
-        this.addOutput(  "output", new ClassicPreset.Output( new ClassicPreset.Socket("socket"), "Out", true));
+        this.addInput( "result", new ClassicPreset.Input(  new NumberSocket(),  "Result",  false))
+        this.addOutput(  "output", new ClassicPreset.Output( new ResultSocket(), "Out", true));
 
         const initialState: OutputNodeControlData = {
             name: "",

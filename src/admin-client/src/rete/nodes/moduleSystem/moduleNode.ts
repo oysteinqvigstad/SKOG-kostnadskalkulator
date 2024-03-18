@@ -3,6 +3,7 @@ import {Schemes} from "../types";
 import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {Module, ModuleManager} from "./moduleManager";
+import {NumberSocket} from "../../sockets/sockets";
 
 
 export interface ModuleNodeControlData {
@@ -12,8 +13,8 @@ export interface ModuleNodeControlData {
 
 
 export class ModuleNode extends BaseNode<
-        Record<string, Classic.Socket>,
-        Record<string, Classic.Socket>,
+        Record<string, NumberSocket>,
+        Record<string, NumberSocket>,
         { c: NodeControl<ModuleNodeControlData> }
     > {
     module: null | Module<Schemes> = null;
@@ -92,10 +93,10 @@ export class ModuleNode extends BaseNode<
         );
 
         inputs.forEach((key) => {
-            this.addInput(key, new Classic.Input(new ClassicPreset.Socket("Number"), key));
+            this.addInput(key, new Classic.Input(new NumberSocket(), key));
         });
         outputs.forEach((key) => {
-            this.addOutput(key, new Classic.Output(new ClassicPreset.Socket("Number"), key));
+            this.addOutput(key, new Classic.Output(new NumberSocket(), key));
         });
         this.setHeightFromPorts();
     }

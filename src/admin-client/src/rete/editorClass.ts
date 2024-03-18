@@ -21,6 +21,7 @@ import {NumberControlComponent} from "./customControls/numberControl/numberContr
 import {ModuleManager} from "./nodes/moduleSystem/moduleManager";
 import {GraphSerializer} from "./serialization";
 import {ModuleInputControl, ModuleNodeControl, ModuleOutputControl} from "./nodes/moduleSystem/moduleControls";
+import {canCreateConnection, getConnectionSockets, ResultSocketComponent} from "./sockets/sockets";
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
@@ -366,6 +367,9 @@ export class Editor {
         this.context.editor.use(this.context.engine);
 
         this.context.editor.addPipe((context) => {
+            if(context.type === "connectioncreate" && !canCreateConnection(this.context.editor, context.data)) {
+                return;
+            }
             if (["connectioncreated", "connectionremoved", "noderemoved"].includes(context.type)) {
                 this.updateDataFlow();
                 this.signalOnChange();
@@ -398,6 +402,13 @@ export class Editor {
                     node() {
                         // Custom node goes here
                         return Presets.classic.Node;
+                    },
+                    socket(context) {
+                        switch(context.payload.name) {
+                            case "result": return ResultSocketComponent;
+                            case "socket": return Presets.classic.Socket;
+                            default: return Presets.classic.Socket;
+                        }
                     }
                 }
             })

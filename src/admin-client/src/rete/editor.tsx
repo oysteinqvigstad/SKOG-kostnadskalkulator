@@ -36,11 +36,11 @@ export async function createEditor(container: HTMLElement) {
             editor.clearNodes();
         },
         import: (data: any) => {
-            editor.importNodes(data);
+            editor.importWithModules(data);
         },
         export: () => {
             return {
-                graph: editor.exportNodes(),
+                graph: editor.exportWithModules(),
                 parseNodes: editor.exportAsParseTree() ?? []
             }
         },

@@ -1,6 +1,7 @@
 import {ClassicPreset} from "rete";
 import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NumberSocket} from "../../sockets/sockets";
 
 
 export interface ModuleInputControlData {
@@ -10,7 +11,7 @@ export interface ModuleInputControlData {
 
 export class ModuleInput extends BaseNode<
         {},
-        { value: ClassicPreset.Socket },
+        { value: NumberSocket },
         { c: NodeControl<ModuleInputControlData> }
     > {
     width = 180;
@@ -42,7 +43,7 @@ export class ModuleInput extends BaseNode<
             this.type
         ));
 
-        this.addOutput("value", new ClassicPreset.Output( new ClassicPreset.Socket("Number"), "Number") );
+        this.addOutput("value", new ClassicPreset.Output( new NumberSocket(), "Number") );
     }
 
     data() {
