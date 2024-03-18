@@ -8,7 +8,7 @@ export function StartPage() {
                 <Card.Body>
                     <Row className={"mx-auto"} style={{maxWidth: '800px'}}>
                         <Col xs={12} md={8}>
-                            <h1 style={{fontWeight: 600}}>Beregn <span style={{color: '#ffa100'}}>produktivitet</span> og <span style={{color: '#ffa100'}}>kostnader</span> for skoghogst.
+                            <h1 style={{fontWeight: 600}}>Beregn <span style={{color: '#ffa100'}}>produktivitet</span> og <span style={{color: '#ffa100'}}>kostnader</span> for hogst.
                             </h1>
                             <Row className={"mt-4 mb-4"}>
                                 <Col className={"fst-italic"}>
