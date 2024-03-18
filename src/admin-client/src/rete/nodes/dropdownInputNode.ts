@@ -79,7 +79,7 @@ export class DropdownInputNode extends BaseNode<
             pageName: this.controls.c.get('pageName') || "",
             dropdownAlternatives: this.controls.c.get('dropdownOptions')?.map(({value, label})=>{return {value, label}}) || [],
             infoText: this.controls.c.get('infoText') || "",
-            ordering: 0, // TODO: Add to controller,
+            ordering: this.controls.c.get('pageOrdering') || 0,
             simpleInput: this.controls.c.get('simpleInput') || false,
         }
     }

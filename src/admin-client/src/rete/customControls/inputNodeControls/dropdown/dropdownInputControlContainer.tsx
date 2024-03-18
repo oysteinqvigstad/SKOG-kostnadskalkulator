@@ -79,7 +79,6 @@ export function DropdownInputControlContent(
                                 <OptionSwitch on={data.simpleInput} onChange={
                                     (on: boolean) => {
                                         props.data.set({simpleInput: on});
-
                                     }
                                 }/>
                             </Col>
@@ -164,22 +163,35 @@ export function DropdownInputControlContent(
                                 }}>Up</Button>
                             </InputGroup>
                         })}
-                        <DropdownSelection
-                            inputHint={"Select page"}
-                            selection={pages.find(({page}) => page.title === data.pageName)?.page.ordering}
-                            dropdownAlternatives={pages.map(({page}) => {
-                                return {label: page.title, value: page.ordering}
-                            })}
-                            onChange={(selected: number) => {
-                                const pageName = pages.find(({page}) => page.ordering === selected)?.page.title;
-                                props.data.set({pageName: pageName});
-                                props.data.update();
-                                if (pageName) {
-                                    dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: pageName}))
-                                }
-                            }}
-                        />
-
+                        <Row>
+                            <Col>
+                                <DropdownSelection
+                                    inputHint={"Select page"}
+                                    selection={pages.find(({page}) => page.title === data.pageName)?.page.ordering}
+                                    dropdownAlternatives={pages.map(({page}) => {
+                                        return {label: page.title, value: page.ordering}
+                                    })}
+                                    onChange={(selected: number) => {
+                                        const pageName = pages.find(({page}) => page.ordering === selected)?.page.title;
+                                        props.data.set({pageName: pageName});
+                                        props.data.update();
+                                        if (pageName) {
+                                            dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: pageName}))
+                                        }
+                                    }}
+                                />
+                            </Col>
+                            <Col xs={4}>
+                                <TextInputField
+                                    inputHint={"Order in page"}
+                                    value={props.data.get("pageOrdering").toString() || undefined}
+                                    onChange={() => {
+                                    }}
+                                />
+                            </Col>
+                            { /*TODO remove; for testing:*/}
+                            <Button onClick={() => props.data.set({pageOrdering: props.data.get("pageOrdering")+1})}>Increase</Button>
+                        </Row>
                     </>
                 }
             />
