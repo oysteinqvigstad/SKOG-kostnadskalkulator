@@ -27,4 +27,5 @@ export interface DisplayPieNode extends DisplayNode {
 
 export interface DisplayBarNode extends DisplayNode {
     unit: string
+    max: number
 }

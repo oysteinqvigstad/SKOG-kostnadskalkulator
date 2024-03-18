@@ -1,10 +1,9 @@
-import {FcSalesPerformance} from "react-icons/fc";
+import {FcBullish} from "react-icons/fc";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
 import {ResultCard} from "./resultCard";
 import {DisplayBarNode, getNodeByID, TreeState} from "../parseTree";
-import {ResultRowBoxes} from "./ResultRowBoxes";
 import {OutputNode as ParseOutputNode} from "../parseTree";
 
 
@@ -18,94 +17,113 @@ export function ResultBar(props: {
         return { color: node.color, ordering: value.ordering, label: value.outputLabel, value: node.value, unit: props.displayData.unit }
     }).sort((a, b)=>(a.ordering ?? 0) - (b.ordering??0));
 
-    const labels = nodes.map(node=>node.label);
-    const values = nodes.map(node=>node.value);
-    const colors = nodes.map(node=>node.color);
+    const fallbackMax = Math.max(...nodes.map((node)=>node.value));
+    const children = nodes.map((node) => {
+        return (
+            <DrawBar
+                title={node.label}
+                value={node.value}
+                unit={props.displayData.unit}
+                max={props.displayData.max > 0 ? props.displayData.max : fallbackMax}
+                color={node.color}
+            />
+        )
 
-    const totalCost = Math.round(
-        values.reduce((acc, cost) => acc + cost, 0)
+    })
+
+
+    return (
+        <ResultCard
+            icon={<FcBullish />}
+            title={props.displayData.name}
+        >
+            {children}
+        </ResultCard>
+
     )
+}
 
+function DrawBar(props: {
+    title: string,
+    value: number,
+    unit: string,
+    max: number,
+    color: string,
+}) {
     const options: ApexOptions = {
-        series: values,
         chart: {
-            type: "bar",
-        },
-        labels: labels,
-        colors: colors,
-        title: {
-            text: totalCost.toString(),
-            align: 'center',
-            floating: true,
-            offsetY: 85,
-            style: {
-                fontSize: '40px'
-            }
-        },
-        subtitle: {
-            text: props.displayData.unit,
-            align: 'center',
-            offsetX: 2,
-            offsetY: 130,
-            style: {
-                fontSize: '20px'
-            }
-        },
-        dataLabels: {
-            enabled: false,
-        },
-        legend: {
-            show: false,
-            position: 'bottom',
-            formatter(legendName: string, opts?: any): string {
-                return `${legendName}: ${Math.round(values[opts.seriesIndex] ?? 0)}`
-            }
-        },
-        plotOptions: {
-
-            pie: {
-                offsetY: -20,
-                expandOnClick: false,
+            type: 'bar',
+            sparkline: {
+                enabled: true
             },
         },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                barHeight: '30%',
+                colors: {
+                    backgroundBarColors: ['#f4f4f4'],
+                },
+            },
+        },
+        stroke: {
+            width: 0,
+        },
+        series: [{
+            name: props.title,
+            data: [props.value]
+        }],
+        title: {
+            floating: true,
+            offsetX: -10,
+            offsetY: 5,
+            style: {
+                fontSize: '16px',
+                fontWeight: '500'
+            },
+            text: props.title
+        },
+        subtitle: {
+            floating: true,
+            align: 'right',
+            offsetY: 5,
+            offsetX: 8,
+            text: `${Math.round(props.value)} ${props.unit}`,
+            style: {
+                fontSize: '16px',
+            }
+        },
+        tooltip: {
+            enabled: false
+        },
+        yaxis: {
+            max: props.max
+        },
+        fill: {
+            opacity: 1.0,
+            colors: [props.color],
+        },
         states: {
+            hover: {
+                filter: {
+                    type: 'none'
+                }
+            },
             active: {
                 allowMultipleDataPointsSelection: false,
                 filter: {
                     type: 'none'
                 }
             }
-        },
-        tooltip: {
-            y: {
-                formatter: function (val: number) {
-                    return `${Math.round(val)} ${props.displayData.unit}`
-                }
-            }
         }
-    };
+    }
+    return (
 
-    const children = (
         <ReactApexChart
             options={options}
             series={options.series}
-            type="donut"
-            height={250}
-            style={{paddingBottom: '20px'}}
+            type="bar"
+            height={90}
         />
-    )
-
-    return (
-        <ResultCard
-            icon={<FcSalesPerformance />}
-            title={props.displayData.name}
-        >
-            {children}
-            <ResultRowBoxes
-                result={nodes.map(node=>{return {color: node.color, label: node.label, value: node.value}})}
-                unit={props.displayData.unit}
-            />
-        </ResultCard>
-
     )
 }

@@ -9,6 +9,7 @@ import Container from "react-bootstrap/Container";
 import {TextInputField} from "../../../../components/input/textInputField";
 import { DisplayBarNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
 import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
+import {NumberInputField} from "../../../../components/input/numberInputField";
 
 export function DisplayBarNodeControlContainer(
     props: { data: NodeControl<DisplayBarNodeData> }
@@ -41,6 +42,7 @@ function DisplayBarNodeContent(
                     inputOrdering: [],
                     name: "",
                     unit: "",
+                    max: 0,
                     inputs:[],
 
                 }}
@@ -58,6 +60,18 @@ function DisplayBarNodeContent(
                 onChange={(value)=>{
                     props.data.set({unit: value});
                 }}/>
+            <NumberInputField
+                inputHint={"Max"}
+                value={props.data.get('max')}
+                onChange={(value)=>{
+                    props.data.set({max: value});
+                }}
+                onIllegalValue={(value)=> {
+                    console.log("Illegal value", value)
+                }}
+                legalRanges={[{min: 0}]}
+            />
+
         </Container>
 
     </>

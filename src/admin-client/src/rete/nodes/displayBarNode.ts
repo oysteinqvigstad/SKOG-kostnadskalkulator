@@ -28,6 +28,7 @@ export class DisplayBarNode extends BaseNode <
             nodeID: this.id,
             name: "",
             unit: "",
+            max: 100,
             inputs: [],
         }
         this.addControl("c",
@@ -61,6 +62,7 @@ export class DisplayBarNode extends BaseNode <
         return {
             id: this.id,
             unit: this.controls.c.get("unit"),
+            max: this.controls.c.get("max"),
             type: NodeType.BarDisplay,
             value: 0,
             inputs: [],
