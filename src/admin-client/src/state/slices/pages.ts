@@ -62,7 +62,7 @@ export const pageSlice = createSlice({
         },
         moveInput: (state, action: PayloadAction<{ oldIndex: number, newIndex: number }>) => {
             const {oldIndex, newIndex} = action.payload;
-            state.pages.map(({page})=> {
+            state.pages.forEach(({page})=> {
                 if(newIndex < 0 || newIndex >= page.inputIds.length) return;
                     [page.inputIds[newIndex], page.inputIds[oldIndex]] =
                     [page.inputIds[oldIndex], page.inputIds[newIndex]];
