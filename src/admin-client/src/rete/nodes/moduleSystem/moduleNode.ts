@@ -1,9 +1,9 @@
 import {ClassicPreset, ClassicPreset as Classic, NodeEditor} from "rete";
 import {Schemes} from "../types";
-import {Module, Modules} from "./modules";
 import {BaseNode, NodeControl} from "../baseNode";
-import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {ModuleManager} from "./moduleManager";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {Module, ModuleManager} from "./moduleManager";
+import {NumberSocket} from "../../sockets/sockets";
 
 
 export interface ModuleNodeControlData {
@@ -13,11 +13,12 @@ export interface ModuleNodeControlData {
 
 
 export class ModuleNode extends BaseNode<
-        Record<string, Classic.Socket>,
-        Record<string, Classic.Socket>,
+        Record<string, NumberSocket>,
+        Record<string, NumberSocket>,
         { c: NodeControl<ModuleNodeControlData> }
     > {
     module: null | Module<Schemes> = null;
+    editor: NodeEditor<Schemes> | undefined;
 
     constructor(
         private moduleManager: ModuleManager,
@@ -40,9 +41,10 @@ export class ModuleNode extends BaseNode<
                 {
                     onUpdate: (data: Partial<ModuleNodeControlData>)=>{
                         if('currentModule' in data) {
-                            this.setModuleAndRefreshPorts();
-                            this.updateNodeRendering(this.id);
-                            this.updateDataFlow();
+                            this.setModuleAndRefreshPorts().then(()=>{
+                                this.updateNodeRendering(this.id);
+                                this.updateDataFlow();
+                            });
                         }
                     },
                     minimized: false
@@ -53,22 +55,36 @@ export class ModuleNode extends BaseNode<
         this.setModuleAndRefreshPorts();
     }
 
-    async setModuleAndRefreshPorts() {
+    public getNodes() {
+        if(this.editor) {
+            return this.editor.getNodes();
+        }
+        return []
+    }
+
+    public getConnections() {
+        if(this.editor) {
+            return this.editor.getConnections();
+        }
+        return []
+    }
+
+    private async setModuleAndRefreshPorts() {
         this.module = this.moduleManager.getModule(this.controls.c.get('currentModule'));
 
         await this.removeConnections(this.id);
         if (this.module) {
             const editor = new NodeEditor<Schemes>();
             await this.module.apply(editor);
-
-            const { inputs, outputs } = Modules.getPorts(editor);
+            this.editor = editor;
+            const { inputs, outputs } = ModuleManager.getPorts(editor);
             this.syncPortsWithModule(inputs, outputs);
         } else this.syncPortsWithModule([], []);
     }
 
 
 
-    syncPortsWithModule(inputs: string[], outputs: string[]) {
+    private syncPortsWithModule(inputs: string[], outputs: string[]) {
         Object.keys(this.inputs).forEach((key: keyof typeof this.inputs) =>
             this.removeInput(key)
         );
@@ -77,15 +93,15 @@ export class ModuleNode extends BaseNode<
         );
 
         inputs.forEach((key) => {
-            this.addInput(key, new Classic.Input(new ClassicPreset.Socket("Number"), key));
+            this.addInput(key, new Classic.Input(new NumberSocket(), key));
         });
         outputs.forEach((key) => {
-            this.addOutput(key, new Classic.Output(new ClassicPreset.Socket("Number"), key));
+            this.addOutput(key, new Classic.Output(new NumberSocket(), key));
         });
         this.setHeightFromPorts();
     }
 
-    setHeightFromPorts() {
+    private setHeightFromPorts() {
         this.height =
             110 +
             25 * (Object.keys(this.inputs).length + Object.keys(this.outputs).length);
@@ -99,7 +115,11 @@ export class ModuleNode extends BaseNode<
 
     toParseNode() {
         //TODO: exporting subtree here: Challenge; subtrees
-        throw new Error("Module node is not supposed to go in ParseTree")
-        return {} as ParseNode
+        // throw new Error("Module node is not supposed to go in ParseTree")
+        return {
+            id:"",
+            value: 0,
+            type: NodeType.Module
+        }
     }
 }

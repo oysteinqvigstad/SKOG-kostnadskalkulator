@@ -1,7 +1,8 @@
 import {ClassicPreset, ClassicPreset as Classic} from "rete";
-import { DataflowNode } from "rete-engine";
+import {DataflowNode} from "rete-engine";
 import {BaseNode, NodeControl} from "../baseNode";
-import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NumberSocket} from "../../sockets/sockets";
 
 
 export interface ModuleOutputControlData {
@@ -9,7 +10,7 @@ export interface ModuleOutputControlData {
     value: number | undefined
 }
 export class ModuleOutput extends BaseNode<
-        { value: Classic.Socket },
+        { value: NumberSocket },
         {},
         { c: NodeControl<ModuleOutputControlData> }
     >
@@ -33,14 +34,14 @@ export class ModuleOutput extends BaseNode<
         this.addControl("c", new NodeControl(
             initialState,
             {
-                onUpdate: (data: Partial<ModuleOutputControlData>) => {
-
+                onUpdate: () => {
+                    this.updateNodeRendering(this.id)
                 },
                 minimized: false,
             },
             this.type
         ));
-        this.addInput("value", new Classic.Input(new ClassicPreset.Socket("Number"), "Number"));
+        this.addInput("value", new Classic.Input(new NumberSocket(), "Number"));
     }
 
     data() {
@@ -48,8 +49,12 @@ export class ModuleOutput extends BaseNode<
     }
 
     toParseNode() {
-        throw new Error("This node is not meant to go in parseNode tree structure")
-        return {} as ParseNode;
+        // throw new Error("This node is not meant to go in parseNode tree structure")
+        return {
+            id:"",
+            value: 0,
+            type: NodeType.Module
+        }
     }
 
 }

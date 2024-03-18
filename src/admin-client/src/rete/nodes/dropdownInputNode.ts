@@ -3,6 +3,7 @@ import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DropdownInput} from "@skogkalk/common/src/parseTree"
 import {DropdownInputControlData} from "../customControls/inputNodeControls/dropdown/dropdownInputControlData";
+import {NumberSocket} from "../sockets/sockets";
 
 
 
@@ -11,7 +12,7 @@ import {DropdownInputControlData} from "../customControls/inputNodeControls/drop
  */
 export class DropdownInputNode extends BaseNode<
     {},
-    { value: ClassicPreset.Socket },
+    { value: NumberSocket },
     {
         c: NodeControl<DropdownInputControlData>
     }
@@ -57,7 +58,7 @@ export class DropdownInputNode extends BaseNode<
             this.type
         ));
 
-        this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Number"));
+        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Number"));
         this.updateStore();
     }
 

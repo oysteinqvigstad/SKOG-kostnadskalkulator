@@ -23,24 +23,24 @@ export async function createEditor(container: HTMLElement) {
             if(localStorage) {
                 const data = localStorage.getItem('graph');
                 if(data) {
-                    await editor.importNodes(JSON.parse(data));
+                    editor.importWithModules(JSON.parse(data));
                 }
             }
         },
         save: () => {
             if(localStorage) {
-                localStorage.setItem('graph', JSON.stringify(editor.exportNodes()));
+                localStorage.setItem('graph', JSON.stringify(editor.exportWithModules()));
             }
         },
         clear: () =>  {
             editor.clearNodes();
         },
         import: (data: any) => {
-            editor.importNodes(data);
+            editor.importWithModules(data);
         },
         export: () => {
             return {
-                graph: editor.exportNodes(),
+                graph: editor.exportWithModules(),
                 parseNodes: editor.exportAsParseTree() ?? []
             }
         },
@@ -63,7 +63,8 @@ export async function createEditor(container: HTMLElement) {
         },
         getCurrentTree: ()=> {
             return editor.exportAsParseTree();
-        }
+        },
+        editor: editor
     } as ReteFunctions;
 }
 
@@ -82,5 +83,6 @@ export interface ReteFunctions {
         resetView: () => void,
         focusSelectedNode: () => void
     },
-    getCurrentTree: () => ParseNode[] | undefined
+    getCurrentTree: () => ParseNode[] | undefined,
+    editor: Editor
 }
