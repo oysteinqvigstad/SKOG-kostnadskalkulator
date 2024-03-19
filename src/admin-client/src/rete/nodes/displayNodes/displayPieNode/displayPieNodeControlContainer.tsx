@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
-import {NodeControl} from "../../baseNode";
+import {NodeControl} from "../../parseableBaseNode";
 import {Provider} from "react-redux";
 import {isReferenceNode} from "@skogkalk/common/dist/src/parseTree/nodes/referenceNode";
 import {isOutputNode} from "@skogkalk/common/dist/src/parseTree/nodes/outputNode";

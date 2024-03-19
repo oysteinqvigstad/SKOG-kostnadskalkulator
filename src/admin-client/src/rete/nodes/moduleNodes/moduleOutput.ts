@@ -1,6 +1,6 @@
-import {ClassicPreset, ClassicPreset as Classic} from "rete";
+import {ClassicPreset as Classic} from "rete";
 import {DataflowNode} from "rete-engine";
-import {BaseNode, NodeControl} from "../baseNode";
+import {BaseNode, NodeControl, ParseableBaseNode} from "../parseableBaseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {NumberSocket} from "../../sockets";
 import {ModuleOutputControl} from "./moduleControls";
@@ -49,14 +49,4 @@ export class ModuleOutput extends BaseNode<
     data() {
         return {};
     }
-
-    toParseNode() {
-        // throw new Error("This node is not meant to go in parseNode tree structure")
-        return {
-            id:"",
-            value: 0,
-            type: NodeType.Module
-        }
-    }
-
 }

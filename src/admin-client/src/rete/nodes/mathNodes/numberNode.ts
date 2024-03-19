@@ -1,4 +1,4 @@
-import {NodeControl, BaseNode} from "../baseNode";
+import {NodeControl, ParseableBaseNode} from "../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberControlData} from "./numberControl/numberControlData";
@@ -12,7 +12,7 @@ import {NumberControlComponent} from "./numberControl/numberControlComponent";
 /**
  * Node providing a simple number value that can be manually set. Represents a constant.
  */
-export class NumberNode extends BaseNode<
+export class NumberNode extends ParseableBaseNode<
     {},
     { value: NumberSocket },
     { c: NodeControl<NumberControlData> }

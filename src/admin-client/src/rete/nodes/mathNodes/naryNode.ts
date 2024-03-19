@@ -1,4 +1,4 @@
-import {BaseNode, NodeControl} from "../baseNode";
+import {ParseableBaseNode, NodeControl} from "../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {getNaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberControlData} from "./numberControl/numberControlData";
@@ -10,7 +10,7 @@ import {NumberControlComponent} from "./numberControl/numberControlComponent";
  * Node for use with math operations that can take n inputs and reduce them to
  * one single output, such as SUM and PROD.
  */
-export class NaryNode extends BaseNode<
+export class NaryNode extends ParseableBaseNode<
     { input: NumberSocket },
     { value: NumberSocket },
     { c: NodeControl<NumberControlData> }

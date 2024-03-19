@@ -1,4 +1,4 @@
-import {BaseNode, NodeControl} from "../../baseNode";
+import {ParseableBaseNode, NodeControl} from "../../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DisplayPieNode as ParseDisplayPieNode } from "@skogkalk/common/dist/src/parseTree"
@@ -9,7 +9,7 @@ import {
 } from "./displayPieNodeControlContainer";
 
 
-export class DisplayPieNode extends BaseNode <
+export class DisplayPieNode extends ParseableBaseNode <
     { input: ResultSocket},
     {},
     { c: NodeControl<DisplayPieNodeData> }

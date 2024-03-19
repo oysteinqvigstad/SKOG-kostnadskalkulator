@@ -1,4 +1,4 @@
-import {BaseNode, NodeControl} from "../../baseNode";
+import {ParseableBaseNode, NodeControl} from "../../parseableBaseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ClassicPreset} from "rete";
 import {OutputNodeControlData} from "./outputNodeControlData";
@@ -7,7 +7,7 @@ import {NumberSocket, ResultSocket} from "../../../sockets";
 import {OutputNodeControlContainer} from "./outputNodeControlContainer";
 
 
-export class OutputNode extends BaseNode <
+export class OutputNode extends ParseableBaseNode <
 { result: NumberSocket },
 { output: ResultSocket },
 {

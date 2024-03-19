@@ -1,4 +1,4 @@
-import {BaseNode, NodeControl} from "../../baseNode";
+import {ParseableBaseNode, NodeControl} from "../../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {NumberInputData} from "./numberInputControlData";
@@ -11,7 +11,7 @@ import {NumberInputControlContainer} from "./numberInputControlContainer";
 /**
  * Node whose value can be set by the user.
  */
-export class NumberInputNode extends BaseNode<
+export class NumberInputNode extends ParseableBaseNode<
     {},
     { value: NumberSocket },
     {

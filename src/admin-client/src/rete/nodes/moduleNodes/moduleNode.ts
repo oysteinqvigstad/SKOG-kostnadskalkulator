@@ -1,6 +1,6 @@
 import {ClassicPreset as Classic, NodeEditor} from "rete";
 import {Schemes} from "../types";
-import {BaseNode, NodeControl} from "../baseNode";
+import {ParseableBaseNode, NodeControl, BaseNode} from "../parseableBaseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {Module, ModuleManager} from "../../moduleManager";
 import {NumberSocket} from "../../sockets";
@@ -115,13 +115,4 @@ export class ModuleNode extends BaseNode<
         return data || {};
     }
 
-    toParseNode() {
-        //TODO: exporting subtree here: Challenge; subtrees
-        // throw new Error("Module node is not supposed to go in ParseTree")
-        return {
-            id:"",
-            value: 0,
-            type: NodeType.Module
-        }
-    }
 }

@@ -11,11 +11,13 @@ import {ModuleOutput} from "./moduleNodes/moduleOutput";
 import {ModuleNode} from "./moduleNodes/moduleNode";
 import {DisplayBarNode} from "./displayNodes/displayBarNode/displayBarNode";
 
-export type SkogNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | DisplayBarNode | ModuleInput | ModuleOutput | ModuleNode;
+export type ReteNode = ParseableNode | ModuleInput | ModuleOutput | ModuleNode;
+
+export type ParseableNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | DisplayBarNode;
 
 export class Connection<
-    A extends SkogNode,
-    B extends SkogNode
+    A extends ReteNode,
+    B extends ReteNode
 > extends ClassicPreset.Connection<A, B> {}
 
 export type ConnProps = // Defines which nodes will signal which nodes
@@ -28,5 +30,5 @@ export type ConnProps = // Defines which nodes will signal which nodes
     | Connection<BinaryNode, OutputNode>
     | Connection<NaryNode, OutputNode>
 
-export type Schemes = GetSchemes<SkogNode, ConnProps>;
+export type Schemes = GetSchemes<ReteNode, ConnProps>;
 

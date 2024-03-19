@@ -1,5 +1,5 @@
 import {ClassicPreset} from "rete";
-import {BaseNode, NodeControl} from "../baseNode";
+import {BaseNode, NodeControl} from "../parseableBaseNode";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberSocket} from "../../sockets";
 import {ModuleInputControl} from "./moduleControls";
@@ -52,14 +52,5 @@ export class ModuleInput extends BaseNode<
         return {
             value: this.value
         };
-    }
-
-    toParseNode(): ParseNode {
-        // throw new Error("This node is not meant to go in parseTree structure");
-        return {
-            id:"",
-            value: 0,
-            type: NodeType.Module
-        }
     }
 }

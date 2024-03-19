@@ -1,5 +1,5 @@
 import {NodeEditor} from "rete";
-import {Schemes, SkogNode} from "./nodes/types";
+import {Schemes, ReteNode} from "./nodes/types";
 import {AreaExtensions, AreaPlugin} from "rete-area-plugin";
 import {ConnectionPlugin, Presets as ConnectionPresets} from "rete-connection-plugin";
 import {Presets, ReactArea2D, ReactPlugin} from "rete-react-plugin";
@@ -294,7 +294,7 @@ export class Editor {
      * Focuses the view on the currently selected node, as indicated by a highlight
      */
     public focusViewOnSelectedNode() {
-        let node: SkogNode | undefined;
+        let node: ReteNode | undefined;
         if(this.selectedNode && (node = this.context.editor.getNode(this.selectedNode)) ) {
             AreaExtensions.zoomAt(this.context.area, [node]).catch(()=>{}).then(() => {});
         }
@@ -316,7 +316,7 @@ export class Editor {
     private createContextMenu() {
         const nodeTypesToDefinition : (nodeTypes: NodeType[])=>ItemDefinition<Schemes>[] = (types) =>{
             return types.map(node=>{
-                return [node.toString(), ()=>{return this.factory.createNode(node) as SkogNode}]
+                return [node.toString(), ()=>{return this.factory.createNode(node) as ReteNode}]
             })
         }
         const mathNodes = nodeTypesToDefinition ([
@@ -350,7 +350,7 @@ export class Editor {
                 ["Inputs", inputNodes],
                 ["Displays", displayNodes],
                 ["Module", moduleNodes],
-                ["Output", ()=>{ return this.factory.createNode(NodeType.Output) as SkogNode}]
+                ["Output", ()=>{ return this.factory.createNode(NodeType.Output) as ReteNode}]
             ])
         });
     }

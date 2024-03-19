@@ -10,7 +10,7 @@ import {OptionSwitch} from "../../../../components/input/optionSwitch";
 import Button from "react-bootstrap/Button";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
 import {HiddenOnMinimized, MinimizeButton} from "../sharedComponents";
-import {NodeControl} from "../../baseNode";
+import {NodeControl} from "../../parseableBaseNode";
 import {NumberInputData} from "./numberInputControlData";
 import {addInputToPage} from "../../../../state/slices/pages";
 

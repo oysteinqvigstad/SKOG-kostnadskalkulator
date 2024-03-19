@@ -1,9 +1,9 @@
 import {ClassicPreset, getUID, NodeEditor} from "rete";
-import {Connection, ConnProps, Schemes, SkogNode} from "./nodes/types";
+import {Connection, ConnProps, Schemes, ReteNode} from "./nodes/types";
 import {AreaPlugin} from "rete-area-plugin";
 import {NumberNode} from "./nodes/mathNodes/numberNode";
 import {BinaryNode} from "./nodes/mathNodes/binaryNode";
-import {NodeControl} from "./nodes/baseNode";
+import {NodeControl} from "./nodes/parseableBaseNode";
 import {NodeFactory} from "./nodeFactory";
 
 
@@ -84,7 +84,7 @@ export class GraphSerializer {
     public exportNodes() : any {
 
         const data: any = { nodes: [] };
-        const nodes = this.editor.getNodes() as SkogNode[];
+        const nodes = this.editor.getNodes() as ReteNode[];
         const connections = this.editor.getConnections() as Connection<NumberNode, BinaryNode>[];
 
         for (const node of nodes) {

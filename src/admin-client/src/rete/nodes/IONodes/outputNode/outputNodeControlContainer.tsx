@@ -1,6 +1,6 @@
 import {TextInputField} from "../../../../components/input/textInputField";
 import {OutputNodeControlData} from "./outputNodeControlData";
-import {NodeControl} from "../../baseNode";
+import {NodeControl} from "../../parseableBaseNode";
 import {CompactPicker} from "react-color";
 import {useState} from "react";
 import {Dropdown} from "react-bootstrap";

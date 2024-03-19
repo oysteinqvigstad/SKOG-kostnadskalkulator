@@ -7,7 +7,7 @@ import {Col, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {NumberInputField} from "../../../../components/input/numberInputField";
 import {InputGroup} from "react-bootstrap";
-import {NodeControl} from "../../baseNode";
+import {NodeControl} from "../../parseableBaseNode";
 import {DropdownInputControlData} from "./dropdownInputControlData";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
 import {OptionSwitch} from "../../../../components/input/optionSwitch";

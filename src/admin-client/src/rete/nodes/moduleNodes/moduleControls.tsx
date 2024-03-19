@@ -1,5 +1,5 @@
 import {ModuleInputControlData} from "./moduleInput";
-import {NodeControl} from "../baseNode";
+import {NodeControl} from "../parseableBaseNode";
 import {TextInputField} from "../../../components/input/textInputField";
 import {ModuleOutputControlData} from "./moduleOutput";
 import {ModuleNodeControlData} from "./moduleNode";
