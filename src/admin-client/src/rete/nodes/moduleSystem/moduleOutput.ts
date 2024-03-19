@@ -3,6 +3,7 @@ import {DataflowNode} from "rete-engine";
 import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {NumberSocket} from "../../sockets/sockets";
+import {ModuleOutputControl} from "./moduleControls";
 
 
 export interface ModuleOutputControlData {
@@ -39,7 +40,8 @@ export class ModuleOutput extends BaseNode<
                 },
                 minimized: false,
             },
-            this.type
+            this.type,
+            ModuleOutputControl
         ));
         this.addInput("value", new Classic.Input(new NumberSocket(), "Number"));
     }

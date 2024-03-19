@@ -36,7 +36,7 @@ export class GraphSerializer {
 
             for await (const { id, controls, type, xy , connections} of data.nodes) {
 
-                let node = this.factory.create(type, id);
+                let node = this.factory.createNode(type, id);
 
                 if(!node) {
                     reject("Invalid node type found in file");

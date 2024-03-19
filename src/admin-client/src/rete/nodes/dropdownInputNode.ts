@@ -4,6 +4,9 @@ import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DropdownInput} from "@skogkalk/common/src/parseTree"
 import {DropdownInputControlData} from "../customControls/inputNodeControls/dropdown/dropdownInputControlData";
 import {NumberSocket} from "../sockets/sockets";
+import {
+    DropdownInputControlContainer
+} from "../customControls/inputNodeControls/dropdown/dropdownInputControlContainer";
 
 
 
@@ -55,7 +58,8 @@ export class DropdownInputNode extends BaseNode<
                 },
                 minimized: false
             },
-            this.type
+            this.type,
+            DropdownInputControlContainer
         ));
 
         this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Number"));

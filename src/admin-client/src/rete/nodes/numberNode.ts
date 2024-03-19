@@ -3,6 +3,7 @@ import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberControlData} from "../customControls/numberControl/numberControlData";
 import {NumberSocket} from "../sockets/sockets";
+import {NumberControlComponent} from "../customControls/numberControl/numberControlComponent";
 
 
 
@@ -38,7 +39,8 @@ export class NumberNode extends BaseNode<
                     },
                     minimized: false
                 },
-                this.type
+                this.type,
+                NumberControlComponent
             )
         );
         this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Number"));

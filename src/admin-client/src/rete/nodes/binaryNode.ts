@@ -4,6 +4,7 @@ import {getBinaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree"
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree"
 import {NumberControlData} from "../customControls/numberControl/numberControlData";
 import {NumberSocket} from "../sockets/sockets";
+import {NumberControlComponent} from "../customControls/numberControl/numberControlComponent";
 
 /**
  * Node for use with any binary math operation, such as +,-, * amd pow.
@@ -31,6 +32,7 @@ export class BinaryNode extends BaseNode<
                 {value: 0, readonly: true} as NumberControlData,
                 {onUpdate: ()=>{}, minimized: false},
                 this.type,
+                NumberControlComponent
             )
         );
 

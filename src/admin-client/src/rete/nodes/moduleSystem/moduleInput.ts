@@ -2,6 +2,7 @@ import {ClassicPreset} from "rete";
 import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberSocket} from "../../sockets/sockets";
+import {ModuleInputControl} from "./moduleControls";
 
 
 export interface ModuleInputControlData {
@@ -40,7 +41,8 @@ export class ModuleInput extends BaseNode<
                 },
                 minimized: false
             },
-            this.type
+            this.type,
+            ModuleInputControl
         ));
 
         this.addOutput("value", new ClassicPreset.Output( new NumberSocket(), "Number") );

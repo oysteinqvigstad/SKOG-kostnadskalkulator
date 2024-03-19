@@ -4,6 +4,9 @@ import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DisplayPieNode as ParseDisplayPieNode } from "@skogkalk/common/src/parseTree"
 import {DisplayPieNodeData} from "../customControls/displayNodeControls/pieDisplayNode/displayPieNodeControlData";
 import {ResultSocket} from "../sockets/sockets";
+import {
+    DisplayPieNodeControlContainer
+} from "../customControls/displayNodeControls/pieDisplayNode/displayPieNodeControlContainer";
 
 
 export class DisplayPieNode extends BaseNode <
@@ -42,7 +45,8 @@ export class DisplayPieNode extends BaseNode <
                     },
                     minimized: false
                 },
-                this.type
+                this.type,
+                DisplayPieNodeControlContainer
             )
         );
     }

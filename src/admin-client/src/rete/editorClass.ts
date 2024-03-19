@@ -11,20 +11,9 @@ import {createRoot} from "react-dom/client";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {ItemDefinition} from "rete-context-menu-plugin/_types/presets/classic/types";
 import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
-import {
-    DisplayPieNodeControlContainer
-} from "./customControls/displayNodeControls/pieDisplayNode/displayPieNodeControlContainer";
-import {NumberInputControlContainer} from "./customControls/inputNodeControls/number/numberInputControlContainer";
-import {DropdownInputControlContainer} from "./customControls/inputNodeControls/dropdown/dropdownInputControlContainer";
-import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
-import {NumberControlComponent} from "./customControls/numberControl/numberControlComponent";
 import {ModuleManager} from "./moduleManager";
 import {GraphSerializer} from "./graphSerializer";
-import {ModuleInputControl, ModuleNodeControl, ModuleOutputControl} from "./nodes/moduleSystem/moduleControls";
 import {canCreateConnection, ResultSocketComponent} from "./sockets/sockets";
-import {
-    DisplayBarNodeControlContainer
-} from "./customControls/displayNodeControls/barDisplayNode/displayPieNodeControlContainer";
 import {NodeFactory} from "./nodeFactory";
 
 
@@ -327,7 +316,7 @@ export class Editor {
     private createContextMenu() {
         const nodeTypesToDefinition : (nodeTypes: NodeType[])=>ItemDefinition<Schemes>[] = (types) =>{
             return types.map(node=>{
-                return [node.toString(), ()=>{return this.factory.create(node) as SkogNode}]
+                return [node.toString(), ()=>{return this.factory.createNode(node) as SkogNode}]
             })
         }
         const mathNodes = nodeTypesToDefinition ([
@@ -361,7 +350,7 @@ export class Editor {
                 ["Inputs", inputNodes],
                 ["Displays", displayNodes],
                 ["Module", moduleNodes],
-                ["Output", ()=>{ return this.factory.create(NodeType.Output) as SkogNode}]
+                ["Output", ()=>{ return this.factory.createNode(NodeType.Output) as SkogNode}]
             ])
         });
     }
@@ -401,17 +390,7 @@ export class Editor {
             Presets.classic.setup({
                 customize: {
                     control(data) {
-                        switch(data.payload.type) {
-                            case NodeType.Display: return DisplayPieNodeControlContainer
-                            case NodeType.BarDisplay: return DisplayBarNodeControlContainer
-                            case NodeType.NumberInput: return NumberInputControlContainer
-                            case NodeType.DropdownInput: return DropdownInputControlContainer
-                            case NodeType.Output: return OutputNodeControlContainer
-                            case NodeType.Module: return ModuleNodeControl
-                            case NodeType.ModuleInput: return ModuleInputControl
-                            case NodeType.ModuleOutput: return ModuleOutputControl
-                        }
-                        return NumberControlComponent;
+                        return data.payload.controlContainer
                     },
                     node() {
                         // Custom node goes here

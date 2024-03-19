@@ -2,6 +2,7 @@ import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {DataflowNode} from "rete-engine";
 import {BaseSocket} from "../sockets/sockets";
+import React from "react";
 
 
 export class NodeControl<T extends {}> extends ClassicPreset.Control {
@@ -12,6 +13,7 @@ export class NodeControl<T extends {}> extends ClassicPreset.Control {
             minimized: boolean
         },
         public type: NodeType,
+        public readonly controlContainer: (props: {data: NodeControl<T>}) => React.JSX.Element
     ) {
         super();
     }

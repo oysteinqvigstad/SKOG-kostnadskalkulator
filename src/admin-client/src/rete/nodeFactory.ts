@@ -22,7 +22,7 @@ export class NodeFactory {
         private signalOnChange: () => void = ()=>{}
     ) {}
 
-    public create(type: NodeType, id?: string) {
+    public createNode(type: NodeType, id?: string) {
         switch(type) {
             case NodeType.ModuleOutput: return new ModuleOutput(this.updateNodeRendering, this.updateDataFlow, "", id);
             case NodeType.Module: return new ModuleNode(this.moduleManager, this.removeNodeConnections, this.updateNodeRendering, this.updateDataFlow, id);

@@ -4,6 +4,7 @@ import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {Module, ModuleManager} from "../../moduleManager";
 import {NumberSocket} from "../../sockets/sockets";
+import {ModuleNodeControl} from "./moduleControls";
 
 
 export interface ModuleNodeControlData {
@@ -49,7 +50,8 @@ export class ModuleNode extends BaseNode<
                     },
                     minimized: false
                 },
-                this.type
+                this.type,
+                ModuleNodeControl
             )
         );
         this.setModuleAndRefreshPorts();

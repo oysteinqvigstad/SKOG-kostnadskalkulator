@@ -4,6 +4,7 @@ import {ClassicPreset} from "rete";
 import {OutputNodeControlData} from "../customControls/outputNodeControls/outputNodeControlData";
 import {OutputNode as ParseOutputNode} from "@skogkalk/common/src/parseTree"
 import {NumberSocket, ResultSocket} from "../sockets/sockets";
+import {OutputNodeControlContainer} from "../customControls/outputNodeControls/outputNodeControlContainer";
 
 
 export class OutputNode extends BaseNode <
@@ -41,7 +42,8 @@ export class OutputNode extends BaseNode <
                     },
                     minimized: false
                 },
-                this.type
+                this.type,
+                OutputNodeControlContainer
             ))
     }
 
