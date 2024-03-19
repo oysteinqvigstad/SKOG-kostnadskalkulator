@@ -3,7 +3,6 @@ import React, {useEffect, useState} from "react";
 import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
-import {NodeControl} from "../../parseableBaseNode";
 import {Provider} from "react-redux";
 import {isReferenceNode} from "@skogkalk/common/dist/src/parseTree/nodes/referenceNode";
 import {isOutputNode} from "@skogkalk/common/dist/src/parseTree/nodes/outputNode";
@@ -12,6 +11,7 @@ import {ResultPie} from "@skogkalk/common/dist/src/visual/resultPie";
 import Container from "react-bootstrap/Container";
 import {TextInputField} from "../../../../components/input/textInputField";
 import { DisplayPieNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
+import {NodeControl} from "../../nodeControl";
 
 export function DisplayPieNodeControlContainer(
     props: { data: NodeControl<DisplayPieNodeData> }

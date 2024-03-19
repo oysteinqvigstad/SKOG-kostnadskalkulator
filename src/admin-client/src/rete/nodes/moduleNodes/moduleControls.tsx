@@ -1,10 +1,10 @@
 import {ModuleInputControlData} from "./moduleInput";
-import {NodeControl} from "../parseableBaseNode";
 import {TextInputField} from "../../../components/input/textInputField";
 import {ModuleOutputControlData} from "./moduleOutput";
 import {ModuleNodeControlData} from "./moduleNode";
 import {FloatingLabel, FormSelect} from "react-bootstrap";
 import React from "react";
+import {NodeControl} from "../nodeControl";
 
 export function ModuleInputControl( props: { data: NodeControl<ModuleInputControlData> }) {
     return <>

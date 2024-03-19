@@ -1,4 +1,4 @@
-import {ParseableBaseNode, NodeControl} from "../../parseableBaseNode";
+import {ParseableBaseNode} from "../../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DisplayBarNode as ParseDisplayBarNode} from "@skogkalk/common/dist/src/parseTree"
@@ -7,6 +7,7 @@ import {ResultSocket} from "../../../sockets";
 import {
     DisplayBarNodeControlContainer
 } from "./displayPieNodeControlContainer";
+import {NodeControl} from "../../nodeControl";
 
 
 export class DisplayBarNode extends ParseableBaseNode <

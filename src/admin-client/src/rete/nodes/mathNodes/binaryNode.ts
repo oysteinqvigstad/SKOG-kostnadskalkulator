@@ -1,9 +1,10 @@
-import {NodeControl, ParseableBaseNode} from "../parseableBaseNode";
+import {ParseableBaseNode} from "../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {getBinaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberControlData} from "./numberControl/numberControlData";
 import {NumberSocket} from "../../sockets";
 import {NumberControlComponent} from "./numberControl/numberControlComponent";
+import {NodeControl} from "../nodeControl";
 
 /**
  * Node for use with any binary math operation, such as +,-, * amd pow.

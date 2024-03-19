@@ -1,9 +1,10 @@
 import {ClassicPreset as Classic} from "rete";
 import {DataflowNode} from "rete-engine";
-import {BaseNode, NodeControl} from "../parseableBaseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {NumberSocket} from "../../sockets";
 import {ModuleOutputControl} from "./moduleControls";
+import {BaseNode} from "../baseNode";
+import {NodeControl} from "../nodeControl";
 
 
 export interface ModuleOutputControlData {

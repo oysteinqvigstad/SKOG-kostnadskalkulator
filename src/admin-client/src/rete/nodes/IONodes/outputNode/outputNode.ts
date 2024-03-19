@@ -1,10 +1,11 @@
-import {ParseableBaseNode, NodeControl} from "../../parseableBaseNode";
+import {ParseableBaseNode} from "../../parseableBaseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ClassicPreset} from "rete";
 import {OutputNodeControlData} from "./outputNodeControlData";
 import {OutputNode as ParseOutputNode} from "@skogkalk/common/dist/src/parseTree"
 import {NumberSocket, ResultSocket} from "../../../sockets";
 import {OutputNodeControlContainer} from "./outputNodeControlContainer";
+import {NodeControl} from "../../nodeControl";
 
 
 export class OutputNode extends ParseableBaseNode <

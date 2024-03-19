@@ -3,13 +3,13 @@ import React, {useEffect, useState} from "react";
 import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
-import {NodeControl} from "../../parseableBaseNode";
 import {Provider} from "react-redux";
 import Container from "react-bootstrap/Container";
 import {TextInputField} from "../../../../components/input/textInputField";
 import { DisplayBarNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
 import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
 import {NumberInputField} from "../../../../components/input/numberInputField";
+import {NodeControl} from "../../nodeControl";
 
 export function DisplayBarNodeControlContainer(
     props: { data: NodeControl<DisplayBarNodeData> }

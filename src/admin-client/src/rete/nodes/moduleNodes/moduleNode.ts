@@ -1,10 +1,11 @@
 import {ClassicPreset as Classic, NodeEditor} from "rete";
 import {Schemes} from "../types";
-import {BaseNode, NodeControl} from "../parseableBaseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {Module, ModuleManager} from "../../moduleManager";
 import {NumberSocket} from "../../sockets";
 import {ModuleNodeControl} from "./moduleControls";
+import {BaseNode} from "../baseNode";
+import {NodeControl} from "../nodeControl";
 
 
 export interface ModuleNodeControlData {

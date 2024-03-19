@@ -7,13 +7,14 @@ import {Col, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {NumberInputField} from "../../../../components/input/numberInputField";
 import {InputGroup} from "react-bootstrap";
-import {NodeControl} from "../../parseableBaseNode";
 import {DropdownInputControlData} from "./dropdownInputControlData";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
 import {OptionSwitch} from "../../../../components/input/optionSwitch";
 import {useAppDispatch, useAppSelector} from "../../../../state/hooks";
 import {useState} from "react";
 import {addInputToPage} from "../../../../state/slices/pages";
+
+import {NodeControl} from "../../nodeControl";
 
 
 export function DropdownInputControlContainer(

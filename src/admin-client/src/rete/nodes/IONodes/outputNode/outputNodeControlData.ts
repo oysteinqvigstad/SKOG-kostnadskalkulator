@@ -1,5 +1,6 @@
 import {ClassicPreset} from "rete";
-import {NodeControl} from "../../parseableBaseNode";
+
+import {NodeControl} from "../../nodeControl";
 
 export interface OutputNodeControlData {
     name: string

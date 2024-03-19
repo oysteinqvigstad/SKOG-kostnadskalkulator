@@ -15,6 +15,7 @@ export type ReteNode = ParseableNode | ModuleInput | ModuleOutput | ModuleNode;
 
 export type ParseableNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | DisplayBarNode;
 
+export type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T];
 export class Connection<
     A extends ReteNode,
     B extends ReteNode

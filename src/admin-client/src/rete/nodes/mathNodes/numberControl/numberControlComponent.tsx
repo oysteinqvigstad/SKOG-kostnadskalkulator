@@ -1,6 +1,7 @@
 import {NumberControlData} from "./numberControlData";
 import {NumberInputField} from "../../../../components/input/numberInputField";
-import {NodeControl} from "../../parseableBaseNode";
+
+import {NodeControl} from "../../nodeControl";
 
 export function NumberControlComponent(
     props: {data: NodeControl<NumberControlData> }

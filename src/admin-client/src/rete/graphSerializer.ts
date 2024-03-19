@@ -3,8 +3,8 @@ import {Connection, ConnProps, Schemes, ReteNode} from "./nodes/types";
 import {AreaPlugin} from "rete-area-plugin";
 import {NumberNode} from "./nodes/mathNodes/numberNode";
 import {BinaryNode} from "./nodes/mathNodes/binaryNode";
-import {NodeControl} from "./nodes/parseableBaseNode";
 import {NodeFactory} from "./nodeFactory";
+import {NodeControl} from "./nodes/nodeControl";
 
 
 /**
