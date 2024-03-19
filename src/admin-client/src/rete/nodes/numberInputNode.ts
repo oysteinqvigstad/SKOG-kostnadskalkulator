@@ -4,7 +4,7 @@ import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {NumberInputData} from "../customControls/inputNodeControls/number/numberInputControlData";
 import {getLegalValueInRange, isInRange} from "../../components/input/numberInputField";
 import {NumberInputNode as ParseNumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
-import {NumberSocket} from "../sockets/sockets";
+import {NumberSocket} from "../sockets";
 import {NumberInputControlContainer} from "../customControls/inputNodeControls/number/numberInputControlContainer";
 
 

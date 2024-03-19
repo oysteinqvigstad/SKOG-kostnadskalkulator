@@ -1,7 +1,7 @@
 import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {DataflowNode} from "rete-engine";
-import {BaseSocket} from "../sockets/sockets";
+import {BaseSocket} from "../sockets/baseSocket";
 import React from "react";
 
 

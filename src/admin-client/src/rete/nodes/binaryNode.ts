@@ -3,7 +3,7 @@ import {ClassicPreset} from "rete";
 import {getBinaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree"
 import {NumberControlData} from "../customControls/numberControl/numberControlData";
-import {NumberSocket} from "../sockets/sockets";
+import {NumberSocket} from "../sockets";
 import {NumberControlComponent} from "../customControls/numberControl/numberControlComponent";
 
 /**

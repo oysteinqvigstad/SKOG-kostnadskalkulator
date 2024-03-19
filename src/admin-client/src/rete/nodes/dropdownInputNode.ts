@@ -3,7 +3,7 @@ import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {DropdownInput} from "@skogkalk/common/src/parseTree"
 import {DropdownInputControlData} from "../customControls/inputNodeControls/dropdown/dropdownInputControlData";
-import {NumberSocket} from "../sockets/sockets";
+import {NumberSocket} from "../sockets";
 import {
     DropdownInputControlContainer
 } from "../customControls/inputNodeControls/dropdown/dropdownInputControlContainer";

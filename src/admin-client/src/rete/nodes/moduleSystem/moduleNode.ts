@@ -3,7 +3,7 @@ import {Schemes} from "../types";
 import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {Module, ModuleManager} from "../../moduleManager";
-import {NumberSocket} from "../../sockets/sockets";
+import {NumberSocket} from "../../sockets";
 import {ModuleNodeControl} from "./moduleControls";
 
 

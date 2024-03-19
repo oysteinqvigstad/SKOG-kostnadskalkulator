@@ -13,8 +13,8 @@ import {ItemDefinition} from "rete-context-menu-plugin/_types/presets/classic/ty
 import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
 import {ModuleManager} from "./moduleManager";
 import {GraphSerializer} from "./graphSerializer";
-import {canCreateConnection, ResultSocketComponent} from "./sockets/sockets";
 import {NodeFactory} from "./nodeFactory";
+import {canCreateConnection} from "./sockets/validation";
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
@@ -397,11 +397,7 @@ export class Editor {
                         return Presets.classic.Node;
                     },
                     socket(context) {
-                        switch(context.payload.name) {
-                            case "result": return ResultSocketComponent;
-                            case "socket": return Presets.classic.Socket;
-                            default: return Presets.classic.Socket;
-                        }
+                        return context.payload.component;
                     }
                 }
             })
