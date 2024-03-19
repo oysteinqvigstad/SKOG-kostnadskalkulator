@@ -21,19 +21,13 @@ export class NodeControl<T extends {}> extends ClassicPreset.Control {
     }
 
     public set(data: Partial<T>) : void {
-        for (const key in this.data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                (this.data as any)[key] = data[key];
-            }
-        }
+        this.setNoUpdate(data);
         this.options?.onUpdate?.(data);
     }
 
     public setNoUpdate(data: Partial<T>) : void {
-        for (const key in this.data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                (this.data as any)[key] = data[key];
-            }
+        for (const key in data) {
+            (this.data as any)[key] = data[key];
         }
     }
 
