@@ -1,5 +1,5 @@
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {Editor} from "./editorClass";
+import {Editor} from "./editor";
 
 /**
  * Creates a new editor and returns a promise with an object containing functions to

@@ -1,4 +1,4 @@
-import {createEditor} from "./rete/editor";
+import {createEditor} from "./rete/createEditor";
 import {useRete} from "rete-react-plugin";
 import Container from 'react-bootstrap/Container';
 import {Col, Row} from "react-bootstrap";

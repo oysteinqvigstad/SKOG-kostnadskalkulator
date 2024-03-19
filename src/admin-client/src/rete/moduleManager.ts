@@ -3,7 +3,7 @@ import {Schemes} from "./nodes/types";
 import {NodeEditor} from "rete";
 import {AreaPlugin} from "rete-area-plugin";
 import {DataflowEngine} from "rete-engine";
-import {AreaExtra} from "./editorClass";
+import {AreaExtra} from "./editor";
 import {GraphSerializer} from "./graphSerializer";
 import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
 import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
