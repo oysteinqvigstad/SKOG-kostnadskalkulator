@@ -1,4 +1,4 @@
-import {Editor} from "../../rete/editorClass";
+import {Editor} from "../../rete/editor";
 import {Button} from "react-bootstrap";
 import {useState} from "react";
 
