@@ -1,12 +1,13 @@
 
-import {Schemes} from "../types";
+import {Schemes} from "./nodes/types";
 import {NodeEditor} from "rete";
 import {AreaPlugin} from "rete-area-plugin";
 import {DataflowEngine} from "rete-engine";
-import {AreaExtra} from "../../editorClass";
-import {GraphSerializer} from "../../serialization";
-import {ModuleInput} from "./moduleInput";
-import {ModuleOutput} from "./moduleOutput";
+import {AreaExtra} from "./editorClass";
+import {GraphSerializer} from "./graphSerializer";
+import {ModuleInput} from "./nodes/moduleSystem/moduleInput";
+import {ModuleOutput} from "./nodes/moduleSystem/moduleOutput";
+import {NodeFactory} from "./nodeFactory";
 
 
 /**
@@ -117,13 +118,13 @@ export class ModuleManager {
     };
 
 
-    private loadToEditor(moduleName: string, editor: NodeEditor<Schemes>) {
+    private loadToEditor(moduleName: string, editor: NodeEditor<Schemes>, factory?: NodeFactory) {
         return new Promise<void>((resolve, reject)=>{
             const data = this.moduleData[moduleName];
             if(!data) {
                 reject()
             }
-            const serializer = new GraphSerializer(editor, this)
+            const serializer = new GraphSerializer(editor, factory ?? new NodeFactory(this))
             serializer.importNodes(data).catch(()=>{reject()}).then(()=>{
                 resolve();
             });

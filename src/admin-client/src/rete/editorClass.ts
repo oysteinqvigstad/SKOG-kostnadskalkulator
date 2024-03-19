@@ -18,13 +18,14 @@ import {NumberInputControlContainer} from "./customControls/inputNodeControls/nu
 import {DropdownInputControlContainer} from "./customControls/inputNodeControls/dropdown/dropdownInputControlContainer";
 import {OutputNodeControlContainer} from "./customControls/outputNodeControls/outputNodeControlContainer";
 import {NumberControlComponent} from "./customControls/numberControl/numberControlComponent";
-import {ModuleManager} from "./nodes/moduleSystem/moduleManager";
-import {GraphSerializer} from "./serialization";
+import {ModuleManager} from "./moduleManager";
+import {GraphSerializer} from "./graphSerializer";
 import {ModuleInputControl, ModuleNodeControl, ModuleOutputControl} from "./nodes/moduleSystem/moduleControls";
-import {canCreateConnection, getConnectionSockets, ResultSocketComponent} from "./sockets/sockets";
+import {canCreateConnection, ResultSocketComponent} from "./sockets/sockets";
 import {
     DisplayBarNodeControlContainer
 } from "./customControls/displayNodeControls/barDisplayNode/displayPieNodeControlContainer";
+import {NodeFactory} from "./nodeFactory";
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
@@ -49,6 +50,7 @@ export interface EditorDataPackage {
 export class Editor {
 
     private context: EditorContext;
+    private readonly factory: NodeFactory;
     private selectedNode: string | undefined;
     private onChangeCalls: {id: string, call: (nodes?: ParseNode[])=>void}[] = []
     private loading = false;
@@ -77,6 +79,14 @@ export class Editor {
 
         this.moduleManager = new ModuleManager();
 
+        this.factory = new NodeFactory(
+            this.moduleManager,
+            (id: string)=>{ this.context.area.update('node', id)},
+            this.updateDataFlow.bind(this),
+            this.removeNodeConnections.bind(this),
+            this.signalOnChange.bind(this)
+        );
+
         this.setUpEditor();
         this.setUpDataflowEngine();
         this.setUpArea();
@@ -87,10 +97,8 @@ export class Editor {
 
         this.serializer = new GraphSerializer(
             this.context.editor,
-            this.moduleManager,
-            this.context.engine,
-            this.context.area,
-            this.signalOnChange
+            this.factory,
+            this.context.area
         )
 
         AreaExtensions.zoomAt(this.context.area, this.context.editor.getNodes()).then(() => {});
@@ -99,8 +107,9 @@ export class Editor {
     public loadMainGraph() {
         if(this.currentModule === "main") { return }
         this.currentModule = 'main';
-        this.importNodes(this.stashedMain);
-        this.resetView();
+        this.importNodes(this.stashedMain).then(()=>{
+            this.resetView();
+        });
     }
 
     public loadModule(name: string) {
@@ -318,7 +327,7 @@ export class Editor {
     private createContextMenu() {
         const nodeTypesToDefinition : (nodeTypes: NodeType[])=>ItemDefinition<Schemes>[] = (types) =>{
             return types.map(node=>{
-                return [node.toString(), ()=>{return this.serializer.createNode(node) as SkogNode}]
+                return [node.toString(), ()=>{return this.factory.create(node) as SkogNode}]
             })
         }
         const mathNodes = nodeTypesToDefinition ([
@@ -352,7 +361,7 @@ export class Editor {
                 ["Inputs", inputNodes],
                 ["Displays", displayNodes],
                 ["Module", moduleNodes],
-                ["Output", ()=>{ return this.serializer.createNode(NodeType.Output) as SkogNode}]
+                ["Output", ()=>{ return this.factory.create(NodeType.Output) as SkogNode}]
             ])
         });
     }
