@@ -5,8 +5,8 @@ import {AreaPlugin} from "rete-area-plugin";
 import {DataflowEngine} from "rete-engine";
 import {AreaExtra} from "./editorClass";
 import {GraphSerializer} from "./graphSerializer";
-import {ModuleInput} from "./nodes/moduleSystem/moduleInput";
-import {ModuleOutput} from "./nodes/moduleSystem/moduleOutput";
+import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
+import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
 import {NodeFactory} from "./nodeFactory";
 
 

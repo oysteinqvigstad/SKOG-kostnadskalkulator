@@ -1,8 +1,8 @@
 import {ClassicPreset, getUID, NodeEditor} from "rete";
 import {Connection, ConnProps, Schemes, SkogNode} from "./nodes/types";
 import {AreaPlugin} from "rete-area-plugin";
-import {NumberNode} from "./nodes/numberNode";
-import {BinaryNode} from "./nodes/binaryNode";
+import {NumberNode} from "./nodes/mathNodes/numberNode";
+import {BinaryNode} from "./nodes/mathNodes/binaryNode";
 import {NodeControl} from "./nodes/baseNode";
 import {NodeFactory} from "./nodeFactory";
 

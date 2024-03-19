@@ -1,5 +1,5 @@
 import {Drag} from "rete-react-plugin"
-import {HiddenOnMinimized, MinimizeButton} from "../common/sharedComponents";
+import {HiddenOnMinimized, MinimizeButton} from "../sharedComponents";
 import {TextInputField} from "../../../../components/input/textInputField";
 import {Provider} from "react-redux";
 import {selectPages, store} from "../../../../state/store";
@@ -7,7 +7,7 @@ import {Col, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {NumberInputField} from "../../../../components/input/numberInputField";
 import {InputGroup} from "react-bootstrap";
-import {NodeControl} from "../../../nodes/baseNode";
+import {NodeControl} from "../../baseNode";
 import {DropdownInputControlData} from "./dropdownInputControlData";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
 import {OptionSwitch} from "../../../../components/input/optionSwitch";

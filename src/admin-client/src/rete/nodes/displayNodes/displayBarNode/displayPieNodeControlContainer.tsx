@@ -1,28 +1,26 @@
-import {DisplayPieNodeData} from "./displayPieNodeControlData";
+import {DisplayBarNodeData} from "./displayPieNodeControlData";
 import React, {useEffect, useState} from "react";
 import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
-import {NodeControl} from "../../../nodes/baseNode";
+import {NodeControl} from "../../baseNode";
 import {Provider} from "react-redux";
-import {isReferenceNode} from "@skogkalk/common/dist/src/parseTree/nodes/referenceNode";
-import {isOutputNode} from "@skogkalk/common/dist/src/parseTree/nodes/outputNode";
-import {OutputNode as ParseOutputNode} from "@skogkalk/common/src/parseTree"
-import {ResultPie} from "@skogkalk/common/dist/src/visual/resultPie";
 import Container from "react-bootstrap/Container";
 import {TextInputField} from "../../../../components/input/textInputField";
-import { DisplayPieNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
+import { DisplayBarNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
+import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
+import {NumberInputField} from "../../../../components/input/numberInputField";
 
-export function DisplayPieNodeControlContainer(
-    props: { data: NodeControl<DisplayPieNodeData> }
+export function DisplayBarNodeControlContainer(
+    props: { data: NodeControl<DisplayBarNodeData> }
 ) {
     return <Provider store={store}>
-        <DisplayPieNodeContent data={props.data}/>
+        <DisplayBarNodeContent data={props.data}/>
     </Provider>
 }
 
-function DisplayPieNodeContent(
-    props: { data: NodeControl<DisplayPieNodeData>}
+function DisplayBarNodeContent(
+    props: { data: NodeControl<DisplayBarNodeData>}
 ) {
     const treeState = useAppSelector(selectTreeState)
     const nodeID = props.data.get('nodeID');
@@ -31,20 +29,20 @@ function DisplayPieNodeContent(
         if(treeState.tree) {
             setDisplayNode(getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode);
         }
-    }, [treeState.tree, nodeID, displayNode])
+    }, [treeState.tree, nodeID, displayNode, props.data])
 
 
     return <>
         <Container>
-            <ResultPie
+            <ResultBar
                 displayData={displayNode? displayNode : {
                     id:"",
                     value: 0,
-                    type: NodeType.Display,
+                    type: NodeType.BarDisplay,
                     inputOrdering: [],
                     name: "",
                     unit: "",
-                    pieType: "donut",
+                    max: 0,
                     inputs:[],
 
                 }}
@@ -62,6 +60,16 @@ function DisplayPieNodeContent(
                 onChange={(value)=>{
                     props.data.set({unit: value});
                 }}/>
+            <NumberInputField
+                inputHint={"Max"}
+                value={props.data.get('max')}
+                onChange={(value)=>{
+                    props.data.set({max: value});
+                }}
+                onIllegalValue={()=>{}}
+                legalRanges={[]}
+            />
+
         </Container>
 
     </>

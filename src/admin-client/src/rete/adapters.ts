@@ -1,9 +1,9 @@
 import {ConnProps, Schemes, SkogNode} from "./nodes/types";
 import {NodeEditor} from "rete";
 import {NodeType, ParseNode, ReferenceNode} from "@skogkalk/common/dist/src/parseTree";
-import {ModuleNode} from "./nodes/moduleSystem/moduleNode";
-import {ModuleInput} from "./nodes/moduleSystem/moduleInput";
-import {ModuleOutput} from "./nodes/moduleSystem/moduleOutput";
+import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
+import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
+import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
 import {getUID} from 'rete'
 
 

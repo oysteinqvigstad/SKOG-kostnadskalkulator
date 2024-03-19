@@ -1,16 +1,16 @@
 import {ModuleManager} from "./moduleManager";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {ModuleOutput} from "./nodes/moduleSystem/moduleOutput";
-import {ModuleNode} from "./nodes/moduleSystem/moduleNode";
-import {ModuleInput} from "./nodes/moduleSystem/moduleInput";
-import {OutputNode} from "./nodes/outputNode";
-import {NumberNode} from "./nodes/numberNode";
-import {NumberInputNode} from "./nodes/numberInputNode";
-import {DropdownInputNode} from "./nodes/dropdownInputNode";
-import {DisplayPieNode} from "./nodes/displayPieNode";
-import {DisplayBarNode} from "./nodes/displayBarNode";
-import {BinaryNode} from "./nodes/binaryNode";
-import {NaryNode} from "./nodes/naryNode";
+import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
+import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
+import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
+import {OutputNode} from "./nodes/IONodes/outputNode/outputNode";
+import {NumberNode} from "./nodes/mathNodes/numberNode";
+import {NumberInputNode} from "./nodes/IONodes/numberInputNode/numberInputNode";
+import {DropdownInputNode} from "./nodes/IONodes/dropdownInputNode/dropdownInputNode";
+import {DisplayPieNode} from "./nodes/displayNodes/displayPieNode/displayPieNode";
+import {DisplayBarNode} from "./nodes/displayNodes/displayBarNode/displayBarNode";
+import {BinaryNode} from "./nodes/mathNodes/binaryNode";
+import {NaryNode} from "./nodes/mathNodes/naryNode";
 
 
 export class NodeFactory {

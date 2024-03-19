@@ -1,9 +1,9 @@
-import {NodeControl, BaseNode} from "./baseNode";
+import {NodeControl, BaseNode} from "../baseNode";
 import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {NumberControlData} from "../customControls/numberControl/numberControlData";
-import {NumberSocket} from "../sockets";
-import {NumberControlComponent} from "../customControls/numberControl/numberControlComponent";
+import {NumberControlData} from "./numberControl/numberControlData";
+import {NumberSocket} from "../../sockets";
+import {NumberControlComponent} from "./numberControl/numberControlComponent";
 
 
 

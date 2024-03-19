@@ -1,4 +1,4 @@
-import {InputBaseData} from "../common/inputBaseControlData";
+import {InputBaseData} from "../inputBaseControlData";
 
 
 export interface NumberInputData extends InputBaseData {
