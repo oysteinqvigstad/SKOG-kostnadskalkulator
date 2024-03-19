@@ -4,6 +4,7 @@ import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {NumberInputData} from "../customControls/inputNodeControls/number/numberInputControlData";
 import {getLegalValueInRange, isInRange} from "../../components/input/numberInputField";
 import {NumberInputNode as ParseNumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
+import {NumberSocket} from "../sockets/sockets";
 
 
 /**
@@ -11,7 +12,7 @@ import {NumberInputNode as ParseNumberInputNode} from "@skogkalk/common/dist/src
  */
 export class NumberInputNode extends BaseNode<
     {},
-    { value: ClassicPreset.Socket },
+    { value: NumberSocket },
     {
         c: NodeControl<NumberInputData>
     }
@@ -68,7 +69,7 @@ export class NumberInputNode extends BaseNode<
             this.type
         ));
 
-        this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Number"));
+        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Number"));
         this.updateStore();
     }
 

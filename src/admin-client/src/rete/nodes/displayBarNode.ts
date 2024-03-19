@@ -1,22 +1,22 @@
 import {BaseNode, NodeControl} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {DisplayPieNode as ParseDisplayPieNode } from "@skogkalk/common/src/parseTree"
-import {DisplayPieNodeData} from "../customControls/displayNodeControls/pieDisplayNode/displayPieNodeControlData";
+import {DisplayBarNode as ParseDisplayBarNode } from "@skogkalk/common/src/parseTree"
+import {DisplayBarNodeData} from "../customControls/displayNodeControls/barDisplayNode/displayPieNodeControlData";
 import {ResultSocket} from "../sockets/sockets";
 
 
-export class DisplayPieNode extends BaseNode <
-    { input: ResultSocket},
+export class DisplayBarNode extends BaseNode <
+    { input: ResultSocket },
     {},
-    { c: NodeControl<DisplayPieNodeData> }
+    { c: NodeControl<DisplayBarNodeData> }
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
         private updateStore: () => void,
         id?: string,
     ) {
-        super(NodeType.Display, 600, 400, "Pie Chart", id);
+        super(NodeType.BarDisplay, 600, 400, "Bar Chart", id);
 
         this.addInput("input",
             new ClassicPreset.Input(
@@ -24,12 +24,12 @@ export class DisplayPieNode extends BaseNode <
                 "Result",
                 true))
 
-        const initialControlData: DisplayPieNodeData = {
+        const initialControlData: DisplayBarNodeData = {
             nodeID: this.id,
             name: "",
             unit: "",
+            max: 100,
             inputs: [],
-            pieType: "pie",
         }
         this.addControl("c",
             new NodeControl(
@@ -57,13 +57,13 @@ export class DisplayPieNode extends BaseNode <
         return {}
     }
 
-    toParseNode() : ParseDisplayPieNode {
+    toParseNode() : ParseDisplayBarNode {
         this.controls.c.setNoUpdate({nodeID: this.id})
         return {
             id: this.id,
-            pieType: this.controls.c.get("pieType"),
             unit: this.controls.c.get("unit"),
-            type: NodeType.Display,
+            max: this.controls.c.get("max"),
+            type: NodeType.BarDisplay,
             value: 0,
             inputs: [],
             name: this.controls.c.get("name"),

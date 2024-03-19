@@ -1,6 +1,7 @@
 import {ClassicPreset} from "rete";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {DataflowNode} from "rete-engine";
+import {BaseSocket} from "../sockets/sockets";
 
 
 export class NodeControl<T extends {}> extends ClassicPreset.Control {
@@ -20,19 +21,13 @@ export class NodeControl<T extends {}> extends ClassicPreset.Control {
     }
 
     public set(data: Partial<T>) : void {
-        for (const key in this.data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                (this.data as any)[key] = data[key];
-            }
-        }
+        this.setNoUpdate(data);
         this.options?.onUpdate?.(data);
     }
 
     public setNoUpdate(data: Partial<T>) : void {
-        for (const key in this.data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                (this.data as any)[key] = data[key];
-            }
+        for (const key in data) {
+            (this.data as any)[key] = data[key];
         }
     }
 
@@ -52,8 +47,8 @@ type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T];
  * Adds extra metadata properties to the Rete.js Node class.
  */
 export abstract class BaseNode<
-    Inputs extends Record<string, ClassicPreset.Socket>,
-    Outputs extends Record<string, ClassicPreset.Socket>,
+    Inputs extends Record<string, BaseSocket>,
+    Outputs extends Record<string, BaseSocket>,
     Controls extends Record<string, NodeControl<any>>
 > extends ClassicPreset.Node<Inputs, Outputs, Controls> implements DataflowNode {
     xTranslation: number = 0;

@@ -2,6 +2,7 @@ import {BaseNode, NodeControl} from "./baseNode";
 import {ClassicPreset} from "rete";
 import {getNaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberControlData} from "../customControls/numberControl/numberControlData";
+import {NumberSocket} from "../sockets/sockets";
 
 
 /**
@@ -9,8 +10,8 @@ import {NumberControlData} from "../customControls/numberControl/numberControlDa
  * one single output, such as SUM and PROD.
  */
 export class NaryNode extends BaseNode<
-    { input: ClassicPreset.Socket },
-    { value: ClassicPreset.Socket },
+    { input: NumberSocket },
+    { value: NumberSocket },
     { c: NodeControl<NumberControlData> }
 > {
     naryOperation: (inputs: number[]) => number;
@@ -36,8 +37,8 @@ export class NaryNode extends BaseNode<
                 )
         );
 
-        this.addInput("input", new ClassicPreset.Input(new ClassicPreset.Socket("socket"), "In", true));
-        this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Out"));
+        this.addInput("input", new ClassicPreset.Input(new NumberSocket(), "In", true));
+        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Out"));
     }
 
     data(inputs: { input?: number[] }): { value: number } {

@@ -3,13 +3,14 @@ import {ClassicPreset} from "rete";
 import {getBinaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree"
 import {NumberControlData} from "../customControls/numberControl/numberControlData";
+import {NumberSocket} from "../sockets/sockets";
 
 /**
  * Node for use with any binary math operation, such as +,-, * amd pow.
  */
 export class BinaryNode extends BaseNode<
-    { left: ClassicPreset.Socket; right: ClassicPreset.Socket },
-    { value: ClassicPreset.Socket },
+    { left: NumberSocket; right: NumberSocket },
+    { value: NumberSocket },
     { c: NodeControl<NumberControlData> }
 >
 {
@@ -33,9 +34,9 @@ export class BinaryNode extends BaseNode<
             )
         );
 
-        this.addInput("left", new ClassicPreset.Input(new ClassicPreset.Socket("socket"), "Left"));
-        this.addInput("right", new ClassicPreset.Input(new ClassicPreset.Socket("socket"), "Right"));
-        this.addOutput("value", new ClassicPreset.Output(new ClassicPreset.Socket("socket"), "Out"));
+        this.addInput("left", new ClassicPreset.Input(new NumberSocket(), "Left"));
+        this.addInput("right", new ClassicPreset.Input(new NumberSocket(), "Right"));
+        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Out"));
     }
 
     data(inputs: { left?: number[]; right?: number[] }): { value: number } {
