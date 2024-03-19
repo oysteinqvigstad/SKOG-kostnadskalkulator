@@ -1,4 +1,4 @@
-import {ConnProps, Schemes, ReteNode, ParseableNode} from "./nodes/types";
+import {ConnProps, Schemes, ReteNode, ParseableNode, isParseableNode} from "./nodes/types";
 import {NodeEditor} from "rete";
 import {NodeType, ParseNode, ReferenceNode} from "@skogkalk/common/dist/src/parseTree";
 import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
@@ -35,7 +35,7 @@ export function detectModule(name: string, nodes: ReteNode[]) {
  * @param nodes
  * @param connections
  */
-export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nodes: ReteNode[], connections: ConnProps[] } {
+export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nodes: ParseableNode[], connections: ConnProps[] } {
 
     const modules = nodes
         .filter(node=>{return node.type === NodeType.Module})
@@ -126,8 +126,10 @@ export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nod
         nodes = nodes.concat(module.nodes);
         connections = connections.concat(module.inputs).concat(module.outputs)
     })
-
-    return {nodes: nodes, connections: connections }
+    if(nodes.some(node=>{return !isParseableNode(node)})) {
+        throw new Error("Module nodes not removed from graph");
+    }
+    return {nodes: nodes as ParseableNode[], connections: connections }
 }
 
 
