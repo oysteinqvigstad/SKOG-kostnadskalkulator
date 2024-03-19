@@ -12,6 +12,8 @@ export function HomePage() {
                             <Row className={"mt-4 mb-4"}>
                                 <Col className={"fst-italic"}>
                                     <p>{"Basert på skogtype, driftsforhold og hvordan drifta er tilrettelagt, gir kalkulatoren en prognose på tidsbruk og kostnader."}</p>
+                                    <p>{"Kalkulatoren er utviklet samarbeid med NIBIO, Allskog, Glommen Mjøsen Skog og MEF-Skog. Programmeringen er utført av en gruppe bachelor-studenter ved Institutt for informasjonssikkerhet og kommunikasjonsteknologi, NTNU Gjøvik."}</p>
+                                    <p>{"Kalkulatoren er finansiert med støtte fra Skogbrukets Utviklingsfond og Skogbrukets Verdiskapingsfond."}</p>
                                 </Col>
                             </Row>
                             <CalculatorPicker />
@@ -31,7 +33,7 @@ function CalculatorPicker() {
                 <Col xs={6}>
                     <CalculatorButton
                         title={"Åpen hogst"}
-                        description={"Fjerner alle trær fra et område."}
+                        description={""}
                         onclick={() => {navigate("/kalkulator")}}
                         disabled={false}/>
                 </Col>
