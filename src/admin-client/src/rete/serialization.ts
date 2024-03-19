@@ -51,7 +51,8 @@ export class GraphSerializer {
             case NodeType.Number: return new NumberNode(0, updateNodeRender, onValueUpdate, id);
             case NodeType.NumberInput: return new NumberInputNode(updateNodeRender, onValueUpdate, updateStore, id);
             case NodeType.DropdownInput: return new DropdownInputNode(updateNodeRender, onValueUpdate, updateStore, id);
-            case NodeType.Display: return new DisplayPieNode(updateNodeRender, updateStore, id)
+            case NodeType.Display: return new DisplayPieNode(updateNodeRender, updateStore, id);
+            case NodeType.BarDisplay: return new DisplayBarNode(updateNodeRender, updateStore, id);
             case NodeType.Add: return new BinaryNode(NodeType.Add, updateNodeRender, id);
             case NodeType.Sub: return new BinaryNode(NodeType.Sub, updateNodeRender, id);
             case NodeType.Mul: return new BinaryNode(NodeType.Mul, updateNodeRender, id);
