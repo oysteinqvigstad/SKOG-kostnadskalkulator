@@ -30,9 +30,6 @@ export class ModuleManager {
 
     private moduleData: {[key in string]:any} = {}
 
-
-    constructor() {}
-
     public addModuleData(name: string, data?: { nodes: any[], connections: any[]}) : boolean {
         if(name in this.moduleData) {
             return false

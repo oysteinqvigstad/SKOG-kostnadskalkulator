@@ -1,4 +1,4 @@
-import {ClassicPreset, ClassicPreset as Classic, NodeEditor} from "rete";
+import {ClassicPreset as Classic, NodeEditor} from "rete";
 import {Schemes} from "../types";
 import {BaseNode, NodeControl} from "../baseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
