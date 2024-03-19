@@ -1,7 +1,6 @@
-import {ParseableBaseNode, NodeControl} from "../parseableBaseNode";
+import {NodeControl, ParseableBaseNode} from "../parseableBaseNode";
 import {ClassicPreset} from "rete";
-import {getBinaryOperation, NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {ParseNode} from "@skogkalk/common/dist/src/parseTree"
+import {getBinaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberControlData} from "./numberControl/numberControlData";
 import {NumberSocket} from "../../sockets";
 import {NumberControlComponent} from "./numberControl/numberControlComponent";
@@ -12,7 +11,7 @@ import {NumberControlComponent} from "./numberControl/numberControlComponent";
 export class BinaryNode extends ParseableBaseNode<
     { left: NumberSocket; right: NumberSocket },
     { value: NumberSocket },
-    { c: NodeControl<NumberControlData> }
+    NumberControlData
 >
 {
     binaryOperation: (left: number, right: number) => number;

@@ -12,7 +12,7 @@ import {
 export class DisplayBarNode extends ParseableBaseNode <
     { input: ResultSocket },
     {},
-    { c: NodeControl<DisplayBarNodeData> }
+    DisplayBarNodeData
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,

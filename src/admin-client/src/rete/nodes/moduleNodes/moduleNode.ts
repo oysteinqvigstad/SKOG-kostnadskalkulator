@@ -1,6 +1,6 @@
 import {ClassicPreset as Classic, NodeEditor} from "rete";
 import {Schemes} from "../types";
-import {ParseableBaseNode, NodeControl, BaseNode} from "../parseableBaseNode";
+import {BaseNode, NodeControl} from "../parseableBaseNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {Module, ModuleManager} from "../../moduleManager";
 import {NumberSocket} from "../../sockets";
@@ -14,10 +14,10 @@ export interface ModuleNodeControlData {
 
 
 export class ModuleNode extends BaseNode<
-        Record<string, NumberSocket>,
-        Record<string, NumberSocket>,
-        { c: NodeControl<ModuleNodeControlData> }
-    > {
+    Record<string, NumberSocket>,
+    Record<string, NumberSocket>,
+    ModuleNodeControlData
+> {
     module: null | Module<Schemes> = null;
     editor: NodeEditor<Schemes> | undefined;
 
@@ -54,6 +54,7 @@ export class ModuleNode extends BaseNode<
                 ModuleNodeControl
             )
         );
+
         this.setModuleAndRefreshPorts();
     }
 

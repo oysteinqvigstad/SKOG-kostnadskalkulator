@@ -50,8 +50,8 @@ type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T];
 export abstract class BaseNode<
     Inputs extends Record<string, BaseSocket>,
     Outputs extends Record<string, BaseSocket>,
-    Controls extends Record<string, NodeControl<any>>
-> extends ClassicPreset.Node<Inputs, Outputs, Controls> implements DataflowNode {
+    ControlData extends {}
+> extends ClassicPreset.Node<Inputs, Outputs, { c: NodeControl<ControlData> }> implements DataflowNode {
     xTranslation: number = 0;
     yTranslation: number = 0;
     type: NodeType;
@@ -98,8 +98,8 @@ export abstract class BaseNode<
 export abstract class ParseableBaseNode<
     Inputs extends Record<string, BaseSocket>,
     Outputs extends Record<string, BaseSocket>,
-    Controls extends Record<string, NodeControl<any>>
-> extends BaseNode<Inputs, Outputs, Controls> {
+    ControlData extends {}
+> extends BaseNode<Inputs, Outputs, ControlData> {
 
     /**
      *

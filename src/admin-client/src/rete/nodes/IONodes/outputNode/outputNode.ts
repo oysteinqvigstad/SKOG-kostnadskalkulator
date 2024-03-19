@@ -8,11 +8,9 @@ import {OutputNodeControlContainer} from "./outputNodeControlContainer";
 
 
 export class OutputNode extends ParseableBaseNode <
-{ result: NumberSocket },
-{ output: ResultSocket },
-{
-    c: NodeControl<OutputNodeControlData>
-}
+    { result: NumberSocket },
+    { output: ResultSocket },
+    OutputNodeControlData
 > {
 
 

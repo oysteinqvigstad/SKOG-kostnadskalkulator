@@ -14,11 +14,8 @@ import {NumberInputControlContainer} from "./numberInputControlContainer";
 export class NumberInputNode extends ParseableBaseNode<
     {},
     { value: NumberSocket },
-    {
-        c: NodeControl<NumberInputData>
-    }
+    NumberInputData
 > {
-    legalValues: {min: number, max: number}[] = []
 
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,

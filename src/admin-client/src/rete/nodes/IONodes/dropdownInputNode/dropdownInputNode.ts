@@ -16,9 +16,7 @@ import {
 export class DropdownInputNode extends ParseableBaseNode<
     {},
     { value: NumberSocket },
-    {
-        c: NodeControl<DropdownInputControlData>
-    }
+    DropdownInputControlData
 > {
     inputAlternatives: {label: string, value: number}[] = []
 

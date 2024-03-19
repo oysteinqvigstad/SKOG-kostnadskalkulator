@@ -6,16 +6,13 @@ import {NumberSocket} from "../../sockets";
 import {NumberControlComponent} from "./numberControl/numberControlComponent";
 
 
-
-
-
 /**
  * Node providing a simple number value that can be manually set. Represents a constant.
  */
 export class NumberNode extends ParseableBaseNode<
     {},
     { value: NumberSocket },
-    { c: NodeControl<NumberControlData> }
+    NumberControlData
 > {
     clone: () => NumberNode;
     constructor(

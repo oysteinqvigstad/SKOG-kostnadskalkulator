@@ -1,4 +1,4 @@
-import {ParseableBaseNode, NodeControl} from "../parseableBaseNode";
+import {NodeControl, ParseableBaseNode} from "../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {getNaryOperation, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {NumberControlData} from "./numberControl/numberControlData";
@@ -13,7 +13,7 @@ import {NumberControlComponent} from "./numberControl/numberControlComponent";
 export class NaryNode extends ParseableBaseNode<
     { input: NumberSocket },
     { value: NumberSocket },
-    { c: NodeControl<NumberControlData> }
+    NumberControlData
 > {
     naryOperation: (inputs: number[]) => number;
 
