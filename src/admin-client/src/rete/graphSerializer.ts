@@ -66,11 +66,12 @@ export class GraphSerializer {
                 }
                 this.editor.addConnection(connection)
                     .catch((e) => console.log(e))
-                    .then(() => {});
-            }
-
-            if(freshIDs) {
-                this.editor.getNodes().forEach(node=>{node.id = ""})
+                    .then((added) => {
+                        if(!added) {
+                            console.log("Failed to add connection", connection);
+                            console.log(this.editor.getNode(connection.target));
+                        }
+                    });
             }
 
             resolve();
@@ -117,13 +118,13 @@ export class GraphSerializer {
                         connection.source === node.id &&
                         node.connections.find((e:any)=>e.id === connection.id) === undefined
                     ) {
-
                         node.connections.push(this.serializeConnection(connection));
                     }
                 }
                 return node;
             });
         }
+        console.log(data);
         return data;
     }
 
@@ -152,6 +153,7 @@ export class GraphSerializer {
             };
         }
         if (control instanceof NodeControl) {
+            console.log(control.getData());
             return {
                 data: control.getData()
             }
