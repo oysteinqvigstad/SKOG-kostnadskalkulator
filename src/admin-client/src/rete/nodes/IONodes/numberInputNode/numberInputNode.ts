@@ -32,7 +32,6 @@ export class NumberInputNode extends ParseableBaseNode<
             simpleInput: true,
             defaultValue: 0,
             legalValues: [],
-            pageName: "",
             infoText: "",
             pageOrdering: 0,
         }

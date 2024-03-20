@@ -19,6 +19,7 @@ function updateOrdering(pagesWithID: { id: number, page: Page }[]) {
 }
 
 
+
 export const pageSlice = createSlice({
     name: 'pages',
     initialState: {
@@ -56,17 +57,20 @@ export const pageSlice = createSlice({
                     page.inputIds.push(action.payload.nodeID);
                 }
             })
-            console.log(state.pages.map(({page}) => {
-                return {page: (page.title), inputs: (page.inputIds)}
-            }))
+        },
+        removeInputFromPage: (state, action: PayloadAction<{nodeID: string, pageName: string}>) =>{
+            state.pages.forEach(({page})=>{
+                page.inputIds = page.inputIds.filter(id => id !== action.payload.nodeID)
+            });
         },
         moveInput: (state, action: PayloadAction<{ oldIndex: number, newIndex: number }>) => {
             const {oldIndex, newIndex} = action.payload;
-            state.pages.forEach(({page})=> {
-                if(newIndex < 0 || newIndex >= page.inputIds.length) return;
-                    [page.inputIds[newIndex], page.inputIds[oldIndex]] =
+            state.pages.forEach(({page}) => {
+                if (newIndex < 0 || newIndex >= page.inputIds.length) return;
+                [page.inputIds[newIndex], page.inputIds[oldIndex]] =
                     [page.inputIds[oldIndex], page.inputIds[newIndex]];
             })
+
         },
         setPageSelection: (state, action: PayloadAction<number>) => {
             state.selected = action.payload;
@@ -82,6 +86,7 @@ export const {
     addInputToPage,
     moveInput,
     setPageSelection,
-    setPagesState
+    setPagesState,
+    removeInputFromPage
 } = pageSlice.actions;
 export const pagesReducer = pageSlice.reducer;

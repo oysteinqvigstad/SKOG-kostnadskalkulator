@@ -36,7 +36,6 @@ export class DropdownInputNode extends ParseableBaseNode<
             dropdownOptions: [],
             defaultKey: "",
             defaultValue: 0,
-            pageName: "",
             infoText: "",
             pageOrdering: 0,
         }
