@@ -1,7 +1,7 @@
 import {ParseableBaseNode} from "../parseableBaseNode";
 import {NumberSocket} from "../../sockets";
 import {ChooseNodeComparisonData, ChooseNodeControlData} from "./ChooseNodeControlData";
-import {compare, Comparison, NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {compare, Comparison, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ClassicPreset} from "rete";
 import {NodeControl} from "../nodeControl";
 import {ChooseNodeContainer, ComparisonControlContainer} from "./ChooseNodeContainer";
@@ -24,11 +24,16 @@ export class ChooseNode extends ParseableBaseNode<
 
         const initialData: ChooseNodeControlData = {
             leftHandValue: 0,
-            comparisons: []
+            comparisons: [
+                // {resultNodeID: "", comparison: Comparison.EQ, rh: 0},
+                // {resultNodeID: "", comparison: Comparison.EQ, rh: 0}
+            ]
         }
         this.addInput("left", new ClassicPreset.Input(new NumberSocket(), "Left hand", false));
         this.addInput("right", new ClassicPreset.Input(new NumberSocket(), "Default", false));
         this.addOutput("result", new ClassicPreset.Output(new NumberSocket(), "Result"));
+
+        const defaultInputCount = 2;
 
         const control = new NodeControl<ChooseNodeControlData>(
             initialData,
@@ -36,7 +41,7 @@ export class ChooseNode extends ParseableBaseNode<
                 onUpdate: (newValue: Partial<ChooseNodeControlData>) => {
                     if(newValue.comparisons !== undefined) {
                         const newComparisonCount = newValue.comparisons.length;
-                        const oldComparisonCount = Object.keys(this.inputs).length - 1;
+                        const oldComparisonCount = Object.keys(this.inputs).length - defaultInputCount;
 
                         const difference = newComparisonCount - oldComparisonCount;
                         const leftHand = this.controls.c.get('leftHandValue');
@@ -70,6 +75,10 @@ export class ChooseNode extends ParseableBaseNode<
             "c",
             control
         )
+        // this.controls.c.get('comparisons').forEach((comparison, index) => {
+        //     this.addNumberedInput(index, {lh: initialData.leftHandValue, rh: comparison.rh, comparison: comparison.comparison});
+        // });
+        this.updateNodeRendering(this.id);
     }
 
 
@@ -77,7 +86,6 @@ export class ChooseNode extends ParseableBaseNode<
         const input = new ClassicPreset.Input(new NumberSocket());
         const options = {
             onUpdate: (newValue: Partial<ChooseNodeComparisonData>) => {
-                console.log("updating comparison", newValue, number, this.controls.c.get('comparisons'));
                 const comparisons = [...this.controls.c.get('comparisons')];
                 if('rh' in newValue) {
                     comparisons[number].rh = newValue.rh || 0;
@@ -112,23 +120,27 @@ export class ChooseNode extends ParseableBaseNode<
 
     data( inputs: Record<string, any>): { result: number } {
         let result: { result: number } | undefined;
-        if(inputs.left && inputs.left.length > 0) {
-            const leftHand = inputs.left[0];
-            this.controls.c.setNoUpdate({leftHandValue: leftHand});
-            Object.keys(this.inputs).forEach((key) => {
-                if(key !== "left" && key !== "right") {
-                    const control = this.inputs[key]?.control as NodeControl<ChooseNodeComparisonData>;
-                    control.setNoUpdate({lh: leftHand});
-                    console.log('comparing', leftHand, control.get('rh'), control.get('comparison'), compare(leftHand, control.get('rh'), control.get('comparison')));
-                    if(compare(leftHand, control.get('rh'), control.get('comparison'))) {
-                        console.log('result found', inputs[key][0]);
-                        if(result === undefined) { result = {result: inputs[key][0]} }
+        const leftHand = inputs.left[0];
+        this.controls.c.setNoUpdate({leftHandValue: leftHand || 0})
+
+        Object.keys(this.inputs).forEach((key, index) => {
+            if(key !== "left" && key !== "right") {
+                const control = this.inputs[key]?.control as NodeControl<ChooseNodeComparisonData>;
+                control.setNoUpdate({lh: leftHand ?? 0});
+                if(
+                    result === undefined &&
+                    inputs.left !== undefined && inputs.left.length > 0 &&
+                    compare(leftHand, control.get('rh'), control.get('comparison'))
+                ) {
+                    const macthingInput = inputs[key]
+                    if(macthingInput !== undefined && macthingInput.length > 0) {
+                        result = {result: macthingInput[0]}
                     }
                 }
-            });
-        }
+            }
+        });
         this.updateNodeRendering(this.id);
-        return result ?? {result: inputs.right[0] || 0};
+        return result ?? {result: (inputs.right? inputs.right[0] : 0)};
     }
 
     toParseNode(): ParseChooseNode {
