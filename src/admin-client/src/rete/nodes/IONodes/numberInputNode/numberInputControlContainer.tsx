@@ -116,7 +116,9 @@ export function NumberInputControlsContent(
                                 />
                                 <Button
                                     onClick={()=>{
-                                        props.data.set({legalValues: [...props.data.get('legalValues')].splice(index, 1)});
+                                        const legalValuesCopy = [...props.data.get('legalValues')];
+                                        legalValuesCopy.splice(index, 1);
+                                        props.data.set({legalValues: legalValuesCopy});
                                     }}
                                     onPointerDown={(e)=>{e.stopPropagation()}}
                                     onDoubleClick={e=>{e.stopPropagation()}}
@@ -131,9 +133,7 @@ export function NumberInputControlsContent(
                             selection={pages.findIndex(({page})=>page.title === props.data.get('pageName'))}
                             dropdownAlternatives={pages.map(({ page })=>{return {label: page.title, value: page.ordering}})}
                             onChange={(selected: number)=>{
-                                console.log("pageName", props.data.get('pageName'))
                                 const pageName = pages.find(({ page })=>page.ordering === selected)?.page.title;
-                                console.log("Selected page: ", pageName);
                                 props.data.set({pageName: pageName});
                                 if(pageName) {
                                     dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: pageName}))
