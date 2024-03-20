@@ -11,6 +11,7 @@ import {DisplayPieNode} from "./nodes/displayNodes/displayPieNode/displayPieNode
 import {DisplayBarNode} from "./nodes/displayNodes/displayBarNode/displayBarNode";
 import {BinaryNode} from "./nodes/mathNodes/binaryNode";
 import {NaryNode} from "./nodes/mathNodes/naryNode";
+import {ChooseNode} from "./nodes/controlNodes/chooseNode";
 
 
 export class NodeFactory {
@@ -18,7 +19,7 @@ export class NodeFactory {
         private moduleManager: ModuleManager,
         private updateNodeRendering: (id: string)=>void = ()=>{},
         private updateDataFlow: ()=>void = ()=>{},
-        private removeNodeConnections: (id: string)=>Promise<void> = ()=>Promise.resolve(),
+        private removeNodeConnections: (id: string, connection?:{input?:string, output?:string})=>Promise<void> = ()=>Promise.resolve(),
         private signalOnChange: () => void = ()=>{}
     ) {}
 
@@ -40,6 +41,7 @@ export class NodeFactory {
             case NodeType.Div: return new BinaryNode(NodeType.Div, this.updateNodeRendering, id);
             case NodeType.Sum: return new NaryNode(NodeType.Sum, this.updateNodeRendering, id);
             case NodeType.Prod: return new NaryNode(NodeType.Prod, this.updateNodeRendering, id);
+            case NodeType.Choose: return new ChooseNode(this.updateNodeRendering, this.updateDataFlow, this.removeNodeConnections, id);
             default: return undefined;
         }
     }

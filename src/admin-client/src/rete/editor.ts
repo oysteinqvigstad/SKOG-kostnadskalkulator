@@ -262,10 +262,19 @@ export class Editor {
     }
 
 
-    private async removeNodeConnections(nodeID: string) {
+    private async removeNodeConnections(nodeID: string, connection?: { input?: string, output?: string }) {
         if( this.context.editor.getNode(nodeID) ) {
             const connections = this.context.editor.getConnections().filter(c => {
-                return c.source === nodeID || c.target === nodeID
+                if(connection === undefined) {
+                    return c.source === nodeID || c.target === nodeID;
+                } else {
+                    if(connection.input !== undefined) {
+                        return c.target === nodeID && c.targetInput === connection.input;
+                    }
+                    if(connection.output !== undefined) {
+                        return c.source === nodeID && c.sourceOutput === connection.output;
+                    }
+                }
             })
             for (const connection of connections) {
                 await this.context.editor.removeConnection(connection.id)
@@ -327,7 +336,8 @@ export class Editor {
             NodeType.Prod,
             NodeType.Pow,
             NodeType.Sum,
-            NodeType.Number
+            NodeType.Number,
+            NodeType.Choose
         ])
         const inputNodes = nodeTypesToDefinition ([
             NodeType.DropdownInput,
