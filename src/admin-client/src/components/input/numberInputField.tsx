@@ -20,9 +20,10 @@ export function NumberInputField(
     props: {
         inputHint: string,
         value: number | undefined,
-        onChange: (value: number)=>void,
-        onIllegalValue: (value: number)=>void,
-        legalRanges: readonly {min?: number, max?: number}[],
+        onChange?: (value: number)=>void,
+        onIllegalValue?: (value: number)=>void,
+        legalRanges?: readonly {min?: number, max?: number}[],
+        disabled?: boolean
     }
 ) {
 
@@ -37,21 +38,23 @@ export function NumberInputField(
                 className={"field"}
                 placeholder="0"
                 type={"number"}
+                disabled={props.disabled}
+                readOnly={props.onChange === undefined}
                 inputMode={"numeric"}
                 pattern="[0-9]*"
                 required = {true}
                 onChange={(e)=>{
                     const value = parseFloat(e.currentTarget.value);
-                    if(props.legalRanges.length === 0 || props.legalRanges.some(({min, max}) => {
+                    if(props.legalRanges === undefined || props.legalRanges?.length === 0 || props.legalRanges?.some(({min, max}) => {
                         return isInRange(value, {min, max})
                     })) {
-                        props.onChange(value);
+                        props.onChange?.(value);
                         return;
                     }
-                    props.onIllegalValue(value);
+                    props.onIllegalValue?.(value);
                 }}
             />
-            <label>{props.inputHint}</label>
+            {props.inputHint === "" ? null : <label>{props.inputHint}</label>}
         </Form.Floating>
     </>
 }
