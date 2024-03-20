@@ -3,6 +3,7 @@ export {type DisplayNode} from "./nodes/displayNode"
 export {type ReferenceNode} from "./nodes/referenceNode"
 export {type InputNode, type DropdownInput, InputType, isValidValue} from "./nodes/inputNode";
 export type {OutputNode} from "./nodes/outputNode";
+export {type ChooseNode, Comparison, compare} from "./nodes/chooseNode";
 export {getBinaryOperation, getNaryOperation} from "./math/operations";
 export {
     treeStateFromData,
