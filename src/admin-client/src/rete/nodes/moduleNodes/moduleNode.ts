@@ -113,7 +113,9 @@ export class ModuleNode extends BaseNode<
 
     async data(inputs: Record<string, any>) {
         const data = await this.module?.exec(inputs);
-
+        Object.keys(data).forEach((key) => {
+            data[key] = { value: data[key], sourceID: this.id };
+        });
         return data || {};
     }
 

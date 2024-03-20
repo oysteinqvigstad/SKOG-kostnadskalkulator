@@ -8,6 +8,7 @@ import {
     DropdownInputControlContainer
 } from "./dropdownInputControlContainer";
 import {NodeControl} from "../../nodeControl";
+import {NumberNodeOutput} from "../../types";
 
 
 
@@ -16,7 +17,7 @@ import {NodeControl} from "../../nodeControl";
  */
 export class DropdownInputNode extends ParseableBaseNode<
     {},
-    { value: NumberSocket },
+    { out: NumberSocket },
     DropdownInputControlData
 > {
     inputAlternatives: {label: string, value: number}[] = []
@@ -61,13 +62,16 @@ export class DropdownInputNode extends ParseableBaseNode<
             DropdownInputControlContainer
         ));
 
-        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Number"));
+        this.addOutput("out", new ClassicPreset.Output(new NumberSocket(), "Number"));
         this.updateStore();
     }
 
-    data(): { value: number } {
+    data(): { out: NumberNodeOutput } {
         return {
-            value: this.controls.c.get('dropdownOptions').find((option)=>{return option.label === this.controls.c.get('defaultKey')})?.value || 0
+            out: {
+                sourceID: this.id,
+                value: this.controls.c.get('dropdownOptions').find((option)=>{return option.label === this.controls.c.get('defaultKey')})?.value || 0
+            }
         };
     }
 

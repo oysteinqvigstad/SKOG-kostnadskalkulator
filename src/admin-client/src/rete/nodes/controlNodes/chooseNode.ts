@@ -6,11 +6,12 @@ import {ClassicPreset} from "rete";
 import {NodeControl} from "../nodeControl";
 import {ChooseNodeContainer, ComparisonControlContainer} from "./ChooseNodeContainer";
 import {ChooseNode as ParseChooseNode} from "@skogkalk/common/dist/src/parseTree/nodes/chooseNode";
+import {NumberNodeOutput} from "../types";
 
 
 export class ChooseNode extends ParseableBaseNode<
     Record<string, NumberSocket>,
-    { result: NumberSocket },
+    { out: NumberSocket },
     ChooseNodeControlData
 > {
 
@@ -31,7 +32,7 @@ export class ChooseNode extends ParseableBaseNode<
         }
         this.addInput("left", new ClassicPreset.Input(new NumberSocket(), "Left hand", false));
         this.addInput("right", new ClassicPreset.Input(new NumberSocket(), "Default", false));
-        this.addOutput("result", new ClassicPreset.Output(new NumberSocket(), "Result"));
+        this.addOutput("out", new ClassicPreset.Output(new NumberSocket(), "Result"));
 
         const defaultInputCount = 2;
 
@@ -118,12 +119,12 @@ export class ChooseNode extends ParseableBaseNode<
 
 
 
-    data( inputs: Record<string, any>): { result: number } {
-        let result: { result: number } | undefined;
-        const leftHand = inputs.left[0];
+    data( inputs: Record<string, NumberNodeOutput[]>): { out: NumberNodeOutput } {
+        let result: NumberNodeOutput | undefined;
+        const leftHand = inputs.left[0].value;
         this.controls.c.setNoUpdate({leftHandValue: leftHand || 0})
 
-        Object.keys(this.inputs).forEach((key, index) => {
+        Object.keys(this.inputs).forEach((key) => {
             if(key !== "left" && key !== "right") {
                 const control = this.inputs[key]?.control as NodeControl<ChooseNodeComparisonData>;
                 control.setNoUpdate({lh: leftHand ?? 0});
@@ -132,15 +133,15 @@ export class ChooseNode extends ParseableBaseNode<
                     inputs.left !== undefined && inputs.left.length > 0 &&
                     compare(leftHand, control.get('rh'), control.get('comparison'))
                 ) {
-                    const macthingInput = inputs[key]
-                    if(macthingInput !== undefined && macthingInput.length > 0) {
-                        result = {result: macthingInput[0]}
+                    const matchingInput = inputs[key]
+                    if(matchingInput !== undefined && matchingInput.length > 0) {
+                        result = {value: matchingInput[0].value, sourceID: this.id}
                     }
                 }
             }
         });
         this.updateNodeRendering(this.id);
-        return result ?? {result: (inputs.right? inputs.right[0] : 0)};
+        return { out: result ?? {value: inputs.right[0].value || 0, sourceID: this.id}}
     }
 
     toParseNode(): ParseChooseNode {

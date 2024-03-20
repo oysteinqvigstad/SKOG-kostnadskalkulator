@@ -7,6 +7,7 @@ import {NumberInputNode as ParseNumberInputNode} from "@skogkalk/common/dist/src
 import {NumberSocket} from "../../../sockets";
 import {NumberInputControlContainer} from "./numberInputControlContainer";
 import {NodeControl} from "../../nodeControl";
+import {NumberNodeOutput} from "../../types";
 
 
 /**
@@ -14,7 +15,7 @@ import {NodeControl} from "../../nodeControl";
  */
 export class NumberInputNode extends ParseableBaseNode<
     {},
-    { value: NumberSocket },
+    { out: NumberSocket },
     NumberInputControlData
 > {
 
@@ -68,13 +69,13 @@ export class NumberInputNode extends ParseableBaseNode<
             NumberInputControlContainer
         ));
 
-        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Number"));
+        this.addOutput("out", new ClassicPreset.Output(new NumberSocket(), "Number"));
         this.updateStore();
     }
 
-    data(): { value: number } {
+    data(): { out: NumberNodeOutput } {
         return {
-            value: this.controls.c.get('defaultValue') || 0
+            out: { value: this.controls.c.get('defaultValue') || 0, sourceID: this.id}
         };
     }
 

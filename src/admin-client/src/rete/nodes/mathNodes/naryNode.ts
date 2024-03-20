@@ -5,6 +5,7 @@ import {NumberControlData} from "./numberControl/numberControlData";
 import {NumberSocket} from "../../sockets";
 import {NumberControlComponent} from "./numberControl/numberControlComponent";
 import {NodeControl} from "../nodeControl";
+import {NumberNodeOutput} from "../types";
 
 
 /**
@@ -13,7 +14,7 @@ import {NodeControl} from "../nodeControl";
  */
 export class NaryNode extends ParseableBaseNode<
     { input: NumberSocket },
-    { value: NumberSocket },
+    { out: NumberSocket },
     NumberControlData
 > {
     naryOperation: (inputs: number[]) => number;
@@ -41,21 +42,21 @@ export class NaryNode extends ParseableBaseNode<
         );
 
         this.addInput("input", new ClassicPreset.Input(new NumberSocket(), "In", true));
-        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Out"));
+        this.addOutput("out", new ClassicPreset.Output(new NumberSocket(), "Out"));
     }
 
-    data(inputs: { input?: number[] }): { value: number } {
+    data(inputs: { input?: NumberNodeOutput[] }): { out: NumberNodeOutput } {
         const inputControl =
             this.inputs.input?.control as ClassicPreset.InputControl<"number">;
 
         const input = inputs.input;
-        const value = (input ? this.naryOperation(input) : inputControl?.value || 0);
+        const value = (input ? this.naryOperation(input.map((input)=>{return input.value})) : inputControl?.value || 0);
 
         this.controls.c.set({ value });
 
         this.updateNodeRendering?.(this.id);
 
-        return { value };
+        return { out: {value: value, sourceID: this.id} };
     }
 
     toParseNode(): ParseNode {

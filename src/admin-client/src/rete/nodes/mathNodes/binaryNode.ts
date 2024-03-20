@@ -5,13 +5,14 @@ import {NumberControlData} from "./numberControl/numberControlData";
 import {NumberSocket} from "../../sockets";
 import {NumberControlComponent} from "./numberControl/numberControlComponent";
 import {NodeControl} from "../nodeControl";
+import {NumberNodeOutput} from "../types";
 
 /**
  * Node for use with any binary math operation, such as +,-, * amd pow.
  */
 export class BinaryNode extends ParseableBaseNode<
     { left: NumberSocket; right: NumberSocket },
-    { value: NumberSocket },
+    { out: NumberSocket },
     NumberControlData
 >
 {
@@ -38,21 +39,21 @@ export class BinaryNode extends ParseableBaseNode<
 
         this.addInput("left", new ClassicPreset.Input(new NumberSocket(), "Left"));
         this.addInput("right", new ClassicPreset.Input(new NumberSocket(), "Right"));
-        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Out"));
+        this.addOutput("out", new ClassicPreset.Output(new NumberSocket(), "Out"));
     }
 
-    data(inputs: { left?: number[]; right?: number[] }): { value: number } {
+    data(inputs: { left?: NumberNodeOutput[]; right?: NumberNodeOutput[] }): { out: { value: number, sourceID: string} } {
         const { left, right } = inputs;
         const value = this.binaryOperation(
-            (left ? left[0] : 0),
-            (right ? right[0] : 0)
+            (left ? left[0].value : 0),
+            (right ? right[0].value : 0)
         );
 
         this.controls.c.set({ value })
 
         this.updateNodeRendering(this.id);
 
-        return { value };
+        return { out: { value: value, sourceID: this.id } };
     }
 
     toParseNode() : ParseNode {

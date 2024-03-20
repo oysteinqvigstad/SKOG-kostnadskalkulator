@@ -5,6 +5,7 @@ import {NumberControlData} from "./numberControl/numberControlData";
 import {NumberSocket} from "../../sockets";
 import {NumberControlComponent} from "./numberControl/numberControlComponent";
 import {NodeControl} from "../nodeControl";
+import {NumberNodeOutput} from "../types";
 
 
 /**
@@ -12,7 +13,7 @@ import {NodeControl} from "../nodeControl";
  */
 export class NumberNode extends ParseableBaseNode<
     {},
-    { value: NumberSocket },
+    { out: NumberSocket },
     NumberControlData
 > {
     clone: () => NumberNode;
@@ -41,13 +42,13 @@ export class NumberNode extends ParseableBaseNode<
                 NumberControlComponent
             )
         );
-        this.addOutput("value", new ClassicPreset.Output(new NumberSocket(), "Number"));
+        this.addOutput("out", new ClassicPreset.Output(new NumberSocket(), "Number"));
     }
 
-    data(): { value: number } {
+    data(): { out: NumberNodeOutput } {
         this.clone = () => new NumberNode(this.controls.c.get('value') || 0, this.updateNodeRendering, this.updateDataFlow);
         return {
-            value: this.controls.c.get('value') || 0
+            out: { value: this.controls.c.get('value') || 0, sourceID: this.id }
         };
     }
 

@@ -4,6 +4,7 @@ import {NumberSocket} from "../../sockets";
 import {ModuleInputControl} from "./moduleControls";
 import {BaseNode} from "../baseNode";
 import {NodeControl} from "../nodeControl";
+import {NumberNodeOutput} from "../types";
 
 
 export interface ModuleInputControlData {
@@ -13,7 +14,7 @@ export interface ModuleInputControlData {
 
 export class ModuleInput extends BaseNode<
     {},
-    { value: NumberSocket },
+    { out: NumberSocket },
     ModuleInputControlData
 > {
     width = 180;
@@ -46,12 +47,12 @@ export class ModuleInput extends BaseNode<
             ModuleInputControl
         ));
 
-        this.addOutput("value", new ClassicPreset.Output( new NumberSocket(), "Number") );
+        this.addOutput("out", new ClassicPreset.Output( new NumberSocket(), "Number") );
     }
 
-    data() {
+    data() : { out : NumberNodeOutput } {
         return {
-            value: this.value
+            out: { value: this.value || 0, sourceID: this.id }
         };
     }
 }

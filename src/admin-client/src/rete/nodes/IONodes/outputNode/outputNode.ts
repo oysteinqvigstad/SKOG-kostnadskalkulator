@@ -6,11 +6,12 @@ import {OutputNode as ParseOutputNode} from "@skogkalk/common/dist/src/parseTree
 import {NumberSocket, ResultSocket} from "../../../sockets";
 import {OutputNodeControlContainer} from "./outputNodeControlContainer";
 import {NodeControl} from "../../nodeControl";
+import {NumberNodeOutput} from "../../types";
 
 
 export class OutputNode extends ParseableBaseNode <
     { result: NumberSocket },
-    { output: ResultSocket },
+    { out: ResultSocket },
     OutputNodeControlData
 > {
 
@@ -23,7 +24,7 @@ export class OutputNode extends ParseableBaseNode <
         super(NodeType.Output, 240, 200, "Output", id);
 
         this.addInput( "result", new ClassicPreset.Input(  new NumberSocket(),  "Result",  false))
-        this.addOutput(  "output", new ClassicPreset.Output( new ResultSocket(), "Out", true));
+        this.addOutput(  "out", new ClassicPreset.Output( new ResultSocket(), "Out", true));
 
         const initialState: OutputNodeControlData = {
             name: "",
@@ -46,14 +47,14 @@ export class OutputNode extends ParseableBaseNode <
             ))
     }
 
-    data( inputs :{ result?: number[] }) : { output: {name: string, value: number, id: string, color: string }} {
+    data( inputs :{ result?: NumberNodeOutput[] }) : { out: {name: string, value: number, id: string, color: string }} {
         const { result } = inputs
         if(result) {
             this.updateNodeRendering?.(this.id);
-            this.controls.c.setNoUpdate({value: result[0]});
+            this.controls.c.setNoUpdate({value: result[0].value});
         }
         return {
-            output: {
+            out: {
                 id: this.id,
                 name: this.controls.c.get('name'),
                 value: this.controls.c.get('value') || 0,

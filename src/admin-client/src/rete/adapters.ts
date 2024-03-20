@@ -178,6 +178,7 @@ export function createParseNodeGraph(editor: NodeEditor<Schemes>) : ParseNode[] 
                     parentNode.inputs = [connection.source]
                 }
             }
+
             // target on ConnProp is id of the parent node when translating to ParseNode tree
             idToNodeConnection.set(connection.target, parentNode);
         }

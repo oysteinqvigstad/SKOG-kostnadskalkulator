@@ -20,6 +20,8 @@ export function isParseableNode(node: ReteNode): node is ParseableNode {
     return !(node instanceof ModuleInput || node instanceof ModuleOutput || node instanceof ModuleNode);
 }
 
+export type NumberNodeOutput = { value: number, sourceID: string };
+
 export type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T];
 export class Connection<
     A extends ReteNode,
