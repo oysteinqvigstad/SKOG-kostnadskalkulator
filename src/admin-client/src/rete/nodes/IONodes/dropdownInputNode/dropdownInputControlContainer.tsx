@@ -11,9 +11,9 @@ import {DropdownInputControlData} from "./dropdownInputControlData";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
 import {OptionSwitch} from "../../../../components/input/optionSwitch";
 import {useAppDispatch, useAppSelector} from "../../../../state/hooks";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {addInputToPage} from "../../../../state/slices/pages";
-
+import {SlArrowDown, SlArrowUp} from "react-icons/sl";
 import {NodeControl} from "../../nodeControl";
 
 
@@ -35,6 +35,17 @@ export function DropdownInputControlContent(
     const dispatch = useAppDispatch();
 
     const [nextId, setNextId] = useState(0);
+
+    useEffect(()=>{
+        console.log(pages)
+        const ordering = pages
+            .find(({page})=>{return page.title === data.pageName})?.page.inputIds
+            .findIndex((id)=>{return id === data.id})
+        if(ordering !== undefined) {
+            props.data.set({pageOrdering: ordering})
+            console.log("ordering of", data.name, props.data.get('pageOrdering'))
+        }
+    }, [pages])
 
     return <>
         <Drag.NoDrag>
@@ -80,7 +91,6 @@ export function DropdownInputControlContent(
                                 <OptionSwitch on={data.simpleInput} onChange={
                                     (on: boolean) => {
                                         props.data.set({simpleInput: on});
-
                                     }
                                 }/>
                             </Col>
@@ -136,6 +146,21 @@ export function DropdownInputControlContent(
                                     }}
                                     legalRanges={[]}
                                 />
+                                <Button onClick={() => {
+                                    if (index > 0) {
+                                        [data.dropdownOptions[index], data.dropdownOptions[index - 1]] =
+                                            [data.dropdownOptions[index - 1], data.dropdownOptions[index]]
+                                        props.data.set({dropdownOptions: data.dropdownOptions})
+                                    }
+                                }}><SlArrowUp/></Button>
+                                <Button onClick={() => {
+                                    if (index >= 0 && index < data.dropdownOptions.length - 1) {
+                                        [data.dropdownOptions[index], data.dropdownOptions[index + 1]] =
+                                            [data.dropdownOptions[index + 1], data.dropdownOptions[index]]
+                                        props.data.set({dropdownOptions: data.dropdownOptions})
+                                    }
+                                    props.data.update();
+                                }}><SlArrowDown/></Button>
                                 <Button
                                     onClick={() => {
                                         data.dropdownOptions.splice(index, 1);
@@ -148,39 +173,27 @@ export function DropdownInputControlContent(
                                         e.stopPropagation()
                                     }}
                                 >X</Button>
-                                <Button onClick={() => {
-                                    if (index >= 0 && index < data.dropdownOptions.length - 1) {
-                                        [data.dropdownOptions[index], data.dropdownOptions[index + 1]] =
-                                            [data.dropdownOptions[index + 1], data.dropdownOptions[index]]
-                                        props.data.set({dropdownOptions: data.dropdownOptions})
-                                    }
-                                    props.data.update();
-                                }}>Down</Button>
-                                <Button onClick={() => {
-                                    if (index > 0) {
-                                        [data.dropdownOptions[index], data.dropdownOptions[index - 1]] =
-                                            [data.dropdownOptions[index - 1], data.dropdownOptions[index]]
-                                        props.data.set({dropdownOptions: data.dropdownOptions})
-                                    }
-                                }}>Up</Button>
                             </InputGroup>
                         })}
-                        <DropdownSelection
-                            inputHint={"Select page"}
-                            selection={pages.find(({page}) => page.title === data.pageName)?.page.ordering}
-                            dropdownAlternatives={pages.map(({page}) => {
-                                return {label: page.title, value: page.ordering}
-                            })}
-                            onChange={(selected: number) => {
-                                const pageName = pages.find(({page}) => page.ordering === selected)?.page.title;
-                                props.data.set({pageName: pageName});
-                                props.data.update();
-                                if (pageName) {
-                                    dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: pageName}))
-                                }
-                            }}
-                        />
-
+                        <Row>
+                            <Col>
+                                <DropdownSelection
+                                    inputHint={"Select page"}
+                                    selection={pages.find(({page}) => page.title === data.pageName)?.page.ordering}
+                                    dropdownAlternatives={pages.map(({page}) => {
+                                        return {label: page.title, value: page.ordering}
+                                    })}
+                                    onChange={(selected: number) => {
+                                        const pageName = pages.find(({page}) => page.ordering === selected)?.page.title;
+                                        props.data.set({pageName: pageName});
+                                        props.data.update();
+                                        if (pageName) {
+                                            dispatch(addInputToPage({nodeID: props.data.get('id'), pageName: pageName}))
+                                        }
+                                    }}
+                                />
+                            </Col>
+                        </Row>
                     </>
                 }
             />

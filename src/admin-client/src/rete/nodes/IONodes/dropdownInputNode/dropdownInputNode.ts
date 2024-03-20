@@ -36,8 +36,8 @@ export class DropdownInputNode extends ParseableBaseNode<
             dropdownOptions: [],
             defaultKey: "",
             defaultValue: 0,
-            pageName: "",
-            infoText: ""
+            infoText: "",
+            pageOrdering: 0,
         }
 
         this.addControl("c", new NodeControl(
@@ -82,7 +82,7 @@ export class DropdownInputNode extends ParseableBaseNode<
             pageName: this.controls.c.get('pageName') || "",
             dropdownAlternatives: this.controls.c.get('dropdownOptions')?.map(({value, label})=>{return {value, label}}) || [],
             infoText: this.controls.c.get('infoText') || "",
-            ordering: 0, // TODO: Add to controller,
+            ordering: this.controls.c.get('pageOrdering') || 0,
             simpleInput: this.controls.c.get('simpleInput') || false,
         }
     }

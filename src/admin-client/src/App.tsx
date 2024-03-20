@@ -4,16 +4,16 @@ import Container from 'react-bootstrap/Container';
 import {Col, Row} from "react-bootstrap";
 import {useEffect} from "react";
 import {Provider} from "react-redux";
-import {store, StoreState} from "./state/store";
+import {selectPages, selectTreeState, store, StoreState} from "./state/store";
 import {useAppDispatch, useAppSelector} from "./state/hooks";
 import {setTreeState, updateTree} from "./state/slices/treeState";
 import {NavBar} from "./containers/navbar/NavBar";
-import {setPagesState} from "./state/slices/pages";
+import {Page, removeInputFromPage, setPagesState} from "./state/slices/pages";
 import {setFormulaInfoState} from "./state/slices/formulaInfo";
 import {selectRootNode} from "./state/selectors";
 import {SidePanel} from "./containers/panels/SidePanel";
 import {RetePanel} from "./containers/panels/RetePanel";
-import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {getNodeByID, ParseNode, TreeState} from "@skogkalk/common/dist/src/parseTree";
 import {ModulePanel} from "./containers/panels/modulePanel";
 
 
@@ -21,6 +21,8 @@ export default function App() {
     const [reteRef, functions] = useRete(createEditor);
     const rootNode = useAppSelector(selectRootNode)
     const dispatch = useAppDispatch();
+    const pages = useAppSelector(selectPages);
+    const treeState = useAppSelector(selectTreeState)
 
     useEffect(() => {
         // ensures that the tree state is updated when certain changes occur
@@ -30,6 +32,12 @@ export default function App() {
             }
         })
     }, [functions, dispatch, rootNode]);
+
+    useEffect(()=>{ // To avoid injecting cleanup logic into rete, but can be changed later
+        updatePageInputs(treeState.tree, pages, (id: string, page: string)=>{
+            dispatch(removeInputFromPage({nodeID: id, pageName: page}));
+        })
+    }, [treeState])
 
 
 
@@ -102,3 +110,20 @@ export default function App() {
   );
 }
 
+
+
+function updatePageInputs(
+    tree: TreeState | undefined,
+    pages: {id: number, page: Page}[],
+    onInvalidEntry: (id: string, pageName: string)=>void)
+{
+    if(tree !== undefined) {
+        pages.forEach(({page})=>{
+            page.inputIds.forEach((inputID)=>{
+                if(getNodeByID(tree, inputID) === undefined) {
+                    onInvalidEntry(inputID, page.title);
+                }
+            })
+        })
+    }
+}
