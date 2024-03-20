@@ -1,7 +1,7 @@
 import {ParseableBaseNode} from "../../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {InputType, NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {NumberInputData} from "./numberInputControlData";
+import {NumberInputControlData} from "./numberInputControlData";
 import {getLegalValueInRange, isInRange} from "../../../../components/input/numberInputField";
 import {NumberInputNode as ParseNumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
 import {NumberSocket} from "../../../sockets";
@@ -15,7 +15,7 @@ import {NodeControl} from "../../nodeControl";
 export class NumberInputNode extends ParseableBaseNode<
     {},
     { value: NumberSocket },
-    NumberInputData
+    NumberInputControlData
 > {
 
     constructor(
@@ -26,7 +26,7 @@ export class NumberInputNode extends ParseableBaseNode<
     ) {
         super( NodeType.NumberInput, 400, 400, "Number Input", id);
 
-        const initialData: NumberInputData = {
+        const initialData: NumberInputControlData = {
             id: this.id,
             name: "",
             simpleInput: true,
@@ -39,7 +39,7 @@ export class NumberInputNode extends ParseableBaseNode<
         this.addControl( "c",new NodeControl(
             initialData,
             {
-                onUpdate: (newValue: Partial<NumberInputData>) => {
+                onUpdate: (newValue: Partial<NumberInputControlData>) => {
                     const defaultValue = this.controls.c.get('defaultValue');
                     if(newValue.legalValues !== undefined && defaultValue !== undefined && newValue.legalValues.length > 0) {
                         if(!newValue.legalValues.some((v) => {
