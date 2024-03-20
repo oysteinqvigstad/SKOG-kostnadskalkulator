@@ -193,14 +193,6 @@ export function DropdownInputControlContent(
                                     }}
                                 />
                             </Col>
-                            <Col xs={4}>
-                                <TextInputField
-                                    inputHint={"Order in page"}
-                                    value={props.data.get("pageOrdering").toString() || undefined}
-                                    onChange={() => {
-                                    }}
-                                />
-                            </Col>
                         </Row>
                     </>
                 }
