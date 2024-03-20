@@ -10,13 +10,13 @@ import {OptionSwitch} from "../../../../components/input/optionSwitch";
 import Button from "react-bootstrap/Button";
 import {DropdownSelection} from "../../../../components/input/dropdownSelection";
 import {HiddenOnMinimized, MinimizeButton} from "../sharedComponents";
-import {NumberInputData} from "./numberInputControlData";
+import {NumberInputControlData} from "./numberInputControlData";
 import {addInputToPage} from "../../../../state/slices/pages";
 import {NodeControl} from "../../nodeControl";
 
 
 export function NumberInputControlContainer(
-    props: { data: NodeControl<NumberInputData> }
+    props: { data: NodeControl<NumberInputControlData> }
 ) {
     return <Provider store={store}>
         <NumberInputControlsContent data={props.data}/>
@@ -25,7 +25,7 @@ export function NumberInputControlContainer(
 
 
 export function NumberInputControlsContent(
-    props: { data: NodeControl<NumberInputData> }
+    props: { data: NodeControl<NumberInputControlData> }
 ) {
 
     const pages = useAppSelector(selectPages);
