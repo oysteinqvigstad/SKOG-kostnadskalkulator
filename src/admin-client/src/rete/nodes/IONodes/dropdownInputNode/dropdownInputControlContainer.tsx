@@ -13,7 +13,7 @@ import {OptionSwitch} from "../../../../components/input/optionSwitch";
 import {useAppDispatch, useAppSelector} from "../../../../state/hooks";
 import {useEffect, useState} from "react";
 import {addInputToPage} from "../../../../state/slices/pages";
-
+import {SlArrowDown, SlArrowUp} from "react-icons/sl";
 import {NodeControl} from "../../nodeControl";
 
 
@@ -146,6 +146,21 @@ export function DropdownInputControlContent(
                                     }}
                                     legalRanges={[]}
                                 />
+                                <Button onClick={() => {
+                                    if (index > 0) {
+                                        [data.dropdownOptions[index], data.dropdownOptions[index - 1]] =
+                                            [data.dropdownOptions[index - 1], data.dropdownOptions[index]]
+                                        props.data.set({dropdownOptions: data.dropdownOptions})
+                                    }
+                                }}><SlArrowUp/></Button>
+                                <Button onClick={() => {
+                                    if (index >= 0 && index < data.dropdownOptions.length - 1) {
+                                        [data.dropdownOptions[index], data.dropdownOptions[index + 1]] =
+                                            [data.dropdownOptions[index + 1], data.dropdownOptions[index]]
+                                        props.data.set({dropdownOptions: data.dropdownOptions})
+                                    }
+                                    props.data.update();
+                                }}><SlArrowDown/></Button>
                                 <Button
                                     onClick={() => {
                                         data.dropdownOptions.splice(index, 1);
@@ -158,21 +173,6 @@ export function DropdownInputControlContent(
                                         e.stopPropagation()
                                     }}
                                 >X</Button>
-                                <Button onClick={() => {
-                                    if (index >= 0 && index < data.dropdownOptions.length - 1) {
-                                        [data.dropdownOptions[index], data.dropdownOptions[index + 1]] =
-                                            [data.dropdownOptions[index + 1], data.dropdownOptions[index]]
-                                        props.data.set({dropdownOptions: data.dropdownOptions})
-                                    }
-                                    props.data.update();
-                                }}>Down</Button>
-                                <Button onClick={() => {
-                                    if (index > 0) {
-                                        [data.dropdownOptions[index], data.dropdownOptions[index - 1]] =
-                                            [data.dropdownOptions[index - 1], data.dropdownOptions[index]]
-                                        props.data.set({dropdownOptions: data.dropdownOptions})
-                                    }
-                                }}>Up</Button>
                             </InputGroup>
                         })}
                         <Row>
