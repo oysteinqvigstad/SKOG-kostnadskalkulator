@@ -118,11 +118,11 @@ export class ModuleNode extends BaseNode<
         return data || {};
     }
 
-    serialize() {
+    serializeControls() {
         return this.controls.c.getData();
     }
 
-    deserialize(serializedData: any) {
+    deserializeControls(serializedData: any) {
         this.controls.c.set(serializedData);
     }
 }

@@ -41,7 +41,7 @@ export class GraphSerializer {
                 if(!node) {
                     reject("Invalid node type found in file");
                 } else {
-                    node.controls.c.set(controls.c.data);
+                    node.deserializeControls(controls);
                     node.xTranslation = xy[0];
                     node.yTranslation = xy[1];
                     if(freshIDs) {
@@ -95,11 +95,11 @@ export class GraphSerializer {
             const outputsEntries = Object.entries(node.outputs).map(([key, output]) => {
                 return [key, output && this.serializePort(output)];
             });
-            const controlsEntries = Object.entries(node.controls).map(
-                ([key, control]) => {
-                    return [key, control && this.serializeControl(control)];
-                }
-            );
+            // const controlsEntries = Object.entries(node.controls).map(
+            //     ([key, control]) => {
+            //         return [key, control && this.serializeControl(control)];
+            //     }
+            // );
 
             data.nodes.push({
                 id: node.id,
@@ -108,7 +108,7 @@ export class GraphSerializer {
                 type: node.type,
                 outputs: Object.fromEntries(outputsEntries),
                 inputs: Object.fromEntries(inputsEntries),
-                controls: Object.fromEntries(controlsEntries),
+                controls: node.serializeControls(),
                 connections: []
             });
 

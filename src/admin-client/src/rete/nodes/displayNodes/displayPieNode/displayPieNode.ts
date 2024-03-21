@@ -61,11 +61,11 @@ export class DisplayPieNode extends ParseableBaseNode <
         return {}
     }
 
-    serialize(): any {
+    serializeControls(): any {
         return this.controls.c.getData();
     }
 
-    deserialize(data: any) {
+    deserializeControls(data: any) {
         this.controls.c.set(data);
     }
 

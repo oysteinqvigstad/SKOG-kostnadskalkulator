@@ -142,11 +142,11 @@ export class ChooseNode extends ParseableBaseNode<
         return { out: result ?? {value: inputs.right[0].value || 0, sourceID: this.id}}
     }
 
-    serialize(): any {
+    serializeControls(): any {
         return this.controls.c.getData();
     }
 
-    deserialize(data: any) {
+    deserializeControls(data: any) {
         this.controls.c.set(data);
     }
 

@@ -46,9 +46,9 @@ export abstract class BaseNode<
 
     abstract data(inputs: Record<KeysOfType<Inputs, any>, any[]>): Record<KeysOfType<Outputs, any>, any>;
 
-    abstract serialize() : any;
+    abstract serializeControls() : any;
 
-    abstract deserialize(serializedData: any) : void;
+    abstract deserializeControls(serializedData: any) : void;
 
     protected abstract updateNodeRendering(nodeID: string): void;
 
