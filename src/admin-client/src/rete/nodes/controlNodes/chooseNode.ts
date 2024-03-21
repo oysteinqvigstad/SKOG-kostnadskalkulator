@@ -71,7 +71,7 @@ export class ChooseNode extends ParseableBaseNode<
             const dataInput = inputs["input"+i]
             if(control) {
                 control.setNoUpdate({lh: this.leftHandValue});
-                control.setNoUpdate({sourceID: dataInput[0]?.sourceID || ""})
+                control.setNoUpdate({sourceID: dataInput?.[0]?.sourceID || ""})
                 if(
                     result === undefined &&
                     compare(this.leftHandValue, control.get('rh'), control.get('comparison'))
