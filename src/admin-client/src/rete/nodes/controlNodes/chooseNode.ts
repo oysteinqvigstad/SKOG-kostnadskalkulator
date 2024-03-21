@@ -71,6 +71,7 @@ export class ChooseNode extends ParseableBaseNode<
             const dataInput = inputs["input"+i]
             if(control) {
                 control.setNoUpdate({lh: this.leftHandValue});
+                control.setNoUpdate({sourceID: dataInput[0]?.sourceID || ""})
                 if(
                     result === undefined &&
                     compare(this.leftHandValue, control.get('rh'), control.get('comparison'))
@@ -84,22 +85,34 @@ export class ChooseNode extends ParseableBaseNode<
     }
 
     toParseNode(): ParseChooseNode {
+        const controls = this.getComparisonControls();
         return {
             id: this.id,
             type: NodeType.Choose,
             value: 0,
             inputs: [],
-            comparisons: [],
+            comparisons: controls.map(control=>{
+                return {
+                    rh: control.rh,
+                    comparison: control.comparison,
+                    resultNodeID: control.sourceID ?? ""
+                }
+            }),
         };
     }
 
-    serializeControls(): CompositeControlData {
+    private getComparisonControls() {
         const controls: ChooseNodeComparisonData[] = [];
         this.forComparisonCount((i)=> {
             const inputControl = this.getInputControlByIndex(i);
             if(inputControl === undefined) { throw new Error ("undefined input control in choose node: " + this.id)}
             controls.push(inputControl.getData());
         });
+        return controls;
+    }
+
+    serializeControls(): CompositeControlData {
+        const controls = this.getComparisonControls();
         return {
             mainControl: this.controls.c.getData(),
             comparisons: controls
