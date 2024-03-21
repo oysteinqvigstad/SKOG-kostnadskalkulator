@@ -44,8 +44,8 @@ export function ComparisonControlContainer(
                     }}
                 >
                     {comparisons.map((val, idx) => {
-                            return <option key={idx} value={val.value}>{val.label}</option>
-                        })
+                        return <option key={idx} value={val.value}>{val.label}</option>
+                    })
                     }
                 </FormSelect>
             </FloatingLabel>
@@ -54,7 +54,7 @@ export function ComparisonControlContainer(
                 value={props.data.get('rh')}
                 onChange={(value)=>{
                     props.data.set({rh: value});
-            }}/>
+                }}/>
         </InputGroup>
     )
 }
@@ -78,17 +78,12 @@ function ChooseNodeContent(
         <Drag.NoDrag>
             <Button
                 onClick = {() => {
-                    const oldOptions = [...props.data.get('comparisons')];
-                    console.log(oldOptions.length);
-                    oldOptions.push({resultNodeID: '', comparison: Comparison.EQ, rh: 0});
-                    props.data.set({comparisons: oldOptions});
+                    props.data.set({comparisonCount: props.data.get('comparisonCount') + 1});
                 }}
             >Add input</Button>
             <Button
                 onClick = {() => {
-                    const oldOptions = [...props.data.get('comparisons')];
-                    oldOptions.pop();
-                    props.data.set({comparisons: oldOptions});
+                    props.data.set({comparisonCount: props.data.get('comparisonCount') - 1});
                 }}
             >
             Remove input
