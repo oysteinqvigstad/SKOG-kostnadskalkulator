@@ -31,106 +31,114 @@ export function detectModule(name: string, nodes: ReteNode[]) {
 }
 
 
-/**
- * Traverses a graph and reduces any modules to simple connections and nodes
- * @param nodes
- * @param connections
- */
-export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nodes: ParseableNode[], connections: ConnProps[] } {
-
-    const modules = nodes
-        .filter(node=>{return node instanceof ModuleNode})
-        .map((node)=>{
-            let internalConnections = (node as ModuleNode).getConnections();
-            let internalNodes = (node as ModuleNode).getNodes();
-            const flattened = flattenGraph(internalNodes, internalConnections)
-
-            internalConnections = flattened.connections
-            internalNodes = flattened.nodes
-
-            const internalNodesWithoutInOut = internalNodes.filter(node=>{return !(node instanceof ModuleOutput || node instanceof ModuleInput)})
-
-            const internalInputNodes = internalNodes
-                .filter(node=>{
-                    return node instanceof ModuleInput
-                }).map(node=>{
-                    const target = internalConnections.find(conn=>{return conn.source === node.id})
-                    return {
-                        inputName: (node as ModuleInput).controls.c.get('inputName'),
-                        internalTargetName: target?.targetInput,
-                        targetID: target?.target
-                    }});
-
-            const internalOutputNodes = internalNodes
-                .filter(node=>{
-                    return node instanceof ModuleOutput
-                })
-                .map(node=>{
-                    const source = internalConnections.find(conn=>conn.target === node.id);
-                    return {
-                        outputName: (node as ModuleOutput).controls.c.get('outputName'),
-                        internalSourceName: source?.sourceOutput,
-                        sourceID: source?.source
-                    }
-                });
 
 
-            const externalConnections = connections
-                .filter(conn=>{return conn.target == node.id || conn.source == node.id})
-
-            const externalOutputs = externalConnections
-                .filter( conn=>conn.sourceOutput in node.outputs )
-                .map(conn=>{return {outputName: conn.sourceOutput, targetName: conn.targetInput, externalID: conn.target}});
-
-            const externalInputs = externalConnections
-                .filter(conn =>conn.targetInput in node.inputs )
-                .map(conn=>{return {inputName: conn.targetInput, sourceName: conn.sourceOutput, externalID: conn.source}});
-
-            const combinedInputData = externalInputs.map(input=>{
-                const internalInput = internalInputNodes.find(node=>node.inputName === input.inputName);
-                return { ...input, internalID: internalInput?.targetID, internalTargetName: internalInput?.internalTargetName }
-            })
-
-            const combinedOutputData = externalOutputs.map(output=>{
-                const internalOutput = internalOutputNodes.find(node=>node.outputName === output.outputName);
-                return { ...output, internalID: internalOutput?.sourceID, internalSourceName: internalOutput?.internalSourceName }
-            })
-
-            const newConnPropsInputs = combinedInputData.map(data=>{
-                return {
-                    id: getUID(),
-                    target: data.internalID || "",
-                    targetInput: data.internalTargetName || "",
-                    source: data.externalID || "",
-                    sourceOutput: data.sourceName || ""
-                } as ConnProps
-            })
-
-            const newConnPropsOutputs = combinedOutputData.map(data=>{
-                return {
-                    id: getUID(),
-                    target: data.externalID || "",
-                    targetInput: data.targetName || "",
-                    source: data.internalID || "",
-                    sourceOutput: data.internalSourceName || ""
-                } as ConnProps
-            })
-
-            connections = connections.filter(conn=>{return ![conn.target, conn.source].includes(node.id)})
-
-            return { moduleID: node.id, outputs: newConnPropsOutputs, inputs: newConnPropsInputs, nodes: internalNodesWithoutInOut }
+function getModuleOutputSources(nodes: ReteNode[], connections: ConnProps[]) : { outputNodeName: string, sourceOutput: string, source: string}[] {
+    return nodes
+        .filter(node=>{
+            return node instanceof ModuleOutput
         })
+        .map(node=>{
+            const connection = connections.find(conn=>conn.target === node.id);
+            return {
+                outputNodeName: (node as ModuleOutput).controls.c.get('outputName'),
+                sourceOutput: connection?.sourceOutput || "",
+                source: connection?.source || ""
+            }
+        });
+}
 
-    nodes = nodes.filter(node=>node instanceof ParseableBaseNode)
+function getModuleInputTargets(nodes: ReteNode[], connections: ConnProps[]) : { inputNodeName: string, targetInput: string, target: string}[] {
+    return nodes
+        .filter(node=>{
+            return node instanceof ModuleInput
+        })
+        .map(node=>{
+            const connection = connections.find(conn=>conn.source === node.id);
+            return {
+                inputNodeName: (node as ModuleInput).controls.c.get('inputName'),
+                targetInput: connection?.targetInput || "",
+                target: connection?.target || ""
+            }
+        });
+}
 
-    modules.forEach(module=>{
-        nodes = nodes.concat(module.nodes);
-        connections = connections.concat(module.inputs).concat(module.outputs)
+function redirectExternalConnections(
+    moduleNode: ModuleNode,
+    connections: ConnProps[],
+    internalTargets: { inputNodeName: string, targetInput: string, target: string}[],
+    internalSources: { outputNodeName: string, sourceOutput: string, source: string}[]
+) {
+    return connections.map(connection=>{
+        const newConnection = {
+            ...connection
+        }
+        if(connection.target === moduleNode.id) {
+            const internalTarget = internalTargets.find((target)=>{ return target.inputNodeName === connection.targetInput })
+            newConnection.target = internalTarget?.target || "";
+            // @ts-ignore
+            newConnection.targetInput = internalTarget?.targetInput || "";
+        } else if(connection.source === moduleNode.id) {
+            const internalSource = internalSources.find((source)=>{ return source.outputNodeName === connection.sourceOutput})
+            newConnection.source = internalSource?.source || "";
+            // @ts-ignore
+            newConnection.sourceOutput = internalSource?.sourceOutput || "";
+        }
+        return newConnection;
     })
-    if(nodes.some(node=>{return !isParseableNode(node)})) {
+}
+
+
+
+
+
+
+
+export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nodes: ParseableNode[], connections: ConnProps[] } {
+    let nodesCopy = [...nodes]
+    let connectionsCopy = [...connections]
+    const flattenedNodes: ReteNode[] = [];
+    const flattenedConnections: ConnProps[] = [];
+    nodesCopy
+        .filter(node=>node instanceof ModuleNode)
+        .forEach((moduleNode)=>{
+            let internalConnections = (moduleNode as ModuleNode).getConnections();
+            let internalNodes = (moduleNode as ModuleNode).getNodes();
+            const internalOutputIDs = internalNodes.filter(node=>node instanceof ModuleOutput).map(node=>node.id);
+            const internalInputIDs = internalNodes.filter(node=>node instanceof ModuleOutput).map(node=>node.id);
+
+            const internalInputNodeTargets = getModuleInputTargets(internalNodes, internalConnections);
+            const internalOutputNodeSources = getModuleOutputSources(internalNodes, internalConnections);
+
+            connectionsCopy = redirectExternalConnections(
+                (moduleNode as ModuleNode),
+                connectionsCopy,
+                internalInputNodeTargets,
+                internalOutputNodeSources
+            );
+
+            const internalNodesWithoutInOut = internalNodes
+                .filter(node=>{return !(node instanceof ModuleOutput || node instanceof ModuleInput)});
+
+            internalConnections = internalConnections.filter(connection=>{
+                return !internalOutputIDs.includes(connection.source) && !internalInputIDs.includes(connection.target)
+            })
+            const flattened = flattenGraph(internalNodesWithoutInOut, internalConnections);
+
+            internalConnections = flattened.connections;
+            internalNodes = flattened.nodes;
+
+            flattenedNodes.push(...internalNodes);
+            flattenedConnections.push(...internalConnections);
+        })
+    nodesCopy = nodesCopy.filter(node=>!(node instanceof ModuleNode))
+    nodesCopy.push(...flattenedNodes);
+    connectionsCopy.push(...flattenedConnections);
+
+    if(nodesCopy.some(node=>{return !isParseableNode(node)})) {
         throw new Error("Module nodes not removed from graph");
     }
-    return {nodes: nodes as ParseableNode[], connections: connections }
+    return {nodes: nodesCopy as ParseableNode[], connections: connectionsCopy }
 }
 
 
@@ -221,7 +229,7 @@ function populateTree(startNode: NodeConnection, nodeConnections: Map<string, No
 
     const parseNodeFromID: (id: string)=>ParseNode = (id: string) => {
         const result = reteNodes.get(id);
-        if(!result) { throw new Error ("node not found in nodes map")}
+        if(!result) { throw new Error ("node not found in nodes map " + id)}
         const parseNode = result.node.toParseNode();
         if(result.isRoot) {
             return {

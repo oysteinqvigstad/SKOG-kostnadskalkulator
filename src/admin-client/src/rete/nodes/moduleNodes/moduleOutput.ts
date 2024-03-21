@@ -5,6 +5,7 @@ import {ModuleOutputControl} from "./moduleControls";
 import {BaseNode} from "../baseNode";
 import {NodeControl} from "../nodeControl";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NumberNodeOutput} from "../types";
 
 
 export interface ModuleOutputControlData {
@@ -46,8 +47,9 @@ export class ModuleOutput extends BaseNode<
         this.addInput("value", new Classic.Input(new NumberSocket(), "Number"));
     }
 
-    data() {
-        return {};
+    data( inputs: { value: NumberNodeOutput[] } ) : NumberNodeOutput  {
+        console.log("module out data", inputs.value)
+        return { value: inputs.value?.[0].value ?? 0, sourceID: this.id };
     }
 
     serializeControls(): any {

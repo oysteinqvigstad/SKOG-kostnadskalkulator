@@ -19,22 +19,25 @@ export class GraphSerializer {
 
     /**
      * imports nodes from data exported by exportNodes
-     * @param data
+     * @param originalData
      * @param freshIDs if true, IDs are replaced with new UIDs
      */
-    public async importNodes(data: any, freshIDs?: boolean){
+    public async importNodes(originalData: any, freshIDs?: boolean){
         return new Promise<void>(async (resolve, reject) => {
 
-            if(!data) {
+            if(!originalData) {
                 reject();
                 return;
             }
 
+            let deepDataCopy = JSON.parse(JSON.stringify(originalData))
+
+
             let totalConnections: ConnProps[]  = [];
 
-            const idMap = new Map<string, string>();
+            const oldToNewIDMapping = new Map<string, string>();
 
-            for await (const { id, controls, type, xy , connections} of data.nodes) {
+            for await (const { id, controls, type, xy , connections} of deepDataCopy.nodes) {
 
                 let node = this.factory.createNode(type, id);
 
@@ -46,7 +49,7 @@ export class GraphSerializer {
                     node.yTranslation = xy[1];
                     if(freshIDs) {
                         const newID = getUID();
-                        idMap.set(node.id, newID);
+                        oldToNewIDMapping.set(node.id, newID);
                         node.id = newID;
                     }
 
@@ -59,10 +62,18 @@ export class GraphSerializer {
                 }
             }
 
+            if(freshIDs) {
+                console.log("map", Array.from(oldToNewIDMapping));
+            }
+
             for await (const connection of totalConnections) {
                 if(freshIDs) {
-                    connection.source = idMap.get(connection.source) || "";
-                    connection.target = idMap.get(connection.target) || "";
+                    const source = oldToNewIDMapping.get(connection.source);
+                    if(!source) {console.log("couldn't find source", connection)}
+                    const target = oldToNewIDMapping.get(connection.target);
+                    if(!source) {console.log("couldn't find target", connection)}
+                    connection.source = source || "";
+                    connection.target = target || "";
                 }
                 this.editor.addConnection(connection)
                     .catch((e) => console.log(e))
@@ -121,6 +132,7 @@ export class GraphSerializer {
                         node.connections.push(this.serializeConnection(connection));
                     }
                 }
+                console.log("exporting node connections", node.id, node.connections);
                 return node;
             });
         }
