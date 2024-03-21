@@ -5,6 +5,7 @@ export interface ChooseNodeControlData {
 }
 
 export interface ChooseNodeComparisonData {
+    sourceID?: string,
     lh: number;
     rh: number;
     comparison: Comparison;
