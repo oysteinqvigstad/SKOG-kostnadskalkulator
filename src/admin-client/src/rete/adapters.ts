@@ -165,14 +165,11 @@ export function createParseNodeGraph(editor: NodeEditor<Schemes>) : ParseNode[] 
         if(parentNode !== undefined) {
             if(targetPortName === "result") {
                 parentNode.child = connection.source;
-            }
-            if(targetPortName === "left") {
+            } else if(targetPortName === "left") {
                 parentNode.left = connection.source;
-            }
-            if(targetPortName === "right") {
+            } else if(targetPortName === "right") {
                 parentNode.right = connection.source;
-            }
-            if(targetPortName === "input") {
+            } else {
                 if(parentNode.inputs !== undefined) {
                     parentNode.inputs.push(connection.source)
                 } else {
