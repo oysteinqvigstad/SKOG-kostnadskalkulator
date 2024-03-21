@@ -17,7 +17,7 @@ export interface ModuleNodeControlData {
 export class ModuleNode extends BaseNode<
     Record<string, NumberSocket>,
     Record<string, NumberSocket>,
-    ModuleNodeControlData
+    { c : NodeControl<ModuleNodeControlData>}
 > {
     module: null | Module<Schemes> = null;
     editor: NodeEditor<Schemes> | undefined;
@@ -51,7 +51,6 @@ export class ModuleNode extends BaseNode<
                     },
                     minimized: false
                 },
-                this.type,
                 ModuleNodeControl
             )
         );
@@ -119,4 +118,11 @@ export class ModuleNode extends BaseNode<
         return data || {};
     }
 
+    serialize() {
+        return this.controls.c.getData();
+    }
+
+    deserialize(serializedData: any) {
+        this.controls.c.set(serializedData);
+    }
 }

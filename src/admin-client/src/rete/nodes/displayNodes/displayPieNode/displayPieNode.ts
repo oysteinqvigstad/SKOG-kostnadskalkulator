@@ -13,7 +13,7 @@ import {NodeControl} from "../../nodeControl";
 export class DisplayPieNode extends ParseableBaseNode <
     { input: ResultSocket},
     {},
-    DisplayPieNodeData
+    { c: NodeControl<DisplayPieNodeData> }
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
@@ -46,7 +46,6 @@ export class DisplayPieNode extends ParseableBaseNode <
                     },
                     minimized: false
                 },
-                this.type,
                 DisplayPieNodeControlContainer
             )
         );
@@ -62,6 +61,14 @@ export class DisplayPieNode extends ParseableBaseNode <
         return {}
     }
 
+    serialize(): any {
+        return this.controls.c.getData();
+    }
+
+    deserialize(data: any) {
+        this.controls.c.set(data);
+    }
+
     toParseNode() : ParseDisplayPieNode {
         this.controls.c.setNoUpdate({nodeID: this.id})
         return {
@@ -75,6 +82,8 @@ export class DisplayPieNode extends ParseableBaseNode <
             inputOrdering: this.controls.c.get('inputs').map(input=>{return {outputID: input.id, outputLabel: input.label}}),
         }
     }
+
+
 
     protected updateDataFlow: () => void = () => {}
 }

@@ -15,7 +15,7 @@ import {NumberNodeOutput} from "../types";
 export class NaryNode extends ParseableBaseNode<
     { input: NumberSocket },
     { out: NumberSocket },
-    NumberControlData
+    { c: NodeControl<NumberControlData> }
 > {
     naryOperation: (inputs: number[]) => number;
 
@@ -36,7 +36,6 @@ export class NaryNode extends ParseableBaseNode<
                     onUpdate: ()=>{},
                     minimized: false
                 },
-                this.type,
                 NumberControlComponent
                 )
         );
@@ -65,6 +64,14 @@ export class NaryNode extends ParseableBaseNode<
             type: this.type,
             value: this.controls.c.get('value') || 0
         }
+    }
+
+    serialize(): any {
+        return this.controls.c.getData();
+    }
+
+    deserialize(data: any) {
+        this.controls.c.set(data);
     }
 
     protected updateDataFlow: () => void = ()=>{}

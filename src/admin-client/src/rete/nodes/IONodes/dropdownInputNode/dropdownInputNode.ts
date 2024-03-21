@@ -18,9 +18,8 @@ import {NumberNodeOutput} from "../../types";
 export class DropdownInputNode extends ParseableBaseNode<
     {},
     { out: NumberSocket },
-    DropdownInputControlData
+    { c: NodeControl<DropdownInputControlData>}
 > {
-    inputAlternatives: {label: string, value: number}[] = []
 
     constructor(
         protected updateNodeRendering: (nodeID: string) => void, // function that updates node rendering
@@ -58,7 +57,6 @@ export class DropdownInputNode extends ParseableBaseNode<
                 },
                 minimized: false
             },
-            this.type,
             DropdownInputControlContainer
         ));
 
@@ -73,6 +71,14 @@ export class DropdownInputNode extends ParseableBaseNode<
                 value: this.controls.c.get('dropdownOptions').find((option)=>{return option.label === this.controls.c.get('defaultKey')})?.value || 0
             }
         };
+    }
+
+    serialize(): any {
+        return this.controls.c.getData();
+    }
+
+    deserialize(data: any) {
+        this.controls.c.set(data);
     }
 
     toParseNode() : DropdownInput {

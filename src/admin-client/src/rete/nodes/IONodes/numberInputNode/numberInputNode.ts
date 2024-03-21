@@ -16,7 +16,7 @@ import {NumberNodeOutput} from "../../types";
 export class NumberInputNode extends ParseableBaseNode<
     {},
     { out: NumberSocket },
-    NumberInputControlData
+    { c: NodeControl<NumberInputControlData> }
 > {
 
     constructor(
@@ -65,7 +65,6 @@ export class NumberInputNode extends ParseableBaseNode<
                 },
                 minimized: false
             },
-            this.type,
             NumberInputControlContainer
         ));
 
@@ -77,6 +76,14 @@ export class NumberInputNode extends ParseableBaseNode<
         return {
             out: { value: this.controls.c.get('defaultValue') || 0, sourceID: this.id}
         };
+    }
+
+    serialize(): any {
+        return this.controls.c.getData();
+    }
+
+    deserialize(data: any) {
+        this.controls.c.set(data);
     }
 
     toParseNode(): ParseNumberInputNode {

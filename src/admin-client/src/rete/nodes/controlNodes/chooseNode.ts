@@ -12,7 +12,7 @@ import {NumberNodeOutput} from "../types";
 export class ChooseNode extends ParseableBaseNode<
     Record<string, NumberSocket>,
     { out: NumberSocket },
-    ChooseNodeControlData
+    { c: NodeControl<ChooseNodeControlData> }
 > {
 
     constructor(
@@ -69,7 +69,6 @@ export class ChooseNode extends ParseableBaseNode<
                 },
                 minimized: false
             },
-            this.type,
             ChooseNodeContainer
         )
         this.addControl(
@@ -103,7 +102,6 @@ export class ChooseNode extends ParseableBaseNode<
         input.addControl(new NodeControl<ChooseNodeComparisonData>(
             initial ?? {lh: 0, rh: 0, comparison: Comparison.EQ},
             options,
-            NodeType.Number,
             ComparisonControlContainer
         ));
         this.addInput("input" + number.toString(), input);
@@ -142,6 +140,14 @@ export class ChooseNode extends ParseableBaseNode<
         });
         this.updateNodeRendering(this.id);
         return { out: result ?? {value: inputs.right[0].value || 0, sourceID: this.id}}
+    }
+
+    serialize(): any {
+        return this.controls.c.getData();
+    }
+
+    deserialize(data: any) {
+        this.controls.c.set(data);
     }
 
     toParseNode(): ParseChooseNode {

@@ -124,7 +124,6 @@ export class GraphSerializer {
                 return node;
             });
         }
-        console.log(data);
         return data;
     }
 
@@ -153,7 +152,6 @@ export class GraphSerializer {
             };
         }
         if (control instanceof NodeControl) {
-            console.log(control.getData());
             return {
                 data: control.getData()
             }

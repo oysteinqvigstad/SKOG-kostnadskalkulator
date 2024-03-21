@@ -9,7 +9,6 @@ export class NodeControl<T extends {}> extends ClassicPreset.Control {
             onUpdate: (data: Partial<T>) => void,
             minimized: boolean
         },
-        public type: NodeType,
         public readonly controlContainer: (props: { data: NodeControl<T> }) => React.JSX.Element
     ) {
         super();

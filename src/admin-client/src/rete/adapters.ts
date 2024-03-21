@@ -5,6 +5,7 @@ import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
 import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
 import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
 import {getUID} from 'rete'
+import {ParseableBaseNode} from "./nodes/parseableBaseNode";
 
 
 interface NodeConnection {
@@ -22,7 +23,7 @@ interface NodeConnection {
  * @param nodes
  */
 export function detectModule(name: string, nodes: ReteNode[]) {
-    const modules = nodes.filter(node=>{return node.type === NodeType.Module})
+    const modules = nodes.filter(node=>{return node instanceof ModuleNode})
     modules.some(module=>{
         return (module as ModuleNode).controls.c.get('currentModule') === name || detectModule(name, (module as ModuleNode).getNodes())
     })
@@ -38,7 +39,7 @@ export function detectModule(name: string, nodes: ReteNode[]) {
 export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nodes: ParseableNode[], connections: ConnProps[] } {
 
     const modules = nodes
-        .filter(node=>{return node.type === NodeType.Module})
+        .filter(node=>{return node instanceof ModuleNode})
         .map((node)=>{
             let internalConnections = (node as ModuleNode).getConnections();
             let internalNodes = (node as ModuleNode).getNodes();
@@ -47,11 +48,11 @@ export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nod
             internalConnections = flattened.connections
             internalNodes = flattened.nodes
 
-            const internalNodesWithoutInOut = internalNodes.filter(node=>{return ![NodeType.ModuleInput, NodeType.ModuleOutput].includes(node.type)})
+            const internalNodesWithoutInOut = internalNodes.filter(node=>{return !(node instanceof ModuleOutput || node instanceof ModuleInput)})
 
             const internalInputNodes = internalNodes
                 .filter(node=>{
-                    return node.type === NodeType.ModuleInput
+                    return node instanceof ModuleInput
                 }).map(node=>{
                     const target = internalConnections.find(conn=>{return conn.source === node.id})
                     return {
@@ -62,7 +63,7 @@ export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nod
 
             const internalOutputNodes = internalNodes
                 .filter(node=>{
-                    return node.type === NodeType.ModuleOutput
+                    return node instanceof ModuleOutput
                 })
                 .map(node=>{
                     const source = internalConnections.find(conn=>conn.target === node.id);
@@ -120,7 +121,7 @@ export function flattenGraph(nodes: ReteNode[], connections: ConnProps[]) : {nod
             return { moduleID: node.id, outputs: newConnPropsOutputs, inputs: newConnPropsInputs, nodes: internalNodesWithoutInOut }
         })
 
-    nodes = nodes.filter(node=>{return ![NodeType.Module, NodeType.ModuleOutput, NodeType.ModuleInput].includes(node.type)})
+    nodes = nodes.filter(node=>node instanceof ParseableBaseNode)
 
     modules.forEach(module=>{
         nodes = nodes.concat(module.nodes);
