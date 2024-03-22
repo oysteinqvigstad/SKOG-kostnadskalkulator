@@ -8,14 +8,28 @@ export function StartPage() {
                 <Card.Body>
                     <Row className={"mx-auto"} style={{maxWidth: '800px'}}>
                         <Col xs={12} md={8}>
-                            <h1 style={{fontWeight: 600}}>Beregn <span style={{color: '#ffa100'}}>produktivitet</span> og <span style={{color: '#ffa100'}}>kostnader</span> for hogst.
+                            <h1 style={{fontWeight: 700, fontSize: '40px'}}>Beregn produktivitet og kostnader ved
+                                skogsdrift
                             </h1>
-                            <Row className={"mt-4 mb-4"}>
-                                <Col className={"fst-italic"}>
-                                    <p>{"Basert på skogtype, driftsforhold og hvordan drifta er tilrettelagt, gir kalkulatoren en prognose på tidsbruk og kostnader."}</p>
+                            <Row className={"mt-4 mb-4"} style={{fontWeight: 500}}>
+                                <Col>
+                                    <Row className={"mt-2 mb-4"} style={{fontSize: '18px'}}>
+                                        <p>{"Kalkulatoren gir en prognose på tidsbruk og kostnader basert på skogtype, driftsforhold og hvordan drifta er tilrettelagt."}</p>
+                                    </Row>
+                                    <Row className={"mb-5"}>
+                                        <CalculatorPicker/>
+                                    </Row>
+                                    <hr style={{color: "darkgray"}}/>
+                                    <i>
+                                        <Row className={"pt-4 mb-2"}>
+                                            <p>{"Kalkulatoren er utviklet av Skogkurs i samarbeid med NIBIO, Allskog, Glommen Mjøsen Skog og MEF-Skog. Programmeringen er utført av en gruppe bachelor-studenter ved NTNU i Gjøvik."}</p>
+                                        </Row>
+                                        <Row>
+                                            <p>{"Kalkulatoren er finansiert med støtte fra Skogbrukets Utviklingsfond og Skogbrukets Verdiskapingsfond."}</p>
+                                        </Row>
+                                    </i>
                                 </Col>
                             </Row>
-                            <CalculatorPicker />
                         </Col>
                     </Row>
                 </Card.Body>
@@ -34,7 +48,7 @@ function CalculatorPicker() {
             {data && data.length === 0 && <p>{"Ingen kalkulatorer funnet"}</p>}
             {error && <p>{"En feil oppstod ved henting av kalkulatorer"}</p>}
             {data &&
-                <Row>
+                <Row className={"row-gap-4"}>
                     {data.map((calculator) => {
                         return (
                             <Col xs={6}>
@@ -60,19 +74,12 @@ function CalculatorButton(props: {
     return (
         <Button
             variant={"secondary"}
-            className={"d-flex w-100 h-100 pt-2"}
+            className={"d-flex align-items-center w-100 h-100 pt-2 btn-calculator"}
             disabled={props.disabled}
             onClick={() => props.onclick()}
         >
             <Col>
-                <Card.Title>
-                    {props.title}
-                </Card.Title>
-                <Card.Body>
-                    <p>
-                        {props.description}
-                    </p>
-                </Card.Body>
+                <div className={"title"}>{props.title}</div>
             </Col>
         </Button>
 )
