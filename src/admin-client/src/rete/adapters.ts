@@ -1,11 +1,9 @@
-import {ConnProps, Schemes, ReteNode, ParseableNode, isParseableNode} from "./nodes/types";
-import {NodeEditor} from "rete";
+import {ConnProps, isParseableNode, ParseableNode, ReteNode, Schemes} from "./nodes/types";
+import {getUID, NodeEditor} from "rete";
 import {NodeType, ParseNode, ReferenceNode} from "@skogkalk/common/dist/src/parseTree";
 import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
 import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
 import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
-import {getUID} from 'rete'
-import {ParseableBaseNode} from "./nodes/parseableBaseNode";
 
 
 interface NodeConnection {
@@ -14,6 +12,19 @@ interface NodeConnection {
     right?: string
     child?: string
     inputs?: string[]
+}
+
+function split<T>(arr: T[], predicate: (item: T) => boolean): [T[], T[]] {
+    const left: T[] = [];
+    const right: T[] = [];
+    arr.forEach((item) => {
+        if (predicate(item)) {
+            left.push(item);
+        } else {
+            right.push(item);
+        }
+    });
+    return [left, right];
 }
 
 
@@ -89,8 +100,71 @@ function redirectExternalConnections(
 }
 
 
+export function resolveEmptyModule(moduleNode: ModuleNode, internalIONodes: ReteNode[], internalIOConnections: ConnProps[], externalIOConnections: ConnProps[]) {
+    const inputConnections = internalIOConnections.filter(connection=>{return connection.target === module.id});
+    const resolvedInputConnections : ConnProps[] = []
+    inputConnections.forEach(connection=>{
+        const inputNode = internalIONodes.find(node=>(node as ModuleInput).controls.c.get('inputName') === connection.targetInput);
+        if(inputNode) {
+            const inputOutputConnection = internalIOConnections.find(conn=>conn.source === inputNode.id);
+            if (inputOutputConnection) {
+                const outputNode = internalIONodes.find(node=>node.id === inputOutputConnection.target);
+                if(outputNode) {
+                    const outputConnection = externalIOConnections.find(conn=>conn.sourceOutput === (outputNode as ModuleOutput).controls.c.get('outputName'));
+                    if(outputConnection) {
+                        resolvedInputConnections.push({
+                            id: getUID(),
+                            source: connection.source,
+                            target: outputConnection.target,
+                            sourceOutput: connection.sourceOutput,
+                            targetInput: outputConnection.targetInput
+                        })
+                    }
+                }
+            }
+        }
+    });
+    return resolvedInputConnections;
+}
 
 
+
+export function expandModule(module: ModuleNode, externalConnections: ConnProps[]) {
+    const internalNodes = module.getNodes();
+    const internalConnections = module.getConnections();
+
+    // internal IO nodes are separated out as we only need information about their source and target nodes.
+    const [internalIONodes, internalNonIONodes] = split(internalNodes, (node)=>{
+        return node instanceof ModuleNode || node instanceof ModuleOutput;
+    });
+
+
+
+    // internal IO connections are separated out as we need to know which nodes they connect to
+    // among the module's internal nodes.
+    const [internalIOConnections, internalRegularConnections] = split(internalConnections, (connection)=>{
+        return internalIONodes.find(node => node.id === connection.target || node.id === connection.source) !== undefined;
+    });
+
+    if(internalNonIONodes.length === 0) {
+
+    }
+
+    // matching external and internal connections are combined into "redirected" connections where
+    // the source and target nodes are replaced with the internal nodes they connect to.
+    const redirectedConnections = redirectExternalConnections(
+        module,
+        externalConnections,
+        getModuleInputTargets(internalIONodes, internalIOConnections),
+        getModuleOutputSources(internalIONodes, internalIOConnections)
+    );
+
+    let newConnections = redirectedConnections.concat(internalRegularConnections);
+
+    internalNonIONodes.forEach(()=>{
+
+    });
+}
 
 
 
