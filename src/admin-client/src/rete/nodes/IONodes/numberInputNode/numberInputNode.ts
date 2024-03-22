@@ -34,6 +34,7 @@ export class NumberInputNode extends ParseableBaseNode<
             legalValues: [],
             infoText: "",
             pageOrdering: 0,
+            unit: ""
         }
 
         this.addControl( "c",new NodeControl(

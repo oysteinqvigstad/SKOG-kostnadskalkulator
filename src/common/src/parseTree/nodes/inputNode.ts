@@ -13,6 +13,7 @@ export interface InputNode extends ParseNode {
     pageName: string
     ordering: number
     simpleInput: boolean
+    unit: string
 }
 
 export function isInputNode(node: ParseNode): node is InputNode {
@@ -32,7 +33,7 @@ export interface NumberInputNode extends InputNode {
         min: number | null
         max: number | null
     }[]
-    unit: string
+
 }
 
 export function isNumberInputNode(node: ParseNode): node is NumberInputNode {
