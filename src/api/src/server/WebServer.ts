@@ -1,7 +1,6 @@
-import {Configuration} from "../types/Configuration";
 import express, {Express} from "express";
 import {
-    addCalculator,
+    addCalculator, calculateResult,
     cors,
     getCalculatorSchema,
     getCalculatorsInfo,
@@ -9,6 +8,7 @@ import {
     reactApp
 } from "./controllers";
 import * as http from "http";
+import {Configuration} from "../types/config";
 
 export default class WebServer {
     #config: Configuration
@@ -43,6 +43,7 @@ export default class WebServer {
             .get('/api/v0/getCalculatorSchema', getCalculatorSchema(this.#config.database))
             .get('*', reactApp(this.#config.staticFilesPath))
             .post('/api/v0/addCalculator', addCalculator(this.#config.database))
+            .post('/api/v0/calculate', calculateResult(this.#config.database))
 
         // TODO: Remove this after implementing a proper way to add calculators in admin console
         // const c: Calculator = {

@@ -2,6 +2,7 @@ import {IDatabase} from "../models/IDatabase";
 import express from "express";
 import path from "path";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
+import {BadRequestError, DatabaseError, NotFoundError} from "../types/errorTypes";
 
 
 /**
@@ -35,7 +36,7 @@ export function getCalculatorsInfo(db: IDatabase) {
  */
 export function getCalculatorTree(db: IDatabase) {
     return async function(req: express.Request, res: express.Response) {
-        const queryParams = validateQueryNameAndVersion(req, res)
+        const queryParams = validateGetCalculatorQueryNameAndVersion(req, res)
         if (!queryParams) return
 
         await handleDatabaseOperation(db.getCalculatorTree(queryParams.name, queryParams.version), res)
@@ -47,10 +48,21 @@ export function getCalculatorTree(db: IDatabase) {
  */
 export function getCalculatorSchema(db: IDatabase) {
     return async function(req: express.Request, res: express.Response) {
-        const queryParams = validateQueryNameAndVersion(req, res)
+        const queryParams = validateGetCalculatorQueryNameAndVersion(req, res)
         if (!queryParams) return
 
         await handleDatabaseOperation(db.getCalculatorSchema(queryParams.name, queryParams.version), res)
+    }
+}
+
+export function calculateResult(db: IDatabase) {
+    return async function(req: express.Request, res: express.Response) {
+        const {name, version, mode, inputs} = req.body as { name: string, version: number, mode: string, inputs: any }
+        if (!name || !version || isNaN(version) || !mode || !['strict', 'relaxed'].includes(mode)) {
+            return res.status(400).json({error: "Name, version and mode are required"})
+        }
+
+        handleDatabaseOperation(db.calculate(name, version, inputs, mode == 'strict'), res)
     }
 }
 
@@ -77,7 +89,7 @@ export function cors() {
 /**
  * Validates the query parameters for the getCalculatorTree and getCalculatorSchema endpoints
  */
-function validateQueryNameAndVersion(req: express.Request, res: express.Response): {name: string, version: number} | null {
+function validateGetCalculatorQueryNameAndVersion(req: express.Request, res: express.Response): {name: string, version: number} | null {
     const { name, version } = req.query as { name: string, version: string }
     if (!name || isNaN(parseInt(version))) {
         res.status(400).json({ error: "Name and version are required" }).send()
@@ -85,6 +97,8 @@ function validateQueryNameAndVersion(req: express.Request, res: express.Response
     }
     return { name, version: parseInt(version) };
 }
+
+
 
 
 /**
@@ -95,15 +109,15 @@ async function handleDatabaseOperation(operation: Promise<any>, res: express.Res
         const result = await operation;
         res.status(200).send(result);
     } catch (e) {
-        switch ((e as Error).message) {
-            case 'Calculator not found':
-                res.status(404).json({ error: "Calculator not found" }).send(); break
-            case 'Schema not found':
-                res.status(404).json({ error: "Calculator Schema not found" }).send(); break
-            case 'Tree not found':
-                res.status(404).json({ error: "Calculator Tree not found" }).send(); break
-            default:
-                res.status(500).json({ error: "Database error" }).send()
+        if (e instanceof BadRequestError) {
+            res.status(400).json({error: e.message}).send()
+        } else if (e instanceof NotFoundError) {
+            res.status(404).json({error: e.message}).send()
+        } else if (e instanceof DatabaseError) {
+            res.status(500).json({error: e.message}).send()
+        } else {
+            res.status(500).json({error: "An unexpected error occured while processing the request"}).send()
         }
+
     }
 }

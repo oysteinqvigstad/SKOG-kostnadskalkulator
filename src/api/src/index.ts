@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
-import {Configuration} from "./types/Configuration";
 import {FirestoreDatabase} from "./database/FirestoreDatabase";
 import WebServer from "./server/WebServer";
 import path from "path";
+import {Configuration} from "./types/config";
 
 dotenv.config();
 

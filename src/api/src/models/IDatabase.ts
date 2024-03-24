@@ -9,4 +9,5 @@ export interface IDatabase {
     getCalculatorsInfo(): Promise<Calculator[]>
     getCalculatorTree(name: string, version: number): Promise<ParseNode[]>
     getCalculatorSchema(name: string, version: number): Promise<any>
+    calculate(name: string, version: number, inputs: JsonInputs, strict: boolean): Promise<any>
 }

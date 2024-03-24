@@ -5,3 +5,7 @@ export interface Configuration {
     httpPort: string | number
     staticFilesPath: string
 }
+
+export interface FirestoreConfiguration {
+    projectId: string | undefined;
+}
