@@ -1,6 +1,6 @@
 import {Accordion, Alert, Badge, Card, Col, Row, Spinner, Table} from "react-bootstrap";
 import React, {useEffect} from "react";
-import {useGetCalculatorsInfoQuery, useGetCalculatorTreeQuery} from "../../state/store";
+import {useGetCalculatorsInfoIncludingUnpublishedQuery, useGetCalculatorTreeQuery} from "../../state/store";
 import {DropdownInput, InputNode, NodeType, TreeState, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 import {NumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
@@ -8,9 +8,6 @@ import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 export function ApiPage() {
     return (
         <>
-            <Alert variant={"warning"} dismissible>
-                {"Tilhørende API er experimentell og bør ikke brukes enda"}
-            </Alert>
             <Card>
                 <Card.Body className={"mx-auto"} style={{maxWidth: '800px'}}>
                     <GeneralDescription />
@@ -25,6 +22,7 @@ export function ApiPage() {
 
 function GeneralDescription() {
     return (
+        <>
         <Row className={"mt-5 mb-5 gap-3"}>
             <Col>
                 <h1>{"API"}</h1>
@@ -36,11 +34,11 @@ function GeneralDescription() {
             <Col xs={5}>
                 <img src={"../api.png"} alt={"API illustration"}/>
             </Col>
-
-            <hr className={"mt-5"} />
-            <h1 className={"mt-5"}>{"Endpoint Description"}</h1>
+        </Row>
+        <Row>
+            <h1 className={"mt-2 mb-4"}>{"Endpoint Description"}</h1>
             <p>{"This endpoint enables developers to directly send form inputs to the server and obtain the processed results. The information should be transmitted using JSON format. There's no need for authentication to access this service, which is offered at no cost. We kindly ask to refrain from overloading the system by setting up a mock service during heavy testing and/or development."}</p>
-            <Row className={"mt-2"}>
+            <Row className={"mt-3 mb-3"}>
                 <Col xs={"auto"} className={"gap-0"}>
                     <h4><Badge className={"me-2"}>POST</Badge></h4>
                 </Col>
@@ -50,7 +48,8 @@ function GeneralDescription() {
                     <p style={{fontWeight: 600}}>Content-Type: application/json</p>
                 </Col>
             </Row>
-        </Row>
+            </Row>
+        </>
     )
 }
 
@@ -165,7 +164,7 @@ function ExampleCode(props: { object: any, header: string }) {
 }
 
 function CalculatorAccordeons() {
-    const {data, error, isLoading} = useGetCalculatorsInfoQuery()
+    const {data, error, isLoading} = useGetCalculatorsInfoIncludingUnpublishedQuery()
 
     return (
         <>
@@ -174,7 +173,6 @@ function CalculatorAccordeons() {
             {error && <Alert>{"En feil oppstod ved henting av kalkulatorer"}</Alert>}
             {data && data.length === 0 && <Alert>{"Ingen kalkulatorer funnet"}</Alert>}
             {data && data.map((calculator) => <SingleCalculatorExample calculator={calculator} />)}
-
         </>
     )
 }
