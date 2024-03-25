@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: build (nodejs ${{ matrix.node-version }})
     strategy:
       matrix:
         # even numbers are LTS releases
@@ -35,6 +36,7 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
+    name: test (nodejs ${{ matrix.node-version }})
     strategy:
       matrix:
         # even numbers are LTS releases
