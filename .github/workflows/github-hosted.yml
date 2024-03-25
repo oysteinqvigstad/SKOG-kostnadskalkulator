@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         # even numbers are LTS releases
-        node-version: [16, 18, 20]
+        node-version: [18, 20, 21]
 
     steps:
       # equivalent of doing git clone
@@ -40,7 +40,7 @@ jobs:
     strategy:
       matrix:
         # even numbers are LTS releases
-        node-version: [16, 18, 20]
+        node-version: [18, 20, 21]
 
     steps:
       # equivalent of doing git clone
