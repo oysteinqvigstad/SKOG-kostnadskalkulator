@@ -74,7 +74,7 @@ jobs:
         with:
           version: 'latest'
           project_id: ${{ secrets.GCP_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+#          service_account_key: ${{ secrets.GCP_SA_KEY }}
 #          project_id: ${{ secrets.GCP_PROJECT_SKOGKURS }}
 #          service_account_key: ${{ secrets.GCP_SA_KEY_SKOGKURS }}
           # allows gcloud to read credentials
