@@ -12,22 +12,21 @@ export function addCalculator(db: IDatabase) {
     return async function(req: express.Request, res: express.Response) {
         const c: Calculator = req.body
         if (!c.reteSchema || !c.treeNodes) {
-            console.log(c.treeNodes)
             return res.status(400).json({ error: "fields reteSchema and treeNodes are required" })
         } else if (!c.name || !c.version || isNaN(c.version)) {
             return res.status(400).json({ error: "fields name and version cannot be empty or zero" })
         }
 
-        await handleDatabaseOperation(db.addCalculator(c), res)
+        await respondToResult(db.addCalculator(c), res)
     }
 }
 
 /**
- * Returns metainfo on all calculator versions in the database
+ * Handler for fetching metainfo on all calculator versions in the database
  */
 export function getCalculatorsInfo(db: IDatabase) {
     return async function(req: express.Request, res: express.Response) {
-        await handleDatabaseOperation(db.getCalculatorsInfo(), res)
+        await respondToResult(db.getCalculatorsInfo(), res)
     }
 }
 
@@ -39,7 +38,7 @@ export function getCalculatorTree(db: IDatabase) {
         const queryParams = validateGetCalculatorQueryNameAndVersion(req, res)
         if (!queryParams) return
 
-        await handleDatabaseOperation(db.getCalculatorTree(queryParams.name, queryParams.version), res)
+        await respondToResult(db.getCalculatorTree(queryParams.name, queryParams.version), res)
     }
 }
 
@@ -51,7 +50,7 @@ export function getCalculatorSchema(db: IDatabase) {
         const queryParams = validateGetCalculatorQueryNameAndVersion(req, res)
         if (!queryParams) return
 
-        await handleDatabaseOperation(db.getCalculatorSchema(queryParams.name, queryParams.version), res)
+        await respondToResult(db.getCalculatorSchema(queryParams.name, queryParams.version), res)
     }
 }
 
@@ -62,7 +61,7 @@ export function calculateResult(db: IDatabase) {
             return res.status(400).json({error: "Name, version and mode are required"})
         }
 
-        handleDatabaseOperation(db.calculate(name, version, inputs, mode == 'strict'), res)
+        await respondToResult(db.calculate(name, version, inputs, mode == 'strict'), res)
     }
 }
 
@@ -102,22 +101,20 @@ function validateGetCalculatorQueryNameAndVersion(req: express.Request, res: exp
 
 
 /**
- * Wrapper function to handle the database operation and catch errors
+ * Helper function that resolves a operation and send the appropriate response to the caller
  */
-async function handleDatabaseOperation(operation: Promise<any>, res: express.Response) {
-    try {
-        const result = await operation;
-        res.status(200).send(result);
-    } catch (e) {
-        if (e instanceof BadRequestError) {
-            res.status(400).json({error: e.message}).send()
-        } else if (e instanceof NotFoundError) {
-            res.status(404).json({error: e.message}).send()
-        } else if (e instanceof DatabaseError) {
-            res.status(500).json({error: e.message}).send()
-        } else {
-            res.status(500).json({error: "An unexpected error occured while processing the request"}).send()
-        }
-
-    }
+async function respondToResult(operation: Promise<any>, res: express.Response) {
+    operation
+        .then(result => { res.status(200).send(result) })
+        .catch(e => {
+            if (e instanceof BadRequestError) {
+                res.status(400).json({error: "Some of your input is invalid: " + e.message})
+            } else if (e instanceof NotFoundError) {
+                res.status(404).json({error: "The resource you requested was not found: " + e.message});
+            } else if (e instanceof DatabaseError) {
+                res.status(500).json({error: "We are experiencing technical difficulties. Please try again later."})
+            } else {
+                res.status(500).json({error: "An unexpected issue occurred. Please try again later."})
+            }
+        })
 }
