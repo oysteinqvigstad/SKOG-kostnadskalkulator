@@ -15,6 +15,8 @@ import {SidePanel} from "./containers/panels/SidePanel";
 import {RetePanel} from "./containers/panels/RetePanel";
 import {getNodeByID, ParseNode, TreeState} from "@skogkalk/common/dist/src/parseTree";
 import {ModulePanel} from "./containers/panels/modulePanel";
+import {useServices} from "./contexts/ServiceContext";
+import {useNavigate} from "react-router-dom";
 
 
 export default function App() {
@@ -23,6 +25,7 @@ export default function App() {
     const dispatch = useAppDispatch();
     const pages = useAppSelector(selectPages);
     const treeState = useAppSelector(selectTreeState)
+
 
     useEffect(() => {
         // ensures that the tree state is updated when certain changes occur
@@ -38,6 +41,7 @@ export default function App() {
             dispatch(removeInputFromPage({nodeID: id, pageName: page}));
         })
     }, [treeState])
+
 
 
 
@@ -106,6 +110,7 @@ export default function App() {
                   </Row>
               </Container>
           </div>
+
       </Provider>
   );
 }
