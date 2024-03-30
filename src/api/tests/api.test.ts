@@ -1,5 +1,4 @@
 import WebServer from "../src/server/WebServer";
-import {IDatabase} from "../src/models/IDatabase";
 import {MockDatabase} from "../src/database/MockDatabase";
 import request from 'supertest'
 import path from "path";
