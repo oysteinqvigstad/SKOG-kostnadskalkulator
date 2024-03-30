@@ -10,8 +10,8 @@ import {store} from "./state/store";
 import {ServiceContextType, ServiceProvider} from "./contexts/ServiceContext";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import { SignInPage } from "./pages/SignInPage";
-import {MockAuthService} from "./services/MockAuthService";
 import {SignInConfirmPage} from "./pages/SignInConfirmPage";
+import {MockAuthService} from "./services/MockAuthService";
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement!);
