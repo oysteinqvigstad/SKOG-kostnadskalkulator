@@ -2,7 +2,7 @@ import {IDatabase} from "../models/IDatabase";
 import express from "express";
 import path from "path";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
-import {BadRequestError, DatabaseError, NotFoundError} from "../types/errorTypes";
+import {AuthenticationError, BadRequestError, DatabaseError, NotFoundError} from "../types/errorTypes";
 import {IAuth} from "../models/IAuth";
 
 
@@ -22,9 +22,7 @@ export function addCalculator(db: IDatabase, auth: IAuth) {
             return res.status(400).json({ error: "fields name and version cannot be empty or zero" })
         }
 
-        auth.verifyToken(idToken)
-            .then(() => { respondToResult(db.addCalculator(c), res) })
-            .catch(() => { res.status(401).json({error: "Invalid authorization token"}) })
+        await respondToResult(auth.verifyToken(idToken).then(() => db.addCalculator(c)), res)
     }
 }
 
@@ -32,7 +30,7 @@ export function addCalculator(db: IDatabase, auth: IAuth) {
  * Handler for fetching metainfo on all calculator versions in the database
  */
 export function getCalculatorsInfo(db: IDatabase) {
-    return async function(req: express.Request, res: express.Response) {
+    return async function(_req: express.Request, res: express.Response) {
         await respondToResult(db.getCalculatorsInfo(), res)
     }
 }
@@ -117,6 +115,8 @@ async function respondToResult(operation: Promise<any>, res: express.Response) {
         .catch(e => {
             if (e instanceof BadRequestError) {
                 res.status(400).json({error: "Some of your input is invalid: " + e.message})
+            } else if (e instanceof AuthenticationError) {
+                res.status(401).json({error: "Invalid authorization token"})
             } else if (e instanceof NotFoundError) {
                 res.status(404).json({error: "The resource you requested was not found: " + e.message});
             } else if (e instanceof DatabaseError) {
