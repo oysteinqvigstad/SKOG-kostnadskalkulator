@@ -81,6 +81,14 @@ describe('api calculator', () => {
             .expect(401)
     })
 
+    test('POST /api/v0/addCalculator (empty authorization Bearer)', async () => {
+        await request(server.app)
+            .post('/api/v0/addCalculator')
+            .set('Authorization', 'Bearer ')
+            .send(calculator)
+            .expect(401)
+    })
+
     test('GET /api/v0/getCalculatorsInfo', async () => {
         const {reteSchema, treeNodes, ...rest} = calculator
         await request(server.app)

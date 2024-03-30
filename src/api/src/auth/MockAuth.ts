@@ -1,7 +1,10 @@
 import {IAuth} from "../models/IAuth";
+import {AuthenticationError} from "../types/errorTypes";
 
 export class MockAuth implements IAuth {
     async verifyToken(token: string): Promise<void> {
-        return Promise.resolve();
+        if (token === "") {
+            throw new AuthenticationError("Invalid authorization token")
+        }
     }
 }
