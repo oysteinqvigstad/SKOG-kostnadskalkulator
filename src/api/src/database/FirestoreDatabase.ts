@@ -1,8 +1,10 @@
 import FirebaseFirestore, {DocumentSnapshot} from "@google-cloud/firestore";
 import {IDatabase} from "../models/IDatabase";
-import {FirestoreConfiguration} from "../types/FirestoreConfiguration";
-import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {ParseNode, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
+import {DatabaseError, NotFoundError} from "../types/errorTypes";
+import {FirestoreConfiguration} from "../types/config";
+import {generateJsonCalculationResponse, setInputsByJSON} from "../utils/transformations";
 
 export class FirestoreDatabase implements IDatabase {
     #db: FirebaseFirestore.Firestore
@@ -39,7 +41,7 @@ export class FirestoreDatabase implements IDatabase {
         //  (e.g. if a calculator with the same name and version already exists)
         //  right now it just overwrites the existing calculator
         await this.#db.runTransaction(async (t) => { t.set(ref, c) })
-            .catch(() => { throw new Error('An error occurred while adding the calculator') })
+            .catch(() => { throw new DatabaseError('An error occurred while adding the calculator') })
     }
 
 
@@ -81,7 +83,7 @@ export class FirestoreDatabase implements IDatabase {
             .collectionGroup('versions')
             .get()
             .then(snapshot => snapshot.docs.map(doc => doc.data() as Calculator))
-            .catch(() => { throw new Error('An error occurred while getting the calculators') })
+            .catch(() => { throw new DatabaseError('An error occurred while getting the calculators') })
 
 
     }
@@ -99,8 +101,8 @@ export class FirestoreDatabase implements IDatabase {
             .get()
             .then(doc => {
                 if (doc.exists) return doc
-                throw new Error('Calculator not found') })
-            .catch(() => { throw new Error('An error occurred while getting the calculator') })
+                throw new NotFoundError('Calculator not found') })
+            .catch(() => { throw new DatabaseError('An error occurred while getting the calculator') })
     }
 
     /**
@@ -114,7 +116,13 @@ export class FirestoreDatabase implements IDatabase {
         if (data && data.hasOwnProperty(fieldName)) {
             return data[fieldName]
         } else {
-            throw new Error(`Field ${fieldName} not found on calculator`)
+            throw new DatabaseError(`Field ${fieldName} not found on calculator`)
         }
+    }
+
+    async calculate(name: string, version: number, inputs: JsonInputs, strict: boolean): Promise<any> {
+        let tree = treeStateFromData(await this.getCalculatorTree(name, version))
+        tree = setInputsByJSON(tree, inputs, strict)
+        return generateJsonCalculationResponse(tree)
     }
 }

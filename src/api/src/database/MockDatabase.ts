@@ -1,6 +1,11 @@
 import {IDatabase} from "../models/IDatabase";
-import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {
+    ParseNode,
+    treeStateFromData
+} from "@skogkalk/common/dist/src/parseTree";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
+import {generateJsonCalculationResponse, setInputsByJSON} from "../utils/transformations";
+import {NotFoundError} from "../types/errorTypes";
 
 export class MockDatabase implements IDatabase {
     #calculators: Record<string, Record<number, Calculator>> = {}
@@ -35,10 +40,10 @@ export class MockDatabase implements IDatabase {
      */
     async getCalculatorTree(name: string, version: number): Promise<ParseNode[]> {
         const calculator = this.#calculators[name]?.[version]
-        if (!calculator) throw new Error('Calculator not found')
+        if (!calculator) throw new NotFoundError('Calculator not found')
 
         const tree = calculator.treeNodes
-        if (!tree) throw new Error('Tree not found')
+        if (!tree) throw new NotFoundError('Tree not found')
         return tree
     }
 
@@ -47,10 +52,16 @@ export class MockDatabase implements IDatabase {
      */
     async getCalculatorSchema(name: string, version: number): Promise<any> {
         const calculator = this.#calculators[name]?.[version]
-        if (!calculator) throw new Error('Calculator not found')
+        if (!calculator) throw new NotFoundError('Calculator not found')
 
         const schema = calculator.reteSchema
-        if (!schema) throw new Error('Schema not found')
+        if (!schema) throw new NotFoundError('Schema not found')
         return schema
+    }
+
+    async calculate(name: string, version: number, inputs: JsonInputs, strict: boolean): Promise<any> {
+        let tree = treeStateFromData(await this.getCalculatorTree(name, version))
+        tree = setInputsByJSON(tree, inputs, strict)
+        return generateJsonCalculationResponse(tree)
     }
 }
