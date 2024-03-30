@@ -6,13 +6,12 @@ import path from "path";
 import {testTree, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 import {Configuration} from "../src/types/config";
+import {MockAuth} from "../src/auth/MockAuth";
 
 let server: WebServer
-let database: IDatabase
 let calculator: Calculator
 
 beforeAll(() => {
-    database = new MockDatabase()
     calculator = {
         name: "testMy",
         version: 1,
@@ -25,7 +24,8 @@ beforeAll(() => {
         treeNodes: treeStateFromData(testTree).subTrees
     }
     const config: Configuration = {
-        database: database,
+        database: new MockDatabase(),
+        auth: new MockAuth(),
         httpPort: 4000,
         staticFilesPath: path.join(__dirname, '..', '..', 'client', 'build')
     }
@@ -62,8 +62,24 @@ describe('api calculator', () => {
     test('POST /api/v0/addCalculator', async () => {
         await request(server.app)
             .post('/api/v0/addCalculator')
+            .set('Authorization', 'Bearer test_token')
             .send(calculator)
             .expect(200)
+    })
+
+    test('POST /api/v0/addCalculator (no authorization header)', async () => {
+        await request(server.app)
+            .post('/api/v0/addCalculator')
+            .send(calculator)
+            .expect(401)
+    })
+
+    test('POST /api/v0/addCalculator (no authorization Bearer)', async () => {
+        await request(server.app)
+            .post('/api/v0/addCalculator')
+            .set('Authorization', '')
+            .send(calculator)
+            .expect(401)
     })
 
     test('GET /api/v0/getCalculatorsInfo', async () => {
@@ -96,7 +112,7 @@ describe('api calculator', () => {
 })
 
 describe('api calculate', () => {
-    test('post /api/v0/calculate (missing payload)', async () => {
+    test('POST /api/v0/calculate (missing payload)', async () => {
         await request(server.app)
             .post('/api/v0/calculate')
             .send()

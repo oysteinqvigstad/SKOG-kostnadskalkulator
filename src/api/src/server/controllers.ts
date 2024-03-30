@@ -3,21 +3,28 @@ import express from "express";
 import path from "path";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 import {BadRequestError, DatabaseError, NotFoundError} from "../types/errorTypes";
+import {IAuth} from "../models/IAuth";
 
 
 /**
  * Adds a calculator to the database
  */
-export function addCalculator(db: IDatabase) {
+export function addCalculator(db: IDatabase, auth: IAuth) {
     return async function(req: express.Request, res: express.Response) {
         const c: Calculator = req.body
-        if (!c.reteSchema || !c.treeNodes) {
+        const idToken = req.headers.authorization?.split('Bearer ')[1]
+
+        if (!idToken) {
+            return res.status(401).json({error: "Authorization token is required"})
+        } else if (!c.reteSchema || !c.treeNodes) {
             return res.status(400).json({ error: "fields reteSchema and treeNodes are required" })
         } else if (!c.name || !c.version || isNaN(c.version)) {
             return res.status(400).json({ error: "fields name and version cannot be empty or zero" })
         }
 
-        await respondToResult(db.addCalculator(c), res)
+        auth.verifyToken(idToken)
+            .then(() => { respondToResult(db.addCalculator(c), res) })
+            .catch(() => { res.status(401).json({error: "Invalid authorization token"}) })
     }
 }
 

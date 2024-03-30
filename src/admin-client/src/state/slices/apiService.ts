@@ -13,11 +13,14 @@ export const apiService = createApi({
             query: ({name, version}) => `getCalculatorSchema?name=${name}&version=${version}`,
 
         }),
-        addCalculator: builder.mutation<void, Calculator>({
-            query: (body) => ({
+        addCalculator: builder.mutation<void, {calculator: Calculator, token: string}>({
+            query: ({calculator, token}) => ({
                 url: `addCalculator`,
                 method: 'POST',
-                body,
+                body: calculator,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             }),
         }),
     }),

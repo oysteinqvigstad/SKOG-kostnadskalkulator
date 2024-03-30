@@ -13,4 +13,6 @@ export interface IAuthService {
     isSignInLink(url: string): boolean
     // Sign out the user
     signOut(): Promise<void>
+    // Get the auth token
+    getToken(): Promise<string>
 }

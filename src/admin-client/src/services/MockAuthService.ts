@@ -40,4 +40,9 @@ export class MockAuthService implements IAuthService {
     signOut() {
         return Promise.reject("User switching is not implemented in Mock Auth Service. Change dependency injection in code to use the real authentication service. If you see this error in production, please notify the administrator")
     }
+
+    // Mock getting the auth token
+    getToken() {
+        return Promise.resolve("{ Mock Token }")
+    }
 }

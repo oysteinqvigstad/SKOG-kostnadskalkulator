@@ -3,6 +3,7 @@ import {useAddCalculatorMutation, useGetCalculatorSchemaQuery, useGetCalculators
 import {FormulaInfoContainer} from "../formulaInfoContainer";
 import {Button, ButtonGroup, Dropdown, DropdownButton, Spinner, Stack, Table} from "react-bootstrap";
 import {useEffect, useRef, useState} from "react";
+import {useServices} from "../../contexts/ServiceContext";
 
 /**
  * A pane for importing and exporting calculators from/to the online database through the API
@@ -63,6 +64,7 @@ function SaveToAPI(props: {
     onSaved: () => void,
 }) {
     const [addCalculator, addCalculatorStatus] = useAddCalculatorMutation()
+    const {authService} = useServices()
 
 
     const sendToAPI = async (publish: boolean) => {
@@ -71,8 +73,10 @@ function SaveToAPI(props: {
         } else if (!props.calculator.name || !props.calculator.version) {
             window.alert("Cannot save a calculator without a name and version")
         } else {
-            props.calculator.published = publish
-            addCalculator(props.calculator)
+            const updatedCalculator = {...props.calculator, published: publish}
+            authService.getToken()
+                .then(token => addCalculator({calculator: updatedCalculator, token: token}))
+                .catch(() => window.alert("Error getting authentication token, try logging in and out again"))
         }
     }
 

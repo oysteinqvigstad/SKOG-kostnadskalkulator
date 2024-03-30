@@ -51,4 +51,9 @@ export class FirebaseAuthService implements IAuthService {
     async signOut() {
         return this.auth.signOut()
     }
+
+    // Get the auth token
+    getToken() {
+        return this.auth.currentUser!.getIdToken()
+    }
 }

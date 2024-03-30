@@ -42,7 +42,7 @@ export default class WebServer {
             .get('/api/v0/getCalculatorTree', getCalculatorTree(this.#config.database))
             .get('/api/v0/getCalculatorSchema', getCalculatorSchema(this.#config.database))
             .get('*', reactApp(this.#config.staticFilesPath))
-            .post('/api/v0/addCalculator', addCalculator(this.#config.database))
+            .post('/api/v0/addCalculator', addCalculator(this.#config.database, this.#config.auth))
             .post('/api/v0/calculate', calculateResult(this.#config.database))
 
         // TODO: Remove this after implementing a proper way to add calculators in admin console
