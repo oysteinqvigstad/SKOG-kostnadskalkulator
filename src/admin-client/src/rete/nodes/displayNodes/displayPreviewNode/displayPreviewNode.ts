@@ -66,7 +66,7 @@ export class DisplayPreviewNode extends ParseableBaseNode <
         return {
             id: this.id,
             unit: this.controls.c.get("unit"),
-            type: NodeType.Display,
+            type: NodeType.PreviewDisplay,
             value: 0,
             inputs: [],
             name: this.controls.c.get("name"),
