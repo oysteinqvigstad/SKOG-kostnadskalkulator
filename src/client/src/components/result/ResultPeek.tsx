@@ -1,18 +1,19 @@
 import {useAppSelector} from "../../state/hooks";
 import React from "react";
-import {ResultRowBoxes} from "./ResultRowBoxes";
-import {selectResults} from "../../state/treeSelectors";
-import {VisualResult} from "../../types/ResultListItem";
+import {selectDisplayNodes, selectTreeState} from "../../state/treeSelectors";
+import {DisplayPreviewNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {ResultPreview} from "@skogkalk/common/dist/src/visual/resultPreview";
+import {MdKeyboardDoubleArrowUp} from "react-icons/md";
 
 export function ResultPeek() {
-    const results = useAppSelector(selectResults)
-    const combined: VisualResult = {
-        name: "",
-        items: results?.flatMap((result) => result.items) ?? []
-    }
+    const treeState = useAppSelector(selectTreeState)
+    const preview = useAppSelector(selectDisplayNodes)
+        ?.filter(node => node.type === NodeType.PreviewDisplay)
+
     return (
         <>
-            {combined && <ResultRowBoxes result={combined} />}
+            <MdKeyboardDoubleArrowUp size={25} className={"mt-0 mb-2"} color={"lightgray"} />
+            {preview?.map(node => <ResultPreview displayData={node as DisplayPreviewNode} treeState={treeState} />)}
         </>
     )
 }

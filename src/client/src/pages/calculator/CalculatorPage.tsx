@@ -1,7 +1,7 @@
 import {ResultContent} from "../../containers/ResultContent";
 import Sheet from "react-modal-sheet";
 import React, {useEffect, useState} from "react";
-import {Alert, Button} from "react-bootstrap";
+import {Alert, Button, Container} from "react-bootstrap";
 import {ResultParameters} from "../../components/result/ResultParameters";
 import {ResultPeek} from "../../components/result/ResultPeek";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
@@ -86,7 +86,9 @@ function MobileView() {
                     />
                     <Sheet.Content>
                         <Sheet.Scroller>
-                            <ResultContent />
+                            <Container>
+                                <ResultContent />
+                            </Container>
                         </Sheet.Scroller>
                     </Sheet.Content>
                 </Sheet.Container>
