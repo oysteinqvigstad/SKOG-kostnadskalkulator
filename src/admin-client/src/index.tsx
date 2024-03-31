@@ -12,6 +12,7 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import { SignInPage } from "./pages/SignInPage";
 import {SignInConfirmPage} from "./pages/SignInConfirmPage";
 import {MockAuthService} from "./services/MockAuthService";
+import {FirebaseAuthService} from "./services/FirebaseAuthService";
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement!);

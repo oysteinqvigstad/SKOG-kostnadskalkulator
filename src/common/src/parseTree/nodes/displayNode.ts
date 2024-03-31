@@ -29,3 +29,8 @@ export interface DisplayBarNode extends DisplayNode {
     unit: string
     max: number
 }
+
+export interface DisplayPreviewNode extends DisplayNode {
+    unit: string
+}
+
