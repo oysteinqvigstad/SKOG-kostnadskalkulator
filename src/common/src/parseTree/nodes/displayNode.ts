@@ -16,7 +16,7 @@ export interface DisplayNode extends ParseNode {
 }
 
 export function isDisplayNode (node: ParseNode) : node is DisplayNode {
-    return node.type === NodeType.Display || node.type === NodeType.BarDisplay
+    return node.type === NodeType.Display || node.type === NodeType.BarDisplay || node.type === NodeType.PreviewDisplay
 }
 
 
@@ -29,3 +29,8 @@ export interface DisplayBarNode extends DisplayNode {
     unit: string
     max: number
 }
+
+export interface DisplayPreviewNode extends DisplayNode {
+    unit: string
+}
+

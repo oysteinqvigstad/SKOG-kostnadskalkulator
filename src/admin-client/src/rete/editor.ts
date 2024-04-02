@@ -340,7 +340,8 @@ export class Editor {
         ])
         const displayNodes = nodeTypesToDefinition ( [
             NodeType.Display,
-            NodeType.BarDisplay
+            NodeType.BarDisplay,
+            NodeType.PreviewDisplay
         ])
 
 

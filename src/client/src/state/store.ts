@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
 import treeReducer from "./treeSlice"
-import calculatorReducer from "./calculatorSlice";
 import {apiService} from "./apiService";
 
 
@@ -11,14 +10,13 @@ import {apiService} from "./apiService";
 export const store = configureStore({
     reducer: {
         tree: treeReducer,
-        calculator: calculatorReducer,
         [apiService.reducerPath]: apiService.reducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiService.middleware)
 })
 
 // importing auto generated hooks from the redux toolkit
-export const { useGetCalculatorsInfoQuery, useGetCalculatorTreeQuery } = apiService
+export const { useGetCalculatorsInfoQuery, useGetCalculatorTreeQuery, useGetCalculatorsInfoIncludingUnpublishedQuery } = apiService
 
 // types that our hooks use, don't use these directly in components
 export type RootState = ReturnType<typeof store.getState>

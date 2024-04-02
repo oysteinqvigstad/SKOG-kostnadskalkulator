@@ -11,6 +11,7 @@ import {DisplayPieNode} from "./nodes/displayNodes/displayPieNode/displayPieNode
 import {DisplayBarNode} from "./nodes/displayNodes/displayBarNode/displayBarNode";
 import {BinaryNode} from "./nodes/mathNodes/binaryNode";
 import {NaryNode} from "./nodes/mathNodes/naryNode";
+import {DisplayPreviewNode} from "./nodes/displayNodes/displayPreviewNode/displayPreviewNode";
 
 
 export class NodeFactory {
@@ -33,6 +34,7 @@ export class NodeFactory {
             case NodeType.DropdownInput: return new DropdownInputNode(this.updateNodeRendering, this.updateDataFlow, this.signalOnChange, id);
             case NodeType.Display: return new DisplayPieNode(this.updateNodeRendering, this.signalOnChange, id);
             case NodeType.BarDisplay: return new DisplayBarNode(this.updateNodeRendering, this.signalOnChange, id);
+            case NodeType.PreviewDisplay: return new DisplayPreviewNode(this.updateNodeRendering, this.signalOnChange, id);
             case NodeType.Add: return new BinaryNode(NodeType.Add, this.updateNodeRendering, id);
             case NodeType.Sub: return new BinaryNode(NodeType.Sub, this.updateNodeRendering, id);
             case NodeType.Mul: return new BinaryNode(NodeType.Mul, this.updateNodeRendering, id);

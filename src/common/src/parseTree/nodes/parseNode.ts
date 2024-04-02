@@ -48,6 +48,7 @@ export enum NodeType {
     Root = "Root",
     Display = "Display",
     BarDisplay = "BarDisplay",
+    PreviewDisplay = "PreviewDisplay",
     NumberInput = "NumberInput",
     DropdownInput = "DropdownInput",
     Output = "Output",

@@ -75,7 +75,7 @@ export function treeStateFromData(data: any): TreeState {
     });
 
 
-    return {
+    const tree = {
         rootNode: roots[0] ||  {
         id: "0",
         type: NodeType.Root,
@@ -90,6 +90,10 @@ export function treeStateFromData(data: any): TreeState {
         outputs: outputs,
         subTrees: subTrees
     };
+
+    updateNodeValuesMutably(tree)
+    return tree
+
 }
 
 
@@ -360,6 +364,7 @@ export function setInputsByURLQueries(tree: TreeState, queries: [page: string, v
     // creates a new {Tree State} with all key-value query inputs inserted
     return updateTree(tree, queries.map(parseQuery))
 }
+
 
 
 export function getInputByPageAndIndex(tree: TreeState, pageName: string, index: number) : InputNode | undefined {

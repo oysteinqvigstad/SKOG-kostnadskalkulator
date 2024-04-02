@@ -3,6 +3,7 @@ import {useAddCalculatorMutation, useGetCalculatorSchemaQuery, useGetCalculators
 import {FormulaInfoContainer} from "../formulaInfoContainer";
 import {Button, ButtonGroup, Dropdown, DropdownButton, Spinner, Stack, Table} from "react-bootstrap";
 import {useEffect, useRef, useState} from "react";
+import {useServices} from "../../contexts/ServiceContext";
 
 /**
  * A pane for importing and exporting calculators from/to the online database through the API
@@ -62,7 +63,8 @@ function SaveToAPI(props: {
     calculator: Calculator,
     onSaved: () => void,
 }) {
-    const [addCalculator, addCalculatorStatus] = useAddCalculatorMutation()
+    const [addCalculator, {isLoading}] = useAddCalculatorMutation()
+    const {authService} = useServices()
 
 
     const sendToAPI = async (publish: boolean) => {
@@ -71,34 +73,50 @@ function SaveToAPI(props: {
         } else if (!props.calculator.name || !props.calculator.version) {
             window.alert("Cannot save a calculator without a name and version")
         } else {
-            props.calculator.published = publish
-            addCalculator(props.calculator)
+            const updatedCalculator = {...props.calculator, published: publish}
+            authService.getToken()
+                .then(token =>
+                    addCalculator({calculator: updatedCalculator, token: token})
+                        .unwrap()
+                        .then(() => window.alert("Successfully saved to database"))
+                        .catch((err) => {
+                            if ('status' in err && err.status === 401) {
+                                window.alert("Invalid authentication token, try logging in and out again")
+                            } else {
+                                window.alert("Error saving to database")
+                            }
+                        })
+                )
+                .catch(() => window.alert("Error getting authentication token, try logging in and out again"))
         }
     }
 
 
-    // keep a reference to the latest onSaved function
-    const onSaved = useRef(props.onSaved)
-
-    // keep the onSaved function up to date without causing a rerender
-    useEffect(() => {
-        onSaved.current = props.onSaved
-    }, [props.onSaved]);
-
-    // call the onSaved function when the data is fetched
-    useEffect(() => {
-        if (addCalculatorStatus.isSuccess) {
-            window.alert("Successfully saved to database")
-            onSaved.current()
-        } else if (addCalculatorStatus.isError) {
-            window.alert("Error saving to database")
-        }
-    }, [addCalculatorStatus])
+    // // keep a reference to the latest onSaved function
+    // const onSaved = useRef(props.onSaved)
+    //
+    // // keep the onSaved function up to date without causing a rerender
+    // useEffect(() => {
+    //     onSaved.current = props.onSaved
+    // }, [props.onSaved]);
+    //
+    // // call the onSaved function when the data is fetched
+    // useEffect(() => {
+    //     if (success) {
+    //         window.alert("Successfully saved to database")
+    //         onSaved.current()
+    //     } else if (addCalculatorStatus.isError) {
+    //         if ('') {
+    //
+    //         }
+    //         window.alert("Error saving to database")
+    //     }
+    // }, [addCalculatorStatus])
 
 
     return (
         <>
-            <DropdownButton id={"save options"} as={ButtonGroup} title={addCalculatorStatus.isLoading ? "Exporting..." : "Export"} style={{height: '58px'}}>
+            <DropdownButton id={"save options"} as={ButtonGroup} title={isLoading ? "Exporting..." : "Export"} style={{height: '58px'}}>
                 <Dropdown.Item onClick={() => sendToAPI(false)}>Save only</Dropdown.Item>
                 <Dropdown.Item onClick={() => sendToAPI(true)}>Save and publish</Dropdown.Item>
             </DropdownButton>
