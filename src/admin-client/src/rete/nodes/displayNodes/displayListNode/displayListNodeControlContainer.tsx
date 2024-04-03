@@ -7,8 +7,6 @@ import Container from "react-bootstrap/Container";
 import {TextInputField} from "../../../../components/input/textInputField";
 import {DisplayPreviewNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
 import {NodeControl} from "../../nodeControl";
-import {ResultPreview} from "@skogkalk/common/dist/src/visual/resultPreview";
-import {Card} from "react-bootstrap";
 import {DisplayListNodeData} from "./displayListNodeControlData";
 import {ResultList} from "@skogkalk/common/dist/src/visual/resultList";
 
