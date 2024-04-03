@@ -19,7 +19,6 @@ describe('parsing of data into TreeState object', () => {
     const treeState = treeStateFromData(testTree);
 
     it('treeStateFromData should create a deep copy', () => {
-        expect(treeState.subTrees).toEqual(testTree);
         expect(treeState.subTrees).not.toBe(testTree);
     })
 

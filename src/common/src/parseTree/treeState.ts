@@ -277,12 +277,10 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
     if(isBinaryNode(node)) {
         const op = getBinaryOperation(node.type);
         result = op( calculateNodeValue(tree, node.left), calculateNodeValue(tree, node.right))
-        console.log(node.type, result);
-    } else if (isNaryNode(node)) {
+    } else if (isNaryNode(node) && node.inputs !== undefined) {
         const op = getNaryOperation(node.type);
-        const resolved = node.inputs!.map(node=>calculateNodeValue(tree, node))
+        const resolved = node.inputs.map(node=>calculateNodeValue(tree, node))
         result = op(resolved);
-        console.log(node.type, result);
     } else {
         switch(node.type) {
             case NodeType.NumberInput: return node.value;
@@ -297,13 +295,6 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
             }
             case NodeType.Number: result =  node.value; break;
             case NodeType.Output: result =  calculateNodeValue(tree, node.child); break;
-            // case NodeType.Add: result = calculateNodeValue(tree, node.left) + calculateNodeValue(tree, node.right); break;
-            // case NodeType.Sub: result = calculateNodeValue(tree, node.left) - calculateNodeValue(tree, node.right); break;
-            // case NodeType.Mul: result = calculateNodeValue(tree, node.left) * calculateNodeValue(tree, node.right); break;
-            // case NodeType.Div: result =  calculateNodeValue(tree, node.left) / calculateNodeValue(tree, node.right); break;
-            // case NodeType.Pow: result =  calculateNodeValue(tree, node.left) ** calculateNodeValue(tree, node.right); break;
-            // case NodeType.Sum: result =  node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a + b}) ?? 0; break;
-            // case NodeType.Prod: result = node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a * b}) ?? 0; break;
             default: result = 0;
         }
     }

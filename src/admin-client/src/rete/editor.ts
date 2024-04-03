@@ -14,7 +14,7 @@ import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from
 import {ModuleManager} from "./moduleManager";
 import {GraphSerializer} from "./graphSerializer";
 import {NodeFactory} from "./nodeFactory";
-import {canCreateConnection} from "./sockets/validation";
+import {canCreateConnection} from "./sockets";
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
@@ -327,7 +327,9 @@ export class Editor {
             NodeType.Prod,
             NodeType.Pow,
             NodeType.Sum,
-            NodeType.Number
+            NodeType.Number,
+            NodeType.Min,
+            NodeType.Max,
         ])
         const inputNodes = nodeTypesToDefinition ([
             NodeType.DropdownInput,
