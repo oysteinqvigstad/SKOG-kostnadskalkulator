@@ -34,3 +34,7 @@ export interface DisplayPreviewNode extends DisplayNode {
     unit: string
 }
 
+export interface DisplayListNode extends DisplayNode {
+    unit: string
+}
+

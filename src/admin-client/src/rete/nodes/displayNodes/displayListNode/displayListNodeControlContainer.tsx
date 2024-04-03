@@ -10,16 +10,17 @@ import {NodeControl} from "../../nodeControl";
 import {ResultPreview} from "@skogkalk/common/dist/src/visual/resultPreview";
 import {Card} from "react-bootstrap";
 import {DisplayListNodeData} from "./displayListNodeControlData";
+import {ResultList} from "@skogkalk/common/dist/src/visual/resultList";
 
 export function DisplayListNodeControlContainer(
     props: { data: NodeControl<DisplayListNodeData> }
 ) {
     return <Provider store={store}>
-        <DisplayPreviewNodeContent data={props.data}/>
+        <DisplayListNodeContent data={props.data}/>
     </Provider>
 }
 
-function DisplayPreviewNodeContent(
+function DisplayListNodeContent(
     props: { data: NodeControl<DisplayListNodeData>}
 ) {
     const treeState = useAppSelector(selectTreeState)
@@ -44,14 +45,16 @@ function DisplayPreviewNodeContent(
 
     return <>
         <Container>
-            <Card>
-                <Card.Body>
-                    <ResultPreview
-                        displayData={displayNode? displayNode : defaults}
-                        treeState={treeState.tree}
-                    />
-                </Card.Body>
-            </Card>
+            <ResultList
+                displayData={displayNode ?? defaults}
+                treeState={treeState.tree}
+            />
+            <TextInputField
+                inputHint={"Name"}
+                value={props.data.get('name')}
+                onChange={(value)=>{
+                    props.data.set({name: value});
+                }}/>
             <TextInputField
                 inputHint={"Unit"}
                 value={props.data.get('unit')}

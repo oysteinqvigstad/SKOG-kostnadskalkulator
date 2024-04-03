@@ -1,4 +1,3 @@
-import {DisplayBarNodeData} from "./displayPieNodeControlData";
 import React, {useEffect, useState} from "react";
 import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
@@ -10,6 +9,7 @@ import { DisplayBarNode as ParseDisplayNode} from "@skogkalk/common/dist/src/par
 import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
 import {NumberInputField} from "../../../../components/input/numberInputField";
 import {NodeControl} from "../../nodeControl";
+import {DisplayBarNodeData} from "./displayBarNodeControlData";
 
 export function DisplayBarNodeControlContainer(
     props: { data: NodeControl<DisplayBarNodeData> }
