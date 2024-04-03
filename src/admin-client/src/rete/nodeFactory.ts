@@ -42,7 +42,7 @@ export class NodeFactory {
             case NodeType.Sum: return new NaryNode(NodeType.Sum, this.updateNodeRendering, id);
             case NodeType.Prod: return new NaryNode(NodeType.Prod, this.updateNodeRendering, id);
             case NodeType.Choose: return new ChooseNode(this.updateNodeRendering, this.updateDataFlow, this.removeNodeConnections, id);
-            default: return undefined;
         }
+        throw new Error("NodeFactory.createNode() was invoked with " + type + " which has no implementation in createNode().");
     }
 }
