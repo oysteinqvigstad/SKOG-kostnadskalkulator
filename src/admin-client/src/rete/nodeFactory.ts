@@ -42,6 +42,8 @@ export class NodeFactory {
             case NodeType.Div: return new BinaryNode(NodeType.Div, this.updateNodeRendering, id);
             case NodeType.Sum: return new NaryNode(NodeType.Sum, this.updateNodeRendering, id);
             case NodeType.Prod: return new NaryNode(NodeType.Prod, this.updateNodeRendering, id);
+            case NodeType.Min: return new NaryNode(NodeType.Min, this.updateNodeRendering, id);
+            case NodeType.Max: return new NaryNode(NodeType.Max, this.updateNodeRendering, id);
             default: return undefined;
         }
     }

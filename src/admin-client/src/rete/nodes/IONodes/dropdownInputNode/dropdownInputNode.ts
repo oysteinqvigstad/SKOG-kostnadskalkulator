@@ -38,6 +38,8 @@ export class DropdownInputNode extends ParseableBaseNode<
             defaultValue: 0,
             infoText: "",
             pageOrdering: 0,
+            unit: ""
+
         }
 
         this.addControl("c", new NodeControl(
@@ -84,6 +86,7 @@ export class DropdownInputNode extends ParseableBaseNode<
             infoText: this.controls.c.get('infoText') || "",
             ordering: this.controls.c.get('pageOrdering') || 0,
             simpleInput: this.controls.c.get('simpleInput') || false,
+            unit: this.controls.c.get('unit') || ""
         }
     }
 }
