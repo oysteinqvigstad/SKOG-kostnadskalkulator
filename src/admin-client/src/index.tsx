@@ -18,8 +18,8 @@ const rootElement = document.getElementById("root");
 const root = createRoot(rootElement!);
 
 const services: ServiceContextType = {
-    authService: new MockAuthService()
-    // authService: new FirebaseAuthService()
+    // authService: new MockAuthService()
+    authService: new FirebaseAuthService()
 }
 
 
