@@ -4,11 +4,12 @@ import type {OutputNode} from "./nodes/outputNode";
 import {isReferenceNode} from "./nodes/referenceNode";
 import {isOutputNode} from "./nodes/outputNode";
 import {isInputNode} from "./nodes/inputNode";
-import { isParseNode, NodeType} from "./nodes/parseNode";
+import {isBinaryNode, isNaryNode, isParseNode, NodeType} from "./nodes/parseNode";
 import type {RootNode} from "./nodes/rootNode";
 import {isRootNode} from "./nodes/rootNode";
 import type {DisplayNode} from "./nodes/displayNode";
 import {isDisplayNode} from "./nodes/displayNode";
+import {getBinaryOperation, getNaryOperation} from "./math/operations";
 
 
 /**
@@ -273,27 +274,38 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
         return 0;
     }
 
-    switch(node.type) {
-        case NodeType.NumberInput: return node.value;
-        case NodeType.DropdownInput: return node.value;
-        case NodeType.Reference: {
-            if(isReferenceNode(node)) {
-                node.value = calculateNodeValue(tree, getNodeByID(tree, node.referenceID));
-                return node.value;
-            } else {
-                throw new Error("Reference node is missing its referenceID property");
+    if(isBinaryNode(node)) {
+        const op = getBinaryOperation(node.type);
+        result = op( calculateNodeValue(tree, node.left), calculateNodeValue(tree, node.right))
+        console.log(node.type, result);
+    } else if (isNaryNode(node)) {
+        const op = getNaryOperation(node.type);
+        const resolved = node.inputs!.map(node=>calculateNodeValue(tree, node))
+        result = op(resolved);
+        console.log(node.type, result);
+    } else {
+        switch(node.type) {
+            case NodeType.NumberInput: return node.value;
+            case NodeType.DropdownInput: return node.value;
+            case NodeType.Reference: {
+                if(isReferenceNode(node)) {
+                    node.value = calculateNodeValue(tree, getNodeByID(tree, node.referenceID));
+                    return node.value;
+                } else {
+                    throw new Error("Reference node is missing its referenceID property");
+                }
             }
+            case NodeType.Number: result =  node.value; break;
+            case NodeType.Output: result =  calculateNodeValue(tree, node.child); break;
+            // case NodeType.Add: result = calculateNodeValue(tree, node.left) + calculateNodeValue(tree, node.right); break;
+            // case NodeType.Sub: result = calculateNodeValue(tree, node.left) - calculateNodeValue(tree, node.right); break;
+            // case NodeType.Mul: result = calculateNodeValue(tree, node.left) * calculateNodeValue(tree, node.right); break;
+            // case NodeType.Div: result =  calculateNodeValue(tree, node.left) / calculateNodeValue(tree, node.right); break;
+            // case NodeType.Pow: result =  calculateNodeValue(tree, node.left) ** calculateNodeValue(tree, node.right); break;
+            // case NodeType.Sum: result =  node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a + b}) ?? 0; break;
+            // case NodeType.Prod: result = node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a * b}) ?? 0; break;
+            default: result = 0;
         }
-        case NodeType.Number: result =  node.value; break;
-        case NodeType.Output: result =  calculateNodeValue(tree, node.child); break;
-        case NodeType.Add: result = calculateNodeValue(tree, node.left) + calculateNodeValue(tree, node.right); break;
-        case NodeType.Sub: result = calculateNodeValue(tree, node.left) - calculateNodeValue(tree, node.right); break;
-        case NodeType.Mul: result = calculateNodeValue(tree, node.left) * calculateNodeValue(tree, node.right); break;
-        case NodeType.Div: result =  calculateNodeValue(tree, node.left) / calculateNodeValue(tree, node.right); break;
-        case NodeType.Pow: result =  calculateNodeValue(tree, node.left) ** calculateNodeValue(tree, node.right); break;
-        case NodeType.Sum: result =  node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a + b}) ?? 0; break;
-        case NodeType.Prod: result = node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a * b}) ?? 0; break;
-        default: result = 0;
     }
 
     node.value = result;
