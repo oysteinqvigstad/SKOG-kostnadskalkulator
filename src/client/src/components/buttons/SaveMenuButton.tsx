@@ -4,12 +4,12 @@ import React, {useEffect, useState} from "react";
 import {SavedResult} from "../../types/SavedResult";
 import { useAppSelector } from "../../state/hooks";
 import {selectURLQueries} from "../../state/treeSelectors";
+import {useParams} from "react-router-dom";
 
 export function SaveMenuButton() {
     const [show, setShow] = useState(false)
     const [results, setResults] = useState<SavedResult[]>([])
     const [resultName, setResultName] = useState("")
-    const fields = useAppSelector((state) => state.form.fields)
 
     useEffect(() => {
         getSavedResults()
@@ -59,7 +59,7 @@ export function SaveMenuButton() {
                             aria-label={"Navn på resultat"}
                             value={resultName}
                             onChange={handelNameChange}/>
-                        <SaveButton results={results} fields={fields} resultName={resultName} onSave={getSavedResults}/>
+                        <SaveButton results={results} resultName={resultName} onSave={getSavedResults}/>
                     </InputGroup>
                     <SavedResultsTable results={results} handleClose={handleClose} deleteSavedResult={deleteSavedResult} />
                     {results.length === 0 && <em className={"ps-2"}>Tabellen er tom</em>}
@@ -118,11 +118,12 @@ function SavedResultsTable(props: {
     )
 }
 
-function SaveButton(props: { results: SavedResult[], fields: any, resultName: string, onSave: () => void }) {
+function SaveButton(props: { results: SavedResult[], resultName: string, onSave: () => void }) {
     const queries = useAppSelector(selectURLQueries(','))
+    const {name, version} = useParams()
 
     function save() {
-        const url = `${window.location.origin}/resultat?${queries}`
+        const url = `${window.location.origin}/kalkulator/${name}/${version}?${queries}`
         console.log(url)
         props.results.unshift({date: Date.now(), name: props.resultName, link: url})
         localStorage.setItem("savedResults", JSON.stringify(props.results))

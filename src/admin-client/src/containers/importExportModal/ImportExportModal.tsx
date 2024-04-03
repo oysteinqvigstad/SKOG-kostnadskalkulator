@@ -1,4 +1,4 @@
-import {ReteFunctions} from "../../rete/editor";
+import {ReteFunctions} from "../../rete/createEditor";
 import {
     Col,
     Modal,

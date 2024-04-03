@@ -15,8 +15,6 @@ export function InputDropdown({node}: {node: DropdownInput}) {
     const fieldValue = useAppSelector(selectInputFieldValue(node.id))
     // Get the dispatch function from the store
     const dispatch = useAppDispatch()
-    // whole form has been validated
-    const formValidated = useAppSelector((state) => state.form.validated)
     // check if selection is invalid
     const isInvalid =  !isValidValue(node, parseFloat(fieldValue))
 
@@ -43,7 +41,7 @@ export function InputDropdown({node}: {node: DropdownInput}) {
                     className={"reset-button"}
                     style={{
                         position: 'absolute',
-                        right: (isInvalid || formValidated) ? '50px' : '25px',
+                        right: (isInvalid) ? '50px' : '25px',
                         border: 'none',
                         top: '11%',
                     }}

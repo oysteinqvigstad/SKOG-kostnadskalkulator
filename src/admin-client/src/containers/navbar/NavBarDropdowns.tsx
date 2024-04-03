@@ -3,7 +3,7 @@ import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {updateTree} from "../../state/slices/treeState";
 import {useAppDispatch, useAppSelector} from "../../state/hooks";
-import {ReteFunctions} from "../../rete/editor";
+import {ReteFunctions} from "../../rete/createEditor";
 import {selectFormulaInfo, selectPages} from "../../state/store";
 import React from "react";
 import {ImportExportModal} from "../importExportModal/ImportExportModal";

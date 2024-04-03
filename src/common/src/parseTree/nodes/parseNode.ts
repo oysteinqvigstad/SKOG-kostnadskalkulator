@@ -47,6 +47,7 @@ export enum NodeType {
     Reference = "Reference",
     Root = "Root",
     Display = "Display",
+    BarDisplay = "BarDisplay",
     NumberInput = "NumberInput",
     DropdownInput = "DropdownInput",
     Output = "Output",
@@ -58,7 +59,7 @@ export enum NodeType {
     Sum = "Sum",
     Prod = "Prod",
     Div = "Div",
-
+    Choose = "Choose",
     Module = "Module",
     ModuleOutput = "ModuleOutput",
     ModuleInput = "ModuleInput"

@@ -1,57 +1,11 @@
+import {BaseSocket} from "../sockets";
 import {ClassicPreset} from "rete";
-import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {DataflowNode} from "rete-engine";
-import {BaseSocket} from "../sockets/sockets";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {KeysOfType} from "./types";
 
+import {NodeControl} from "./nodeControl";
 
-export class NodeControl<T extends {}> extends ClassicPreset.Control {
-    constructor(
-        private data: T,
-        public options: {
-            onUpdate: (data: Partial<T>) => void,
-            minimized: boolean
-        },
-        public type: NodeType,
-    ) {
-        super();
-    }
-
-    public update() : void {
-        this.options?.onUpdate?.(this.data);
-    }
-
-    public set(data: Partial<T>) : void {
-        for (const key in this.data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                (this.data as any)[key] = data[key];
-            }
-        }
-        this.options?.onUpdate?.(data);
-    }
-
-    public setNoUpdate(data: Partial<T>) : void {
-        for (const key in this.data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                (this.data as any)[key] = data[key];
-            }
-        }
-    }
-
-    public get<K extends keyof T>(key: K) : Readonly<T[K]> {
-        return (this.data as any)[key];
-    }
-
-    public getData() : Readonly<T> {
-        return this.data;
-    }
-}
-
-
-type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T];
-
-/**
- * Adds extra metadata properties to the Rete.js Node class.
- */
 export abstract class BaseNode<
     Inputs extends Record<string, BaseSocket>,
     Outputs extends Record<string, BaseSocket>,
@@ -85,13 +39,18 @@ export abstract class BaseNode<
         this.type = type;
         this.originalHeight = this.height = height;
         this.originalWidth = this.width = width;
-        if(id) {
+        if (id) {
             this.id = id;
         }
     }
 
-    abstract data( inputs: Record<KeysOfType<Inputs, any>, any[]>) : Record<KeysOfType<Outputs, any>, any>;
-    abstract toParseNode() : ParseNode;
-    protected abstract updateNodeRendering(nodeID: string) : void;
-    protected abstract updateDataFlow() : void;
+    abstract data(inputs: Record<KeysOfType<Inputs, any>, any[]>): Record<KeysOfType<Outputs, any>, any>;
+
+    abstract serializeControls() : any;
+
+    abstract deserializeControls(serializedData: any) : void;
+
+    protected abstract updateNodeRendering(nodeID: string): void;
+
+    protected abstract updateDataFlow(): void;
 }

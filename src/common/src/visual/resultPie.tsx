@@ -37,7 +37,7 @@ export function ResultPie(props: {
             text: totalCost.toString(),
             align: 'center',
             floating: true,
-            offsetY: 85,
+            offsetY: props.displayData.unit ? 85 : 75,
             style: {
                 fontSize: '40px'
             }

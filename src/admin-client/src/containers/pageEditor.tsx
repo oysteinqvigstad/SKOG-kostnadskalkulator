@@ -1,18 +1,20 @@
 import {ButtonGroup, Card, Col, Row} from "react-bootstrap";
 import {selectPages, selectPageSelection, selectTreeState} from "../state/store";
-import {useAppSelector} from "../state/hooks";
+import {useAppDispatch, useAppSelector} from "../state/hooks";
 import Container from "react-bootstrap/Container";
 import {getNodeByID, InputNode} from "@skogkalk/common/dist/src/parseTree";
 import {InputFieldPreview} from "@skogkalk/common/dist/src/visual/inputField/InputField";
 import Button from "react-bootstrap/Button";
 import {SlArrowDown, SlArrowUp} from "react-icons/sl";
+import {moveInput} from "../state/slices/pages";
 
 
 export function PageEditor() {
     const tree = useAppSelector(selectTreeState);
     const pages = useAppSelector(selectPages);
     const selectedPageIndex = useAppSelector(selectPageSelection);
-    const selectedPage = pages[selectedPageIndex??0]?.page;
+    const selectedPage = pages[selectedPageIndex ?? 0]?.page;
+    const dispatch = useAppDispatch();
 
     return (
         <Card>
@@ -21,8 +23,8 @@ export function PageEditor() {
             </Card.Title>
             <Card.Body>
                 <Container>
-                    {selectedPage?.inputIds.map((id) => {
-                        if(tree.tree) {
+                    {selectedPage?.inputIds.map((id, index) => {
+                        if (tree.tree) {
                             const input = getNodeByID(tree.tree, id) as InputNode;
                             if (!input) {
                                 return null
@@ -33,8 +35,18 @@ export function PageEditor() {
                                 </Col>
                                 <Col>
                                     <ButtonGroup>
-                                        <Button><SlArrowUp/></Button>
-                                        <Button><SlArrowDown/></Button>
+                                        <Button onClick={() => {
+                                            dispatch(moveInput({newIndex: index - 1, oldIndex: index}))
+                                        }
+                                        }>
+                                            <SlArrowUp/>
+                                        </Button>
+                                        <Button onClick={() => {
+                                            dispatch(moveInput({newIndex: index + 1, oldIndex: index}))
+                                        }
+                                        }>
+                                            <SlArrowDown/>
+                                        </Button>
                                     </ButtonGroup>
                                 </Col>
                             </Row>

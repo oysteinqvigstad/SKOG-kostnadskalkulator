@@ -9,6 +9,7 @@ import type {RootNode} from "./nodes/rootNode";
 import {isRootNode} from "./nodes/rootNode";
 import type {DisplayNode} from "./nodes/displayNode";
 import {isDisplayNode} from "./nodes/displayNode";
+import {ChooseNode, compare} from "./nodes/chooseNode";
 
 
 /**
@@ -287,6 +288,17 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
         case NodeType.Mul: result = calculateNodeValue(tree, node.left) * calculateNodeValue(tree, node.right); break;
         case NodeType.Div: result =  calculateNodeValue(tree, node.left) / calculateNodeValue(tree, node.right); break;
         case NodeType.Pow: result =  calculateNodeValue(tree, node.left) ** calculateNodeValue(tree, node.right); break;
+        case NodeType.Choose: result = (() => {
+            const leftHand = calculateNodeValue(tree, node.left);
+            const firstMatch = (node as ChooseNode).comparisons.find((comparison)=>{
+                return compare(leftHand, comparison.rh, comparison.comparison);
+            })
+            if(firstMatch !== undefined) {
+                return calculateNodeValue(tree, getNodeByID(tree, firstMatch.resultNodeID));
+            } else {
+                return calculateNodeValue(tree, node.right);
+            }
+        })(); break;
         case NodeType.Sum: result =  node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a + b}) ?? 0; break;
         case NodeType.Prod: result = node.inputs!.map((node)=>{return calculateNodeValue(tree, node)}).reduce((a, b)=> {return a * b}) ?? 0; break;
         default: result = 0;

@@ -16,8 +16,6 @@ export function InputNumber({node}: {node: NumberInputNode}) {
     // Get the default value for the field from the store
     const fieldValue = useAppSelector(selectInputFieldValue(node.id))
 
-    // whole form has been validated
-    const formValidated = useAppSelector((state) => state.form.validated)
     // Get the dispatch function from the store
     const dispatch = useAppDispatch()
     // callback function for changing input value
@@ -89,7 +87,7 @@ export function InputNumber({node}: {node: NumberInputNode}) {
                 className={"reset-button"}
                 style={{
                     position: 'absolute',
-                    right: (isInvalid || formValidated) ? '100px' : '80px',
+                    right: (isInvalid) ? '100px' : '80px',
                     zIndex: 5,
                     border: 'none',
                     top: '11%',
