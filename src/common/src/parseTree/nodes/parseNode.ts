@@ -39,7 +39,9 @@ export function isBinaryNode(node: ParseNode) : boolean {
 export function isNaryNode(node: ParseNode) : boolean {
     return node.type in [
         NodeType.Sum,
-        NodeType.Prod
+        NodeType.Prod,
+        NodeType.Min,
+        NodeType.Max
     ]
 }
 
@@ -60,6 +62,8 @@ export enum NodeType {
     Sum = "Sum",
     Prod = "Prod",
     Div = "Div",
+    Min = "Min",
+    Max = "Max",
 
     Module = "Module",
     ModuleOutput = "ModuleOutput",
