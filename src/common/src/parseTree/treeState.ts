@@ -278,7 +278,7 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
     if(isBinaryNode(node)) {
         const op = getBinaryOperation(node.type);
         result = op( calculateNodeValue(tree, node.left), calculateNodeValue(tree, node.right))
-    } else if (isNaryNode(node) && node.inputs !== undefined) {
+    } else if (isNaryNode(node) && node.inputs !== undefined && node.inputs.length > 0) {
         const op = getNaryOperation(node.type);
         const resolved = node.inputs.map(node=>calculateNodeValue(tree, node))
         result = op(resolved);
@@ -302,25 +302,19 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
             case NodeType.Output:
                 result = calculateNodeValue(tree, node.child);
                 break;
-            default:
-                result = 0;
+            case NodeType.Choose: result = (() => {
+                const leftHand = calculateNodeValue(tree, node.left);
+                const firstMatch = (node as ChooseNode).comparisons.find((comparison)=>{
+                    return compare(leftHand, comparison.rh, comparison.comparison);
+                })
+                if(firstMatch !== undefined) {
+                    return calculateNodeValue(tree, getNodeByID(tree, firstMatch.resultNodeID));
+                } else {
+                    return calculateNodeValue(tree, node.right);
+                }
+            })(); break;
+            default: result = 0;
         }
-    }
-    switch(node.type) {
-        case NodeType.Number: result =  node.value; break;
-        case NodeType.Output: result =  calculateNodeValue(tree, node.child); break;
-        case NodeType.Choose: result = (() => {
-            const leftHand = calculateNodeValue(tree, node.left);
-            const firstMatch = (node as ChooseNode).comparisons.find((comparison)=>{
-                return compare(leftHand, comparison.rh, comparison.comparison);
-            })
-            if(firstMatch !== undefined) {
-                return calculateNodeValue(tree, getNodeByID(tree, firstMatch.resultNodeID));
-            } else {
-                return calculateNodeValue(tree, node.right);
-            }
-        })(); break;
-        default: result = 0;
     }
 
     node.value = result;
