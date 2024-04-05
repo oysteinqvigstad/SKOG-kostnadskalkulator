@@ -8,7 +8,7 @@ import {
 } from "./displayListNodeControlContainer";
 import {NodeControl} from "../../nodeControl";
 import {DisplayListNodeData} from "./displayListNodeControlData";
-import {DisplayBarNodeData} from "../displayBarNode/displayBarNodeControlData";
+
 
 
 export class DisplayListNode extends ParseableBaseNode <
