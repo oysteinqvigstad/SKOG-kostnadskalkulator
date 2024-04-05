@@ -35,7 +35,8 @@ export class NumberInputNode extends ParseableBaseNode<
             legalValues: [],
             infoText: "",
             pageOrdering: 0,
-            unit: ""
+            unit: "",
+            allowDecimals: true,
         }
 
         this.addControl( "c",new NodeControl(
@@ -50,7 +51,6 @@ export class NumberInputNode extends ParseableBaseNode<
                             this.controls.c.setNoUpdate({defaultValue: getLegalValueInRange(defaultValue, newValue.legalValues[0])})
                         }
                     }
-
 
 
                     if(this.controls.c.options.minimized) {
@@ -88,19 +88,19 @@ export class NumberInputNode extends ParseableBaseNode<
     }
 
     toParseNode(): ParseNumberInputNode {
-        this.controls.c.setNoUpdate({id: this.id})
+        this.controls.c.setNoUpdate({id: this.id});
         return {
             id: this.id,
             value: this.controls.c.get('defaultValue') || 0,
             type: NodeType.NumberInput,
-            inputType: InputType.Float, //TODO: add to controller
+            inputType: this.controls.c.get('allowDecimals') ? InputType.Float : InputType.Integer,
             defaultValue: this.controls.c.get('defaultValue') || 0,
             name: this.controls.c.get('name') || "",
             pageName: this.controls.c.get('pageName') || "",
             legalValues: this.controls.c.get('legalValues').map(legal=>{return {max: legal.max || null, min: legal.min || null}}) || [], //TODO: Change to undefined
             unit: this.controls.c.get('unit') || "",
             infoText: this.controls.c.get('infoText') || "",
-            ordering: 0, // TODO: Add to controller,
+            ordering: this.controls.c.get('pageOrdering'),
             simpleInput: this.controls.c.get('simpleInput') || false,
         }
     }

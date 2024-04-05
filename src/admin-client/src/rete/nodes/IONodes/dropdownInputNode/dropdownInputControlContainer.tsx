@@ -95,7 +95,7 @@ export function DropdownInputControlContent(
 
         </Col>
         <Col>
-        <OptionSwitch on={data.simpleInput} onChange={
+        <OptionSwitch inputHint={"Simple input"} on={data.simpleInput} onChange={
         (on: boolean) => {
         props.data.set({simpleInput: on});
         }
