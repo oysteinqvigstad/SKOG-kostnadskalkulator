@@ -120,8 +120,8 @@ export function resolveIncomingModuleConnections(moduleNode: ModuleNode,  extern
         if(inputNode) {
             // finds the connection going from the associated ModuleInput to another node
             const connectionsFromModuleInput = internalIOConnections.filter(conn=>conn.source === inputNode.id);
-            connectionsFromModuleInput.forEach(connectionsFromModuleInput=>{
-                const moduleInputTargetNode = internalNodes.find(node=>node.id === connectionsFromModuleInput.target);
+            connectionsFromModuleInput.forEach(connectionFromModuleInput=>{
+                const moduleInputTargetNode = internalNodes.find(node=>node.id === connectionFromModuleInput.target);
                 if(moduleInputTargetNode) {
                     if(moduleInputTargetNode.type === NodeType.ModuleOutput) {
                         // finds the outgoing connection matching the targeted ModuleOutput
@@ -144,9 +144,9 @@ export function resolveIncomingModuleConnections(moduleNode: ModuleNode,  extern
                         resolvedInputConnections.push({
                             id: getUID(),
                             source: inputConnection.source,
-                            target: connectionsFromModuleInput.target,
+                            target: connectionFromModuleInput.target,
                             sourceOutput: inputConnection.sourceOutput,
-                            targetInput: connectionsFromModuleInput.targetInput
+                            targetInput: connectionFromModuleInput.targetInput
                         })
                     }
                 } else {
@@ -155,6 +155,36 @@ export function resolveIncomingModuleConnections(moduleNode: ModuleNode,  extern
             });
         }
     });
+
+    const outputConnections = externalIOConnections
+        .filter(connection=>{return connection.source === moduleNode.id});
+    outputConnections.forEach((outputConnection)=> {
+        // only interested in resolving a connection if it goes to a regular node in the module.
+        // Other cases are handled in the input connection resolution.
+        const moduleOutputNode = internalNodes
+            .find(node=>
+                outputConnection.sourceOutput === (node as ModuleOutput).controls.c.get('outputName')
+            );
+        if(moduleOutputNode) {
+            const moduleOutputInternalConnection = internalIOConnections.find(conn=>conn.target === moduleOutputNode.id);
+            if(moduleOutputInternalConnection === undefined) {
+                return;
+            }
+            const connectionSourceNode = internalNodes.find(node=>node.id === moduleOutputInternalConnection.source);
+            if(connectionSourceNode?.type === NodeType.ModuleInput) {
+                return;
+            }
+            // @ts-ignore
+            resolvedInputConnections.push({
+                id: getUID(),
+                source: moduleOutputInternalConnection.source,
+                target: outputConnection.target,
+                sourceOutput: moduleOutputInternalConnection.sourceOutput,
+                targetInput: outputConnection.targetInput
+            })
+        }
+    });
+
     return resolvedInputConnections;
 }
 

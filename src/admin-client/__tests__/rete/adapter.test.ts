@@ -131,6 +131,7 @@ describe('flattenGraph', ()=>{
         // becomes:
         // numberNode -> outputNode
         expect(resolvedConnections[0]?.target).toEqual(outputID);
+        expect(resolvedConnections.length).toEqual(1);
     });
 
     it("Should discard connections that don't resolve to a node in the module or a node connected to a module output", async ()=>{
@@ -164,11 +165,14 @@ describe('flattenGraph', ()=>{
         // Checks that the connection going into the module has been redirected to both addNodes
         // numberNode -> Module( ModuleInput -> 2x AddNode -> ModuleOutput ) -> outputNode
         // becomes:
-        //             /-> left AddNode  -\
-        // numberNode-|                    |-> outputNode
-        //             \-> right AddNode -/
-        expect(resolvedConnections.length).toEqual(2);
+        //             /-> left \
+        // numberNode-|          AddNode -> outputNode
+        //             \-> right/
+        console.log(resolvedConnections);
+        expect(resolvedConnections.length).toEqual(3);
     });
+
+
 })
 
 
