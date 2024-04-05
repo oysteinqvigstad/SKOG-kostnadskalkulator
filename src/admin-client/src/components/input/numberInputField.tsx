@@ -23,7 +23,8 @@ export function NumberInputField(
         onChange?: (value: number)=>void,
         onIllegalValue?: (value: number)=>void,
         legalRanges?: readonly {min?: number, max?: number}[],
-        disabled?: boolean
+        disabled?: boolean,
+        isValid?: (value: number)=>boolean
     }
 ) {
 
@@ -43,6 +44,7 @@ export function NumberInputField(
                 inputMode={"numeric"}
                 pattern="[0-9]*"
                 required = {true}
+                isInvalid={props.isValid !== undefined && !props.isValid(props.value ?? 0)}
                 onChange={(e)=>{
                     const value = parseFloat(e.currentTarget.value);
                     if(props.legalRanges === undefined || props.legalRanges?.length === 0 || props.legalRanges?.some(({min, max}) => {

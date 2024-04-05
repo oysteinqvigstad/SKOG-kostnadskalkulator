@@ -69,6 +69,13 @@ export function NumberInputControlsContent(
                                 <NumberInputField
                                     inputHint={"Default value"}
                                     value={props.data.get('defaultValue')}
+                                    isValid={(value) => {
+                                        if (props.data.get('allowDecimals')) {
+                                            return true;
+                                        } else {
+                                            return value - Math.round(value) === 0;
+                                        }
+                                    }}
                                     onChange={(value) => {
                                         props.data.set({defaultValue: value});
                                     }}
