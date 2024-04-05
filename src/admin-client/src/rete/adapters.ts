@@ -87,12 +87,10 @@ function redirectExternalConnections(
         if(connection.target === moduleNode.id) {
             const internalTarget = internalTargets.find((target)=>{ return target.inputNodeName === connection.targetInput })
             newConnection.target = internalTarget?.target || "";
-            // @ts-ignore
             newConnection.targetInput = internalTarget?.targetInput || "";
         } else if(connection.source === moduleNode.id) {
             const internalSource = internalSources.find((source)=>{ return source.outputNodeName === connection.sourceOutput})
             newConnection.source = internalSource?.source || "";
-            // @ts-ignore
             newConnection.sourceOutput = internalSource?.sourceOutput || "";
         }
         return newConnection;
@@ -100,33 +98,78 @@ function redirectExternalConnections(
 }
 
 
-export function resolveEmptyModule(moduleNode: ModuleNode, internalIONodes: ReteNode[], internalIOConnections: ConnProps[], externalIOConnections: ConnProps[]) {
-    const inputConnections = internalIOConnections.filter(connection=>{return connection.target === module.id});
+/**
+ *
+ * @param moduleNode
+ * @param externalIOConnections
+ */
+export function resolveIncomingModuleConnections(moduleNode: ModuleNode,  externalIOConnections: ConnProps[]) {
+    const internalNodes = moduleNode.getNodes();
+    const internalIOConnections = moduleNode.getConnections();
     const resolvedInputConnections : ConnProps[] = []
+
+
+    const inputConnections = externalIOConnections.filter(connection=>{return connection.target === moduleNode.id});
+
     inputConnections.forEach(connection=>{
-        const inputNode = internalIONodes.find(node=>(node as ModuleInput).controls.c.get('inputName') === connection.targetInput);
+        // finds the ModuleInput node associated with the Module input targeted by connection
+        const inputNode = internalNodes.find( node=>
+            node.type === NodeType.ModuleInput &&
+            (node as ModuleInput).controls.c.get('inputName') === connection.targetInput
+        );
         if(inputNode) {
-            const inputOutputConnection = internalIOConnections.find(conn=>conn.source === inputNode.id);
-            if (inputOutputConnection) {
-                const outputNode = internalIONodes.find(node=>node.id === inputOutputConnection.target);
-                if(outputNode) {
-                    const outputConnection = externalIOConnections.find(conn=>conn.sourceOutput === (outputNode as ModuleOutput).controls.c.get('outputName'));
-                    if(outputConnection) {
+            // finds the connection going from the associated ModuleInput to another node
+            const connectionFromModuleInput = internalIOConnections.find(conn=>conn.source === inputNode.id);
+            if (connectionFromModuleInput) { // Connection exists
+                //TODO: Rewrite to filter in case of multiple targets
+                const targetNode = internalNodes.find(node=>node.id === connectionFromModuleInput.target);
+                if(targetNode) {
+                    if(targetNode.type === NodeType.ModuleOutput) { // target is a ModuleOutput
+                        // finds the outgoing connection matching the targeted ModuleOutput
+                        const outputConnection = externalIOConnections.find(conn=>
+                            conn.sourceOutput === (targetNode as ModuleOutput).controls.c.get('outputName'));
+                        /**
+                         * Case: Incoming connection has been rerouted to the target of a moduleoutput
+                         */
+                        if(outputConnection) {
+                            // @ts-ignore
+                            resolvedInputConnections.push({
+                                id: getUID(),
+                                source: connection.source,
+                                target: outputConnection.target,
+                                sourceOutput: connection.sourceOutput,
+                                targetInput: outputConnection.targetInput
+                            })
+                        } else {
+                            /**
+                             * Case: Incoming connection goes to an output with no connection, discarded
+                             */
+                        }
+                    } else {
+                        /**
+                         * Case: Incoming connection has been rerouted to a regular node in the module
+                         */
+                        // @ts-ignore
                         resolvedInputConnections.push({
                             id: getUID(),
                             source: connection.source,
-                            target: outputConnection.target,
+                            target: connectionFromModuleInput.target,
                             sourceOutput: connection.sourceOutput,
-                            targetInput: outputConnection.targetInput
+                            targetInput: connectionFromModuleInput.targetInput
                         })
                     }
+                } else {
+                    throw new Error ("resolveIncomingModuleConnections: targeted node does not exist in internalIONodes")
                 }
+            } else {
+                /**
+                 * Case: ModuleInput is not connected to anything. Incoming connection discarded.
+                 */
             }
         }
     });
     return resolvedInputConnections;
 }
-
 
 
 export function expandModule(module: ModuleNode, externalConnections: ConnProps[]) {
