@@ -10,11 +10,13 @@ import {ModuleInput} from "./moduleNodes/moduleInput";
 import {ModuleOutput} from "./moduleNodes/moduleOutput";
 import {ModuleNode} from "./moduleNodes/moduleNode";
 import {DisplayBarNode} from "./displayNodes/displayBarNode/displayBarNode";
+import {DisplayPreviewNode} from "./displayNodes/displayPreviewNode/displayPreviewNode";
+import {DisplayListNode} from "./displayNodes/displayListNode/displayListNode";
 import {ChooseNode} from "./controlNodes/chooseNode";
 
 export type ReteNode = ParseableNode | ModuleInput | ModuleOutput | ModuleNode;
 
-export type ParseableNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | DisplayBarNode | ChooseNode;
+export type ParseableNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | DisplayBarNode | ChooseNode | DisplayPreviewNode | DisplayListNode;
 
 export function isParseableNode(node: ReteNode): node is ParseableNode {
     return !(node instanceof ModuleInput || node instanceof ModuleOutput || node instanceof ModuleNode);

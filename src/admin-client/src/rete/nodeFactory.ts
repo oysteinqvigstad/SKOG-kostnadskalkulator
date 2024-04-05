@@ -12,6 +12,8 @@ import {DisplayBarNode} from "./nodes/displayNodes/displayBarNode/displayBarNode
 import {BinaryNode} from "./nodes/mathNodes/binaryNode";
 import {NaryNode} from "./nodes/mathNodes/naryNode";
 import {ChooseNode} from "./nodes/controlNodes/chooseNode";
+import {DisplayPreviewNode} from "./nodes/displayNodes/displayPreviewNode/displayPreviewNode";
+import {DisplayListNode} from "./nodes/displayNodes/displayListNode/displayListNode";
 
 
 export class NodeFactory {
@@ -34,6 +36,8 @@ export class NodeFactory {
             case NodeType.DropdownInput: return new DropdownInputNode(this.updateNodeRendering, this.updateDataFlow, this.signalOnChange, id);
             case NodeType.Display: return new DisplayPieNode(this.updateNodeRendering, this.signalOnChange, id);
             case NodeType.BarDisplay: return new DisplayBarNode(this.updateNodeRendering, this.signalOnChange, id);
+            case NodeType.PreviewDisplay: return new DisplayPreviewNode(this.updateNodeRendering, this.signalOnChange, id);
+            case NodeType.ListDisplay: return new DisplayListNode(this.updateNodeRendering, this.signalOnChange, id);
             case NodeType.Add: return new BinaryNode(NodeType.Add, this.updateNodeRendering, id);
             case NodeType.Sub: return new BinaryNode(NodeType.Sub, this.updateNodeRendering, id);
             case NodeType.Mul: return new BinaryNode(NodeType.Mul, this.updateNodeRendering, id);
@@ -41,6 +45,8 @@ export class NodeFactory {
             case NodeType.Div: return new BinaryNode(NodeType.Div, this.updateNodeRendering, id);
             case NodeType.Sum: return new NaryNode(NodeType.Sum, this.updateNodeRendering, id);
             case NodeType.Prod: return new NaryNode(NodeType.Prod, this.updateNodeRendering, id);
+            case NodeType.Min: return new NaryNode(NodeType.Min, this.updateNodeRendering, id);
+            case NodeType.Max: return new NaryNode(NodeType.Max, this.updateNodeRendering, id);
             case NodeType.Choose: return new ChooseNode(this.updateNodeRendering, this.updateDataFlow, this.removeNodeConnections, id);
             default: return undefined;
         }

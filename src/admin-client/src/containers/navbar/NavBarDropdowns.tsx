@@ -8,6 +8,9 @@ import {selectFormulaInfo, selectPages} from "../../state/store";
 import React from "react";
 import {ImportExportModal} from "../importExportModal/ImportExportModal";
 
+/**
+ * The dropdown menu items for the navigation bar
+ */
 export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
     const dispatch = useAppDispatch();
     const formulaInfo = useAppSelector(selectFormulaInfo);

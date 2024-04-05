@@ -3,6 +3,12 @@ import {RootState} from "./store";
 import {VisualResult} from "../types/ResultListItem";
 import {getNodeByID, OutputNode} from "@skogkalk/common/dist/src/parseTree";
 
+export const selectTreeState = createSelector(
+    (state: RootState) => state.tree.tree,
+    (tree) => tree
+)
+
+
 export const selectInputNodes = createSelector(
     (state: RootState) => state.tree.tree,
     (tree) => tree?.inputs

@@ -35,6 +35,7 @@ export class NumberInputNode extends ParseableBaseNode<
             legalValues: [],
             infoText: "",
             pageOrdering: 0,
+            unit: ""
         }
 
         this.addControl( "c",new NodeControl(
@@ -90,7 +91,7 @@ export class NumberInputNode extends ParseableBaseNode<
             name: this.controls.c.get('name') || "",
             pageName: this.controls.c.get('pageName') || "",
             legalValues: this.controls.c.get('legalValues').map(legal=>{return {max: legal.max || null, min: legal.min || null}}) || [], //TODO: Change to undefined
-            unit: "", //TODO: Add to controller,
+            unit: this.controls.c.get('unit') || "",
             infoText: this.controls.c.get('infoText') || "",
             ordering: 0, // TODO: Add to controller,
             simpleInput: this.controls.c.get('simpleInput') || false,

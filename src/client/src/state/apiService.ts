@@ -11,6 +11,9 @@ export const apiService = createApi({
             query: () => 'getCalculatorsInfo',
             transformResponse: (data: Calculator[]) => data.filter(c => c.published)
         }),
+        getCalculatorsInfoIncludingUnpublished: builder.query<Calculator[], void>({
+            query: () => 'getCalculatorsInfo',
+        }),
         getCalculatorTree: builder.query<ParseNode[], {name: string, version: number}>({
             query: ({name, version}) => `getCalculatorTree?name=${name}&version=${version}`,
         }),

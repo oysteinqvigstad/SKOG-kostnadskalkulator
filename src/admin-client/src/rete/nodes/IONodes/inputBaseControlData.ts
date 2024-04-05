@@ -8,4 +8,5 @@ export interface InputBaseData {
     pageName?: string,
     infoText: string,
     pageOrdering: number,
+    unit: string
 }

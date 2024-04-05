@@ -17,6 +17,8 @@ export function getNaryOperation(type: NodeType) : (arr:number[])=>number {
     switch(type) {
         case NodeType.Prod: return (arr)=>{return arr.reduce((a,b)=>a*b)};
         case NodeType.Sum: return (arr)=>{return arr.reduce((a,b)=>a+b)};
+        case NodeType.Min: return (arr) => {return arr.reduce((a, b) => Math.min(a,b))};
+        case NodeType.Max: return (arr) => {return arr.reduce((a,b) => Math.max(a,b))};
         default: throw new Error("Invalid node type");
     }
 }

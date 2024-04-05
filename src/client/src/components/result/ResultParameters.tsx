@@ -10,7 +10,6 @@ export function ResultParameters() {
             icon={<FcMultipleInputs />}
             title={"Kostnadsdrivere"}
         >
-            {/*<PaginationBar />*/}
             <ParametersWithTabs />
         </ResultCard>
     )

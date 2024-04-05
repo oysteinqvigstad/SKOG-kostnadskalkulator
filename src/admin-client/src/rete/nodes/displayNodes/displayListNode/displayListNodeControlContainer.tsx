@@ -1,4 +1,3 @@
-import {DisplayBarNodeData} from "./displayPieNodeControlData";
 import React, {useEffect, useState} from "react";
 import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
@@ -6,21 +5,21 @@ import {selectTreeState, store} from "../../../../state/store";
 import {Provider} from "react-redux";
 import Container from "react-bootstrap/Container";
 import {TextInputField} from "../../../../components/input/textInputField";
-import { DisplayBarNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
-import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
-import {NumberInputField} from "../../../../components/input/numberInputField";
+import {DisplayPreviewNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
 import {NodeControl} from "../../nodeControl";
+import {DisplayListNodeData} from "./displayListNodeControlData";
+import {ResultList} from "@skogkalk/common/dist/src/visual/resultList";
 
-export function DisplayBarNodeControlContainer(
-    props: { data: NodeControl<DisplayBarNodeData> }
+export function DisplayListNodeControlContainer(
+    props: { data: NodeControl<DisplayListNodeData> }
 ) {
     return <Provider store={store}>
-        <DisplayBarNodeContent data={props.data}/>
+        <DisplayListNodeContent data={props.data}/>
     </Provider>
 }
 
-function DisplayBarNodeContent(
-    props: { data: NodeControl<DisplayBarNodeData>}
+function DisplayListNodeContent(
+    props: { data: NodeControl<DisplayListNodeData>}
 ) {
     const treeState = useAppSelector(selectTreeState)
     const nodeID = props.data.get('nodeID');
@@ -31,21 +30,21 @@ function DisplayBarNodeContent(
         }
     }, [treeState.tree, nodeID, displayNode, props.data])
 
+    const defaults: ParseDisplayNode = {
+        id: "",
+        value: 0,
+        type: NodeType.ListDisplay,
+        inputOrdering: [],
+        name: "",
+        unit: "",
+        inputs: [],
+    }
+
 
     return <>
         <Container>
-            <ResultBar
-                displayData={displayNode? displayNode : {
-                    id:"",
-                    value: 0,
-                    type: NodeType.BarDisplay,
-                    inputOrdering: [],
-                    name: "",
-                    unit: "",
-                    max: 0,
-                    inputs:[],
-
-                }}
+            <ResultList
+                displayData={displayNode ?? defaults}
                 treeState={treeState.tree}
             />
             <TextInputField
@@ -57,19 +56,8 @@ function DisplayBarNodeContent(
             <TextInputField
                 inputHint={"Unit"}
                 value={props.data.get('unit')}
-                onChange={(value)=>{
-                    props.data.set({unit: value});
-                }}/>
-            <NumberInputField
-                inputHint={"Max"}
-                value={props.data.get('max')}
-                onChange={(value)=>{
-                    props.data.set({max: value});
-                }}
-                onIllegalValue={()=>{}}
-                legalRanges={[]}
+                onChange={(value)=> { props.data.set({unit: value}) }}
             />
-
         </Container>
 
     </>

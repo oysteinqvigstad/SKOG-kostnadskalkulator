@@ -73,6 +73,7 @@ const enhetDropdown : DropdownInput = {
     simpleInput: true,
     pageName: "Enhet",
     type: NodeType.DropdownInput,
+    unit: "meter"
 }
 
 

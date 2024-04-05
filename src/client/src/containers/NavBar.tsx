@@ -5,6 +5,7 @@ import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
 import {MdArrowBackIosNew, MdClose, MdMenu} from "react-icons/md";
 import {ShareResultButton} from "../components/buttons/ShareResultButton";
 import {SaveMenuButton} from "../components/buttons/SaveMenuButton";
+import { ReactComponent as BrandBanner } from '../brand-banner.svg';
 
 /**
  * The navigation bar for the application
@@ -45,13 +46,12 @@ export function NavBar() {
             <Container className={"justify-text-center"} style={{maxWidth: '1200px'}}>
                 <Row className={"d-flex align-items-center"}>
                     {!onMainPage &&
-                        <Col xs={"auto"}>
+                        <Col xs={"auto"} className={"p-0"}>
                             <NavBarButton icon={<MdArrowBackIosNew />} onClick={() => navigate(-1)} />
                         </Col>
                     }
-                    <Col className={"pt-2 flex-grow-1"}
-                         style={{fontSize: '1.5em', fontFamily: 'Arial', color: 'White', minWidth: 0}}>
-                        <img src={'brand-banner.svg'} alt={"Skogkurs Kostnadskalkulator"} height={'40px'} style={{cursor: 'pointer' }} onClick={() => navigate('/')} />
+                    <Col className={"pt-1"}>
+                        <BrandBanner height={'40px'} style={{cursor: 'pointer' }} onClick={() => navigate('/')} />
                     </Col>
                     <Col xs={"auto"} className={"d-flex text-end"}>
                         {isDesktop && extraNavbarButtons}
