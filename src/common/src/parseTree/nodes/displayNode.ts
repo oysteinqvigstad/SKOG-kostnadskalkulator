@@ -13,6 +13,7 @@ export interface DisplayNode extends ParseNode {
         ordering?: number
     }[]
     decimalPlaces?: number
+    infoText?: string
 }
 
 export function isDisplayNode (node: ParseNode) : node is DisplayNode {

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Card, Modal, ModalBody, ModalFooter, ModalHeader, Row} from "react-bootstrap";
+import {Button, Card, Container, Modal, ModalBody, ModalFooter, ModalHeader, Row} from "react-bootstrap";
 import {CKEditor} from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {MdEdit} from "react-icons/md";
@@ -36,8 +36,9 @@ export function TextEditor(props: { value: string, onSave: (value: string) => vo
     }
 
     return <>
+        <Container>
         <Row>
-            <Card className={"w-75"}>
+            <Card className={"w-100"}>
                 <Card.Body>
                     <Card.Title className={"d-flex flex-row justify-content-between"}>
                         Info text
@@ -76,5 +77,6 @@ export function TextEditor(props: { value: string, onSave: (value: string) => vo
                 </ModalFooter>
             </Modal>
         </Row>
+        </Container>
     </>
 }

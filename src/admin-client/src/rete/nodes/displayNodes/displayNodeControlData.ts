@@ -13,4 +13,5 @@ export interface DisplayControlData {
     name: string,
     unit: string,
     inputs: OutputData[],
+    infoText?: string
 }
