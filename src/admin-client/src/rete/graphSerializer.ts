@@ -132,7 +132,6 @@ export class GraphSerializer {
                         node.connections.push(this.serializeConnection(connection));
                     }
                 }
-                console.log("exporting node connections", node.id, node.connections);
                 return node;
             });
         }
