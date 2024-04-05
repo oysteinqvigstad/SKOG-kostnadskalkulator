@@ -72,7 +72,7 @@ export class ModuleNode extends BaseNode<
         return []
     }
 
-    private async setModuleAndRefreshPorts() {
+    public async setModuleAndRefreshPorts() {
         this.module = this.moduleManager.getModule(this.controls.c.get('currentModule'));
 
         await this.removeConnections(this.id);
