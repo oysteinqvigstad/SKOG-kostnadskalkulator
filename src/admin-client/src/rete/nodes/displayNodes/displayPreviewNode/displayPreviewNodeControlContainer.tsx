@@ -10,6 +10,7 @@ import {NodeControl} from "../../nodeControl";
 import {DisplayPreviewNodeData} from "./displayPreviewNodeControlData";
 import {ResultPreview} from "@skogkalk/common/dist/src/visual/resultPreview";
 import {Card} from "react-bootstrap";
+import {TextEditor} from "../../../../components/input/textEditor";
 
 export function DisplayPreviewNodeControlContainer(
     props: { data: NodeControl<DisplayPreviewNodeData> }
@@ -20,13 +21,13 @@ export function DisplayPreviewNodeControlContainer(
 }
 
 function DisplayPreviewNodeContent(
-    props: { data: NodeControl<DisplayPreviewNodeData>}
+    props: { data: NodeControl<DisplayPreviewNodeData> }
 ) {
     const treeState = useAppSelector(selectTreeState)
     const nodeID = props.data.get('nodeID');
     const [displayNode, setDisplayNode] = useState(getNodeByID(treeState.tree, nodeID) as ParseDisplayNode | undefined);
-    useEffect(()=> {
-        if(treeState.tree) {
+    useEffect(() => {
+        if (treeState.tree) {
             setDisplayNode(getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode);
         }
     }, [treeState.tree, nodeID, displayNode, props.data])
@@ -39,6 +40,7 @@ function DisplayPreviewNodeContent(
         name: "",
         unit: "",
         inputs: [],
+        infoText: ""
     }
 
 
@@ -47,7 +49,7 @@ function DisplayPreviewNodeContent(
             <Card>
                 <Card.Body>
                     <ResultPreview
-                        displayData={displayNode? displayNode : defaults}
+                        displayData={displayNode ? displayNode : defaults}
                         treeState={treeState.tree}
                     />
                 </Card.Body>
@@ -55,8 +57,15 @@ function DisplayPreviewNodeContent(
             <TextInputField
                 inputHint={"Unit"}
                 value={props.data.get('unit')}
-                onChange={(value)=> { props.data.set({unit: value}) }}
+                onChange={(value) => {
+                    props.data.set({unit: value})
+                }}
             />
+            <TextEditor
+                value={props.data.get("infoText") || ""}
+                onSave={(value) => {
+                    props.data.set({infoText: value})
+                }}/>
         </Container>
 
     </>

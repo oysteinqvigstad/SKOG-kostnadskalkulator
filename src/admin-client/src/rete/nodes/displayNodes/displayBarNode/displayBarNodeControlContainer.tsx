@@ -10,6 +10,7 @@ import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
 import {NumberInputField} from "../../../../components/input/numberInputField";
 import {NodeControl} from "../../nodeControl";
 import {DisplayBarNodeData} from "./displayBarNodeControlData";
+import {TextEditor} from "../../../../components/input/textEditor";
 
 export function DisplayBarNodeControlContainer(
     props: { data: NodeControl<DisplayBarNodeData> }
@@ -69,7 +70,10 @@ function DisplayBarNodeContent(
                 onIllegalValue={()=>{}}
                 legalRanges={[]}
             />
-
+            <TextEditor
+            value={props.data.get("infoText") || ""}
+            onSave={(value) => {props.data.set({infoText: value})
+            }}/>
         </Container>
 
     </>
