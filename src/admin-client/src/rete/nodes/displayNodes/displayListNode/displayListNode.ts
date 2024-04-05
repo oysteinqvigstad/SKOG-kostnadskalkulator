@@ -1,24 +1,26 @@
 import {ParseableBaseNode} from "../../parseableBaseNode";
 import {ClassicPreset} from "rete";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {DisplayBarNode as ParseDisplayBarNode} from "@skogkalk/common/dist/src/parseTree"
+import {DisplayPreviewNode as ParseDisplayPreviewNode } from "@skogkalk/common/dist/src/parseTree"
 import {ResultSocket} from "../../../sockets";
+import {
+    DisplayListNodeControlContainer
+} from "./displayListNodeControlContainer";
 import {NodeControl} from "../../nodeControl";
-import {DisplayBarNodeData} from "./displayBarNodeControlData";
-import {DisplayBarNodeControlContainer} from "./displayBarNodeControlContainer";
+import {DisplayListNodeData} from "./displayListNodeControlData";
 
 
-export class DisplayBarNode extends ParseableBaseNode <
-    { input: ResultSocket },
+export class DisplayListNode extends ParseableBaseNode <
+    { input: ResultSocket},
     {},
-    DisplayBarNodeData
+    DisplayListNodeData
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
         private updateStore: () => void,
         id?: string,
     ) {
-        super(NodeType.BarDisplay, 600, 400, "Bar Chart", id);
+        super(NodeType.ListDisplay, 600, 400, "List", id);
 
         this.addInput("input",
             new ClassicPreset.Input(
@@ -26,11 +28,10 @@ export class DisplayBarNode extends ParseableBaseNode <
                 "Result",
                 true))
 
-        const initialControlData: DisplayBarNodeData = {
+        const initialControlData: DisplayListNodeData = {
             nodeID: this.id,
             name: "",
             unit: "",
-            max: 100,
             inputs: [],
         }
         this.addControl("c",
@@ -45,7 +46,7 @@ export class DisplayBarNode extends ParseableBaseNode <
                     minimized: false
                 },
                 this.type,
-                DisplayBarNodeControlContainer
+                DisplayListNodeControlContainer
             )
         );
     }
@@ -60,13 +61,12 @@ export class DisplayBarNode extends ParseableBaseNode <
         return {}
     }
 
-    toParseNode() : ParseDisplayBarNode {
+    toParseNode() : ParseDisplayPreviewNode {
         this.controls.c.setNoUpdate({nodeID: this.id})
         return {
             id: this.id,
             unit: this.controls.c.get("unit"),
-            max: this.controls.c.get("max"),
-            type: NodeType.BarDisplay,
+            type: NodeType.ListDisplay,
             value: 0,
             inputs: [],
             name: this.controls.c.get("name"),

@@ -3,9 +3,16 @@ import {Col, Row, Stack} from "react-bootstrap";
 import {ResultParameters} from "../components/result/ResultParameters";
 import {useAppSelector} from "../state/hooks";
 import {selectDisplayNodes, selectTreeState} from "../state/treeSelectors";
-import {DisplayBarNode, DisplayNode, DisplayPieNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {
+    DisplayBarNode,
+    DisplayListNode,
+    DisplayNode,
+    DisplayPieNode,
+    NodeType
+} from "@skogkalk/common/dist/src/parseTree";
 import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
 import {ResultPie} from "@skogkalk/common/dist/src/visual/resultPie";
+import {ResultList} from "@skogkalk/common/dist/src/visual/resultList";
 
 
 /**
@@ -20,7 +27,10 @@ export function ResultContent() {
                     <Col md={{span: 12, order: 1}} lg={{span: 8, order: 1}} className={"d-none d-md-block"}>
                         <ResultParameters />
                     </Col>
-                    {displayNodes?.map((node) => <ResultComponent displayNode={node} />)}
+                    {displayNodes
+                        ?.filter(node => node.type !== NodeType.PreviewDisplay)
+                        .map((node) => <ResultComponent displayNode={node} />)
+                    }
                 </Row>
             </Stack>
     )
@@ -42,6 +52,8 @@ function ResultComponent({displayNode}: {displayNode: DisplayNode}) {
                 return <ResultBar displayData={node as DisplayBarNode} treeState={treeState} />
             case NodeType.Display:
                 return <ResultPie displayData={node as DisplayPieNode} treeState={treeState} />
+            case NodeType.ListDisplay:
+                return <ResultList displayData={node as DisplayListNode} treeState={treeState} />
             default:
                 return <></>
         }
