@@ -3,13 +3,13 @@ import React from "react";
 
 
 export function OptionSwitch(
-    props: { on: boolean, onChange: (on: boolean)=>void }
+    props: { on: boolean, onChange: (on: boolean)=>void, inputHint: string }
 ) {
     return <>
         <Form.Floating style={{color: '#6f7174'}}>
             <Form.Switch
                 className={"field"}
-                label={'Simple Input'}
+                label={props.inputHint}
                 checked={props.on}
                 onChange={(e)=>{
                     props.onChange(e.currentTarget.checked);
