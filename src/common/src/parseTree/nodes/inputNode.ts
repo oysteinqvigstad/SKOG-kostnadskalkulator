@@ -42,6 +42,9 @@ export function isNumberInputNode(node: ParseNode): node is NumberInputNode {
 
 export function isValidValue(node: InputNode, value: number) : boolean {
     if(isNumberInputNode(node)) {
+        if(node.inputType === InputType.Integer && value - Math.round(value) !== 0) {
+            return false;
+        }
         if(node.legalValues.length !== 0) {
             let legal = false;
             node.legalValues.forEach((range) => {
