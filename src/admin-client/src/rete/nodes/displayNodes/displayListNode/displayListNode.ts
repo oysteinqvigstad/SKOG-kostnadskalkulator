@@ -8,12 +8,13 @@ import {
 } from "./displayListNodeControlContainer";
 import {NodeControl} from "../../nodeControl";
 import {DisplayListNodeData} from "./displayListNodeControlData";
+import {DisplayBarNodeData} from "../displayBarNode/displayBarNodeControlData";
 
 
 export class DisplayListNode extends ParseableBaseNode <
     { input: ResultSocket},
     {},
-    DisplayListNodeData
+    { c: NodeControl<DisplayListNodeData> }
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
@@ -45,7 +46,6 @@ export class DisplayListNode extends ParseableBaseNode <
                     },
                     minimized: false
                 },
-                this.type,
                 DisplayListNodeControlContainer
             )
         );
@@ -59,6 +59,14 @@ export class DisplayListNode extends ParseableBaseNode <
         }
         this.updateNodeRendering?.(this.id);
         return {}
+    }
+
+    serializeControls(): any {
+        return this.controls.c.getData();
+    }
+
+    deserializeControls(serializedData: any): void {
+        this.controls.c.setNoUpdate(serializedData)
     }
 
     toParseNode() : ParseDisplayPreviewNode {

@@ -13,7 +13,7 @@ import {DisplayPreviewNodeData} from "./displayPreviewNodeControlData";
 export class DisplayPreviewNode extends ParseableBaseNode <
     { input: ResultSocket},
     {},
-    DisplayPreviewNodeData
+    { c: NodeControl<DisplayPreviewNodeData> }
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
@@ -45,7 +45,6 @@ export class DisplayPreviewNode extends ParseableBaseNode <
                     },
                     minimized: false
                 },
-                this.type,
                 DisplayPreviewNodeControlContainer
             )
         );
@@ -59,6 +58,14 @@ export class DisplayPreviewNode extends ParseableBaseNode <
         }
         this.updateNodeRendering?.(this.id);
         return {}
+    }
+
+    serializeControls(): any {
+        return this.controls.c.getData()
+    }
+
+    deserializeControls(serializedData: any) {
+        this.controls.c.setNoUpdate(serializedData)
     }
 
     toParseNode() : ParseDisplayPreviewNode {
