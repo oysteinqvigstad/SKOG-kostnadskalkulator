@@ -14,7 +14,7 @@ import {NumberNodeOutput} from "../types";
 export class NumberNode extends ParseableBaseNode<
     {},
     { out: NumberSocket },
-    NumberControlData
+    { c: NodeControl<NumberControlData> }
 > {
     clone: () => NumberNode;
     constructor(
@@ -25,12 +25,13 @@ export class NumberNode extends ParseableBaseNode<
     ) {
         super(NodeType.Number, 160, 180, "Constant", id);
 
+
         this.clone = () => new NumberNode(this.controls.c.get('value') || 0, this.updateNodeRendering, this.updateDataFlow);
 
         this.addControl(
             "c",
             new NodeControl(
-                {value:0, readonly: false} as NumberControlData,
+                {value: initialValue, readonly: false} as NumberControlData,
                 {
                     onUpdate: ()=>{
                         updateDataFlow();
@@ -38,7 +39,6 @@ export class NumberNode extends ParseableBaseNode<
                     },
                     minimized: false
                 },
-                this.type,
                 NumberControlComponent
             )
         );
@@ -50,6 +50,14 @@ export class NumberNode extends ParseableBaseNode<
         return {
             out: { value: this.controls.c.get('value') || 0, sourceID: this.id }
         };
+    }
+
+    serializeControls(): any {
+        return this.controls.c.getData();
+    }
+
+    deserializeControls(data: any) {
+        this.controls.c.set(data);
     }
 
     toParseNode(): ParseNode {

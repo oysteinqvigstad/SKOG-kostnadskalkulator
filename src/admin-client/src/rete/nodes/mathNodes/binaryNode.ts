@@ -13,7 +13,7 @@ import {NumberNodeOutput} from "../types";
 export class BinaryNode extends ParseableBaseNode<
     { left: NumberSocket; right: NumberSocket },
     { out: NumberSocket },
-    NumberControlData
+    { c: NodeControl<NumberControlData>}
 >
 {
     binaryOperation: (left: number, right: number) => number;
@@ -32,7 +32,6 @@ export class BinaryNode extends ParseableBaseNode<
             new NodeControl(
                 {value: 0, readonly: true} as NumberControlData,
                 {onUpdate: ()=>{}, minimized: false},
-                this.type,
                 NumberControlComponent
             )
         );
@@ -62,6 +61,14 @@ export class BinaryNode extends ParseableBaseNode<
             type: this.type,
             value: this.controls.c.get('value') || 0
         }
+    }
+
+    serializeControls(): any {
+        return this.controls.c.getData();
+    }
+
+    deserializeControls(data: any) {
+        this.controls.c.set(data);
     }
 
     protected updateDataFlow: () => void = ()=>{}

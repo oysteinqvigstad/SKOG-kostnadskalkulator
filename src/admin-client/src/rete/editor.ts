@@ -442,6 +442,9 @@ export class Editor {
             if(context.type === "nodepicked") {
                 this.selectedNode = context.data.id;
                 console.log("selected:", context.data.id);
+                this.context.engine.fetchInputs(this.selectedNode).then((data)=>{
+                    console.log("Selected data", data);
+                })
             }
             if (context.type === "nodetranslated") {
                 const node = this.context.editor.getNode(context.data.id);

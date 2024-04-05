@@ -12,7 +12,7 @@ import {NumberNodeOutput} from "../../types";
 export class OutputNode extends ParseableBaseNode <
     { result: NumberSocket },
     { out: ResultSocket },
-    OutputNodeControlData
+    { c : NodeControl<OutputNodeControlData>}
 > {
 
 
@@ -42,7 +42,6 @@ export class OutputNode extends ParseableBaseNode <
                     },
                     minimized: false
                 },
-                this.type,
                 OutputNodeControlContainer
             ))
     }
@@ -73,5 +72,13 @@ export class OutputNode extends ParseableBaseNode <
             color: this.controls.c.get('color') || "",
             unit: this.controls.c.get('unit') || "",
         }
+    }
+
+    serializeControls(): any {
+        return this.controls.c.getData();
+    }
+
+    deserializeControls(data: any) {
+        this.controls.c.set(data);
     }
 }

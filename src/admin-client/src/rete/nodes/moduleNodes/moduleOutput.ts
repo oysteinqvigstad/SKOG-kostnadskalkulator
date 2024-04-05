@@ -1,10 +1,11 @@
 import {ClassicPreset as Classic} from "rete";
 import {DataflowNode} from "rete-engine";
-import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {NumberSocket} from "../../sockets";
 import {ModuleOutputControl} from "./moduleControls";
 import {BaseNode} from "../baseNode";
 import {NodeControl} from "../nodeControl";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NumberNodeOutput} from "../types";
 
 
 export interface ModuleOutputControlData {
@@ -12,9 +13,9 @@ export interface ModuleOutputControlData {
     value: number | undefined
 }
 export class ModuleOutput extends BaseNode<
-        { value: NumberSocket },
-        {},
-        ModuleOutputControlData
+    { value: NumberSocket },
+    {},
+    {c : NodeControl<ModuleOutputControlData> }
     >
     implements DataflowNode {
     width = 180;
@@ -41,13 +42,25 @@ export class ModuleOutput extends BaseNode<
                 },
                 minimized: false,
             },
-            this.type,
             ModuleOutputControl
         ));
         this.addInput("value", new Classic.Input(new NumberSocket(), "Number"));
     }
 
-    data() {
-        return {};
+    data( inputs: { value: NumberNodeOutput[] } ) : NumberNodeOutput  {
+        console.log("module out data", inputs.value)
+        return { value: inputs.value?.[0].value ?? 0, sourceID: this.id };
     }
+
+    serializeControls(): any {
+        return this.controls.c.getData();
+    }
+
+    deserializeControls(data: any) {
+        this.controls.c.set(data);
+    }
+
+
+
+
 }

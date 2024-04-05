@@ -9,11 +9,19 @@ import {ChooseNode as ParseChooseNode} from "@skogkalk/common/dist/src/parseTree
 import {NumberNodeOutput} from "../types";
 
 
+interface CompositeControlData {
+    mainControl: ChooseNodeControlData,
+    comparisons: ChooseNodeComparisonData[]
+}
+
 export class ChooseNode extends ParseableBaseNode<
     Record<string, NumberSocket>,
     { out: NumberSocket },
-    ChooseNodeControlData
+    { c: NodeControl<ChooseNodeControlData> }
 > {
+    private readonly defaultInputCount = 2;
+    private leftHandValue = 0;
+    private defaultValue = 0;
 
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
@@ -23,78 +31,131 @@ export class ChooseNode extends ParseableBaseNode<
     ) {
         super(NodeType.Choose, 400,400, "Choose", id);
 
-        const initialData: ChooseNodeControlData = {
-            leftHandValue: 0,
-            comparisons: [
-                // {resultNodeID: "", comparison: Comparison.EQ, rh: 0},
-                // {resultNodeID: "", comparison: Comparison.EQ, rh: 0}
-            ]
-        }
+
         this.addInput("left", new ClassicPreset.Input(new NumberSocket(), "Left hand", false));
         this.addInput("right", new ClassicPreset.Input(new NumberSocket(), "Default", false));
         this.addOutput("out", new ClassicPreset.Output(new NumberSocket(), "Result"));
 
-        const defaultInputCount = 2;
-
         const control = new NodeControl<ChooseNodeControlData>(
-            initialData,
+            {comparisonCount: 2},
             {
                 onUpdate: (newValue: Partial<ChooseNodeControlData>) => {
-                    if(newValue.comparisons !== undefined) {
-                        const newComparisonCount = newValue.comparisons.length;
-                        const oldComparisonCount = Object.keys(this.inputs).length - defaultInputCount;
-
-                        const difference = newComparisonCount - oldComparisonCount;
-                        const leftHand = this.controls.c.get('leftHandValue');
-                        if(difference > 0) {
-                            for(let i = 0; i < difference; i++) {
-                                const comparison = this.controls.c.get('comparisons')[i + oldComparisonCount];
-                                const initial: ChooseNodeComparisonData = {lh: leftHand, rh: comparison.rh, comparison: comparison.comparison};
-                                this.addNumberedInput(i + oldComparisonCount, initial);
-                            }
-                        } else if(difference < 0) {
-                            for(let i = 0; i < -difference; i++) {
-                                console.log('removing input', oldComparisonCount - i);
-                                this.removeNumberedInput(oldComparisonCount - i - 1);
-                            }
-                        }
-                    }
-                    Object.keys(this.inputs).forEach((key) => {
-                        if(key !== "left" && key !== "right") {
-                            const inputControl = this.inputs[key]?.control as NodeControl<ChooseNodeComparisonData>;
-                            inputControl.setNoUpdate({lh: this.controls.c.get('leftHandValue')});
-                        }
-                    });
+                    this.updateComparisonCount();
                     this.updateNodeRendering(this.id);
                 },
                 minimized: false
             },
-            this.type,
             ChooseNodeContainer
         )
+
         this.addControl(
             "c",
             control
         )
-        // this.controls.c.get('comparisons').forEach((comparison, index) => {
-        //     this.addNumberedInput(index, {lh: initialData.leftHandValue, rh: comparison.rh, comparison: comparison.comparison});
-        // });
+
+        this.forComparisonCount((i)=>{
+            this.addNumberedInput(i);
+        });
+
         this.updateNodeRendering(this.id);
     }
 
 
-    private addNumberedInput(number: number, initial?: {lh: number, rh: number, comparison: Comparison}){
+    data( inputs: Record<string, NumberNodeOutput[]>): { out: NumberNodeOutput } {
+        let result: NumberNodeOutput | undefined;
+        this.leftHandValue = inputs.left?.[0].value || 0;
+        this.defaultValue = inputs.right?.[0].value || 0;
+
+        this.forComparisonCount((i) => {
+            const control = this.getInputControlByIndex(i);
+            const dataInput = inputs["input"+i]
+            if(control) {
+                control.setNoUpdate({lh: this.leftHandValue});
+                control.setNoUpdate({sourceID: dataInput?.[0]?.sourceID || ""})
+                if(
+                    result === undefined &&
+                    compare(this.leftHandValue, control.get('rh'), control.get('comparison'))
+                ) {
+                    result = {value: dataInput?.[0]?.value ?? 0, sourceID: this.id}
+                }
+            }
+        });
+        this.updateNodeRendering(this.id);
+        return { out: result ?? {value: this.defaultValue, sourceID: this.id}}
+    }
+
+    toParseNode(): ParseChooseNode {
+        const controls = this.getComparisonControls();
+        return {
+            id: this.id,
+            type: NodeType.Choose,
+            value: 0,
+            inputs: [],
+            comparisons: controls.map(control=>{
+                return {
+                    rh: control.rh,
+                    comparison: control.comparison,
+                    resultNodeID: control.sourceID ?? ""
+                }
+            }),
+        };
+    }
+
+    private getComparisonControls() {
+        const controls: ChooseNodeComparisonData[] = [];
+        this.forComparisonCount((i)=> {
+            const inputControl = this.getInputControlByIndex(i);
+            if(inputControl === undefined) { throw new Error ("undefined input control in choose node: " + this.id)}
+            controls.push(inputControl.getData());
+        });
+        return controls;
+    }
+
+    serializeControls(): CompositeControlData {
+        const controls = this.getComparisonControls();
+        return {
+            mainControl: this.controls.c.getData(),
+            comparisons: controls
+        };
+    }
+
+    deserializeControls(data: CompositeControlData ) {
+        this.controls.c.set({comparisonCount: data.mainControl.comparisonCount});
+        this.forComparisonCount((i)=> {
+            let control = this.getInputControlByIndex(i);
+            if (control === undefined) {
+                this.addNumberedInput(i);
+                control = this.getInputControlByIndex(i);
+            }
+            control?.setNoUpdate(data.comparisons[i])
+        });
+    }
+
+
+    private updateComparisonCount() {
+        const newComparisonCount = this.controls.c.get('comparisonCount');
+        if(newComparisonCount < 0) {
+            this.controls.c.setNoUpdate({comparisonCount: 0});
+            return;
+        }
+        const oldComparisonCount = Object.keys(this.inputs).length - this.defaultInputCount;
+        const difference = newComparisonCount - oldComparisonCount;
+        if(difference > 0) {
+            for(let i = 0; i < difference; i++) {
+                const initial: ChooseNodeComparisonData = {lh: this.leftHandValue, rh: 0, comparison: Comparison.EQ};
+                this.addNumberedInput(i + oldComparisonCount, initial);
+            }
+        } else if(difference < 0) {
+            for(let i = 0; i < -difference; i++) {
+                this.removeNumberedInput(oldComparisonCount - i - 1);
+            }
+        }
+    }
+
+    private addNumberedInput(number: number, initial?: ChooseNodeComparisonData){
         const input = new ClassicPreset.Input(new NumberSocket());
         const options = {
-            onUpdate: (newValue: Partial<ChooseNodeComparisonData>) => {
-                const comparisons = [...this.controls.c.get('comparisons')];
-                if('rh' in newValue) {
-                    comparisons[number].rh = newValue.rh || 0;
-                }
-                if('comparison' in newValue) {
-                    comparisons[number].comparison = newValue.comparison || Comparison.EQ;
-                }
-                this.controls.c.setNoUpdate({comparisons});
+            onUpdate: () => {
                 this.updateDataFlow();
                 this.updateNodeRendering(this.id);
             },
@@ -103,7 +164,6 @@ export class ChooseNode extends ParseableBaseNode<
         input.addControl(new NodeControl<ChooseNodeComparisonData>(
             initial ?? {lh: 0, rh: 0, comparison: Comparison.EQ},
             options,
-            NodeType.Number,
             ComparisonControlContainer
         ));
         this.addInput("input" + number.toString(), input);
@@ -117,40 +177,11 @@ export class ChooseNode extends ParseableBaseNode<
         this.updateNodeRendering(this.id);
     }
 
-
-
-    data( inputs: Record<string, NumberNodeOutput[]>): { out: NumberNodeOutput } {
-        let result: NumberNodeOutput | undefined;
-        const leftHand = inputs.left[0].value;
-        this.controls.c.setNoUpdate({leftHandValue: leftHand || 0})
-
-        Object.keys(this.inputs).forEach((key) => {
-            if(key !== "left" && key !== "right") {
-                const control = this.inputs[key]?.control as NodeControl<ChooseNodeComparisonData>;
-                control.setNoUpdate({lh: leftHand ?? 0});
-                if(
-                    result === undefined &&
-                    inputs.left !== undefined && inputs.left.length > 0 &&
-                    compare(leftHand, control.get('rh'), control.get('comparison'))
-                ) {
-                    const matchingInput = inputs[key]
-                    if(matchingInput !== undefined && matchingInput.length > 0) {
-                        result = {value: matchingInput[0].value, sourceID: this.id}
-                    }
-                }
-            }
-        });
-        this.updateNodeRendering(this.id);
-        return { out: result ?? {value: inputs.right[0].value || 0, sourceID: this.id}}
+    private getInputControlByIndex(index: number)  {
+        return this.inputs["input"+index.toString()]?.control as NodeControl<ChooseNodeComparisonData> | undefined;
     }
 
-    toParseNode(): ParseChooseNode {
-        return {
-            id: this.id,
-            type: NodeType.Choose,
-            value: 0,
-            inputs: [],
-            comparisons: [],
-        };
+    private forComparisonCount(func: (index: number)=>void) {
+        for(let i = 0; i < this.controls.c.get('comparisonCount'); i++) { func(i); }
     }
 }

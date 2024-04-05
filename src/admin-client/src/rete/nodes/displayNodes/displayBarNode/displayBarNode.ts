@@ -11,7 +11,7 @@ import {DisplayBarNodeControlContainer} from "./displayBarNodeControlContainer";
 export class DisplayBarNode extends ParseableBaseNode <
     { input: ResultSocket },
     {},
-    DisplayBarNodeData
+    { c: NodeControl<DisplayBarNodeData> }
 > {
     constructor(
         protected updateNodeRendering: (nodeID: string) => void,
@@ -44,7 +44,6 @@ export class DisplayBarNode extends ParseableBaseNode <
                     },
                     minimized: false
                 },
-                this.type,
                 DisplayBarNodeControlContainer
             )
         );
@@ -58,6 +57,14 @@ export class DisplayBarNode extends ParseableBaseNode <
         }
         this.updateNodeRendering?.(this.id);
         return {}
+    }
+
+    serializeControls(): any {
+        return this.controls.c.getData();
+    }
+
+    deserializeControls(data: any) {
+        this.controls.c.set(data);
     }
 
     toParseNode() : ParseDisplayBarNode {

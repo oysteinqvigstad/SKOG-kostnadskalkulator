@@ -1,11 +1,11 @@
 import {Comparison} from "@skogkalk/common/dist/src/parseTree";
 
 export interface ChooseNodeControlData {
-    leftHandValue: number;
-    comparisons: { resultNodeID: string; comparison: Comparison; rh: number; }[];
+    comparisonCount: number
 }
 
 export interface ChooseNodeComparisonData {
+    sourceID?: string,
     lh: number;
     rh: number;
     comparison: Comparison;

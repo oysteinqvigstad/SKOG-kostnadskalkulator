@@ -15,7 +15,7 @@ export interface ModuleInputControlData {
 export class ModuleInput extends BaseNode<
     {},
     { out: NumberSocket },
-    ModuleInputControlData
+    { c : NodeControl<ModuleInputControlData>}
 > {
     width = 180;
     height = 140;
@@ -43,7 +43,6 @@ export class ModuleInput extends BaseNode<
                 },
                 minimized: false
             },
-            this.type,
             ModuleInputControl
         ));
 
@@ -54,5 +53,13 @@ export class ModuleInput extends BaseNode<
         return {
             out: { value: this.value || 0, sourceID: this.id }
         };
+    }
+
+    serializeControls(): any {
+        return this.controls.c.getData();
+    }
+
+    deserializeControls(data: any) {
+        this.controls.c.set(data);
     }
 }

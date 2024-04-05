@@ -48,7 +48,7 @@ export class NodeFactory {
             case NodeType.Min: return new NaryNode(NodeType.Min, this.updateNodeRendering, id);
             case NodeType.Max: return new NaryNode(NodeType.Max, this.updateNodeRendering, id);
             case NodeType.Choose: return new ChooseNode(this.updateNodeRendering, this.updateDataFlow, this.removeNodeConnections, id);
-            default: return undefined;
         }
+        throw new Error("NodeFactory.createNode() was invoked with " + type + " which has no implementation in createNode().");
     }
 }

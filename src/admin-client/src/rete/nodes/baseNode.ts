@@ -9,8 +9,8 @@ import {NodeControl} from "./nodeControl";
 export abstract class BaseNode<
     Inputs extends Record<string, BaseSocket>,
     Outputs extends Record<string, BaseSocket>,
-    ControlData extends {}
-> extends ClassicPreset.Node<Inputs, Outputs, { c: NodeControl<ControlData> }> implements DataflowNode {
+    Controls extends Record<string, NodeControl<any>>
+> extends ClassicPreset.Node<Inputs, Outputs, Controls> implements DataflowNode {
     xTranslation: number = 0;
     yTranslation: number = 0;
     type: NodeType;
@@ -45,6 +45,10 @@ export abstract class BaseNode<
     }
 
     abstract data(inputs: Record<KeysOfType<Inputs, any>, any[]>): Record<KeysOfType<Outputs, any>, any>;
+
+    abstract serializeControls() : any;
+
+    abstract deserializeControls(serializedData: any) : void;
 
     protected abstract updateNodeRendering(nodeID: string): void;
 

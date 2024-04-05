@@ -125,6 +125,7 @@ export class ModuleManager {
             serializer.importNodes(data).catch(()=>{reject()}).then(()=>{
                 resolve();
             });
+
         })
     }
 
@@ -162,7 +163,7 @@ export class ModuleManager {
         inputNodes.forEach((node) => {
             const key = node.controls.c.get('inputName');
             if (key) {
-                node.value = inputData[key] && inputData[key][0];
+                node.value = inputData[key] && inputData[key][0].value;
             }
         });
     }
@@ -181,8 +182,7 @@ export class ModuleManager {
         const moduleOutputKeyWithValues = await Promise.all(
             moduleOutputs.map(async (outNode) => {
                 const data = await engine.fetchInputs(outNode.id);
-
-                return [outNode.controls.c.get('outputName') || "", data.value[0]] as const;
+                return [outNode.controls.c.get('outputName') || "", data.value?.[0].value] as const;
             })
         );
 

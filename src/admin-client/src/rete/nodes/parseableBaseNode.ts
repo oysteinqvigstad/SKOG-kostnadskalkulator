@@ -1,6 +1,7 @@
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {BaseSocket} from "../sockets";
 import {BaseNode} from "./baseNode";
+import {NodeControl} from "./nodeControl";
 
 
 /**
@@ -9,8 +10,8 @@ import {BaseNode} from "./baseNode";
 export abstract class ParseableBaseNode<
     Inputs extends Record<string, BaseSocket>,
     Outputs extends Record<string, BaseSocket>,
-    ControlData extends {}
-> extends BaseNode<Inputs, Outputs, ControlData> {
+    Controls extends Record<string, NodeControl<any>>
+> extends BaseNode<Inputs, Outputs, Controls> {
 
     /**
      *

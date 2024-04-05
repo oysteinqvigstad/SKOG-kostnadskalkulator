@@ -19,34 +19,37 @@ export class GraphSerializer {
 
     /**
      * imports nodes from data exported by exportNodes
-     * @param data
+     * @param originalData
      * @param freshIDs if true, IDs are replaced with new UIDs
      */
-    public async importNodes(data: any, freshIDs?: boolean){
+    public async importNodes(originalData: any, freshIDs?: boolean){
         return new Promise<void>(async (resolve, reject) => {
 
-            if(!data) {
+            if(!originalData) {
                 reject();
                 return;
             }
 
+            let deepDataCopy = JSON.parse(JSON.stringify(originalData))
+
+
             let totalConnections: ConnProps[]  = [];
 
-            const idMap = new Map<string, string>();
+            const oldToNewIDMapping = new Map<string, string>();
 
-            for await (const { id, controls, type, xy , connections} of data.nodes) {
+            for await (const { id, controls, type, xy , connections} of deepDataCopy.nodes) {
 
                 let node = this.factory.createNode(type, id);
 
                 if(!node) {
                     reject("Invalid node type found in file");
                 } else {
-                    node.controls.c.set(controls.c.data);
+                    node.deserializeControls(controls);
                     node.xTranslation = xy[0];
                     node.yTranslation = xy[1];
                     if(freshIDs) {
                         const newID = getUID();
-                        idMap.set(node.id, newID);
+                        oldToNewIDMapping.set(node.id, newID);
                         node.id = newID;
                     }
 
@@ -59,10 +62,18 @@ export class GraphSerializer {
                 }
             }
 
+            if(freshIDs) {
+                console.log("map", Array.from(oldToNewIDMapping));
+            }
+
             for await (const connection of totalConnections) {
                 if(freshIDs) {
-                    connection.source = idMap.get(connection.source) || "";
-                    connection.target = idMap.get(connection.target) || "";
+                    const source = oldToNewIDMapping.get(connection.source);
+                    if(!source) {console.log("couldn't find source", connection)}
+                    const target = oldToNewIDMapping.get(connection.target);
+                    if(!source) {console.log("couldn't find target", connection)}
+                    connection.source = source || "";
+                    connection.target = target || "";
                 }
                 this.editor.addConnection(connection)
                     .catch((e) => console.log(e))
@@ -95,11 +106,11 @@ export class GraphSerializer {
             const outputsEntries = Object.entries(node.outputs).map(([key, output]) => {
                 return [key, output && this.serializePort(output)];
             });
-            const controlsEntries = Object.entries(node.controls).map(
-                ([key, control]) => {
-                    return [key, control && this.serializeControl(control)];
-                }
-            );
+            // const controlsEntries = Object.entries(node.controls).map(
+            //     ([key, control]) => {
+            //         return [key, control && this.serializeControl(control)];
+            //     }
+            // );
 
             data.nodes.push({
                 id: node.id,
@@ -108,7 +119,7 @@ export class GraphSerializer {
                 type: node.type,
                 outputs: Object.fromEntries(outputsEntries),
                 inputs: Object.fromEntries(inputsEntries),
-                controls: Object.fromEntries(controlsEntries),
+                controls: node.serializeControls(),
                 connections: []
             });
 
@@ -124,7 +135,6 @@ export class GraphSerializer {
                 return node;
             });
         }
-        console.log(data);
         return data;
     }
 
@@ -153,7 +163,6 @@ export class GraphSerializer {
             };
         }
         if (control instanceof NodeControl) {
-            console.log(control.getData());
             return {
                 data: control.getData()
             }

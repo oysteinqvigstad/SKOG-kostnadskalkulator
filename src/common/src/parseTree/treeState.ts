@@ -9,6 +9,7 @@ import type {RootNode} from "./nodes/rootNode";
 import {isRootNode} from "./nodes/rootNode";
 import type {DisplayNode} from "./nodes/displayNode";
 import {isDisplayNode} from "./nodes/displayNode";
+import {ChooseNode, compare} from "./nodes/chooseNode";
 import {getBinaryOperation, getNaryOperation} from "./math/operations";
 
 
@@ -282,21 +283,44 @@ function calculateNodeValue(tree: TreeState, node: ParseNode | undefined): numbe
         const resolved = node.inputs.map(node=>calculateNodeValue(tree, node))
         result = op(resolved);
     } else {
-        switch(node.type) {
-            case NodeType.NumberInput: return node.value;
-            case NodeType.DropdownInput: return node.value;
+        switch (node.type) {
+            case NodeType.NumberInput:
+                return node.value;
+            case NodeType.DropdownInput:
+                return node.value;
             case NodeType.Reference: {
-                if(isReferenceNode(node)) {
+                if (isReferenceNode(node)) {
                     node.value = calculateNodeValue(tree, getNodeByID(tree, node.referenceID));
                     return node.value;
                 } else {
                     throw new Error("Reference node is missing its referenceID property");
                 }
             }
-            case NodeType.Number: result =  node.value; break;
-            case NodeType.Output: result =  calculateNodeValue(tree, node.child); break;
-            default: result = 0;
+            case NodeType.Number:
+                result = node.value;
+                break;
+            case NodeType.Output:
+                result = calculateNodeValue(tree, node.child);
+                break;
+            default:
+                result = 0;
         }
+    }
+    switch(node.type) {
+        case NodeType.Number: result =  node.value; break;
+        case NodeType.Output: result =  calculateNodeValue(tree, node.child); break;
+        case NodeType.Choose: result = (() => {
+            const leftHand = calculateNodeValue(tree, node.left);
+            const firstMatch = (node as ChooseNode).comparisons.find((comparison)=>{
+                return compare(leftHand, comparison.rh, comparison.comparison);
+            })
+            if(firstMatch !== undefined) {
+                return calculateNodeValue(tree, getNodeByID(tree, firstMatch.resultNodeID));
+            } else {
+                return calculateNodeValue(tree, node.right);
+            }
+        })(); break;
+        default: result = 0;
     }
 
     node.value = result;

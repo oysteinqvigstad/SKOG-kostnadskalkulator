@@ -7,6 +7,7 @@ export enum Comparison {
     EQ = "EQ",
     GE = "GE",
     LE = "LE",
+    NE = "NE"
 }
 
 export function compare(lh: number, rh: number, comparison: Comparison): boolean {
@@ -21,6 +22,8 @@ export function compare(lh: number, rh: number, comparison: Comparison): boolean
             return lh >= rh;
         case Comparison.LE:
             return lh <= rh;
+        case Comparison.NE:
+            return lh !== rh;
     }
 }
 

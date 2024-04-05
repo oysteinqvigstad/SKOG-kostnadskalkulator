@@ -17,7 +17,7 @@ export interface ModuleNodeControlData {
 export class ModuleNode extends BaseNode<
     Record<string, NumberSocket>,
     Record<string, NumberSocket>,
-    ModuleNodeControlData
+    { c : NodeControl<ModuleNodeControlData>}
 > {
     module: null | Module<Schemes> = null;
     editor: NodeEditor<Schemes> | undefined;
@@ -51,7 +51,6 @@ export class ModuleNode extends BaseNode<
                     },
                     minimized: false
                 },
-                this.type,
                 ModuleNodeControl
             )
         );
@@ -73,7 +72,7 @@ export class ModuleNode extends BaseNode<
         return []
     }
 
-    private async setModuleAndRefreshPorts() {
+    public async setModuleAndRefreshPorts() {
         this.module = this.moduleManager.getModule(this.controls.c.get('currentModule'));
 
         await this.removeConnections(this.id);
@@ -119,4 +118,11 @@ export class ModuleNode extends BaseNode<
         return data || {};
     }
 
+    serializeControls() {
+        return this.controls.c.getData();
+    }
+
+    deserializeControls(serializedData: any) {
+        this.controls.c.set(serializedData);
+    }
 }
