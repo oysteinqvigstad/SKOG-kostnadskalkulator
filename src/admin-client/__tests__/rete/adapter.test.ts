@@ -6,9 +6,20 @@ import {BinaryNode} from "../../src/rete/nodes/mathNodes/binaryNode";
 import {ClassicPreset, NodeEditor} from "rete";
 import {Schemes} from "../../src/rete/nodes/types";
 import {DataflowEngine} from "rete-engine";
-import {createParseNodeGraph} from "../../src/rete/adapters";
+import {
+    createParseNodeGraph,
+    expandModule,
+    resolveIncomingModuleConnections
+} from "../../src/rete/adapters";
+import {GraphSerializer} from "../../src/rete/graphSerializer";
+import {ModuleInput} from "../../src/rete/nodes/moduleNodes/moduleInput";
+import {ModuleOutput} from "../../src/rete/nodes/moduleNodes/moduleOutput";
+import {ModuleNode} from "../../src/rete/nodes/moduleNodes/moduleNode";
+import {OutputNode} from "../../src/rete/nodes/IONodes/outputNode/outputNode";
 
-describe("Basic graph to parseTree", ()=>{
+
+
+describe("treeStateFromData()", ()=>{
     it('Should handle simple math nodes', async ()=>{
         const factory = new NodeFactory(new ModuleManager);
         const left = factory.createNode(NodeType.Number) as NumberNode;
@@ -33,9 +44,102 @@ describe("Basic graph to parseTree", ()=>{
         const parseTree = createParseNodeGraph(editor);
         const treeState = treeStateFromData(parseTree);
         expect(getNodeByID(treeState, add.id)?.value).toEqual(8);
-    })
-
+    });
 })
+
+
+
+describe('flattenGraph', ()=>{
+    const passThroughModule = "passThrough";
+    const deadEndModule = "deadEnd";
+    const singleInputMultipleTargetsModule = "multipleTargets";
+
+    const createContext = async (module: "passThrough" | "deadEnd" | "multipleTargets")=> {
+        const editor = new NodeEditor<Schemes>();
+        const engine = new DataflowEngine<Schemes>();
+        editor.use(engine);
+
+        const moduleManager = new ModuleManager();
+        const factory = new NodeFactory(moduleManager);
+        const serializer = new GraphSerializer(editor, factory);
+
+        const inNode = factory.createNode(NodeType.ModuleInput) as ModuleInput;
+        inNode.controls.c.set({inputName: "moduleInput"});
+        const outNode = factory.createNode(NodeType.ModuleOutput) as ModuleOutput;
+        outNode.controls.c.set({outputName: "moduleOutput"});
+        await editor.addNode(inNode);
+        await editor.addNode(outNode);
+
+        moduleManager.addModuleData(deadEndModule, serializer.exportNodes());
+
+        //TODO: singleInputMultipleTargetsModule
+
+        const inToOutConnection = new ClassicPreset.Connection(inNode, "out", outNode, "value");
+        await editor.addConnection(inToOutConnection);
+        moduleManager.addModuleData(passThroughModule, serializer.exportNodes());
+
+        await editor.clear();
+
+        const moduleNode = factory.createNode(NodeType.Module) as ModuleNode;
+        await editor.addNode(moduleNode);
+        moduleNode.controls.c.set({currentModule: module});
+        await moduleNode.setModuleAndRefreshPorts();
+
+        const numberNode = factory.createNode(NodeType.Number) as NumberNode;
+        numberNode.controls.c.set({value: 5});
+        const outputNode = factory.createNode(NodeType.Output) as OutputNode;
+
+        await editor.addNode(numberNode);
+        await editor.addNode(outputNode);
+        await editor.addConnection(new ClassicPreset.Connection(numberNode, "out", moduleNode, "moduleInput"));
+        await editor.addConnection(new ClassicPreset.Connection(moduleNode, "moduleOutput", outputNode, "result"));
+
+        return {
+            factory: factory,
+            engine: engine,
+            editor: editor,
+            outputID: outputNode.id,
+            moduleNode: moduleNode
+        }
+    }
+
+    it('should resolve connections going through a module with connected in out nodes', async ()=>{
+        const { factory, editor, engine, outputID, moduleNode } = await createContext(passThroughModule);
+
+        const result = await engine.fetch(outputID);
+        // Checks that the value has successfully passed through the module to outputNode
+        expect(result.out.value).toEqual(5);
+
+        const resolvedConnections = resolveIncomingModuleConnections(
+            moduleNode,
+            editor.getConnections()
+        );
+        // Checks that the connection going into the module has been redirected directly to outputNode
+        // numberNode -> Module( ModuleInput -> ModuleOutput ) -> outputNode
+        // becomes:
+        // numberNode -> outputNode
+        expect(resolvedConnections[0]?.target).toEqual(outputID);
+    });
+
+    it("Should discard connections that don't resolve to a node in the module or a node connected to a module output", async ()=>{
+        const { factory, editor, engine, outputID, moduleNode } = await createContext(deadEndModule);
+        const result = await engine.fetch(outputID);
+        // Checks that the output node defaults to 0 as the number 5 does not pass through the module
+        expect(result.out.value).toEqual(0);
+
+        const resolvedConnections = resolveIncomingModuleConnections(
+            moduleNode,
+            editor.getConnections()
+        );
+        // Checks that the connection going into the module has been discarded
+        // numberNode -> Module( ModuleInput -/> ModuleOutput ) -> outputNode
+        // becomes:
+        // numberNode -/> outputNode
+        expect(resolvedConnections.length).toEqual(0);
+    })
+})
+
+
 
 
 
