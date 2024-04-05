@@ -34,6 +34,7 @@ export class DisplayPieNode extends ParseableBaseNode <
             unit: "",
             inputs: [],
             pieType: "pie",
+            infoText: ""
         }
         this.addControl("c",
             new NodeControl(
@@ -80,6 +81,7 @@ export class DisplayPieNode extends ParseableBaseNode <
             inputs: [],
             name: this.controls.c.get("name"),
             inputOrdering: this.controls.c.get('inputs').map(input=>{return {outputID: input.id, outputLabel: input.label}}),
+            infoText: this.controls.c.get("infoText") || ""
         }
     }
 
