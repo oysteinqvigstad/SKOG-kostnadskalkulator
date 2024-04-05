@@ -28,7 +28,8 @@ export class Connection<
     B extends ReteNode
 > extends ClassicPreset.Connection<A, B> {}
 
-export type ConnProps = // Defines which nodes will signal which nodes
+
+export type ConnProps =
     | Connection<NumberInputNode, BinaryNode>
     | Connection<NumberInputNode, NaryNode>
     | Connection<NumberInputNode, OutputNode>
@@ -37,6 +38,12 @@ export type ConnProps = // Defines which nodes will signal which nodes
     | Connection<NumberNode, OutputNode>
     | Connection<BinaryNode, OutputNode>
     | Connection<NaryNode, OutputNode>
+    | Connection<ModuleInput, ModuleOutput>
+    | Connection<ModuleNode, BinaryNode | NaryNode>
+    | Connection<ModuleNode, OutputNode>
+    | Connection<NumberNode | BinaryNode | NaryNode, ModuleNode>
+    | Connection<ModuleInput, BinaryNode | NaryNode | ChooseNode>
+    | Connection<BinaryNode | NaryNode | ChooseNode, ModuleOutput>
 
 export type Schemes = GetSchemes<ReteNode, ConnProps>;
 
