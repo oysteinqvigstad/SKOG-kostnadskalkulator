@@ -63,23 +63,34 @@ describe('flattenGraph', ()=>{
         const factory = new NodeFactory(moduleManager);
         const serializer = new GraphSerializer(editor, factory);
 
+        // MODULE SETUP
+        // deadEndModule: moduleInput -/> moduleOutput
         const inNode = factory.createNode(NodeType.ModuleInput) as ModuleInput;
         inNode.controls.c.set({inputName: "moduleInput"});
         const outNode = factory.createNode(NodeType.ModuleOutput) as ModuleOutput;
         outNode.controls.c.set({outputName: "moduleOutput"});
         await editor.addNode(inNode);
         await editor.addNode(outNode);
-
         moduleManager.addModuleData(deadEndModule, serializer.exportNodes());
 
-        //TODO: singleInputMultipleTargetsModule
-
+        // passThroughModule: moduleInput -> moduleOutput
         const inToOutConnection = new ClassicPreset.Connection(inNode, "out", outNode, "value");
         await editor.addConnection(inToOutConnection);
         moduleManager.addModuleData(passThroughModule, serializer.exportNodes());
 
+        // multipleTargets: moduleInput -> 2x addNode -> moduleOutput
+        await editor.removeConnection(inToOutConnection.id);
+        const addNode = factory.createNode(NodeType.Add) as BinaryNode;
+        await editor.addNode(addNode);
+        await editor.addConnection(new ClassicPreset.Connection(inNode, "out", addNode, "left"));
+        await editor.addConnection(new ClassicPreset.Connection(inNode, "out", addNode, "right"));
+        await editor.addConnection(new ClassicPreset.Connection(addNode, "out", outNode, "value"));
+        moduleManager.addModuleData(singleInputMultipleTargetsModule, serializer.exportNodes());
+
         await editor.clear();
 
+
+        // TEST GRAPH SETUP
         const moduleNode = factory.createNode(NodeType.Module) as ModuleNode;
         await editor.addNode(moduleNode);
         moduleNode.controls.c.set({currentModule: module});
@@ -88,6 +99,7 @@ describe('flattenGraph', ()=>{
         const numberNode = factory.createNode(NodeType.Number) as NumberNode;
         numberNode.controls.c.set({value: 5});
         const outputNode = factory.createNode(NodeType.Output) as OutputNode;
+
 
         await editor.addNode(numberNode);
         await editor.addNode(outputNode);
@@ -137,6 +149,26 @@ describe('flattenGraph', ()=>{
         // numberNode -/> outputNode
         expect(resolvedConnections.length).toEqual(0);
     })
+
+    it('Should handle multiple connections from a moduleInput to multiple nodes', async ()=>{
+        const { factory, editor, engine, outputID, moduleNode } = await createContext(singleInputMultipleTargetsModule);
+        const result = await engine.fetch(outputID);
+        // Checks that the value has successfully passed through the module to outputNode and has been doubled
+        // by the Add node.
+        expect(result.out.value).toEqual(10);
+
+        const resolvedConnections = resolveIncomingModuleConnections(
+            moduleNode,
+            editor.getConnections()
+        );
+        // Checks that the connection going into the module has been redirected to both addNodes
+        // numberNode -> Module( ModuleInput -> 2x AddNode -> ModuleOutput ) -> outputNode
+        // becomes:
+        //             /-> left AddNode  -\
+        // numberNode-|                    |-> outputNode
+        //             \-> right AddNode -/
+        expect(resolvedConnections.length).toEqual(2);
+    });
 })
 
 
