@@ -2,7 +2,7 @@ import {FcSalesPerformance} from "react-icons/fc";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
-import {ResultCard} from "./resultCard";
+import {ResultCard} from "./ResultCard";
 import {DisplayPieNode, getNodeByID, TreeState} from "../parseTree";
 import {ResultRowBoxes} from "./ResultRowBoxes";
 import {OutputNode as ParseOutputNode} from "../parseTree";

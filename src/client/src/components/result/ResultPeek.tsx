@@ -2,8 +2,8 @@ import {useAppSelector} from "../../state/hooks";
 import React from "react";
 import {selectDisplayNodes, selectTreeState} from "../../state/treeSelectors";
 import {DisplayPreviewNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
-import {ResultPreview} from "@skogkalk/common/dist/src/visual/resultPreview";
 import {MdKeyboardDoubleArrowUp} from "react-icons/md";
+import {ResultPreview} from "@skogkalk/common/dist/src/visual/ResultPreview";
 
 export function ResultPeek() {
     const treeState = useAppSelector(selectTreeState)

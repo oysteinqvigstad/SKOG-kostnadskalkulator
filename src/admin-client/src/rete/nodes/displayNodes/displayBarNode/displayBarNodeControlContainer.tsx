@@ -6,12 +6,12 @@ import {Provider} from "react-redux";
 import Container from "react-bootstrap/Container";
 import {TextInputField} from "../../../../components/input/textInputField";
 import {DisplayBarNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
-import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
 import {NumberInputField} from "../../../../components/input/numberInputField";
 import {NodeControl} from "../../nodeControl";
 import {DisplayBarNodeData} from "./displayBarNodeControlData";
 import {TextEditor} from "../../../../components/input/textEditor";
 import { Drag } from "rete-react-plugin";
+import {ResultBar} from "@skogkalk/common/dist/src/visual/ResultBar";
 
 export function DisplayBarNodeControlContainer(
     props: { data: NodeControl<DisplayBarNodeData> }

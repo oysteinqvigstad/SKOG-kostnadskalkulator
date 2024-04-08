@@ -8,7 +8,7 @@ import {TextInputField} from "../../../../components/input/textInputField";
 import {DisplayPreviewNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
 import {NodeControl} from "../../nodeControl";
 import {DisplayListNodeData} from "./displayListNodeControlData";
-import {ResultList} from "@skogkalk/common/dist/src/visual/resultList";
+import {ResultList} from "@skogkalk/common/dist/src/visual/ResultList";
 import {TextEditor} from "../../../../components/input/textEditor";
 import { Drag } from "rete-react-plugin";
 

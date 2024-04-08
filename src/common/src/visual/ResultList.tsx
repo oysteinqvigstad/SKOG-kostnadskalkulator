@@ -1,6 +1,6 @@
 import {FcFinePrint} from "react-icons/fc";
 import React from "react";
-import {ResultCard} from "./resultCard";
+import {ResultCard} from "./ResultCard";
 import {DisplayListNode, getNodeByID, TreeState} from "../parseTree";
 import {OutputNode as ParseOutputNode} from "../parseTree";
 import {Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
