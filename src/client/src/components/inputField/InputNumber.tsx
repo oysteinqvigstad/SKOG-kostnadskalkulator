@@ -30,6 +30,7 @@ export function InputNumber({node}: {node: NumberInputNode}) {
 
     const onChange = (e: React.ChangeEvent<any>) => {
         setValue(e.target.value)
+        console.log(isInvalid)
     }
 
     useEffect(() => {
@@ -43,14 +44,14 @@ export function InputNumber({node}: {node: NumberInputNode}) {
             e.preventDefault()
             e.currentTarget.blur()
             console.log(e.currentTarget.value)
-            if (!isNaN(parseInt(e.currentTarget.value))) {
+            if (!isInvalid) {
                 dispatch(setField({id: node.id, value: e.currentTarget.value}))
             }
         }
     }
 
     const onUnfocus = (e: React.FocusEvent<any>) => {
-        if (!isNaN(parseInt(e.currentTarget.value))) {
+        if (!isInvalid) {
             dispatch(setField({id: node.id, value: e.currentTarget.value}))
         }
     }
