@@ -11,6 +11,7 @@ import {DisplayPreviewNodeData} from "./displayPreviewNodeControlData";
 import {ResultPreview} from "@skogkalk/common/dist/src/visual/resultPreview";
 import {Card} from "react-bootstrap";
 import {TextEditor} from "../../../../components/input/textEditor";
+import { Drag } from "rete-react-plugin";
 
 export function DisplayPreviewNodeControlContainer(
     props: { data: NodeControl<DisplayPreviewNodeData> }
@@ -45,28 +46,29 @@ function DisplayPreviewNodeContent(
 
 
     return <>
-        <Container>
-            <Card>
-                <Card.Body>
-                    <ResultPreview
-                        displayData={displayNode ? displayNode : defaults}
-                        treeState={treeState.tree}
-                    />
-                </Card.Body>
-            </Card>
-            <TextInputField
-                inputHint={"Unit"}
-                value={props.data.get('unit')}
-                onChange={(value) => {
-                    props.data.set({unit: value})
-                }}
-            />
-            <TextEditor
-                value={props.data.get("infoText") || ""}
-                onSave={(value) => {
-                    props.data.set({infoText: value})
-                }}/>
-        </Container>
-
+        <Drag.NoDrag>
+            <Container>
+                <Card>
+                    <Card.Body>
+                        <ResultPreview
+                            displayData={displayNode ? displayNode : defaults}
+                            treeState={treeState.tree}
+                        />
+                    </Card.Body>
+                </Card>
+                <TextInputField
+                    inputHint={"Unit"}
+                    value={props.data.get('unit')}
+                    onChange={(value) => {
+                        props.data.set({unit: value})
+                    }}
+                />
+                <TextEditor
+                    value={props.data.get("infoText") || ""}
+                    onSave={(value) => {
+                        props.data.set({infoText: value})
+                    }}/>
+            </Container>
+        </Drag.NoDrag>
     </>
 }
