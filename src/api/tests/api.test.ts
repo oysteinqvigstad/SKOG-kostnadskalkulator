@@ -28,8 +28,7 @@ beforeAll(() => {
         httpPort: 4000,
         staticFilesPath: path.join(__dirname, '..', '..', 'client', 'build')
     }
-    server = new WebServer(config)
-    server.run()
+    server = new WebServer(config).run()
 })
 
 afterAll(() => {
@@ -57,7 +56,6 @@ describe('serve static files', () => {
 })
 
 describe('api calculator', () => {
-
     test('POST /api/v0/addCalculator', async () => {
         await request(server.app)
             .post('/api/v0/addCalculator')
