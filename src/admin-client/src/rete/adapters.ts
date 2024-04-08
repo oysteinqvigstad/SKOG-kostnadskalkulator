@@ -111,63 +111,80 @@ export function resolveIncomingModuleConnections(moduleNode: ModuleNode,  extern
 
     const inputConnections = externalIOConnections.filter(connection=>{return connection.target === moduleNode.id});
 
-    inputConnections.forEach(connection=>{
+    inputConnections.forEach( inputConnection => {
         // finds the ModuleInput node associated with the Module input targeted by connection
         const inputNode = internalNodes.find( node=>
             node.type === NodeType.ModuleInput &&
-            (node as ModuleInput).controls.c.get('inputName') === connection.targetInput
+            (node as ModuleInput).controls.c.get('inputName') === inputConnection.targetInput
         );
         if(inputNode) {
             // finds the connection going from the associated ModuleInput to another node
-            const connectionFromModuleInput = internalIOConnections.find(conn=>conn.source === inputNode.id);
-            if (connectionFromModuleInput) { // Connection exists
-                //TODO: Rewrite to filter in case of multiple targets
-                const targetNode = internalNodes.find(node=>node.id === connectionFromModuleInput.target);
-                if(targetNode) {
-                    if(targetNode.type === NodeType.ModuleOutput) { // target is a ModuleOutput
+            const connectionsFromModuleInput = internalIOConnections.filter(conn=>conn.source === inputNode.id);
+            connectionsFromModuleInput.forEach(connectionFromModuleInput=>{
+                const moduleInputTargetNode = internalNodes.find(node=>node.id === connectionFromModuleInput.target);
+                if(moduleInputTargetNode) {
+                    if(moduleInputTargetNode.type === NodeType.ModuleOutput) {
                         // finds the outgoing connection matching the targeted ModuleOutput
-                        const outputConnection = externalIOConnections.find(conn=>
-                            conn.sourceOutput === (targetNode as ModuleOutput).controls.c.get('outputName'));
-                        /**
-                         * Case: Incoming connection has been rerouted to the target of a moduleoutput
-                         */
-                        if(outputConnection) {
+                        const outputConnections = externalIOConnections.filter(conn=>
+                            conn.sourceOutput === (moduleInputTargetNode as ModuleOutput).controls.c.get('outputName'));
+                        outputConnections.forEach((outputConnection)=>{
+                            //Case: Incoming connection has been rerouted to the target of a moduleOutput
                             // @ts-ignore
                             resolvedInputConnections.push({
                                 id: getUID(),
-                                source: connection.source,
+                                source: inputConnection.source,
                                 target: outputConnection.target,
-                                sourceOutput: connection.sourceOutput,
+                                sourceOutput: inputConnection.sourceOutput,
                                 targetInput: outputConnection.targetInput
                             })
-                        } else {
-                            /**
-                             * Case: Incoming connection goes to an output with no connection, discarded
-                             */
-                        }
+                        });
                     } else {
-                        /**
-                         * Case: Incoming connection has been rerouted to a regular node in the module
-                         */
+                        //Case: Incoming connection has been rerouted to a regular node in the module
                         // @ts-ignore
                         resolvedInputConnections.push({
                             id: getUID(),
-                            source: connection.source,
+                            source: inputConnection.source,
                             target: connectionFromModuleInput.target,
-                            sourceOutput: connection.sourceOutput,
+                            sourceOutput: inputConnection.sourceOutput,
                             targetInput: connectionFromModuleInput.targetInput
                         })
                     }
                 } else {
                     throw new Error ("resolveIncomingModuleConnections: targeted node does not exist in internalIONodes")
                 }
-            } else {
-                /**
-                 * Case: ModuleInput is not connected to anything. Incoming connection discarded.
-                 */
-            }
+            });
         }
     });
+
+    const outputConnections = externalIOConnections
+        .filter(connection=>{return connection.source === moduleNode.id});
+    outputConnections.forEach((outputConnection)=> {
+        // only interested in resolving a connection if it goes to a regular node in the module.
+        // Other cases are handled in the input connection resolution.
+        const moduleOutputNode = internalNodes
+            .find(node=>
+                outputConnection.sourceOutput === (node as ModuleOutput).controls.c.get('outputName')
+            );
+        if(moduleOutputNode) {
+            const moduleOutputInternalConnection = internalIOConnections.find(conn=>conn.target === moduleOutputNode.id);
+            if(moduleOutputInternalConnection === undefined) {
+                return;
+            }
+            const connectionSourceNode = internalNodes.find(node=>node.id === moduleOutputInternalConnection.source);
+            if(connectionSourceNode?.type === NodeType.ModuleInput) {
+                return;
+            }
+            // @ts-ignore
+            resolvedInputConnections.push({
+                id: getUID(),
+                source: moduleOutputInternalConnection.source,
+                target: outputConnection.target,
+                sourceOutput: moduleOutputInternalConnection.sourceOutput,
+                targetInput: outputConnection.targetInput
+            })
+        }
+    });
+
     return resolvedInputConnections;
 }
 
