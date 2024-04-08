@@ -15,7 +15,7 @@ import {useEffect, useState} from "react";
 import {addInputToPage} from "../../../../state/slices/pages";
 import {SlArrowDown, SlArrowUp} from "react-icons/sl";
 import {NodeControl} from "../../nodeControl";
-import {UnitInputField} from "../../../../components/input/unitInputField";
+import {TextEditor} from "../../../../components/input/textEditor";
 
 
 export function DropdownInputControlContainer(
@@ -202,6 +202,12 @@ export function DropdownInputControlContent(
                                 />
                             </Col>
                         </Row>
+                        <TextEditor
+                            value={props.data.get('infoText')}
+                            onSave={(value: string) => {
+                                props.data.set({infoText: value})
+                            }}
+                        />
                     </>
                 }
             />
