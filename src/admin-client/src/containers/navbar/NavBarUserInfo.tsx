@@ -32,7 +32,7 @@ export function NavBarUserInfo() {
 
     return (
         <>
-            <Navbar.Text className={"ms-auto"}>
+            <Navbar.Text className={"ms-auto d-none d-md-flex"}>
                 {"Signed in as: "}
             </Navbar.Text>
             <NavDropdown title={username} id={"user-dropdown"} className={"ms-2 me-3"}>
