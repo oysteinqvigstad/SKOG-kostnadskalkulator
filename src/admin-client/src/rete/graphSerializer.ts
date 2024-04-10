@@ -6,6 +6,16 @@ import {BinaryNode} from "./nodes/mathNodes/binaryNode";
 import {NodeFactory} from "./nodeFactory";
 import {NodeControl} from "./nodes/nodeControl";
 
+export interface SerializedNode {
+    id: string;
+    label: string;
+    xy: [number, number];
+    type: string;
+    outputs: Record<string, any>;
+    inputs: Record<string, any>;
+    controls: Record<string, any>;
+    connections: any[];
+}
 
 /**
  * Class responsible for writing and reading graph state to a parseable format.
@@ -47,7 +57,7 @@ export class GraphSerializer {
                     node.deserializeControls(controls);
                     node.xTranslation = xy[0];
                     node.yTranslation = xy[1];
-                    if(freshIDs) {
+                    if(freshIDs !== undefined && freshIDs){
                         const newID = getUID();
                         oldToNewIDMapping.set(node.id, newID);
                         node.id = newID;
@@ -75,7 +85,7 @@ export class GraphSerializer {
                     connection.source = source || "";
                     connection.target = target || "";
                 }
-                this.editor.addConnection(connection)
+                await this.editor.addConnection(connection)
                     .catch((e) => console.log(e))
                     .then((added) => {
                         if(!added) {
@@ -93,7 +103,7 @@ export class GraphSerializer {
     /**
      * Exports node structure as a data structure that can later be read with importNodes()
      */
-    public exportNodes() : any {
+    public exportNodes() : { nodes: SerializedNode[]} {
 
         const data: any = { nodes: [] };
         const nodes = this.editor.getNodes() as ReteNode[];
@@ -152,23 +162,6 @@ export class GraphSerializer {
         };
     }
 
-    private serializeControl(control: ClassicPreset.Control) {
-        if (control instanceof ClassicPreset.InputControl) {
-            return {
-                __type: "ClassicPreset.InputControl" as const,
-                id: control.id,
-                readonly: control.readonly,
-                type: control.type,
-                value: control.value
-            };
-        }
-        if (control instanceof NodeControl) {
-            return {
-                data: control.getData()
-            }
-        }
-        return null;
-    }
 
     private serializeConnection(
         connection: Connection<NumberNode, BinaryNode>
