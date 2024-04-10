@@ -40,7 +40,7 @@ export const treeFormSlice = createSlice({
             const {id, value} = action.payload
             state.inputFieldValues[id] = value
             if (state.tree) {
-                state.tree = setInputValue(state.tree, id, parseFloat(value))
+                state.tree = setInputValue(state.tree, id, parseFloat(value.replace(",",".")))
             }
         },
         setActivePage: (state, action: PayloadAction<{title: string}>) => {
