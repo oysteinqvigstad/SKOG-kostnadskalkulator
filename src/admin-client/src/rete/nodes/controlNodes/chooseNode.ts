@@ -170,7 +170,6 @@ export class ChooseNode extends ParseableBaseNode<
     }
 
     private removeNumberedInput(number: number) {
-        console.log('removing input')
         const inputName = "input" + number.toString();
         this.removeInput(inputName);
         this.removeConnection(this.id, {input: inputName});
