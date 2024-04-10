@@ -48,7 +48,6 @@ export class ModuleOutput extends BaseNode<
     }
 
     data( inputs: { value: NumberNodeOutput[] } ) : NumberNodeOutput  {
-        console.log("module out data", inputs.value)
         return { value: inputs.value?.[0].value ?? 0, sourceID: this.id };
     }
 
