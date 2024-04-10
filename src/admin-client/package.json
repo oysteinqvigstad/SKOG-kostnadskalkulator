@@ -46,8 +46,16 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest --collect-coverage",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "@happy-dom/jest-environment",
+    "testMatch": ["**/__tests__/**/*.test.ts"],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(d3)/)"
+    ]
   },
   "eslintConfig": {
     "extends": [
