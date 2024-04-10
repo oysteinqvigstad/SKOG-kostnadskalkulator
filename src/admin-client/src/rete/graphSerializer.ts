@@ -51,24 +51,20 @@ export class GraphSerializer {
 
                 let node = this.factory.createNode(type, id);
 
-                if(!node) {
-                    reject("Invalid node type found in file");
-                } else {
-                    node.deserializeControls(controls);
-                    node.xTranslation = xy[0];
-                    node.yTranslation = xy[1];
-                    if(freshIDs !== undefined && freshIDs){
-                        const newID = getUID();
-                        oldToNewIDMapping.set(node.id, newID);
-                        node.id = newID;
-                    }
+                node.deserializeControls(controls);
+                node.xTranslation = xy[0];
+                node.yTranslation = xy[1];
+                if(freshIDs !== undefined && freshIDs){
+                    const newID = getUID();
+                    oldToNewIDMapping.set(node.id, newID);
+                    node.id = newID;
+                }
 
-                    totalConnections.push(...connections);
+                totalConnections.push(...connections);
 
-                    await this.editor.addNode(node);
-                    if(this.area) {
-                        await this.area.translate(node.id, { x: node.xTranslation, y: node.yTranslation });
-                    }
+                await this.editor.addNode(node);
+                if(this.area) {
+                    await this.area.translate(node.id, { x: node.xTranslation, y: node.yTranslation });
                 }
             }
 
@@ -79,23 +75,23 @@ export class GraphSerializer {
             for await (const connection of totalConnections) {
                 if(freshIDs) {
                     const source = oldToNewIDMapping.get(connection.source);
-                    if(!source) {console.log("couldn't find source", connection)}
+                    if(!source) {reject("couldn't find source" + connection); return;}
                     const target = oldToNewIDMapping.get(connection.target);
-                    if(!source) {console.log("couldn't find target", connection)}
-                    connection.source = source || "";
-                    connection.target = target || "";
+                    if(!source) {reject("couldn't find target" + connection); return;}
+                    connection.source = source!;
+                    connection.target = target!;
                 }
                 await this.editor.addConnection(connection)
-                    .catch((e) => console.log(e))
+                    .catch((e) => {reject(e); return;})
                     .then((added) => {
                         if(!added) {
-                            console.log("Failed to add connection", connection);
-                            console.log(this.editor.getNode(connection.target));
+                            reject("Failed to add connection" + connection);
+                            return;
                         }
                     });
             }
 
-            resolve();
+            resolve(); return;
         });
     }
 
