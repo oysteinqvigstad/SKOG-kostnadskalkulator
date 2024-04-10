@@ -26,6 +26,7 @@ export function ResultList(props: {
         <ResultCard
             icon={<FcFinePrint/>}
             title={props.displayData.name}
+            infoText={props.displayData.infoText || ""}
             children={children}
         />
     )

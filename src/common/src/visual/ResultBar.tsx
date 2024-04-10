@@ -36,6 +36,7 @@ export function ResultBar(props: {
         <ResultCard
             icon={<FcBullish />}
             title={props.displayData.name}
+            infoText={props.displayData.infoText || ""}
         >
             {children}
         </ResultCard>
