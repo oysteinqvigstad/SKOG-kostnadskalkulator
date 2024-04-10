@@ -4,7 +4,7 @@ import {NodeEditor} from "rete";
 import {AreaPlugin} from "rete-area-plugin";
 import {DataflowEngine} from "rete-engine";
 import {AreaExtra} from "./editor";
-import {GraphSerializer} from "./graphSerializer";
+import {GraphSerializer, SerializedNode} from "./graphSerializer";
 import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
 import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
 import {NodeFactory} from "./nodeFactory";
@@ -30,12 +30,12 @@ export class ModuleManager {
 
     private moduleData: {[key in string]:any} = {}
 
-    public addModuleData(name: string, data?: { nodes: any[], connections: any[]}) : boolean {
+    public addModuleData(name: string, data?: { nodes: SerializedNode[]}) : boolean {
         if(name in this.moduleData) {
             return false
         }
 
-        this.moduleData[name] = data ?? { nodes: [] }
+        this.moduleData[name] = data ?? { nodes: [], connections: []}
         return true;
     }
 
@@ -57,7 +57,7 @@ export class ModuleManager {
         return wasRemoved;
     }
 
-    getModuleData(name: string) :  any | undefined {
+    getModuleData(name: string) :  { nodes: SerializedNode[] } | undefined {
         if(!this.hasModule(name)) {
             return undefined
         }
@@ -119,11 +119,11 @@ export class ModuleManager {
         return new Promise<void>((resolve, reject)=>{
             const data = this.moduleData[moduleName];
             if(!data) {
-                reject()
+                reject(); return;
             }
             const serializer = new GraphSerializer(editor, factory ?? new NodeFactory(this))
-            serializer.importNodes(data).catch(()=>{reject()}).then(()=>{
-                resolve();
+            serializer.importNodes(data).catch(()=>{reject(); return;}).then(()=>{
+                resolve(); return;
             });
 
         })
