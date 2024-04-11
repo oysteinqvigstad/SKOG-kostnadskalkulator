@@ -47,7 +47,6 @@ export function InputNumber({node}: {
         if (e.key === 'Enter') {
             e.preventDefault()
             e.currentTarget.blur()
-            console.log(e.currentTarget.value)
             if (!isInvalid) {
                 dispatch(setField({id: node.id, value: e.currentTarget.value}))
             }
@@ -75,7 +74,7 @@ export function InputNumber({node}: {
                     aria-describedby={`input ${node.name}`}
                     type={"text"}
                     inputMode={"numeric"}
-                    pattern="^[-+0-9,.]*$"
+                    pattern="[0-9,.\+\-]*$"
                     value={value}
                     isInvalid={isInvalid}
                     onChange={e => onChange(e)}
