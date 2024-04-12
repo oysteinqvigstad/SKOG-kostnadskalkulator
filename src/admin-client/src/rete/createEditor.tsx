@@ -23,13 +23,23 @@ export async function createEditor(container: HTMLElement) {
             if(localStorage) {
                 const data = localStorage.getItem('graph');
                 if(data) {
+                    const parsedData = JSON.parse(data);
+                    console.log("load", parsedData);
+                    if(parsedData.main === undefined) {
+                        throw new Error("No main in loaded data");
+                    }
+                    if(parsedData.modules === undefined) {
+                        throw new Error("No modules in loaded data");
+                    }
                     editor.importWithModules(JSON.parse(data));
                 }
             }
         },
         save: () => {
             if(localStorage) {
-                localStorage.setItem('graph', JSON.stringify(editor.exportWithModules()));
+                editor.exportWithModules().then(data=>{
+                    localStorage.setItem('graph', JSON.stringify(data));
+                });
             }
         },
         clear: () =>  {
@@ -38,14 +48,15 @@ export async function createEditor(container: HTMLElement) {
         import: (data: any) => {
             editor.importWithModules(data);
         },
-        export: () => {
+        export: async () => {
+            const nodes = await editor.exportAsParseTree();
             return {
                 graph: editor.exportWithModules(),
-                parseNodes: editor.exportAsParseTree() ?? []
+                parseNodes: nodes ?? []
             }
         },
         testJSON: () => {
-            console.log(editor.exportAsParseTree())
+            editor.exportAsParseTree().then(data=>console.log(data));
         },
         deleteSelected: async () => {
             editor.deleteSelected().then();
@@ -75,7 +86,7 @@ export interface ReteFunctions {
     save: () => void,
     clear: () => void,
     import: (data: any) => void,
-    export: () => {graph: any, parseNodes: ParseNode[]},
+    export: () => Promise<{graph: any, parseNodes: ParseNode[]}>,
     testJSON: () => ParseNode[] | undefined,
     deleteSelected: () => void,
     registerCallBack: (id: string, newCallback: (nodes?: ParseNode[]) => void) => void,
@@ -83,6 +94,6 @@ export interface ReteFunctions {
         resetView: () => void,
         focusSelectedNode: () => void
     },
-    getCurrentTree: () => ParseNode[] | undefined,
+    getCurrentTree: () => Promise<ParseNode[] | undefined>,
     editor: Editor
 }
