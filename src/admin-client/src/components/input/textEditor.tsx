@@ -183,9 +183,12 @@ export function TextEditor(props: { value: string, onSave: (value: string) => vo
     const handleShow = () => setShow(!show);
     const handleSave = () => {
         if (editor !== null) {
-            const cleanHTML = sanitizeHtml(editor.getHTML(), {
+            let cleanHTML = sanitizeHtml(editor.getHTML(), {
                 allowedTags: allowedTags
             });
+            if (cleanHTML === "<p></p>") {
+                cleanHTML = "";
+            }
             props.onSave(cleanHTML);
             handleShow();
         }
