@@ -51,7 +51,7 @@ export class DropdownInputNode extends ParseableBaseNode<
                         this.height = this.originalHeight * 0.5;
                     } else {
                         this.width = this.originalWidth;
-                        this.height = this.originalHeight + this.controls.c.get('dropdownOptions').length * 60;
+                        this.height = this.originalHeight + this.controls.c.get('dropdownOptions').length * 74;
                     }
                     this.updateNodeRendering(this.id);
                     this.updateDataFlow();
