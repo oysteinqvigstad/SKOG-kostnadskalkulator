@@ -8,8 +8,10 @@ import {TextInputField} from "../../../../components/input/textInputField";
 import {DisplayPreviewNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
 import {NodeControl} from "../../nodeControl";
 import {DisplayPreviewNodeData} from "./displayPreviewNodeControlData";
-import {ResultPreview} from "@skogkalk/common/dist/src/visual/resultPreview";
+import {ResultPreview} from "@skogkalk/common/dist/src/visual/ResultPreview";
 import {Card} from "react-bootstrap";
+import {TextEditor} from "../../../../components/input/textEditor";
+import { Drag } from "rete-react-plugin";
 
 export function DisplayPreviewNodeControlContainer(
     props: { data: NodeControl<DisplayPreviewNodeData> }
@@ -20,13 +22,13 @@ export function DisplayPreviewNodeControlContainer(
 }
 
 function DisplayPreviewNodeContent(
-    props: { data: NodeControl<DisplayPreviewNodeData>}
+    props: { data: NodeControl<DisplayPreviewNodeData> }
 ) {
     const treeState = useAppSelector(selectTreeState)
     const nodeID = props.data.get('nodeID');
     const [displayNode, setDisplayNode] = useState(getNodeByID(treeState.tree, nodeID) as ParseDisplayNode | undefined);
-    useEffect(()=> {
-        if(treeState.tree) {
+    useEffect(() => {
+        if (treeState.tree) {
             setDisplayNode(getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode);
         }
     }, [treeState.tree, nodeID, displayNode, props.data])
@@ -39,25 +41,34 @@ function DisplayPreviewNodeContent(
         name: "",
         unit: "",
         inputs: [],
+        infoText: ""
     }
 
 
     return <>
-        <Container>
-            <Card>
-                <Card.Body>
-                    <ResultPreview
-                        displayData={displayNode? displayNode : defaults}
-                        treeState={treeState.tree}
-                    />
-                </Card.Body>
-            </Card>
-            <TextInputField
-                inputHint={"Unit"}
-                value={props.data.get('unit')}
-                onChange={(value)=> { props.data.set({unit: value}) }}
-            />
-        </Container>
-
+        <Drag.NoDrag>
+            <Container>
+                <Card>
+                    <Card.Body>
+                        <ResultPreview
+                            displayData={displayNode ? displayNode : defaults}
+                            treeState={treeState.tree}
+                        />
+                    </Card.Body>
+                </Card>
+                <TextInputField
+                    inputHint={"Unit"}
+                    value={props.data.get('unit')}
+                    onChange={(value) => {
+                        props.data.set({unit: value})
+                    }}
+                />
+                <TextEditor
+                    value={props.data.get("infoText") || ""}
+                    onSave={(value) => {
+                        props.data.set({infoText: value})
+                    }}/>
+            </Container>
+        </Drag.NoDrag>
     </>
 }

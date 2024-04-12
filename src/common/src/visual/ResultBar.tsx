@@ -2,7 +2,7 @@ import {FcBullish} from "react-icons/fc";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
-import {ResultCard} from "./resultCard";
+import {ResultCard} from "./ResultCard";
 import {DisplayBarNode, getNodeByID, TreeState} from "../parseTree";
 import {OutputNode as ParseOutputNode} from "../parseTree";
 
@@ -36,6 +36,7 @@ export function ResultBar(props: {
         <ResultCard
             icon={<FcBullish />}
             title={props.displayData.name}
+            infoText={props.displayData.infoText || ""}
         >
             {children}
         </ResultCard>

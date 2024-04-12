@@ -8,7 +8,9 @@ import {TextInputField} from "../../../../components/input/textInputField";
 import {DisplayPreviewNode as ParseDisplayNode} from "@skogkalk/common/dist/src/parseTree"
 import {NodeControl} from "../../nodeControl";
 import {DisplayListNodeData} from "./displayListNodeControlData";
-import {ResultList} from "@skogkalk/common/dist/src/visual/resultList";
+import {ResultList} from "@skogkalk/common/dist/src/visual/ResultList";
+import {TextEditor} from "../../../../components/input/textEditor";
+import { Drag } from "rete-react-plugin";
 
 export function DisplayListNodeControlContainer(
     props: { data: NodeControl<DisplayListNodeData> }
@@ -19,13 +21,13 @@ export function DisplayListNodeControlContainer(
 }
 
 function DisplayListNodeContent(
-    props: { data: NodeControl<DisplayListNodeData>}
+    props: { data: NodeControl<DisplayListNodeData> }
 ) {
     const treeState = useAppSelector(selectTreeState)
     const nodeID = props.data.get('nodeID');
     const [displayNode, setDisplayNode] = useState(getNodeByID(treeState.tree, nodeID) as ParseDisplayNode | undefined);
-    useEffect(()=> {
-        if(treeState.tree) {
+    useEffect(() => {
+        if (treeState.tree) {
             setDisplayNode(getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode);
         }
     }, [treeState.tree, nodeID, displayNode, props.data])
@@ -42,23 +44,31 @@ function DisplayListNodeContent(
 
 
     return <>
-        <Container>
-            <ResultList
-                displayData={displayNode ?? defaults}
-                treeState={treeState.tree}
-            />
-            <TextInputField
-                inputHint={"Name"}
-                value={props.data.get('name')}
-                onChange={(value)=>{
-                    props.data.set({name: value});
-                }}/>
-            <TextInputField
-                inputHint={"Unit"}
-                value={props.data.get('unit')}
-                onChange={(value)=> { props.data.set({unit: value}) }}
-            />
-        </Container>
-
+        <Drag.NoDrag>
+            <Container>
+                <ResultList
+                    displayData={displayNode ?? defaults}
+                    treeState={treeState.tree}
+                />
+                <TextInputField
+                    inputHint={"Name"}
+                    value={props.data.get('name')}
+                    onChange={(value) => {
+                        props.data.set({name: value});
+                    }}/>
+                <TextInputField
+                    inputHint={"Unit"}
+                    value={props.data.get('unit')}
+                    onChange={(value) => {
+                        props.data.set({unit: value})
+                    }}
+                />
+                <TextEditor
+                    value={props.data.get("infoText") || ""}
+                    onSave={(value) => {
+                        props.data.set({infoText: value})
+                    }}/>
+            </Container>
+        </Drag.NoDrag>
     </>
 }

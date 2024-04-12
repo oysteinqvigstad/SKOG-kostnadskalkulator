@@ -12,7 +12,9 @@ import {isValidValue} from "@skogkalk/common/dist/src/parseTree";
  * The input field for a numerical input
  * @param fieldData - the data for the field, including the title and properties
  */
-export function InputNumber({node}: {node: NumberInputNode}) {
+export function InputNumber({node}: {
+    node: NumberInputNode
+}) {
     // Get the default value for the field from the store
     const fieldValue = useAppSelector(selectInputFieldValue(node.id))
 
@@ -21,36 +23,38 @@ export function InputNumber({node}: {node: NumberInputNode}) {
     // callback function for changing input value
 
 
-
-
-
     // field value is kept in local state because we don't want to update the
     // node value until all the digits have been entered
     const [value, setValue] = React.useState<string>(fieldValue)
 
     const onChange = (e: React.ChangeEvent<any>) => {
-        setValue(e.target.value)
+        const value = e.target.value;
+        const replaced: string = value.replace(",", ".");
+        const validChars = /^[+-]?[0-9]*\.?[0-9]*$/;
+
+        if (validChars.test(replaced)) {
+            setValue(replaced);
+        }
     }
 
     useEffect(() => {
         setValue(fieldValue)
     }, [fieldValue]);
 
-    const isInvalid =  !isValidValue(node, parseFloat(value))
+    const isInvalid = !isValidValue(node, parseFloat(value.replace(",", ".")))
 
     const onKeyPress = (e: React.KeyboardEvent<any>) => {
         if (e.key === 'Enter') {
             e.preventDefault()
             e.currentTarget.blur()
-            console.log(e.currentTarget.value)
-            if (!isNaN(parseInt(e.currentTarget.value))) {
+            if (!isInvalid) {
                 dispatch(setField({id: node.id, value: e.currentTarget.value}))
             }
         }
     }
 
     const onUnfocus = (e: React.FocusEvent<any>) => {
-        if (!isNaN(parseInt(e.currentTarget.value))) {
+        if (!isInvalid) {
             dispatch(setField({id: node.id, value: e.currentTarget.value}))
         }
     }
@@ -68,13 +72,13 @@ export function InputNumber({node}: {node: NumberInputNode}) {
                     // style={{fontWeight: (fieldValue !== fieldData.default) ? 'bold' : 'normal'}}
                     placeholder="value"
                     aria-describedby={`input ${node.name}`}
-                    type={"number"}
+                    type={"text"}
                     inputMode={"numeric"}
-                    pattern="[0-9]*"
+                    pattern="[0-9,.\+\-]*$"
                     value={value}
                     isInvalid={isInvalid}
                     onChange={e => onChange(e)}
-                    onKeyPress={e => onKeyPress(e)}
+                    onKeyDown={e => onKeyPress(e)}
                     onBlur={e => onUnfocus(e)}
                     required
                 />
@@ -91,15 +95,15 @@ export function InputNumber({node}: {node: NumberInputNode}) {
                     zIndex: 5,
                     border: 'none',
                     top: '11%',
-            }}
+                }}
             >
-                <MdReplay />
+                <MdReplay/>
             </Button>
 
             <InputGroup.Text
                 className={"justify-content-center"}
                 style={{width: '5rem'}}>
-                    {node.unit}
+                {node.unit}
             </InputGroup.Text>
         </>
     )

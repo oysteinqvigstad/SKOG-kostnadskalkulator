@@ -10,9 +10,9 @@ import {
     DisplayPieNode,
     NodeType
 } from "@skogkalk/common/dist/src/parseTree";
-import {ResultBar} from "@skogkalk/common/dist/src/visual/resultBar";
-import {ResultPie} from "@skogkalk/common/dist/src/visual/resultPie";
-import {ResultList} from "@skogkalk/common/dist/src/visual/resultList";
+import {ResultBar} from "@skogkalk/common/dist/src/visual/ResultBar";
+import {ResultPie} from "@skogkalk/common/dist/src/visual/ResultPie";
+import {ResultList} from "@skogkalk/common/dist/src/visual/ResultList";
 
 
 /**

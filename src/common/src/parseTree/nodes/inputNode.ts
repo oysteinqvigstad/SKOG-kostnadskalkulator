@@ -21,8 +21,6 @@ export function isInputNode(node: ParseNode): node is InputNode {
 }
 
 
-
-
 /**
  * Number input node
  */
@@ -40,15 +38,18 @@ export function isNumberInputNode(node: ParseNode): node is NumberInputNode {
     return node.type === NodeType.NumberInput;
 }
 
-export function isValidValue(node: InputNode, value: number) : boolean {
-    if(isNumberInputNode(node)) {
-        if(node.inputType === InputType.Integer && value - Math.round(value) !== 0) {
+export function isValidValue(node: InputNode, value: number): boolean {
+    if (isNaN(value)) {
+        return false
+    }
+    if (isNumberInputNode(node)) {
+        if (node.inputType === InputType.Integer && value - Math.round(value) !== 0) {
             return false;
         }
-        if(node.legalValues.length !== 0) {
+        if (node.legalValues.length !== 0) {
             let legal = false;
             node.legalValues.forEach((range) => {
-                if(((range.min !== null)? value >= range.min : true) && ((range.max !== null)? value <= range.max : true)) {
+                if (((range.min !== null) ? value >= range.min : true) && ((range.max !== null) ? value <= range.max : true)) {
                     legal = true;
                 }
             })
@@ -58,7 +59,7 @@ export function isValidValue(node: InputNode, value: number) : boolean {
         }
     } else if (isDropdownInputNode(node)) {
         return node.dropdownAlternatives
-            .find((alternative)=> {
+            .find((alternative) => {
                 return alternative.value === value
             }) !== undefined
     }
@@ -83,7 +84,7 @@ export interface DropdownInput extends InputNode {
     }[]
 }
 
-export function isDropdownInputNode(node: ParseNode) : node is DropdownInput {
+export function isDropdownInputNode(node: ParseNode): node is DropdownInput {
     return node.type === NodeType.DropdownInput;
 }
 

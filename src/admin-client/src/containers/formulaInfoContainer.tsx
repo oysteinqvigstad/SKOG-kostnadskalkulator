@@ -10,7 +10,7 @@ export function FormulaInfoContainer(
     ) {
     const formulaInfo = useAppSelector(selectFormulaInfo);
     const dispatch = useAppDispatch();
-    return <InputGroup size="sm">
+    return <InputGroup size="sm" className={"d-none d-xl-flex"}>
             <TextInputField
                 value={formulaInfo.name}
                 inputHint={"Formula name"}

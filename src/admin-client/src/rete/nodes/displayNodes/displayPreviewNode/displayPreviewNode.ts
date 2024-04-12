@@ -78,6 +78,7 @@ export class DisplayPreviewNode extends ParseableBaseNode <
             inputs: [],
             name: this.controls.c.get("name"),
             inputOrdering: this.controls.c.get('inputs').map(input=>{return {outputID: input.id, outputLabel: input.label}}),
+            infoText: this.controls.c.get('infoText') || "",
         }
     }
 
