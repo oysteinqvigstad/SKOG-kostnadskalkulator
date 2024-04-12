@@ -6,22 +6,14 @@ import {BinaryNode} from "../../src/rete/nodes/mathNodes/binaryNode";
 import {ClassicPreset, NodeEditor} from "rete";
 import {Schemes} from "../../src/rete/nodes/types";
 import {DataflowEngine} from "rete-engine";
-import {
-    createParseNodeGraph,
-    expandModule,
-    resolveIncomingModuleConnections
-} from "../../src/rete/adapters";
+import {createParseNodeGraph, flattenGraph, resolveIncomingModuleConnections} from "../../src/rete/adapters";
 import {GraphSerializer} from "../../src/rete/graphSerializer";
-import {ModuleInput} from "../../src/rete/nodes/moduleNodes/moduleInput";
-import {ModuleOutput} from "../../src/rete/nodes/moduleNodes/moduleOutput";
-import {ModuleNode} from "../../src/rete/nodes/moduleNodes/moduleNode";
-import {OutputNode} from "../../src/rete/nodes/IONodes/outputNode/outputNode";
-
+import {createTestContext, ModuleName} from "./testUtil";
 
 
 describe("treeStateFromData()", ()=>{
     it('Should handle simple math nodes', async ()=>{
-        const factory = new NodeFactory(new ModuleManager);
+        const factory = new NodeFactory(new ModuleManager());
         const left = factory.createNode(NodeType.Number) as NumberNode;
         left.controls.c.set({value: 5});
         const right = factory.createNode(NodeType.Number) as NumberNode;
@@ -41,7 +33,8 @@ describe("treeStateFromData()", ()=>{
         const result = await engine.fetch(add.id);
         expect(result.out.value).toEqual(8);
 
-        const parseTree = createParseNodeGraph(editor);
+        const moduleManager = new ModuleManager();
+        const parseTree = await createParseNodeGraph(new GraphSerializer(editor, new NodeFactory(moduleManager)), moduleManager);
         const treeState = treeStateFromData(parseTree);
         expect(getNodeByID(treeState, add.id)?.value).toEqual(8);
     });
@@ -49,74 +42,10 @@ describe("treeStateFromData()", ()=>{
 
 
 
+
 describe('flattenGraph', ()=>{
-    const passThroughModule = "passThrough";
-    const deadEndModule = "deadEnd";
-    const singleInputMultipleTargetsModule = "multipleTargets";
-
-    const createContext = async (module: "passThrough" | "deadEnd" | "multipleTargets")=> {
-        const editor = new NodeEditor<Schemes>();
-        const engine = new DataflowEngine<Schemes>();
-        editor.use(engine);
-
-        const moduleManager = new ModuleManager();
-        const factory = new NodeFactory(moduleManager);
-        const serializer = new GraphSerializer(editor, factory);
-
-        // MODULE SETUP
-        // deadEndModule: moduleInput -/> moduleOutput
-        const inNode = factory.createNode(NodeType.ModuleInput) as ModuleInput;
-        inNode.controls.c.set({inputName: "moduleInput"});
-        const outNode = factory.createNode(NodeType.ModuleOutput) as ModuleOutput;
-        outNode.controls.c.set({outputName: "moduleOutput"});
-        await editor.addNode(inNode);
-        await editor.addNode(outNode);
-        moduleManager.addModuleData(deadEndModule, serializer.exportNodes());
-
-        // passThroughModule: moduleInput -> moduleOutput
-        const inToOutConnection = new ClassicPreset.Connection(inNode, "out", outNode, "value");
-        await editor.addConnection(inToOutConnection);
-        moduleManager.addModuleData(passThroughModule, serializer.exportNodes());
-
-        // multipleTargets: moduleInput -> 2x addNode -> moduleOutput
-        await editor.removeConnection(inToOutConnection.id);
-        const addNode = factory.createNode(NodeType.Add) as BinaryNode;
-        await editor.addNode(addNode);
-        await editor.addConnection(new ClassicPreset.Connection(inNode, "out", addNode, "left"));
-        await editor.addConnection(new ClassicPreset.Connection(inNode, "out", addNode, "right"));
-        await editor.addConnection(new ClassicPreset.Connection(addNode, "out", outNode, "value"));
-        moduleManager.addModuleData(singleInputMultipleTargetsModule, serializer.exportNodes());
-
-        await editor.clear();
-
-
-        // TEST GRAPH SETUP
-        const moduleNode = factory.createNode(NodeType.Module) as ModuleNode;
-        await editor.addNode(moduleNode);
-        moduleNode.controls.c.set({currentModule: module});
-        await moduleNode.setModuleAndRefreshPorts();
-
-        const numberNode = factory.createNode(NodeType.Number) as NumberNode;
-        numberNode.controls.c.set({value: 5});
-        const outputNode = factory.createNode(NodeType.Output) as OutputNode;
-
-
-        await editor.addNode(numberNode);
-        await editor.addNode(outputNode);
-        await editor.addConnection(new ClassicPreset.Connection(numberNode, "out", moduleNode, "moduleInput"));
-        await editor.addConnection(new ClassicPreset.Connection(moduleNode, "moduleOutput", outputNode, "result"));
-
-        return {
-            factory: factory,
-            engine: engine,
-            editor: editor,
-            outputID: outputNode.id,
-            moduleNode: moduleNode
-        }
-    }
-
     it('should resolve connections going through a module with connected in out nodes', async ()=>{
-        const { factory, editor, engine, outputID, moduleNode } = await createContext(passThroughModule);
+        const { editor, engine, outputID, moduleNode } = await createTestContext(ModuleName.passThroughModule);
 
         const result = await engine.fetch(outputID);
         // Checks that the value has successfully passed through the module to outputNode
@@ -135,7 +64,7 @@ describe('flattenGraph', ()=>{
     });
 
     it("Should discard connections that don't resolve to a node in the module or a node connected to a module output", async ()=>{
-        const { factory, editor, engine, outputID, moduleNode } = await createContext(deadEndModule);
+        const { editor, engine, outputID, moduleNode } = await createTestContext(ModuleName.deadEndModule);
         const result = await engine.fetch(outputID);
         // Checks that the output node defaults to 0 as the number 5 does not pass through the module
         expect(result.out.value).toEqual(0);
@@ -152,7 +81,7 @@ describe('flattenGraph', ()=>{
     })
 
     it('Should handle multiple connections from a moduleInput to multiple nodes', async ()=>{
-        const { factory, editor, engine, outputID, moduleNode } = await createContext(singleInputMultipleTargetsModule);
+        const { factory, editor, engine, outputID, moduleNode } = await createTestContext(ModuleName.singleInputMultipleTargets);
         const result = await engine.fetch(outputID);
         // Checks that the value has successfully passed through the module to outputNode and has been doubled
         // by the Add node.
@@ -168,15 +97,54 @@ describe('flattenGraph', ()=>{
         //             /-> left \
         // numberNode-|          AddNode -> outputNode
         //             \-> right/
-        console.log(resolvedConnections);
         expect(resolvedConnections.length).toEqual(3);
     });
 
 
 })
 
+describe('createParseGraph', ()=>{
+    it('should handle graph with a properly connected module', async ()=>{
+        const { factory, editor, engine, outputID, moduleManager } = await createTestContext(ModuleName.passThroughModule);
+        const result = await engine.fetch(outputID);
+        const serializer = new GraphSerializer(editor, factory)
+        const treeData = await createParseNodeGraph(serializer, moduleManager);
+        const flattened = await flattenGraph(serializer, moduleManager);
+        expect(flattened.nodes.length).toEqual(2);
+        expect(flattened.connections.length).toEqual(1);
+        const treeState = treeStateFromData(treeData);
+        expect(getNodeByID(treeState, outputID)?.value).toEqual(result.out.value);
+    })
 
+    it('should handle module with doubly connected add node', async ()=>{
+        const { factory, editor, engine, outputID, moduleManager } = await createTestContext(ModuleName.singleInputMultipleTargets);
+        const result = await engine.fetch(outputID);
+        const serializer = new GraphSerializer(editor, factory)
+        const treeData = await createParseNodeGraph(serializer, moduleManager);
+        const flattened = await flattenGraph(serializer, moduleManager);
+        expect(flattened.nodes.length).toEqual(3);
+        expect(flattened.connections.length).toEqual(3);
+        const treeState = treeStateFromData(treeData);
+        expect(getNodeByID(treeState, outputID)?.value).toEqual(result.out.value);
+    })
 
+    it('should handle nested modules', async ()=>{
+        const { factory, editor, engine, outputID, moduleManager } = await createTestContext(ModuleName.nestedModule);
 
+        console.log(await engine.fetch(outputID));
+        const serializer = new GraphSerializer(editor, factory)
+        const flattened = await flattenGraph(serializer, moduleManager);
+        expect(flattened.nodes.length).toEqual(3);
+        expect(flattened.connections.length).toEqual(3);
 
+        const treeData = await createParseNodeGraph(serializer, moduleManager);
 
+        // await console.log(JSON.stringify(treeData, null, 2));
+        const treeState = treeStateFromData(treeData);
+        console.log(editor.getNodes());
+
+        const result = await engine.fetch(outputID);
+        // console.log(result);
+        expect(getNodeByID(treeState, outputID)?.value).toEqual(result.out.value);
+    })
+})
