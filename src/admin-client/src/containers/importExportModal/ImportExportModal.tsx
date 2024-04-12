@@ -1,9 +1,5 @@
 import {ReteFunctions} from "../../rete/createEditor";
-import {
-    Col,
-    Modal,
-    Row,
-} from "react-bootstrap";
+import {Col, Modal, Row,} from "react-bootstrap";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 import {setTreeState} from "../../state/slices/treeState";
 import {setPagesState} from "../../state/slices/pages";
@@ -12,6 +8,8 @@ import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {selectCalculator} from "../../state/selectors";
 import {OnlineStoragePane} from "./OnlineStoragePane";
 import {LocalStoragePane} from "./LocalStoragePane";
+import {useEffect, useState} from "react";
+import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
 
 /**
  * A modal dialogue for importing and exporting calculators from/to the database and local storage
@@ -21,12 +19,38 @@ export function ImportExportModal(props: {
     onHide: () => void,
     functions: ReteFunctions | null
 }) {
+    let [exportData, setExportData] : [{graph: any, parseNodes: ParseNode[]} | undefined, any] = useState(undefined);
+
+    useEffect(()=>{
+        if(exportData!==undefined) { return }
+        props.functions?.export().then(data=>{setExportData(data)})
+    },[props, exportData])
+
+    return <>
+    {exportData !== undefined ?
+        <ImportExportModalContent
+            show={props.show}
+            onHide={props.onHide}
+            functions={props.functions}
+            exportData={exportData}
+        /> :
+        <></>
+    }
+    </>
+}
+
+
+
+
+function ImportExportModalContent( props: {
+    show: boolean,
+    onHide: () => void,
+    exportData: { graph: any, parseNodes: ParseNode[] },
+    functions: ReteFunctions | null
+}) {
     const dispatch = useAppDispatch()
+    const currentCalculator = useAppSelector(selectCalculator(props.exportData))
 
-    // the current calculator composed from the store and rete
-    const currentCalculator: Calculator = useAppSelector(selectCalculator(props.functions?.export()))
-
-    // callback for importing a calculator into the store and rete
     const importCalculator = (data: Calculator["reteSchema"]) => {
         const emptyCanvas = currentCalculator.treeNodes?.length === 1 // only root node is present
         if (data && (emptyCanvas || window.confirm("Unsaved changes will be lost"))) {
@@ -39,32 +63,31 @@ export function ImportExportModal(props: {
     }
 
     return (
-       <Modal
-           show={props.show}
-           onHide={props.onHide}
-           size={"xl"}
-       >
-           <Modal.Header closeButton>
-               {"Calculator Import & Export"}
-           </Modal.Header>
-           <Modal.Body>
-               <Row>
-                   <Col xs={7}>
-                       <OnlineStoragePane onLoad={importCalculator} calculator={currentCalculator} />
-                   </Col>
-                   <Col className={"justify-content-center d-flex"}>
-                      {/* divider */}
-                      <div className={"h-100 border"} style={{width: '1px'}} />
-                   </Col>
-                   <Col xs={4}>
-                       <LocalStoragePane onLoad={importCalculator} calculator={currentCalculator} />
-                   </Col>
+        <Modal
+            show={props.show}
+            onHide={props.onHide}
+            size={"xl"}
+        >
+            <Modal.Header closeButton>
+                {"Calculator Import & Export"}
+            </Modal.Header>
+            <Modal.Body>
+                <Row>
+                    <Col xs={7}>
+                        <OnlineStoragePane onLoad={importCalculator} calculator={currentCalculator} />
+                    </Col>
+                    <Col className={"justify-content-center d-flex"}>
+                        {/* divider */}
+                        <div className={"h-100 border"} style={{width: '1px'}} />
+                    </Col>
+                    <Col xs={4}>
+                        <LocalStoragePane onLoad={importCalculator} calculator={currentCalculator} />
+                    </Col>
 
-               </Row>
-           </Modal.Body>
-       </Modal>
+                </Row>
+            </Modal.Body>
+        </Modal>
     )
 }
-
 
 
