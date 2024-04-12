@@ -1,5 +1,12 @@
 import React, {useState} from "react";
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader, ToggleButton, ToggleButtonGroup} from "react-bootstrap";
+import {
+    Button,
+    ButtonGroup,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+} from "react-bootstrap";
 import {
     EditorContent,
     useEditor,
@@ -19,14 +26,10 @@ function MenuBar(props: { editor: Editor | null }) {
     }
     return (
         <>
-            {
-                //value doesn't make sense to me, but it's required for the ToggleButtonGroup to work. It's that a
-            }
-            <ToggleButtonGroup type={"checkbox"} defaultValue={[1]}>
-                <ToggleButton
-                    id={"bold"}
-                    value={2}
+            <ButtonGroup>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('bold')}
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     disabled={
                         !editor.can()
@@ -35,11 +38,10 @@ function MenuBar(props: { editor: Editor | null }) {
                             .toggleBold()
                             .run()}>
                     Bold
-                </ToggleButton>
-                <ToggleButton
-                    id={"italic"}
-                    value={3}
+                </Button>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('italic')}
                     onClick={() => editor.chain().focus().toggleItalic().run()}
                     disabled={
                         !editor.can()
@@ -48,11 +50,10 @@ function MenuBar(props: { editor: Editor | null }) {
                             .toggleItalic()
                             .run()}>
                     Italic
-                </ToggleButton>
-                <ToggleButton
-                    id={"strikethrough"}
-                    value={4}
+                </Button>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('strike')}
                     onClick={() => editor.chain().focus().toggleStrike().run()}
                     disabled={
                         !editor.can()
@@ -64,13 +65,12 @@ function MenuBar(props: { editor: Editor | null }) {
                     className={editor.isActive('strike') ? 'is-active' : ''}
                 >
                     strikethrough
-                </ToggleButton>
-            </ToggleButtonGroup>
-            <ToggleButtonGroup type={"checkbox"} defaultValue={[1]}>
-                <ToggleButton
-                    id={"superscript"}
-                    value={2}
+                </Button>
+            </ButtonGroup>
+            <ButtonGroup>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('superscript')}
                     onClick={() => editor.chain().focus().toggleSuperscript().run()}
                     disabled={
                         !editor.can()
@@ -80,11 +80,10 @@ function MenuBar(props: { editor: Editor | null }) {
                             .run()
                     }>
                     Superscript
-                </ToggleButton>
-                <ToggleButton
-                    id={"subscript"}
-                    value={3}
+                </Button>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('subscript')}
                     onClick={() => editor.chain().focus().toggleSubscript().run()}
                     disabled={
                         !editor.can()
@@ -93,65 +92,56 @@ function MenuBar(props: { editor: Editor | null }) {
                             .toggleSubscript()
                             .run()}>
                     Subscript
-                </ToggleButton>
-            </ToggleButtonGroup>
-            <ToggleButtonGroup type={"checkbox"} defaultValue={[1]}>
-                {   //TODO: consider necessity of paragraph button, as absence of other tags is paragraph by default
-                    /*<ToggleButton
-                    id={"paragraph"}
-                    value={0}
-                    checked={editor.isActive('paragraph')}
+                </Button>
+            </ButtonGroup>
+            <ButtonGroup>
+                    <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('paragraph')}
                     onClick={() => editor.chain().focus().setParagraph().run()}>
                     paragraph
-                </ToggleButton>*/}
-                <ToggleButton
-                    id={"heading1"}
-                    value={3}
+                </Button>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('heading', {level: 1})}
                     onClick={() => editor.chain().focus().toggleHeading({level: 1}).run()}>
                     h1
-                </ToggleButton>
-                <ToggleButton
-                    id={"heading2"}
-                    value={4}
+                </Button>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('heading', {level: 2})}
                     onClick={() => editor.chain().focus().toggleHeading({level: 2}).run()}>
                     h2
-                </ToggleButton>
-                <ToggleButton
-                    id={"heading3"}
-                    value={5}
+                </Button>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('heading', {level: 3})}
                     onClick={() => editor.chain().focus().toggleHeading({level: 3}).run()}>
                     h3
-                </ToggleButton>
-                <ToggleButton
-                    id={"heading4"}
-                    value={6}
+                </Button>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('heading', {level: 4})}
                     onClick={() => editor.chain().focus().toggleHeading({level: 4}).run()}>
                     h4
-                </ToggleButton>
-            </ToggleButtonGroup>
-            <ToggleButtonGroup type={"checkbox"} defaultValue={[1]}>
-                <ToggleButton
-                    id={"bullet-list"}
-                    value={2}
+                </Button>
+            </ButtonGroup>
+            <ButtonGroup>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('bulletList')}
                     onClick={() => editor.chain().focus().toggleBulletList().run()}
                 >
                     bullet list
-                </ToggleButton>
-                <ToggleButton
-                    id={"ordered-list"}
-                    value={3}
+                </Button>
+                <Button
                     variant={"outline-dark"}
+                    active={editor.isActive('orderedList')}
                     onClick={() => editor.chain().focus().toggleOrderedList().run()}
                 >
                     ordered list
-                </ToggleButton>
-            </ToggleButtonGroup>
+                </Button>
+            </ButtonGroup>
         </>
     )
 }
