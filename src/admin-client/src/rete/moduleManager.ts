@@ -1,13 +1,16 @@
-
 import {Schemes} from "./nodes/types";
 import {NodeEditor} from "rete";
-import {AreaPlugin} from "rete-area-plugin";
 import {DataflowEngine} from "rete-engine";
-import {AreaExtra} from "./editor";
-import {GraphSerializer, SerializedNode} from "./graphSerializer";
+import {GraphSerializer, SerializedGraph, SerializedNode} from "./graphSerializer";
 import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
 import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
 import {NodeFactory} from "./nodeFactory";
+
+
+export interface ModuleEntry {
+    name: string,
+    data: SerializedGraph
+}
 
 
 /**
@@ -28,65 +31,59 @@ export type Module<S extends Schemes> = {
  */
 export class ModuleManager {
 
-    private moduleData: {[key in string]:any} = {}
+    private moduleData: ModuleEntry[] = []
+
+    private matchOnName(name: string) {
+        return this.moduleData.find(entry=>entry.name === name);
+    }
 
     public addModuleData(name: string, data?: { nodes: SerializedNode[]}) : boolean {
-        if(name in this.moduleData) {
-            return false
-        }
+        const match = this.matchOnName(name);
+        if(match !== undefined) return false;
 
-        this.moduleData[name] = data ?? { nodes: [], connections: []}
+        this.moduleData.push({name: name, data: data || { nodes: []} })
         return true;
     }
 
-    public setModuleData(name: string, data: { nodes: any[] }) {
-        this.moduleData[name] = data;
+    public renameModule(originalName: string, newName: string) {
+        this.moduleData.forEach(entry=>{
+            if(entry.name===originalName) {
+                entry.name = newName;
+            }
+        })
     }
 
-    public removeModuleData(name: string) : boolean {
-        let newModuleObject: {[key in string]: any} = {};
-        let wasRemoved = false;
-        for (const key in this.moduleData) {
-            if(key !== name) {
-                newModuleObject[key] = this.moduleData[key]
-            } else {
-                wasRemoved = true;
-            }
+    public setModuleData(name: string, data: { nodes: SerializedNode[] }) {
+        const match = this.matchOnName(name);
+        if(match !== undefined) {
+            match.data = data;
         }
-        this.moduleData = newModuleObject;
-        return wasRemoved;
+    }
+
+    public removeModule(name: string) {
+        this.moduleData = this.moduleData.filter(entry=>entry.name !== name);
     }
 
     getModuleData(name: string) :  { nodes: SerializedNode[] } | undefined {
-        if(!this.hasModule(name)) {
-            return undefined
-        }
-        return this.moduleData[name];
+        return this.matchOnName(name)?.data;
     }
 
-    public getAllModuleData() {
-        const modules = []
-        for(const name in this.moduleData) {
-            modules.push({name: name, data: this.moduleData[name]})
-        }
-        return modules
+    public getAllModuleData() : ModuleEntry[] {
+        return this.moduleData;
     }
 
-    public overwriteModuleData(modules: {name: string, data: any}[]) {
-        this.moduleData = {};
-        for (const {name, data} of modules) {
-            this.moduleData[name] = data;
-        }
+    public overwriteModuleData(modules: ModuleEntry[]) {
+        this.moduleData = modules;
     }
 
 
 
     public getModuleNames() : string[] {
-        return Object.keys(this.moduleData);
+        return this.moduleData.map(entry=>entry.name);
     }
 
     public hasModule(moduleName: string) : boolean {
-        return moduleName in this.moduleData
+        return this.matchOnName(moduleName) !== undefined;
     }
 
 
@@ -117,7 +114,7 @@ export class ModuleManager {
 
     private loadToEditor(moduleName: string, editor: NodeEditor<Schemes>, factory?: NodeFactory) {
         return new Promise<void>((resolve, reject)=>{
-            const data = this.moduleData[moduleName];
+            const data = this.matchOnName(moduleName)?.data;
             if(!data) {
                 reject(); return;
             }
@@ -209,11 +206,4 @@ export class ModuleManager {
         };
     }
 
-}
-
-export interface Context {
-    editor: NodeEditor<Schemes>
-    area: AreaPlugin<Schemes, AreaExtra>
-    engine: DataflowEngine<Schemes>
-    signalChange: ()=>void
 }
