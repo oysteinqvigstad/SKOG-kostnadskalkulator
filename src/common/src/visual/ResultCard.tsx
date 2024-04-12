@@ -26,6 +26,7 @@ export function ResultCard(props: {
                     <Button
                         className={"ms-auto"}
                         onClick={handleShow} disabled={disableInfo}
+                        style={{backgroundColor: 'transparent', border: 'none'}}
                     >
                         {disableInfo ? <></> : <FcInfo size={"2rem"}/>}
                     </Button>
