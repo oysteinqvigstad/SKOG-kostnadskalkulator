@@ -1,10 +1,9 @@
 import {ClassicPreset, getUID, NodeEditor} from "rete";
-import {Connection, ConnProps, Schemes, ReteNode} from "./nodes/types";
+import {Connection, ConnProps, ReteNode, Schemes} from "./nodes/types";
 import {AreaPlugin} from "rete-area-plugin";
 import {NumberNode} from "./nodes/mathNodes/numberNode";
 import {BinaryNode} from "./nodes/mathNodes/binaryNode";
 import {NodeFactory} from "./nodeFactory";
-import {NodeControl} from "./nodes/nodeControl";
 
 export interface SerializedNode {
     id: string;
@@ -15,6 +14,10 @@ export interface SerializedNode {
     inputs: Record<string, any>;
     controls: Record<string, any>;
     connections: any[];
+}
+
+export interface SerializedGraph {
+    nodes: SerializedNode[];
 }
 
 /**
@@ -32,7 +35,7 @@ export class GraphSerializer {
      * @param originalData
      * @param freshIDs if true, IDs are replaced with new UIDs
      */
-    public async importNodes(originalData: any, freshIDs?: boolean){
+    public importNodes(originalData: SerializedGraph, freshIDs?: boolean){
         return new Promise<void>(async (resolve, reject) => {
 
             if(!originalData) {
@@ -99,9 +102,9 @@ export class GraphSerializer {
     /**
      * Exports node structure as a data structure that can later be read with importNodes()
      */
-    public exportNodes() : { nodes: SerializedNode[]} {
+    public exportNodes() : SerializedGraph {
 
-        const data: any = { nodes: [] };
+        const data: SerializedGraph = { nodes: [] };
         const nodes = this.editor.getNodes() as ReteNode[];
         const connections = this.editor.getConnections() as Connection<NumberNode, BinaryNode>[];
 
