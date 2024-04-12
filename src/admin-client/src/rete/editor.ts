@@ -1,4 +1,4 @@
-import {NodeEditor} from "rete";
+import {getUID, NodeEditor} from "rete";
 import {Schemes, ReteNode} from "./nodes/types";
 import {AreaExtensions, AreaPlugin} from "rete-area-plugin";
 import {ConnectionPlugin, Presets as ConnectionPresets} from "rete-connection-plugin";
@@ -11,13 +11,25 @@ import {createRoot} from "react-dom/client";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {ItemDefinition} from "rete-context-menu-plugin/_types/presets/classic/types";
 import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
-import {ModuleManager} from "./moduleManager";
-import {GraphSerializer} from "./graphSerializer";
+import {ModuleEntry, ModuleManager} from "./moduleManager";
+import {GraphSerializer, SerializedGraph, SerializedNode} from "./graphSerializer";
 import {NodeFactory} from "./nodeFactory";
 import {canCreateConnection} from "./sockets";
+import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
+
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
+
+
+export enum EditorEvent {
+    ModulesChanged = "ModulesChanged"
+}
+
+export interface EditorSnapshot {
+    readonly currentModule: string | undefined,
+    moduleNames: ReadonlyArray<string>
+}
 
 export interface EditorContext {
     editor: NodeEditor<Schemes>,
@@ -31,22 +43,28 @@ export interface EditorContext {
 
 
 export interface EditorDataPackage {
-    main: any,
-    modules: {name: string, data: any}[]
+    main: SerializedGraph,
+    modules: ModuleEntry[]
 }
 
 
 export class Editor {
-
+    private editorSnapshot: EditorSnapshot = {
+        currentModule: undefined,
+        moduleNames: []
+    };
     private context: EditorContext;
     private readonly factory: NodeFactory;
+    private eventSubscriptions = {
+        ModulesChanged: new Set<any>()
+    }
     private selectedNode: string | undefined;
     private onChangeCalls: {id: string, call: (nodes?: ParseNode[])=>void}[] = []
     private loading = false;
     private readonly moduleManager: ModuleManager;
-    private serializer: GraphSerializer;
-    private stashedMain: any | undefined;
-    private currentModule = "main";
+    private readonly serializer: GraphSerializer;
+    private stashedMain: SerializedGraph | undefined;
+    public  currentModule: Readonly<string> | undefined;
 
     public destroyArea = () => {this.context.area.destroy()}
 
@@ -93,44 +111,74 @@ export class Editor {
         AreaExtensions.zoomAt(this.context.area, this.context.editor.getNodes()).then(() => {});
     }
 
-    public loadMainGraph() {
-        if(this.currentModule === "main") { return }
-        this.currentModule = 'main';
-        this.importNodes(this.stashedMain).then(()=>{
-            this.resetView();
-        });
+
+    public async loadMainGraph() {
+        await this.saveCurrentMainOrModule(this.currentModule);
+        this.currentModule = undefined;
+        await this.importNodes(this.stashedMain)
+        this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
     }
 
-    public loadModule(name: string) {
-        if(this.currentModule === name || !this.moduleManager.hasModule(name)) { return }
-        if(this.currentModule === 'main') { this.stashedMain = this.exportNodes() }
+    public async loadModule(name: string) {
+        if(this.currentModule === name) { return; }
+        if(!this.moduleManager.hasModule(name)) { throw new Error("No module with name " + name); }
+        await this.saveCurrentMainOrModule(this.currentModule);
         this.currentModule = name;
-        this.importNodes(this.moduleManager.getModuleData(name)).then(()=>{
-            this.resetView();
+        const data = this.moduleManager.getModuleData(name);
+        if(data === undefined) {
+            return;
+        } else {
+            await this.importNodes(data);
+        }
+        this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
+    }
+
+    public async deleteModule(name: string) {
+        if(!this.moduleManager.hasModule(name)) return;
+
+        this.moduleManager.removeModule(name);
+        if(this.currentModule === name) {
+            await this.loadMainGraph();
+        } else {
+            this.synchronizeModuleNodes();
+        }
+        this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
+    }
+
+    public renameCurrentModule(newName: string) {
+        if(!this.hasModuleLoaded()) return;
+        this.moduleManager.renameModule(this.currentModule!, newName);
+        this.currentModule = newName;
+        this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
+    }
+
+
+    public async saveCurrentMainOrModule(module: string | undefined) {
+        if(module === undefined) {
+            this.stashedMain = await this.exportMainGraph();
+        } else {
+            const data = await this.exportCurrentGraph();
+            this.moduleManager.setModuleData(module, data);
+        }
+    }
+
+
+    public addNewModule(name: string, data?: any) {
+        if(this.moduleManager.hasModule(name)) {
+            return
+        }
+        this.moduleManager.addModuleData(name, data);
+        this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
+    }
+
+    private synchronizeModuleNodes() {
+        this.context.editor.getNodes().forEach(node=>{
+            if(node instanceof ModuleNode) {
+                node.controls.c.set({availableModules: this.moduleManager.getModuleNames()})
+            }
         })
     }
 
-    public saveCurrentModule() {
-        if(this.currentModule === 'main' || !this.moduleManager.hasModule(this.currentModule)) { return }
-        this.moduleManager.setModuleData(this.currentModule, this.exportNodes());
-    }
-
-    public getModuleNames = ()=>{return this.moduleManager.getModuleNames()}
-
-    public addNewModule(name?: string) {
-        if(name === 'main') { return }
-        if(this.currentModule === 'main') {
-            this.stashedMain = this.exportNodes()
-        }
-        this.context.editor.clear();
-        this.currentModule = name || ""
-        this.moduleManager.addModuleData(name || "");
-        this.loadModule(name || "")
-    }
-
-    public getCurrentModuleName() {
-        return this.currentModule;
-    }
 
 
 
@@ -165,23 +213,54 @@ export class Editor {
     }
 
 
-    /**
-     * Removes a function from callbacks
-     * @param entryID id initially provided on registering the function
-     */
-    public unregisterOnChangeCallback(entryID: string) {
-        this.onChangeCalls = this.onChangeCalls.filter(({id})=>{
-            return id !== entryID
+    public createEventSubscriber(eventType: EditorEvent) {
+        const registerCallback = (callback: ()=>void) =>{
+            this.eventSubscriptions[eventType]?.add(callback);
+        }
+        const unregister = ((callback: ()=>void) => {
+            return ()=>{
+                this.eventSubscriptions[eventType]?.delete(callback);
+            }
+        });
+
+
+        let func = (callback: ()=>void) => {
+            registerCallback(callback);
+            return () => { unregister(callback)(); }
+        }
+
+        return func.bind(this);
+    }
+
+    private updateSnapshot() {
+        this.editorSnapshot = {
+            currentModule: this.currentModule,
+            moduleNames: this.moduleManager.getModuleNames()
+        }
+    }
+
+    private signalEventAndUpdateSnapshot(eventType: EditorEvent) {
+        this.updateSnapshot();
+        this.eventSubscriptions[eventType]?.forEach(callback=>{
+            callback();
         })
     }
 
+    public getSnapshotRetriever() :  ()=>EditorSnapshot {
+        const snapFn = ()=>{
+            return this.editorSnapshot;
+        }
+        return snapFn.bind(this);
+    }
 
     /**
      * Invokes all callbacks if not in the process of loading a file.
      */
-    private signalOnChange = ()=>{
-        if(!this.loading && this.currentModule === 'main') {
-            const nodes = this.exportAsParseTree()
+    private signalOnChange = async ()=>{
+        console.log("loading is ", this.loading);
+        if(!this.loading && !this.hasModuleLoaded()) {
+            const nodes = await this.exportAsParseTree()
+            console.log("exporting during signal", nodes);
             this.onChangeCalls.forEach(({call})=>{
                 call(nodes)
             })
@@ -203,40 +282,80 @@ export class Editor {
      */
     public async importNodes(data: any) {
         this.loading = true;
-        this.context.engine.reset();
-        await this.context.editor.clear();
-        this.serializer.importNodes(data)
-            .catch(()=>{this.loading = false;})
-            .then(()=>{this.loading = false;});
+        try {
+            await this.context.editor.clear();
+            await this.serializer.importNodes(data);
+            this.resetView();
+            this.synchronizeModuleNodes();
+        } catch(e) {
+            console.error(e);
+            throw e;
+        }
+        this.loading = false;
     }
 
-    public exportNodes() {
+
+    /**
+     * Exports the main graph.
+     */
+    public async exportMainGraph() : Promise<SerializedGraph>{
+        if(!this.hasModuleLoaded()) {
+            return this.serializer.exportNodes();
+        } else {
+            const tempEditor = new NodeEditor<Schemes>();
+            const tempSerializer = new GraphSerializer(tempEditor, new NodeFactory(this.moduleManager));
+            if(!this.stashedMain) {
+                return {nodes: []}
+            } else {
+                return tempSerializer.importNodes(this.stashedMain).then(()=>{
+                    return tempSerializer.exportNodes();
+                })
+            }
+        }
+    }
+
+    public async exportCurrentGraph() : Promise<SerializedGraph> {
         return this.serializer.exportNodes();
     }
 
-    public exportWithModules() : EditorDataPackage {
-        this.loadMainGraph();
+    public async exportModule(name: string) {
+        if(!this.moduleManager.hasModule(name)) {throw new Error("No module with name " + name)};
+        const tempEditor = new NodeEditor<Schemes>();
+        const tempSerializer = new GraphSerializer(tempEditor, new NodeFactory(this.moduleManager))
+        await tempSerializer.importNodes(this.moduleManager.getModuleData(name)!);
+        return tempSerializer.exportNodes();
+    }
+
+
+    public async exportWithModules() : Promise<EditorDataPackage> {
         return {
-            main: this.exportNodes(),
+            main: await this.exportMainGraph(),
             modules: this.moduleManager.getAllModuleData()
         }
     }
 
-    public importWithModules(data: EditorDataPackage) {
-        this.importNodes(data.main);
-        this.currentModule = 'main';
+    public async importWithModules(data: EditorDataPackage) : Promise<void> {
         this.moduleManager.overwriteModuleData(data.modules);
+        await this.importNodes(data.main);
+
+        this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
+
+        this.synchronizeModuleNodes();
     }
 
 
     /**
      * Exports the current data structure as its equivalent ParseNode structure
      */
-    public exportAsParseTree() {
-        if(this.currentModule !== 'main') { //TODO: logic for exporting parse tree of main only
+    public async exportAsParseTree() : Promise<ParseNode[]> {
+        if(!this.hasModuleLoaded()) {
+            return createParseNodeGraph(this.serializer, this.moduleManager);
+        } else {
             const tempEditor = new NodeEditor<Schemes>();
+            const tempSerializer = new GraphSerializer(tempEditor, this.factory);
+            await tempSerializer.importNodes(this.stashedMain || {nodes: []});
+            return createParseNodeGraph(tempSerializer, this.moduleManager);
         }
-        return createParseNodeGraph(this.context.editor);
     }
 
 
@@ -274,6 +393,7 @@ export class Editor {
                     if(connection.output !== undefined) {
                         return c.source === nodeID && c.sourceOutput === connection.output;
                     }
+                    return false;
                 }
             })
             for (const connection of connections) {
@@ -282,7 +402,9 @@ export class Editor {
         }
     }
 
-
+    public hasModuleLoaded() {
+        return this.currentModule !== undefined;
+    }
 
 
 
@@ -441,10 +563,7 @@ export class Editor {
         this.context.area.addPipe((context)=> {
             if(context.type === "nodepicked") {
                 this.selectedNode = context.data.id;
-                console.log("selected:", context.data.id);
-                this.context.engine.fetchInputs(this.selectedNode).then((data)=>{
-                    console.log("Selected data", data);
-                })
+                this.context.engine.fetchInputs(this.selectedNode);
             }
             if (context.type === "nodetranslated") {
                 const node = this.context.editor.getNode(context.data.id);
