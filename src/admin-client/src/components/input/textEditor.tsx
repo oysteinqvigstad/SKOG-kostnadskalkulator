@@ -172,7 +172,7 @@ export function TextEditor(props: { value: string, onSave: (value: string) => vo
 
     const allowedTags = [
         'p', 'a',
-        'h2', 'h3', 'h4',
+        'h1', 'h2', 'h3', 'h4',
         'strong', 'i',
         'figure', 'table', 'tbody', 'td', 'tr',
         'blockquote',
