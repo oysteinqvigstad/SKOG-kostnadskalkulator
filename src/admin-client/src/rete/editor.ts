@@ -1,5 +1,5 @@
-import {getUID, NodeEditor} from "rete";
-import {Schemes, ReteNode} from "./nodes/types";
+import {NodeEditor} from "rete";
+import {ReteNode, Schemes} from "./nodes/types";
 import {AreaExtensions, AreaPlugin} from "rete-area-plugin";
 import {ConnectionPlugin, Presets as ConnectionPresets} from "rete-connection-plugin";
 import {Presets, ReactArea2D, ReactPlugin} from "rete-react-plugin";
@@ -12,11 +12,10 @@ import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {ItemDefinition} from "rete-context-menu-plugin/_types/presets/classic/types";
 import {ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets} from "rete-context-menu-plugin";
 import {ModuleEntry, ModuleManager} from "./moduleManager";
-import {GraphSerializer, SerializedGraph, SerializedNode} from "./graphSerializer";
+import {GraphSerializer, SerializedGraph} from "./graphSerializer";
 import {NodeFactory} from "./nodeFactory";
 import {canCreateConnection} from "./sockets";
 import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
-
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
@@ -337,7 +336,7 @@ export class Editor {
     public async importWithModules(data: EditorDataPackage) : Promise<void> {
         this.moduleManager.overwriteModuleData(data.modules);
         await this.importNodes(data.main);
-
+        this.currentModule = undefined;
         this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
 
         this.synchronizeModuleNodes();
