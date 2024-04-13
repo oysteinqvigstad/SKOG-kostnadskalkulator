@@ -369,8 +369,12 @@ export class Editor {
      * Removes all nodes from the current canvas
      */
     public clearNodes() {
+        this.loading = true;
         this.context.editor.clear().then(()=>{
             this.moduleManager.overwriteModuleData([])
+            this.loading = false;
+            this.currentModule = undefined;
+            this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
             }
         );
     }
