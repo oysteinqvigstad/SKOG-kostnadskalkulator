@@ -5,6 +5,7 @@ import {GraphSerializer, SerializedGraph, SerializedNode} from "./graphSerialize
 import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
 import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
 import {NodeFactory} from "./nodeFactory";
+import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
 
 
 export interface ModuleEntry {
@@ -105,6 +106,11 @@ export class ModuleManager {
                 editor.use(engine);
 
                 await this.loadToEditor(path, editor);
+                for (const node of editor.getNodes()) {
+                    if(node instanceof ModuleNode) {
+                        await (node as ModuleNode).setModuleAndRefreshPorts();
+                    }
+                }
 
                 return this.execute(inputData, editor, engine);
             }
