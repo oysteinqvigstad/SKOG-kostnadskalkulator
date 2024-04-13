@@ -1,6 +1,6 @@
 import {DisplayPieNodeData} from "./displayPieNodeControlData";
-import React, {useEffect, useState} from "react";
-import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import React from "react";
+import {getNodeByID} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
 import {Provider} from "react-redux";
@@ -24,33 +24,17 @@ function DisplayPieNodeContent(
     props: { data: NodeControl<DisplayPieNodeData> }
 ) {
     const treeState = useAppSelector(selectTreeState)
-    const nodeID = props.data.get('nodeID');
-    const [displayNode, setDisplayNode] = useState(getNodeByID(treeState.tree, nodeID) as ParseDisplayNode | undefined);
-    useEffect(() => {
-        if (treeState.tree) {
-            setDisplayNode(getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode);
-        }
-    }, [treeState.tree, nodeID, displayNode])
-
+    const nodeData = getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode
 
     return <>
         <Drag.NoDrag>
             <Container>
-                <ResultPie
-                    displayData={displayNode ? displayNode : {
-                        id: "",
-                        value: 0,
-                        type: NodeType.Display,
-                        inputOrdering: [],
-                        name: "",
-                        unit: "",
-                        pieType: "donut",
-                        inputs: [],
-                        infoText: ""
-
-                    }}
-                    treeState={treeState.tree}
-                />
+                {nodeData &&
+                    <ResultPie
+                        displayData={nodeData}
+                        treeState={treeState.tree}
+                    />
+                }
                 <TextInputField
                     inputHint={"Name"}
                     value={props.data.get('name')}
