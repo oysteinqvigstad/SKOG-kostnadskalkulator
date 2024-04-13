@@ -298,9 +298,16 @@ export class Editor {
      * Exports the main graph.
      */
     public async exportMainGraph() : Promise<SerializedGraph>{
+        console.log({
+            exporting: true,
+            stashedMain: this.stashedMain,
+            currentModule: this.currentModule,
+            modules: this.moduleManager.getAllModuleData()
+        })
         if(!this.hasModuleLoaded()) {
             return this.serializer.exportNodes();
         } else {
+            await this.saveCurrentMainOrModule(this.currentModule);
             const tempEditor = new NodeEditor<Schemes>();
             const tempSerializer = new GraphSerializer(tempEditor, new NodeFactory(this.moduleManager));
             if(!this.stashedMain) {
