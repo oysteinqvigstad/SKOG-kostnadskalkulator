@@ -131,7 +131,6 @@ describe('createParseGraph', ()=>{
     it('should handle nested modules', async ()=>{
         const { factory, editor, engine, outputID, moduleManager } = await createTestContext(ModuleName.nestedModule);
 
-        console.log(await engine.fetch(outputID));
         const serializer = new GraphSerializer(editor, factory)
         const flattened = await flattenGraph(serializer, moduleManager);
         expect(flattened.nodes.length).toEqual(3);
@@ -139,12 +138,9 @@ describe('createParseGraph', ()=>{
 
         const treeData = await createParseNodeGraph(serializer, moduleManager);
 
-        // await console.log(JSON.stringify(treeData, null, 2));
         const treeState = treeStateFromData(treeData);
-        console.log(editor.getNodes());
 
         const result = await engine.fetch(outputID);
-        // console.log(result);
         expect(getNodeByID(treeState, outputID)?.value).toEqual(result.out.value);
     })
 })
