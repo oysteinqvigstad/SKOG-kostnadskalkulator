@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {getNodeByID, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import React from "react";
+import {getNodeByID} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
 import {Provider} from "react-redux";
@@ -24,32 +24,17 @@ function DisplayListNodeContent(
     props: { data: NodeControl<DisplayListNodeData> }
 ) {
     const treeState = useAppSelector(selectTreeState)
-    const nodeID = props.data.get('nodeID');
-    const [displayNode, setDisplayNode] = useState(getNodeByID(treeState.tree, nodeID) as ParseDisplayNode | undefined);
-    useEffect(() => {
-        if (treeState.tree) {
-            setDisplayNode(getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode);
-        }
-    }, [treeState.tree, nodeID, displayNode, props.data])
-
-    const defaults: ParseDisplayNode = {
-        id: "",
-        value: 0,
-        type: NodeType.ListDisplay,
-        inputOrdering: [],
-        name: "",
-        unit: "",
-        inputs: [],
-    }
-
+    const nodeData = getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode
 
     return <>
         <Drag.NoDrag>
             <Container>
-                <ResultList
-                    displayData={displayNode ?? defaults}
-                    treeState={treeState.tree}
-                />
+                {nodeData &&
+                    <ResultList
+                        displayData={nodeData}
+                        treeState={treeState.tree}
+                    />
+                }
                 <TextInputField
                     inputHint={"Name"}
                     value={props.data.get('name')}
