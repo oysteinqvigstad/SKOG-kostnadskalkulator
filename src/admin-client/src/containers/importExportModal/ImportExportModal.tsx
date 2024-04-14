@@ -10,6 +10,7 @@ import {OnlineStoragePane} from "./OnlineStoragePane";
 import {LocalStoragePane} from "./LocalStoragePane";
 import {useEffect, useState} from "react";
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {EditorDataPackage} from "../../rete/editor";
 
 /**
  * A modal dialogue for importing and exporting calculators from/to the database and local storage
@@ -18,21 +19,16 @@ export function ImportExportModal(props: {
     show: boolean,
     onHide: () => void,
     functions: ReteFunctions | null
+    exportData: { graph: EditorDataPackage, parseNodes: ParseNode[] } | undefined
 }) {
-    let [exportData, setExportData] : [{graph: any, parseNodes: ParseNode[]} | undefined, any] = useState(undefined);
-
-    useEffect(()=>{
-        if(exportData!==undefined) { return }
-        props.functions?.export().then(data=>{setExportData(data)})
-    },[props, exportData])
 
     return <>
-    {exportData !== undefined ?
+    {props.exportData !== undefined ?
         <ImportExportModalContent
             show={props.show}
             onHide={props.onHide}
             functions={props.functions}
-            exportData={exportData}
+            exportData={props.exportData}
         /> :
         <></>
     }
@@ -45,7 +41,7 @@ export function ImportExportModal(props: {
 function ImportExportModalContent( props: {
     show: boolean,
     onHide: () => void,
-    exportData: { graph: any, parseNodes: ParseNode[] },
+    exportData: { graph: EditorDataPackage, parseNodes: ParseNode[] },
     functions: ReteFunctions | null
 }) {
     const dispatch = useAppDispatch()

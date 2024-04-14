@@ -68,7 +68,10 @@ function SaveToAPI(props: {
 
 
     const sendToAPI = async (publish: boolean) => {
+        console.log("graph", props.calculator.reteSchema?.graph);
+        console.log("treeNodes", props.calculator.treeNodes);
         if (!props.calculator.reteSchema?.graph || props.calculator.treeNodes?.length === 1) {
+
             window.alert("Cannot save empty graph to database")
         } else if (!props.calculator.name || !props.calculator.version) {
             window.alert("Cannot save a calculator without a name and version")

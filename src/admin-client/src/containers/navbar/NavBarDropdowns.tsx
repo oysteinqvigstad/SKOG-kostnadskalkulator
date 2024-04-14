@@ -1,12 +1,13 @@
 import {NavDropdown} from "react-bootstrap";
 import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
-import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {updateTree} from "../../state/slices/treeState";
 import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {ReteFunctions} from "../../rete/createEditor";
 import {selectFormulaInfo, selectPages} from "../../state/store";
-import React from "react";
+import React, {useState} from "react";
 import {ImportExportModal} from "../importExportModal/ImportExportModal";
+import {EditorDataPackage} from "../../rete/editor";
 
 /**
  * The dropdown menu items for the navigation bar
@@ -16,13 +17,27 @@ export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
     const formulaInfo = useAppSelector(selectFormulaInfo);
     const pagesInfo = useAppSelector(selectPages)
     const [showImportExportMenu, setShowImportExportMenu] = React.useState(false);
+    const [exportData, setExportData] : [{graph: EditorDataPackage, parseNodes: ParseNode[]} | undefined, any] = useState()
 
-
+    const updateExportData = async () => {
+        const graph = await props.functions?.export();
+        const parseNodes = await props.functions?.getCurrentTree();
+        if(graph && parseNodes) {
+            setExportData({ graph, parseNodes });
+        }
+    }
 
     return (
         <>
             <NavDropdown title={"File"} id={"file-dropdown"}>
-                <NavDropdown.Item onClick={() => { setShowImportExportMenu(!showImportExportMenu)}}>
+                <NavDropdown.Item onClick={() => {
+                    if(showImportExportMenu) {
+                        setShowImportExportMenu(!showImportExportMenu)
+                        return;
+                    } else {
+                        updateExportData().then(()=>{setShowImportExportMenu(true)})
+                    }
+                }}>
                     {"Import/Export"}
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => {
@@ -63,6 +78,7 @@ export function NavBarDropdowns(props: {functions: ReteFunctions | null}) {
                 show={showImportExportMenu}
                 onHide={() => setShowImportExportMenu(false)}
                 functions={props.functions}
+                exportData={exportData}
             />
         </>
     )
