@@ -45,7 +45,7 @@ export async function createEditor(container: HTMLElement) {
         clear: () =>  {
             editor.clearNodes();
         },
-        import: (data: any) => {
+        import: (data: EditorDataPackage) => {
             editor.importWithModules(data);
         },
         export: async () => {
@@ -85,7 +85,7 @@ export interface ReteFunctions {
     load: (onLoading?: () => void, onLoaded?: () => void, onUnsavedProgress?: () => void, onPotentialOverwrite?: () => void, onFailedToLoad?: () => void) => Promise<void>,
     save: () => void,
     clear: () => void,
-    import: (data: any) => void,
+    import: (data: EditorDataPackage) => void,
     export: () => Promise<{graph: EditorDataPackage, parseNodes: ParseNode[]}>,
     testJSON: () => ParseNode[] | undefined,
     deleteSelected: () => void,
