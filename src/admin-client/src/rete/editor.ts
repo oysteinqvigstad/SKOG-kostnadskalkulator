@@ -16,6 +16,7 @@ import {GraphSerializer, SerializedGraph} from "./graphSerializer";
 import {NodeFactory} from "./nodeFactory";
 import {canCreateConnection} from "./sockets";
 import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
+import {CustomNode} from "./nodes/CustomNode";
 
 
 export type AreaExtra = ReactArea2D<Schemes> | ContextMenuExtra;
@@ -538,9 +539,9 @@ export class Editor {
                     control(data) {
                         return data.payload.controlContainer
                     },
-                    node() {
-                        // Custom node goes here
-                        return Presets.classic.Node;
+                    node(data) {
+                        return CustomNode;
+                        // return Presets.classic.Node;
                     },
                     socket(context) {
                         return context.payload.component;
