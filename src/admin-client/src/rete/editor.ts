@@ -115,7 +115,7 @@ export class Editor {
     public async loadMainGraph() {
         await this.saveCurrentMainOrModule(this.currentModule);
         this.currentModule = undefined;
-        await this.importNodes(this.stashedMain)
+        if(this.stashedMain !== undefined) await this.importNodes(this.stashedMain)
         this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
     }
 
@@ -280,7 +280,7 @@ export class Editor {
      * Loads data previously created through exportNodes() back into the editor.
      * @param data nodes
      */
-    public async importNodes(data: any) {
+    public async importNodes(data: SerializedGraph) {
         this.loading = true;
         try {
             await this.context.editor.clear();
@@ -342,8 +342,35 @@ export class Editor {
     }
 
     public async importWithModules(data: EditorDataPackage) : Promise<void> {
-        this.moduleManager.overwriteModuleData(data.modules);
-        await this.importNodes(data.main);
+        console.log("imported data", data);
+
+        let oldFormatData = {
+            main: { nodes: [] },
+            modules: []
+        }
+        let useOldFormat = false;
+        //@ts-ignore
+        if(data.graph?.main !== undefined) {
+            //@ts-ignore
+            oldFormatData.main = data.graph.main;
+            useOldFormat = true;
+        }
+        //@ts-ignore
+        if(data.nodes !== undefined) {
+            useOldFormat = true;
+            //@ts-ignore
+            oldFormatData.main = { nodes: data.nodes };
+        }
+        //@ts-ignore
+        if(data.graph?.modules !== undefined) {
+            //@ts-ignore
+            oldFormatData.modules = data.graph.modules
+        }
+
+        const uploadData = (useOldFormat)? oldFormatData : data;
+        console.log((useOldFormat)? "old":"new", uploadData);
+        this.moduleManager.overwriteModuleData(uploadData.modules);
+        await this.importNodes(uploadData.main);
         this.currentModule = undefined;
         this.signalEventAndUpdateSnapshot(EditorEvent.ModulesChanged);
 
