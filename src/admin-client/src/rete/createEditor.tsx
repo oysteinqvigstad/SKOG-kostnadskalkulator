@@ -1,5 +1,5 @@
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {Editor} from "./editor";
+import {Editor, EditorDataPackage} from "./editor";
 
 /**
  * Creates a new editor and returns a promise with an object containing functions to
@@ -51,7 +51,7 @@ export async function createEditor(container: HTMLElement) {
         export: async () => {
             const nodes = await editor.exportAsParseTree();
             return {
-                graph: editor.exportWithModules(),
+                graph: await editor.exportWithModules(),
                 parseNodes: nodes ?? []
             }
         },
@@ -86,7 +86,7 @@ export interface ReteFunctions {
     save: () => void,
     clear: () => void,
     import: (data: any) => void,
-    export: () => Promise<{graph: any, parseNodes: ParseNode[]}>,
+    export: () => Promise<{graph: EditorDataPackage, parseNodes: ParseNode[]}>,
     testJSON: () => ParseNode[] | undefined,
     deleteSelected: () => void,
     registerCallBack: (id: string, newCallback: (nodes?: ParseNode[]) => void) => void,
