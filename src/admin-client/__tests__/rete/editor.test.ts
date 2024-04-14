@@ -17,7 +17,7 @@ describe('Editor import and export', ()=> {
             await createTestContext(ModuleName.passThroughModule);
         const reteEditor = new Editor(document.createElement('div'));
 
-        await reteEditor.importNodes(moduleManager.getModuleData(ModuleName.singleInputMultipleTargets));
+        await reteEditor.importNodes(moduleManager.getModuleData(ModuleName.singleInputMultipleTargets)!);
 
         const nodes = (await reteEditor.exportMainGraph()).nodes.map((node) => simplifyNode(node));
         const moduleNodes = moduleManager.getModuleData(ModuleName.singleInputMultipleTargets)?.nodes.map(node => simplifyNode(node));
@@ -64,11 +64,11 @@ describe('Editor ModuleManager integration', ()=>{
               await createTestContext(ModuleName.passThroughModule);
          const reteEditor = new Editor(document.createElement('div'));
 
-         await reteEditor.importNodes(moduleManager.getModuleData(ModuleName.passThroughModule));
-         await reteEditor.addNewModule(
-             "someModule", moduleManager.getModuleData(ModuleName.singleInputMultipleTargets));
-         await reteEditor.addNewModule(
-             "testModule", moduleManager.getModuleData(ModuleName.singleInputMultipleTargets));
+         await reteEditor.importNodes(moduleManager.getModuleData(ModuleName.passThroughModule)!);
+       reteEditor.addNewModule(
+           "someModule", moduleManager.getModuleData(ModuleName.singleInputMultipleTargets));
+       reteEditor.addNewModule(
+           "testModule", moduleManager.getModuleData(ModuleName.singleInputMultipleTargets));
          await reteEditor.loadModule("testModule");
 
          await reteEditor.loadMainGraph();
