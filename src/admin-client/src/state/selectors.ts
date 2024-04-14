@@ -3,8 +3,9 @@ import {createSelector} from "@reduxjs/toolkit";
 import {RootState} from "./store";
 import {RootNode} from "@skogkalk/common/dist/src/parseTree/nodes/rootNode";
 import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {EditorDataPackage} from "../rete/editor";
 
-export const selectCalculator = (rete: {graph: any, parseNodes: ParseNode[]} | undefined) => createSelector(
+export const selectCalculator = (rete: {graph: EditorDataPackage, parseNodes: ParseNode[]} | undefined) => createSelector(
     (state: RootState) => state,
     (state) => {
         const rootNode = selectRootNode(state)
