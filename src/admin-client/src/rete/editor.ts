@@ -344,30 +344,31 @@ export class Editor {
     public async importWithModules(data: EditorDataPackage) : Promise<void> {
         console.log("imported data", data);
 
+        const deepDataCopy = JSON.parse(JSON.stringify(data));
         let oldFormatData = {
             main: { nodes: [] },
             modules: []
         }
         let useOldFormat = false;
         //@ts-ignore
-        if(data.graph?.main !== undefined) {
+        if(deepDataCopy.graph?.main !== undefined) {
             //@ts-ignore
-            oldFormatData.main = data.graph.main;
+            oldFormatData.main = deepDataCopy.graph.main;
             useOldFormat = true;
         }
         //@ts-ignore
-        if(data.nodes !== undefined) {
+        if(deepDataCopy.nodes !== undefined) {
             useOldFormat = true;
             //@ts-ignore
-            oldFormatData.main = { nodes: data.nodes };
+            oldFormatData.main = { nodes: deepDataCopy.nodes };
         }
         //@ts-ignore
-        if(data.graph?.modules !== undefined) {
+        if(deepDataCopy.graph?.modules !== undefined) {
             //@ts-ignore
-            oldFormatData.modules = data.graph.modules
+            oldFormatData.modules = deepDataCopy.graph.modules
         }
 
-        const uploadData = (useOldFormat)? oldFormatData : data;
+        const uploadData = (useOldFormat)? oldFormatData : deepDataCopy;
         console.log((useOldFormat)? "old":"new", uploadData);
         this.moduleManager.overwriteModuleData(uploadData.modules);
         await this.importNodes(uploadData.main);
