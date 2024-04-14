@@ -40,7 +40,7 @@ export default function App() {
         updatePageInputs(treeState.tree, pages, (id: string, page: string)=>{
             dispatch(removeInputFromPage({nodeID: id, pageName: page}));
         })
-    }, [treeState])
+    }, [dispatch, pages, treeState])
 
 
 
