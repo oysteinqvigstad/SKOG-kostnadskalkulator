@@ -29,10 +29,13 @@ export function UnitBox(props: {
             <Button onClick={() => {
                 props.onDelete()
             }}>X</Button>
-            <TextEditor value={unitName} onSave={(newName: string) => {
-                props.onChange(newName)
-                setUnitName(newName)
-            }}/>
+            <TextEditor
+                value={unitName}
+                buttonText={"Edit"}
+                onSave={(newName: string) => {
+                    props.onChange(newName)
+                    setUnitName(newName)
+                }}/>
         </InputGroup>
     </Row>
 }
@@ -44,9 +47,12 @@ export function UnitsWindow() {
     return <>
         <Container>
             <Row>
-                <TextEditor value={""} onSave={(value: string) => {
-                    dispatch(addUnit({name: value, ordering: 1}))
-                }}/>
+                <TextEditor
+                    value={""}
+                    buttonText={"Add Unit"}
+                    onSave={(value: string) => {
+                        dispatch(addUnit({name: value, ordering: 1}))
+                    }}/>
             </Row>
             {units.map(({id, unit}) => {
                 return <Row key={id}>
