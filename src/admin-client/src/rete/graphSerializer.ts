@@ -115,11 +115,6 @@ export class GraphSerializer {
             const outputsEntries = Object.entries(node.outputs).map(([key, output]) => {
                 return [key, output && this.serializePort(output)];
             });
-            // const controlsEntries = Object.entries(node.controls).map(
-            //     ([key, control]) => {
-            //         return [key, control && this.serializeControl(control)];
-            //     }
-            // );
 
             data.nodes.push({
                 id: node.id,
