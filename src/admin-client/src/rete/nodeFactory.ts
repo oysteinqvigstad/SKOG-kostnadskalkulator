@@ -14,6 +14,7 @@ import {NaryNode} from "./nodes/mathNodes/naryNode";
 import {ChooseNode} from "./nodes/controlNodes/chooseNode";
 import {DisplayPreviewNode} from "./nodes/displayNodes/displayPreviewNode/displayPreviewNode";
 import {DisplayListNode} from "./nodes/displayNodes/displayListNode/displayListNode";
+import {GraphDisplayNode} from "./nodes/displayNodes/graphDisplayNode/graphDisplayNode";
 
 
 export class NodeFactory {
@@ -38,6 +39,7 @@ export class NodeFactory {
             case NodeType.BarDisplay: return new DisplayBarNode(this.updateNodeRendering, this.signalOnChange, id);
             case NodeType.PreviewDisplay: return new DisplayPreviewNode(this.updateNodeRendering, this.signalOnChange, id);
             case NodeType.ListDisplay: return new DisplayListNode(this.updateNodeRendering, this.signalOnChange, id);
+            case NodeType.GraphDisplay: return new GraphDisplayNode(this.updateNodeRendering, this.signalOnChange, id);
             case NodeType.Add: return new BinaryNode(NodeType.Add, this.updateNodeRendering, id);
             case NodeType.Sub: return new BinaryNode(NodeType.Sub, this.updateNodeRendering, id);
             case NodeType.Mul: return new BinaryNode(NodeType.Mul, this.updateNodeRendering, id);
