@@ -17,7 +17,7 @@ export interface DisplayNode extends ParseNode {
 }
 
 export function isDisplayNode (node: ParseNode) : node is DisplayNode {
-    return [NodeType.Display, NodeType.BarDisplay, NodeType.PreviewDisplay, NodeType.ListDisplay].includes(node.type)
+    return [NodeType.Display, NodeType.BarDisplay, NodeType.PreviewDisplay, NodeType.ListDisplay, NodeType.GraphDisplay].includes(node.type)
 }
 
 
@@ -36,6 +36,10 @@ export interface DisplayPreviewNode extends DisplayNode {
 }
 
 export interface DisplayListNode extends DisplayNode {
+    unit: string
+}
+
+export interface GraphDisplayNode extends DisplayNode {
     unit: string
 }
 

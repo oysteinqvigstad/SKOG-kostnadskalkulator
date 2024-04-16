@@ -49,6 +49,7 @@ export enum NodeType {
     Reference = "Reference",
     Root = "Root",
     Display = "Display",
+    GraphDisplay = "GraphDisplay",
     BarDisplay = "BarDisplay",
     PreviewDisplay = "PreviewDisplay",
     ListDisplay = "ListDisplay",
