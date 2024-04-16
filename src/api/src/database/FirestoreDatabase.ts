@@ -41,7 +41,10 @@ export class FirestoreDatabase implements IDatabase {
         //  (e.g. if a calculator with the same name and version already exists)
         //  right now it just overwrites the existing calculator
         await this.#db.runTransaction(async (t) => { t.set(ref, c) })
-            .catch(() => { throw new DatabaseError('An error occurred while adding the calculator') })
+            .catch(e => {
+                console.error("Firebase addCalculator insertion failed", e)
+                throw new DatabaseError('An error occurred while adding the calculator')
+            })
     }
 
 
@@ -83,7 +86,10 @@ export class FirestoreDatabase implements IDatabase {
             .collectionGroup('versions')
             .get()
             .then(snapshot => snapshot.docs.map(doc => doc.data() as Calculator))
-            .catch(() => { throw new DatabaseError('An error occurred while getting the calculators') })
+            .catch(e => {
+                console.error("Firebase could not retrieve calculators", e)
+                throw new DatabaseError('An error occurred while getting the calculators')
+            })
 
 
     }
@@ -102,7 +108,10 @@ export class FirestoreDatabase implements IDatabase {
             .then(doc => {
                 if (doc.exists) return doc
                 throw new NotFoundError('Calculator not found') })
-            .catch(() => { throw new DatabaseError('An error occurred while getting the calculator') })
+            .catch(e => {
+                console.error("Firebase could not load calculator", e)
+                throw new DatabaseError('An error occurred while getting the calculator')
+            })
     }
 
     /**
@@ -116,6 +125,7 @@ export class FirestoreDatabase implements IDatabase {
         if (data && data.hasOwnProperty(fieldName)) {
             return data[fieldName]
         } else {
+            console.error("Firebase could not find field", fieldName, "in calculator", doc.id)
             throw new DatabaseError(`Field ${fieldName} not found on calculator`)
         }
     }
