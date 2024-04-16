@@ -257,10 +257,8 @@ export class Editor {
      * Invokes all callbacks if not in the process of loading a file.
      */
     private signalOnChange = async ()=>{
-        console.log("loading is ", this.loading);
         if(!this.loading && !this.hasModuleLoaded()) {
             const nodes = await this.exportAsParseTree()
-            console.log("exporting during signal", nodes);
             this.onChangeCalls.forEach(({call})=>{
                 call(nodes)
             })
@@ -299,12 +297,6 @@ export class Editor {
      * Exports the main graph.
      */
     public async exportMainGraph() : Promise<SerializedGraph>{
-        console.log({
-            exporting: true,
-            stashedMain: this.stashedMain,
-            currentModule: this.currentModule,
-            modules: this.moduleManager.getAllModuleData()
-        })
         if(!this.hasModuleLoaded()) {
             return this.serializer.exportNodes();
         } else {
@@ -342,8 +334,6 @@ export class Editor {
     }
 
     public async importWithModules(data: EditorDataPackage) : Promise<void> {
-        console.log("imported data", data);
-
         const deepDataCopy = JSON.parse(JSON.stringify(data));
         let oldFormatData = {
             main: { nodes: [] },
@@ -369,7 +359,6 @@ export class Editor {
         }
 
         const uploadData = (useOldFormat)? oldFormatData : deepDataCopy;
-        console.log((useOldFormat)? "old":"new", uploadData);
         this.moduleManager.overwriteModuleData(uploadData.modules);
         await this.importNodes(uploadData.main);
         this.currentModule = undefined;
@@ -515,7 +504,8 @@ export class Editor {
             NodeType.Display,
             NodeType.BarDisplay,
             NodeType.PreviewDisplay,
-            NodeType.ListDisplay
+            NodeType.ListDisplay,
+            NodeType.GraphDisplay
         ])
 
 
@@ -547,7 +537,7 @@ export class Editor {
             if(context.type === "connectioncreate" && !canCreateConnection(this.context.editor, context.data)) {
                 return;
             }
-            if (["connectioncreated", "connectionremoved", "noderemoved"].includes(context.type)) {
+            if (["connectioncreated", "connectionremoved", "noderemoved", "nodecreated"].includes(context.type)) {
                 this.updateDataFlow();
                 this.signalOnChange();
             }
