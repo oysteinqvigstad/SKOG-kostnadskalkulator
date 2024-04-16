@@ -204,6 +204,7 @@ export function DropdownInputControlContent(
                         </Row>
                         <TextEditor
                             value={props.data.get('infoText')}
+                            buttonText={"Edit"}
                             onSave={(value: string) => {
                                 props.data.set({infoText: value})
                             }}

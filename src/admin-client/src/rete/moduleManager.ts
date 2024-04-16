@@ -125,7 +125,7 @@ export class ModuleManager {
                 reject(); return;
             }
             const serializer = new GraphSerializer(editor, factory ?? new NodeFactory(this))
-            serializer.importNodes(data).catch(()=>{reject(); return;}).then(()=>{
+            serializer.importNodes(data, true).catch(()=>{reject(); return;}).then(()=>{
                 resolve(); return;
             });
 

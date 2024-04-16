@@ -50,6 +50,7 @@ function DisplayListNodeContent(
                 />
                 <TextEditor
                     value={props.data.get("infoText") || ""}
+                    buttonText={"Edit Info text"}
                     onSave={(value) => {
                         props.data.set({infoText: value})
                     }}/>

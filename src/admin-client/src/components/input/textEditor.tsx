@@ -5,7 +5,6 @@ import {
     Modal,
     ModalBody,
     ModalFooter,
-    ModalHeader,
 } from "react-bootstrap";
 import {
     EditorContent,
@@ -146,7 +145,9 @@ function MenuBar(props: { editor: Editor | null }) {
     )
 }
 
-export function TextEditor(props: { value: string, onSave: (value: string) => void }): JSX.Element {
+export function TextEditor(
+    props: { value: string, buttonText: string, onSave: (value: string) => void }
+): JSX.Element {
     const [show, setShow] = useState(false);
     const editor = useEditor({
         extensions: [
@@ -204,22 +205,13 @@ export function TextEditor(props: { value: string, onSave: (value: string) => vo
     return <>
         <Button
             onClick={handleShow}>
-            Edit info text
+            {props.buttonText}
         </Button>
-        {
-            //editor !== null ? editor.getHTML() : "No editor"
-        }
-        {
-            //`Initial value: ${props.value}`
-        }
         <Modal
             show={show}
             onHide={handleShow}
             backdrop={"static"}
             centered>
-            <ModalHeader>
-                <Modal.Title>Edit info text</Modal.Title>
-            </ModalHeader>
             <ModalBody>
                 <MenuBar editor={editor}/>
                 <div style={{border: '1px solid #ccc', padding: '10px'}}>

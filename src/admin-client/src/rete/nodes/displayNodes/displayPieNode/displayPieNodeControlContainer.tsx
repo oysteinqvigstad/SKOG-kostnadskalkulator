@@ -49,6 +49,7 @@ function DisplayPieNodeContent(
                     }}/>
                 <TextEditor
                     value={props.data.get("infoText") || ""}
+                    buttonText={"Edit Info text"}
                     onSave={(value: string) => {
                         props.data.set({infoText: value});
                     }}/>

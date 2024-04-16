@@ -71,10 +71,6 @@ export class GraphSerializer {
                 }
             }
 
-            if(freshIDs) {
-                console.log("map", Array.from(oldToNewIDMapping));
-            }
-
             for await (const connection of totalConnections) {
                 if(freshIDs) {
                     const source = oldToNewIDMapping.get(connection.source);
