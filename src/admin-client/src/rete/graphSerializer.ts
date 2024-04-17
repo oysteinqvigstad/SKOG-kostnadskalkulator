@@ -50,7 +50,7 @@ export class GraphSerializer {
 
             const oldToNewIDMapping = new Map<string, string>();
 
-            for await (const { id, controls, type, xy , connections} of deepDataCopy.nodes) {
+            for (const { id, controls, type, xy , connections} of deepDataCopy.nodes) {
 
                 let node = this.factory.createNode(type, id);
 
@@ -71,12 +71,12 @@ export class GraphSerializer {
                 }
             }
 
-            for await (const connection of totalConnections) {
+            for (const connection of totalConnections) {
                 if(freshIDs) {
                     const source = oldToNewIDMapping.get(connection.source);
                     if(!source) {reject("couldn't find source" + connection); return;}
                     const target = oldToNewIDMapping.get(connection.target);
-                    if(!source) {reject("couldn't find target" + connection); return;}
+                    if(!target) {reject("couldn't find target" + connection); return;}
                     connection.source = source!;
                     connection.target = target!;
                 }
