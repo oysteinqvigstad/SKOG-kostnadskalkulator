@@ -306,9 +306,8 @@ export class Editor {
             if(!this.stashedMain) {
                 return {nodes: []}
             } else {
-                return tempSerializer.importNodes(this.stashedMain).then(()=>{
-                    return tempSerializer.exportNodes();
-                })
+                await tempSerializer.importNodes(this.stashedMain);
+                return tempSerializer.exportNodes();
             }
         }
     }
