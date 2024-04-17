@@ -6,13 +6,16 @@ import {useAppSelector} from "../../../../state/hooks";
 import {selectTreeState, store} from "../../../../state/store";
 import {GraphDisplayNode as ParseGraphDisplayNode} from "@skogkalk/common/src/parseTree"
 import {Provider} from "react-redux";
+import {Drag} from "rete-react-plugin";
 
 
 export function GraphDisplayNodeControlContainer(
     props: { data: NodeControl<GraphDisplayNodeControlData> }
 ) {
     return <Provider store={store}>
-        <GraphDisplayNodeControlContainerContent data={props.data}/>
+        <Drag.NoDrag>
+            <GraphDisplayNodeControlContainerContent data={props.data}/>
+        </Drag.NoDrag>
     </Provider>
 }
 
