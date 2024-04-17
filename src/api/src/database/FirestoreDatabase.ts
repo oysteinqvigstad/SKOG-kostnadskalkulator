@@ -41,7 +41,9 @@ export class FirestoreDatabase implements IDatabase {
         //  (e.g. if a calculator with the same name and version already exists)
         //  right now it just overwrites the existing calculator
         await this.#db.runTransaction(async (t) => {
-            t.set(ref, c)
+            // converting to string because of max depth = 20
+            const calculator = {...c, treeNodes: JSON.stringify(c.treeNodes), reteSchema: JSON.stringify(c.reteSchema)}
+            t.set(ref, calculator)
         })
             .catch(e => {
                 console.error("Firebase addCalculator insertion failed", e)
