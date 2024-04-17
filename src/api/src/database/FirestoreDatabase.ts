@@ -40,7 +40,9 @@ export class FirestoreDatabase implements IDatabase {
         // TODO: implement conflict checking/resolution with transaction
         //  (e.g. if a calculator with the same name and version already exists)
         //  right now it just overwrites the existing calculator
-        await this.#db.runTransaction(async (t) => { t.set(ref, c) })
+        await this.#db.runTransaction(async (t) => {
+            t.set(ref, c)
+        })
             .catch(e => {
                 console.error("Firebase addCalculator insertion failed", e)
                 throw new DatabaseError('An error occurred while adding the calculator')
@@ -107,7 +109,8 @@ export class FirestoreDatabase implements IDatabase {
             .get()
             .then(doc => {
                 if (doc.exists) return doc
-                throw new NotFoundError('Calculator not found') })
+                throw new NotFoundError('Calculator not found')
+            })
             .catch(e => {
                 console.error("Firebase could not load calculator", e)
                 throw new DatabaseError('An error occurred while getting the calculator')
@@ -135,3 +138,4 @@ export class FirestoreDatabase implements IDatabase {
         tree = setInputsByJSON(tree, inputs, strict)
         return generateJsonCalculationResponse(tree)
     }
+}
