@@ -54,7 +54,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest --collect-coverage",
+    "test": "jest --runInBand --detectOpenHandles --forceExit --collect-coverage",
     "eject": "react-scripts eject"
   },
   "jest": {
