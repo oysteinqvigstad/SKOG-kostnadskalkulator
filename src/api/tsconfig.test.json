@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "NodeNext",
     "outDir": "./dist-test", // Specify if you ever need to compile test files separately
     "noEmit": true // Prevents output of compile files, useful if you're only interested in type-checking
   },
