@@ -81,6 +81,11 @@ export class DisplayListNode extends ParseableBaseNode <
             name: this.controls.c.get("name"),
             inputOrdering: this.controls.c.get('inputs').map(input=>{return {outputID: input.id, outputLabel: input.label}}),
             infoText: this.controls.c.get('infoText') || "",
+            arrangement: {
+                xs: this.controls.c.get('arrangement')?.xs ?? {order: 0, span: 12},
+                md: this.controls.c.get('arrangement')?.md ?? {order: 0, span: 6},
+                lg: this.controls.c.get('arrangement')?.lg ?? {order: 0, span: 4},
+            }
         }
     }
 

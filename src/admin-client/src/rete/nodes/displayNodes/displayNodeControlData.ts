@@ -1,3 +1,4 @@
+import {DisplayArrangement} from "@skogkalk/common/dist/src/parseTree/nodes/displayNode";
 
 
 export interface OutputData {
@@ -14,4 +15,9 @@ export interface DisplayControlData {
     unit: string,
     inputs: OutputData[],
     infoText?: string
+    arrangement?: {
+        xs: DisplayArrangement,
+        md: DisplayArrangement,
+        lg: DisplayArrangement,
+    }
 }

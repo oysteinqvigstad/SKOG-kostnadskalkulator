@@ -12,8 +12,18 @@ export interface DisplayNode extends ParseNode {
         outputLabel: string,
         ordering?: number
     }[]
+    arrangement: {
+        xs: DisplayArrangement,
+        md: DisplayArrangement,
+        lg: DisplayArrangement,
+    }
     decimalPlaces?: number
     infoText?: string
+}
+
+export interface DisplayArrangement {
+    order: number
+    span: number
 }
 
 export function isDisplayNode (node: ParseNode) : node is DisplayNode {
