@@ -56,7 +56,7 @@ jobs:
       # npm ci is equivalent to npm install but is specifically optimized for CI
       - run: npm ci
         working-directory: src
-      - run: npm build
+      - run: npm run build
         working-directory: src
       - run: npm test
         working-directory: src
