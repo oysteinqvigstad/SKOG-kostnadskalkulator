@@ -86,7 +86,7 @@ export class FirestoreDatabase implements IDatabase {
      * @private
      */
     async #getAllCalculators(): Promise<Calculator[]> {
-         return this.#db
+        return this.#db
             .collectionGroup('versions')
             .get()
             .then(snapshot => snapshot.docs.map(doc => doc.data() as Calculator))
@@ -111,7 +111,8 @@ export class FirestoreDatabase implements IDatabase {
             .get()
             .then(doc => {
                 if (doc.exists) return doc
-                throw new NotFoundError('Calculator not found') })
+                throw new NotFoundError('Calculator not found')
+            })
             .catch(e => {
                 console.error("Firebase could not load calculator", e)
                 throw new DatabaseError('An error occurred while getting the calculator')

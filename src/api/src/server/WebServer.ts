@@ -23,6 +23,7 @@ export default class WebServer {
 
     run() {
         this.#startHTTP()
+        return this
     }
 
     stop() {

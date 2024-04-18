@@ -1,14 +1,16 @@
+import {BaseSocket} from "../sockets";
 import {ClassicPreset} from "rete";
+import {DataflowNode} from "rete-engine";
 import {NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {KeysOfType} from "./types";
 
-/**
- * Adds extra metadata properties to the Rete.js Node class.
- */
-export class BaseNode<
-    Inputs extends Record<string, ClassicPreset.Socket>,
-    Outputs extends Record<string, ClassicPreset.Socket>,
-    Controls extends Record<string, ClassicPreset.Control>
-> extends ClassicPreset.Node<Inputs, Outputs, Controls> {
+import {NodeControl} from "./nodeControl";
+
+export abstract class BaseNode<
+    Inputs extends Record<string, BaseSocket>,
+    Outputs extends Record<string, BaseSocket>,
+    Controls extends Record<string, NodeControl<any>>
+> extends ClassicPreset.Node<Inputs, Outputs, Controls> implements DataflowNode {
     xTranslation: number = 0;
     yTranslation: number = 0;
     type: NodeType;
@@ -24,16 +26,31 @@ export class BaseNode<
      * @param height height of the node
      * @param width width of the node
      * @param name
+     * @param id
      */
-    constructor(
+    protected constructor(
         type: NodeType,
         height: number,
         width: number,
         name?: string,
+        id?: string,
     ) {
         super(name ?? type.toString());
         this.type = type;
         this.originalHeight = this.height = height;
         this.originalWidth = this.width = width;
+        if (id) {
+            this.id = id;
+        }
     }
+
+    abstract data(inputs: Record<KeysOfType<Inputs, any>, any[]>): Record<KeysOfType<Outputs, any>, any>;
+
+    abstract serializeControls() : any;
+
+    abstract deserializeControls(serializedData: any) : void;
+
+    protected abstract updateNodeRendering(nodeID: string): void;
+
+    protected abstract updateDataFlow(): void;
 }

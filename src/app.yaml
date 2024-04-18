@@ -19,8 +19,8 @@ handlers:
   - url: /(.*\..+)$
     secure: always
     redirect_http_response_code: 301
-    static_files: client/build/\1
-    upload: client/build/(.*\..+)$
+    static_files: static-client/build/\1
+    upload: static-client/build/(.*\..+)$
 
 
   # Serve index.html for all other requests for client-side routing
@@ -29,17 +29,3 @@ handlers:
     redirect_http_response_code: 301
     static_files: client/build/index.html
     upload: client/build/index.html
-
-#    old config
-#
-#  - url: /
-#    secure: always
-#    redirect_http_response_code: 301
-#    static_files: client/build/index.html
-#    upload: client/build/index.html
-#
-#  - url: /(.*)
-#    secure: always
-#    redirect_http_response_code: 301
-#    static_files: client/build/\1
-#    upload: client/build/(.*)
