@@ -76,7 +76,12 @@ export class GraphDisplayNode extends ParseableBaseNode <
             inputOrdering: [],
             id: this.id,
             type: NodeType.GraphDisplay,
-            value: 0
+            value: 0,
+            arrangement: {
+                xs: this.controls.c.get('arrangement')?.xs ?? {order: 0, span: 12},
+                md: this.controls.c.get('arrangement')?.md ?? {order: 0, span: 6},
+                lg: this.controls.c.get('arrangement')?.lg ?? {order: 0, span: 4},
+            }
         }
     }
 

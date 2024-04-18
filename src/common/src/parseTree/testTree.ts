@@ -297,7 +297,12 @@ const grafOmkrets : DisplayNode = {
             outputID: rektangelOmkrets.id,
             outputLabel: "Rektangel"
         }
-    ]
+    ],
+    arrangement: {
+        xs: {order: 0, span: 12},
+        md: {order: 0, span: 6},
+        lg: {order: 0, span: 4}
+    }
 }
 
 const arealGraf: DisplayNode =  {
@@ -328,7 +333,12 @@ const arealGraf: DisplayNode =  {
             outputID: rektangelAreal.id,
             outputLabel: "Rektangel"
         }
-    ]
+    ],
+    arrangement: {
+        xs: {order: 0, span: 12},
+        md: {order: 0, span: 6},
+        lg: {order: 0, span: 4}
+    }
 }
 
 
