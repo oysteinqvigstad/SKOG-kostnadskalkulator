@@ -40,8 +40,15 @@ export class FirestoreDatabase implements IDatabase {
         // TODO: implement conflict checking/resolution with transaction
         //  (e.g. if a calculator with the same name and version already exists)
         //  right now it just overwrites the existing calculator
-        await this.#db.runTransaction(async (t) => { t.set(ref, c) })
-            .catch(() => { throw new DatabaseError('An error occurred while adding the calculator') })
+        await this.#db.runTransaction(async (t) => {
+            // converting to string because of max depth = 20
+            const calculator = {...c, treeNodes: JSON.stringify(c.treeNodes), reteSchema: JSON.stringify(c.reteSchema)}
+            t.set(ref, calculator)
+        })
+            .catch(e => {
+                console.error("Firebase addCalculator insertion failed", e)
+                throw new DatabaseError('An error occurred while adding the calculator')
+            })
     }
 
 
@@ -79,11 +86,14 @@ export class FirestoreDatabase implements IDatabase {
      * @private
      */
     async #getAllCalculators(): Promise<Calculator[]> {
-         return this.#db
+        return this.#db
             .collectionGroup('versions')
             .get()
             .then(snapshot => snapshot.docs.map(doc => doc.data() as Calculator))
-            .catch(() => { throw new DatabaseError('An error occurred while getting the calculators') })
+            .catch(e => {
+                console.error("Firebase could not retrieve calculators", e)
+                throw new DatabaseError('An error occurred while getting the calculators')
+            })
 
 
     }
@@ -101,8 +111,12 @@ export class FirestoreDatabase implements IDatabase {
             .get()
             .then(doc => {
                 if (doc.exists) return doc
-                throw new NotFoundError('Calculator not found') })
-            .catch(() => { throw new DatabaseError('An error occurred while getting the calculator') })
+                throw new NotFoundError('Calculator not found')
+            })
+            .catch(e => {
+                console.error("Firebase could not load calculator", e)
+                throw new DatabaseError('An error occurred while getting the calculator')
+            })
     }
 
     /**
@@ -116,6 +130,7 @@ export class FirestoreDatabase implements IDatabase {
         if (data && data.hasOwnProperty(fieldName)) {
             return data[fieldName]
         } else {
+            console.error("Firebase could not find field", fieldName, "in calculator", doc.id)
             throw new DatabaseError(`Field ${fieldName} not found on calculator`)
         }
     }
