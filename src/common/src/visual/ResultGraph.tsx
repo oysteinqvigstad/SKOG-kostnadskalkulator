@@ -4,7 +4,15 @@ import React, {useState} from "react";
 import {ApexOptions} from "apexcharts";
 import {FcIdea} from "react-icons/fc";
 import {ResultCard} from "./ResultCard";
-import {DropdownInput, getNodeByID, getResultsForInputs, InputNode, OutputNode, TreeState} from "../parseTree";
+import {
+    DropdownInput,
+    getNodeByID,
+    getResultsForInputs,
+    InputNode,
+    NodeType,
+    OutputNode,
+    TreeState
+} from "../parseTree";
 import {GraphDisplayNode} from "../parseTree";
 import {isDropdownInputNode} from "../parseTree/nodes/inputNode";
 
@@ -45,6 +53,13 @@ export function ResultGraph(
     const inputs = props.treeState?.inputs;
 
     const [selection, setSelection] : [InputNode | undefined, any] = useState(inputs?.[0] ?? undefined);
+    const outputIDs = props.displayData.inputs.map(node=>{
+        if(node.type === NodeType.Reference) {
+            return getNodeByID(props.treeState, node.id)?.id || "";
+        } else {
+            return node.id;
+        }
+    })
 
 
     const value = "value?"; // Usikker på hva denne er til
@@ -56,11 +71,14 @@ export function ResultGraph(
     const [showCost, setShowCost] = useState<boolean>(false) // velge mellom kostnad eller produktivitet
 
 
-    const chartSeries: ApexAxisChartSeries = results?.map(entry=>{
+    const chartSeries: ApexAxisChartSeries = results
+        ?.filter((entry)=>{return outputIDs.includes(entry.outputID)})
+        .map(entry=>{
         const output = getNodeByID(props.treeState, entry.outputID);
         return {
             name: (output as OutputNode).name,
-            data: entry.values
+            data: entry.values,
+            color: (output as OutputNode).color
         }
     }) || [];
 
