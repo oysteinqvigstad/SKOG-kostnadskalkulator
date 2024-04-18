@@ -15,8 +15,6 @@ import {SidePanel} from "./containers/panels/SidePanel";
 import {RetePanel} from "./containers/panels/RetePanel";
 import {getNodeByID, ParseNode, TreeState} from "@skogkalk/common/dist/src/parseTree";
 import {ModulePanel} from "./containers/panels/modulePanel";
-import {useServices} from "./contexts/ServiceContext";
-import {useNavigate} from "react-router-dom";
 
 
 export default function App() {

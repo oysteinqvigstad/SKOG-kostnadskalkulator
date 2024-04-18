@@ -1,6 +1,7 @@
 import {IAuthService} from "../interfaces/IAuthService";
 import {UserData} from "../models/UserData";
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * The mock authentication service for testing
  */
