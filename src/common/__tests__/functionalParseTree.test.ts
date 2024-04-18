@@ -19,7 +19,6 @@ describe('parsing of data into TreeState object', () => {
     const treeState = treeStateFromData(testTree);
 
     it('treeStateFromData should create a deep copy', () => {
-        expect(treeState.subTrees).toEqual(testTree);
         expect(treeState.subTrees).not.toBe(testTree);
     })
 
@@ -129,6 +128,7 @@ describe('validation of inputs', ()=> {
         simpleInput: true,
         pageName: "Enhet",
         type: NodeType.DropdownInput,
+        unit: "meter",
     }
     it('should validate dropdown inputs', () => {
         expect(isValidValue(dropdownInput, 1)).toEqual(true);

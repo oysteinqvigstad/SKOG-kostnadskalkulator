@@ -13,13 +13,12 @@ export interface InputNode extends ParseNode {
     pageName: string
     ordering: number
     simpleInput: boolean
+    unit: string
 }
 
 export function isInputNode(node: ParseNode): node is InputNode {
     return node.type === NodeType.NumberInput || node.type === NodeType.DropdownInput;
 }
-
-
 
 
 /**
@@ -32,19 +31,25 @@ export interface NumberInputNode extends InputNode {
         min: number | null
         max: number | null
     }[]
-    unit: string
+
 }
 
 export function isNumberInputNode(node: ParseNode): node is NumberInputNode {
     return node.type === NodeType.NumberInput;
 }
 
-export function isValidValue(node: InputNode, value: number) : boolean {
-    if(isNumberInputNode(node)) {
-        if(node.legalValues.length !== 0) {
+export function isValidValue(node: InputNode, value: number): boolean {
+    if (isNaN(value)) {
+        return false
+    }
+    if (isNumberInputNode(node)) {
+        if (node.inputType === InputType.Integer && value - Math.round(value) !== 0) {
+            return false;
+        }
+        if (node.legalValues.length !== 0) {
             let legal = false;
             node.legalValues.forEach((range) => {
-                if(((range.min !== null)? value >= range.min : true) && ((range.max !== null)? value <= range.max : true)) {
+                if (((range.min !== null) ? value >= range.min : true) && ((range.max !== null) ? value <= range.max : true)) {
                     legal = true;
                 }
             })
@@ -54,7 +59,7 @@ export function isValidValue(node: InputNode, value: number) : boolean {
         }
     } else if (isDropdownInputNode(node)) {
         return node.dropdownAlternatives
-            .find((alternative)=> {
+            .find((alternative) => {
                 return alternative.value === value
             }) !== undefined
     }
@@ -79,7 +84,7 @@ export interface DropdownInput extends InputNode {
     }[]
 }
 
-export function isDropdownInputNode(node: ParseNode) : node is DropdownInput {
+export function isDropdownInputNode(node: ParseNode): node is DropdownInput {
     return node.type === NodeType.DropdownInput;
 }
 

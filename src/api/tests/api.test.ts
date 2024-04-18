@@ -1,11 +1,11 @@
 import WebServer from "../src/server/WebServer";
 import {MockDatabase} from "../src/database/MockDatabase";
+import request from 'supertest'
+import path from "path";
 import {testTree, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 import {Configuration} from "../src/types/config";
 import {MockAuth} from "../src/auth/MockAuth";
-import path = require("path")
-import request = require("supertest")
 
 let server: WebServer
 let calculator: Calculator
@@ -28,8 +28,7 @@ beforeAll(() => {
         httpPort: 4000,
         staticFilesPath: path.join(__dirname, '..', '..', 'client', 'build')
     }
-    server = new WebServer(config)
-    server.run()
+    server = new WebServer(config).run()
 })
 
 afterAll(() => {
@@ -57,7 +56,6 @@ describe('serve static files', () => {
 })
 
 describe('api calculator', () => {
-
     test('POST /api/v0/addCalculator', async () => {
         await request(server.app)
             .post('/api/v0/addCalculator')
@@ -77,6 +75,14 @@ describe('api calculator', () => {
         await request(server.app)
             .post('/api/v0/addCalculator')
             .set('Authorization', '')
+            .send(calculator)
+            .expect(401)
+    })
+
+    test('POST /api/v0/addCalculator (empty authorization Bearer)', async () => {
+        await request(server.app)
+            .post('/api/v0/addCalculator')
+            .set('Authorization', 'Bearer ')
             .send(calculator)
             .expect(401)
     })

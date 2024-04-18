@@ -1,13 +1,16 @@
-import {Schemes, SkogNode} from "./nodes/types";
-import {NodeEditor} from "rete";
-import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
-import {LabelNode} from "./nodes/labelNode";
-import {OutputNode} from "./nodes/outputNode";
+import {ConnProps, ParseableNode, ReteNode, Schemes} from "./nodes/types";
+import {getUID, NodeEditor} from "rete";
+import {NodeType, ParseNode, ReferenceNode} from "@skogkalk/common/dist/src/parseTree";
+import {ModuleNode} from "./nodes/moduleNodes/moduleNode";
+import {ModuleInput} from "./nodes/moduleNodes/moduleInput";
+import {ModuleOutput} from "./nodes/moduleNodes/moduleOutput";
+import {GraphSerializer} from "./graphSerializer";
+import {NodeFactory} from "./nodeFactory";
+import {ModuleManager} from "./moduleManager";
 
 
 interface NodeConnection {
     id: string
-    name: string
     left?: string
     right?: string
     child?: string
@@ -15,62 +18,272 @@ interface NodeConnection {
 }
 
 
-export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undefined {
-    let subtrees: (ParseNode | undefined)[] = [];
-    let connections = editor.getConnections();
+function split<T>(arr: T[], predicate: (item: T) => boolean): [T[], T[]] {
+    const left: T[] = [];
+    const right: T[] = [];
+    arr.forEach((item) => {
+        if (predicate(item)) {
+            left.push(item);
+        } else {
+            right.push(item);
+        }
+    });
+    return [left, right];
+}
 
 
-    const nodes = editor.getNodes() as SkogNode[];
-    const nodeSet = new Map(nodes.map((node) => {
+/**
+ * Recursively searches for the presence of a named module in a graph
+ * @param name
+ * @param nodes
+ */
+export function detectModule(name: string, nodes: ReteNode[]) {
+    const modules = nodes.filter(node=>{return node instanceof ModuleNode})
+    modules.some(module=>{
+        return (module as ModuleNode).controls.c.get('currentModule') === name || detectModule(name, (module as ModuleNode).getNodes())
+    })
+    return false;
+}
+
+
+
+/**
+ *
+ * @param moduleNode
+ * @param externalIOConnections
+ */
+export function resolveIncomingModuleConnections(moduleNode: ModuleNode,  externalIOConnections: ConnProps[]) {
+    const internalNodes = moduleNode.getNodes();
+    const internalIOConnections = moduleNode.getConnections();
+    const resolvedInputConnections : ConnProps[] = []
+
+
+    const inputConnections = externalIOConnections.filter(connection=>{return connection.target === moduleNode.id});
+
+    inputConnections.forEach( inputConnection => {
+        // finds the ModuleInput node associated with the Module input targeted by connection
+        const inputNode = internalNodes.find( node=>
+            node.type === NodeType.ModuleInput &&
+            (node as ModuleInput).controls.c.get('inputName') === inputConnection.targetInput
+        );
+        if(inputNode) {
+            // finds the connection going from the associated ModuleInput to another node
+            const connectionsFromModuleInput = internalIOConnections.filter(conn=>conn.source === inputNode.id);
+            connectionsFromModuleInput.forEach(connectionFromModuleInput=>{
+                const moduleInputTargetNode = internalNodes.find(node=>node.id === connectionFromModuleInput.target);
+                if(moduleInputTargetNode) {
+                    if(moduleInputTargetNode.type === NodeType.ModuleOutput) {
+                        // finds the outgoing connection matching the targeted ModuleOutput
+                        const outputConnections = externalIOConnections.filter(conn=>
+                            conn.sourceOutput === (moduleInputTargetNode as ModuleOutput).controls.c.get('outputName'));
+                        outputConnections.forEach((outputConnection)=>{
+                            //Case: Incoming connection has been rerouted to the target of a moduleOutput
+                            // @ts-ignore
+                            resolvedInputConnections.push({
+                                id: getUID(),
+                                source: inputConnection.source,
+                                target: outputConnection.target,
+                                sourceOutput: inputConnection.sourceOutput,
+                                targetInput: outputConnection.targetInput
+                            })
+                        });
+                    } else {
+                        //Case: Incoming connection has been rerouted to a regular node in the module
+                        // @ts-ignore
+                        resolvedInputConnections.push({
+                            id: getUID(),
+                            source: inputConnection.source,
+                            target: connectionFromModuleInput.target,
+                            sourceOutput: inputConnection.sourceOutput,
+                            targetInput: connectionFromModuleInput.targetInput
+                        })
+                    }
+                } else {
+                    throw new Error ("resolveIncomingModuleConnections: targeted node does not exist in internalIONodes")
+                }
+            });
+        }
+    });
+
+    const outputConnections = externalIOConnections
+        .filter(connection=>{return connection.source === moduleNode.id});
+    outputConnections.forEach((outputConnection)=> {
+        // only interested in resolving a connection if it goes to a regular node in the module.
+        // Other cases are handled in the input connection resolution.
+        const moduleOutputNode = internalNodes
+            .find(node=>
+                outputConnection.sourceOutput === (node as ModuleOutput).controls.c.get('outputName')
+            );
+        if(moduleOutputNode) {
+            const moduleOutputInternalConnection = internalIOConnections.find(conn=>conn.target === moduleOutputNode.id);
+            if(moduleOutputInternalConnection === undefined) {
+                return;
+            }
+            const connectionSourceNode = internalNodes.find(node=>node.id === moduleOutputInternalConnection.source);
+            if(connectionSourceNode?.type === NodeType.ModuleInput) {
+                return;
+            }
+            // @ts-ignore
+            resolvedInputConnections.push({
+                id: getUID(),
+                source: moduleOutputInternalConnection.source,
+                target: outputConnection.target,
+                sourceOutput: moduleOutputInternalConnection.sourceOutput,
+                targetInput: outputConnection.targetInput
+            })
+        }
+    });
+
+    return resolvedInputConnections;
+}
+
+
+function getModuleNonIONodesAndConnections(moduleNode: ModuleNode) {
+    const nodes = moduleNode.getNodes();
+    const inOutNodes = nodes.filter((node)=> {
+        return node instanceof ModuleInput || node instanceof ModuleOutput;
+    });
+    const inOutNodeIDs = inOutNodes.map(node=>node.id);
+    const connections = moduleNode.getConnections();
+    return {
+        connections: connections.filter((connection)=>{
+            return !(inOutNodeIDs.includes(connection.target) || inOutNodeIDs.includes(connection.source));
+        }),
+        nodes: nodes.filter(node=>!(inOutNodeIDs.includes(node.id)))
+    }
+}
+
+
+export async function flattenGraph(serializer: GraphSerializer, moduleManager: ModuleManager) {
+    // serializer is used to create a copy of the graph to avoid modifying the original.
+    const editor = new NodeEditor<Schemes>();
+    const factory = new NodeFactory(moduleManager);
+    const copySerializer = new GraphSerializer(editor, factory);
+    await copySerializer.importNodes(serializer.exportNodes());
+
+    let [moduleNodes, regularNodes] = split(editor.getNodes(), (node)=>{
+        return node instanceof ModuleNode;
+    });
+
+    let [moduleConnections, regularConnections] = split(editor.getConnections(), (connection)=>{
+        return moduleNodes.find(node=>node.id === connection.target || node.id === connection.source) !== undefined;
+    });
+
+
+    while(moduleNodes.length > 0) {
+        // grab the top module from the stack
+        const moduleNode = moduleNodes.pop();
+        if(moduleNode===undefined) break;
+        //separate out connections for current module
+
+        await (moduleNode as ModuleNode).setModuleAndRefreshPorts();
+        let [currentModuleConnections, remainingModuleConnections] = split(moduleConnections, (connection)=>{
+            return moduleNode.id === connection.target || moduleNode.id === connection.source;
+        })
+
+        moduleConnections = remainingModuleConnections;
+        // get the internal nodes and connections from module
+        let {nodes, connections} = getModuleNonIONodesAndConnections(moduleNode as ModuleNode);
+        // sort internal module nodes and insert into regularNodes and moduleNodes.
+        nodes.forEach((node)=>{
+            if(node instanceof ModuleNode) {
+                moduleNodes.push(node);
+            } else {
+                regularNodes.push(node);
+            }
+        })
+
+        // resolve connections from nodes connected to module
+        const resolvedConnections = resolveIncomingModuleConnections(moduleNode as ModuleNode, currentModuleConnections);
+        // sort resolvedConnections into regular connections or module connections.
+        resolvedConnections.forEach(connection=>{
+            const node = moduleNodes.find((node)=>{
+                return node.id === connection.target || node.id === connection.source
+            })
+            if(node === undefined) {
+                regularConnections.push(connection);
+            } else {
+                moduleConnections.push(connection);
+            }
+        })
+        connections.forEach(connection=>{
+            const node = moduleNodes.find((node)=>{
+                return node.id === connection.target || node.id === connection.source
+            })
+            if(node === undefined) {
+                regularConnections.push(connection);
+            } else {
+                moduleConnections.push(connection);
+            }
+        })
+    }
+    return { nodes: regularNodes, connections: regularConnections }
+}
+
+
+export async function createParseNodeGraph(serializer: GraphSerializer, moduleManager: ModuleManager ) {
+    let subtrees: ParseNode[] = [];
+
+
+    const flattened = await flattenGraph(serializer, moduleManager);
+
+
+    const nodes = flattened.nodes;
+
+    const connProps = flattened.connections;
+
+    const idToNodeConnection = new Map(nodes.map((node) => {
         const parsed: NodeConnection = {
-            id: (node.id),
-            name: ""
+            id: (node.id)
         }
         return [node.id, parsed]
     }));
 
-    let nodeOutputs = new Map(nodes.map((node) => [node.id, 0]));
-    let nodeInputs = new Map(nodes.map((node) => [node.id, 0]));
+    let nodeParentCount = new Map(nodes.map((node) => [node.id, 0]));
 
-    connections.forEach((connection) => {
-        let parentNode = nodeSet.get(connection.target);
+    // iterates through connections, setting up child ids for parent nodes
+    // on NodeConnection objects.
+    connProps.forEach((connection) => {
+        let parentNode = idToNodeConnection.get(connection.target);
         const targetPortName = connection.targetInput;
 
 
         if(parentNode !== undefined) {
             if(targetPortName === "result") {
                 parentNode.child = connection.source;
-            }
-            if(targetPortName === "left") {
+            } else if(targetPortName === "left") {
                 parentNode.left = connection.source;
-            }
-            if(targetPortName === "right") {
+            } else if(targetPortName === "right") {
                 parentNode.right = connection.source;
-            }
-            if(targetPortName === "input") {
+            } else {
                 if(parentNode.inputs !== undefined) {
                     parentNode.inputs.push(connection.source)
                 } else {
                     parentNode.inputs = [connection.source]
                 }
             }
-            nodeSet.set(connection.target, parentNode);
+
+            // target on ConnProp is id of the parent node when translating to ParseNode tree
+            idToNodeConnection.set(connection.target, parentNode);
         }
 
-
-        nodeOutputs.set(connection.source, (nodeOutputs.get(connection.source) ?? 0) + 1);
-        nodeInputs.set(connection.target, (nodeInputs.get(connection.target) ?? 0) + 1);
+        nodeParentCount.set(connection.source, (nodeParentCount.get(connection.source) ?? 0) + 1);
     });
 
-    nodes.forEach((node) => {
-        if (nodeOutputs.get(node.id) === 0) {
-            subtrees.push(populateTree(nodeSet.get(node.id) ?? {id: node.id, name:  ""}, nodeSet, new Map(nodes.map((node) => [node.id, node]))));
+    const idToParseableNode = new Map((nodes as ParseableNode[]).map((node) => [node.id, {node: node, isRoot: isSubTreeRoot(node, nodeParentCount.get(node.id) || 0)}]));
+    nodes.forEach((node) => { // Inserts roots and populates these.
+        if (isSubTreeRoot(node, nodeParentCount.get(node.id) || 0)) {
+            const subTree = populateTree( idToNodeConnection.get(node.id) ?? {id: node.id}, idToNodeConnection, idToParseableNode )
+            subtrees.push(subTree);
         }
     });
 
-    return subtrees[0];
+    return subtrees;
 }
 
+function isSubTreeRoot(node: ReteNode, parentCount: number) {
+    return parentCount === 0 || parentCount >=2 || node.type === NodeType.Root;
+}
 
 
 /**
@@ -78,85 +291,65 @@ export function createJSONGraph(editor: NodeEditor<Schemes>) : ParseNode | undef
  * have been reached.
  *
  * @param startNode A node in the tree represented as a NodeConnection. Can be any node found in connections map.
- * @param connections A map of node IDs to information about the node's children IDs. The function will throw
+ * @param nodeConnections A map of node IDs to information about the node's children IDs. The function will throw
  * if startNode cannot be found in connections.
- * @param nodes A map from node IDs to actual node data.
+ * @param reteNodes A map from node IDs to actual node data.
  * @return The root node of the built tree represented as a ParseNode.
  */
-function populateTree(startNode: NodeConnection, connections: Map<string, NodeConnection>, nodes: Map<string, SkogNode>): ParseNode {
+function populateTree(startNode: NodeConnection, nodeConnections: Map<string, NodeConnection>, reteNodes: Map<string, {node: ParseableNode, isRoot: boolean}>): ParseNode {
+    const rootSkogNode = reteNodes.get(startNode.id);
+    if(!rootSkogNode) { throw new Error("Start node not found in nodes map")}
 
-    const rootNodeData = nodes.get(startNode.id);
-    if(!rootNodeData) { throw new Error("Start node not found in nodes map")}
-
-    const rootNode: ParseNode = {
-        id: startNode.id, // Only id is needed. Rest is filled out in loop below.
-        type: NodeType.Number,
-        value: 0
-    }
+    const rootNode = rootSkogNode.node.toParseNode();
 
     const stack: ParseNode[] = [rootNode];
 
+    const parseNodeFromID: (id: string)=>ParseNode = (id: string) => {
+        const result = reteNodes.get(id);
+        if(!result) { throw new Error ("node not found in nodes map " + id)}
+        const parseNode = result.node.toParseNode();
+        if(result.isRoot) {
+            return {
+                id: getUID(),
+                value: parseNode.value,
+                type: NodeType.Reference,
+                referenceID: result.node.id
+            } as ReferenceNode
+        } else {
+            return parseNode;
+        }
+    }
+
     while (stack.length > 0) {
-        const currentNode = stack.pop();
+        let currentNode = stack.pop();
 
         if (!currentNode) {
             break;
         }
 
-        const currentConnection = connections.get(currentNode.id);
-        const currentSkogNode = nodes.get(currentNode.id);
-
-        if(currentSkogNode === undefined) {throw new Error("Node not found");}
-
-        currentNode.type = currentSkogNode.type;
-        if(currentSkogNode !instanceof LabelNode && currentSkogNode !instanceof OutputNode) {
-            //TODO: Need a more flexible way of declaring input and output controls dynamically
-            // and allowing these to be parsed
-            currentNode.value = currentSkogNode.controls.value.value ?? 0;
-        }
-        // currentNode.description = currentSkogNode.controls.description.value ?? "";
-
+        const currentConnection = nodeConnections.get(currentNode.id);
 
         if (currentConnection?.left) {
-            currentNode.left = {
-                id: currentConnection.left,
-                type: NodeType.Number,
-                value: 0
-            };
-            const leftNode = currentNode.left;
+            const leftNode = currentNode.left = parseNodeFromID(currentConnection.left);
             stack.push(leftNode);
         }
 
         if (currentConnection?.right) {
-            currentNode.right = {
-                id: currentConnection.right,
-                type: NodeType.Number,
-                value: 0
-            };
-            const rightNode = currentNode.right;
+            const rightNode = currentNode.right = parseNodeFromID(currentConnection.right);
             stack.push(rightNode);
         }
 
         if (currentConnection?.child) {
-            currentNode.child = {
-                id: currentConnection.child,
-                type: NodeType.Number,
-                value: 0
-            }
-            const childNode = currentNode.child;
+            const childNode = currentNode.child = parseNodeFromID(currentConnection.child);
             stack.push(childNode);
         }
 
         if (currentConnection?.inputs) {
             currentNode.inputs = [];
             currentConnection.inputs.forEach((nodeID)=> {
-                const node: ParseNode = {
-                    id: nodeID,
-                    type: NodeType.Number,
-                    value: 0
-                }
-                currentNode.inputs?.push(node)
-                stack.push(node)
+                const node = parseNodeFromID(nodeID);
+                currentNode!.inputs?.push(node);
+                stack.push(node);
             })
         }
     }

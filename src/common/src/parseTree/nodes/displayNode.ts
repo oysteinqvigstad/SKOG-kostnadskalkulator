@@ -13,10 +13,11 @@ export interface DisplayNode extends ParseNode {
         ordering?: number
     }[]
     decimalPlaces?: number
+    infoText?: string
 }
 
 export function isDisplayNode (node: ParseNode) : node is DisplayNode {
-    return node.type === NodeType.Display
+    return [NodeType.Display, NodeType.BarDisplay, NodeType.PreviewDisplay, NodeType.ListDisplay, NodeType.GraphDisplay].includes(node.type)
 }
 
 
@@ -24,3 +25,21 @@ export interface DisplayPieNode extends DisplayNode {
     unit: string
     pieType: "pie" | "donut"
 }
+
+export interface DisplayBarNode extends DisplayNode {
+    unit: string
+    max: number
+}
+
+export interface DisplayPreviewNode extends DisplayNode {
+    unit: string
+}
+
+export interface DisplayListNode extends DisplayNode {
+    unit: string
+}
+
+export interface GraphDisplayNode extends DisplayNode {
+    unit: string
+}
+
