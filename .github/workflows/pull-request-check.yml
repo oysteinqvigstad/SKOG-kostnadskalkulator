@@ -1,0 +1,33 @@
+name: Production Pipeline (github-hosted)
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: test (nodejs ${{ matrix.node-version }})
+    strategy:
+      matrix:
+        # even numbers are LTS releases
+        node-version: [18, 20, 21]
+
+    steps:
+      # equivalent of doing git clone
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        # ensures node.js is available
+        uses: actions/setup-node@v4
+        with:
+          # reference different versions
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      # npm ci is equivalent to npm install but is specifically optimized for CI
+      - run: npm ci
+        working-directory: src
+      - run: npm run build
+        working-directory: src
+      - run: npm test
+        working-directory: src
