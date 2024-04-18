@@ -81,13 +81,13 @@ const circleAreaOutput: OutputNode = {
     id: getUniquieID(),
     name: "Sirkelareal",
     type: NodeType.Output,
-    value: 0,
+    value: Math.PI,
     color: "#5555FF",
     unit: "m^2",
     child: {
         id: getUniquieID(),
         type: NodeType.Mul,
-        value: 0,
+        value: Math.PI,
         left: {
             id: getUniquieID(),
             type: NodeType.Number,
@@ -96,21 +96,21 @@ const circleAreaOutput: OutputNode = {
         right: {
             id: getUniquieID(),
             type: NodeType.Pow,
-            value: 0,
+            value: 1**2,
             left: {
                 id: getUniquieID(),
                 type: NodeType.Mul,
-                value: 0,
+                value: 1,
                 left: {
                     id: getUniquieID(),
                     type: NodeType.Reference,
-                    value: 35,
+                    value: 1,
                     referenceID: radiusInput.id
                 },
                 right: {
                     id: getUniquieID(),
                     type: NodeType.Reference,
-                    value: 11232123,
+                    value: 1,
                     referenceID: enhetDropdown.id
                 }
             },
@@ -128,18 +128,18 @@ const sirkelOmkrets: OutputNode = {
     id: getUniquieID(),
     name: "Sirkelomkrets",
     type: NodeType.Output,
-    value: 0,
+    value: 2 * Math.PI,
     unit: "meter",
     color: "#5555FF",
     child: {
         id: getUniquieID(),
         type: NodeType.Prod,
-        value: 0,
+        value: 2 * Math.PI,
         inputs: [
             {
                 id: getUniquieID(),
                 type: NodeType.Reference,
-                value: 0,
+                value: 1,
                 referenceID: radiusInput.id
             },
             {
@@ -155,7 +155,7 @@ const sirkelOmkrets: OutputNode = {
             {
                 id: getUniquieID(),
                 type: NodeType.Reference,
-                value: 0,
+                value: 1,
                 referenceID: enhetDropdown.id
             }
         ]
@@ -165,18 +165,18 @@ const sirkelOmkrets: OutputNode = {
 const rektangelOmkrets: OutputNode = {
     id: getUniquieID(),
     type: NodeType.Output,
-    value: 0,
+    value: 4,
     name: "Rektangelomkrets",
     color: "#55FF55",
     unit: "meter",
     child: {
         id: getUniquieID(),
         type: NodeType.Add,
-        value: 0,
+        value: 4,
         left: {
             id: getUniquieID(),
             type: NodeType.Prod,
-            value: 0,
+            value: 2,
             inputs: [
                 {
                     id: getUniquieID(),
@@ -186,13 +186,13 @@ const rektangelOmkrets: OutputNode = {
                 {
                     id: getUniquieID(),
                     type: NodeType.Reference,
-                    value: 0,
+                    value: 1,
                     referenceID: hoydeInput.id
                 },
                 {
                     id: getUniquieID(),
                     type: NodeType.Reference,
-                    value: 0,
+                    value: 1,
                     referenceID: enhetDropdown.id
                 }
             ]
@@ -200,7 +200,7 @@ const rektangelOmkrets: OutputNode = {
         right: {
             id: getUniquieID(),
             type: NodeType.Prod,
-            value: 0,
+            value: 2,
             inputs: [
                 {
                     id: getUniquieID(),
@@ -210,13 +210,13 @@ const rektangelOmkrets: OutputNode = {
                 {
                     id: getUniquieID(),
                     type: NodeType.Reference,
-                    value: 0,
+                    value: 1,
                     referenceID: breddeInput.id
                 },
                 {
                     id: getUniquieID(),
                     type: NodeType.Reference,
-                    value: 0,
+                    value: 1,
                     referenceID: enhetDropdown.id
                 }
             ]
@@ -277,13 +277,13 @@ const grafOmkrets : DisplayNode = {
         {
             id: getUniquieID(),
             type: NodeType.Reference,
-            value: 0,
+            value: Math.PI * 2,
             referenceID: sirkelOmkrets.id
         },
         {
             id: getUniquieID(),
             type: NodeType.Reference,
-            value: 0,
+            value: 4,
             referenceID: rektangelOmkrets.id
         }
     ],
