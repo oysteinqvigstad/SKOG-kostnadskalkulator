@@ -1,11 +1,11 @@
 import {ParseableBaseNode} from "../../parseableBaseNode";
 import {ResultSocket} from "../../../sockets";
 import {NodeControl} from "../../nodeControl";
-import {NodeType, ParseNode} from "@skogkalk/common/dist/src/parseTree";
+import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {ClassicPreset} from "rete";
 import {GraphDisplayNodeControlData} from "./graphDisplayNodeControlData";
 import {GraphDisplayNodeControlContainer} from "./graphDisplayNodeControlContainer";
-import {GraphDisplayNode as ParseGraphDisplayNode } from "@skogkalk/common/src/parseTree";
+import {GraphDisplayNode as ParseGraphDisplayNode} from "@skogkalk/common/src/parseTree";
 
 
 export class GraphDisplayNode extends ParseableBaseNode <
