@@ -93,14 +93,7 @@ body {
   padding-left: 10px;
   padding-right: 10px;
 }
-.code-example {
-  background-color: #333;
-  color: #fff;
-  font-family: monospace;
-  border-radius: 0.25rem;
-  white-space: pre-wrap;
-  overflow-x: auto;
-}
+
 
 /* hide number input controls */
 .form-control[type="number"]::-webkit-inner-spin-button,
@@ -122,11 +115,12 @@ body {
 }
 
 .page-bar-spacer {
-  width: 0.4rem;
+  width: 0.25rem;
   padding: 0;
 }
 
 .page-bar {
+  background-color: #004f59;
   padding-bottom: 0.2rem;
 }
 
@@ -134,42 +128,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100px;
-  font-size: 0.8em;
-  font-weight: 500;
-  color: black !important;
-  background-color: gainsboro !important;
-  border: 0 !important;
+  font-size: 0.5rem;
+  min-width: 20%;
+  max-width: 30%;
   padding: 0 !important;
   margin: 0 !important;
-}
-
-.page-button:disabled {
-  background-color: #000000 !important;
-  color: white !important;
-}
-
-.btn-calculator {
-  background-color: #ffa100 !important;
-  border: #ffa100 solid 2px !important;
-  color: black !important;
-  min-height: 90px !important;
-  transition: transform 0.2s ease-in-out;
-}
-
-.btn-calculator:disabled {
-  background-color: #f2f2f2 !important;
-  color: #666666 !important;
-  opacity: 1;
-}
-
-.btn-calculator .title {
-  font-size: 1.3em;
-  font-weight: 700;
-}
-
-.btn-calculator .description {
-  font-weight: 500;
 }
 
 .custom-header-container {
@@ -210,10 +173,6 @@ body {
 
   }
 
-  .page-button:hover {
-    background-color: #bebebe !important;
-  }
-
   .btn-toggle:hover {
     border-color: lightgray !important;
     color: black !important;
@@ -239,15 +198,5 @@ body {
   .reset-button:hover {
     background-color: transparent !important;
   }
-
-  .btn-calculator:hover {
-    background-color: #ffa100 !important;
-    border: #ffa100 solid 2px !important;
-    transform: scale(1.05);
-    -webkit-box-shadow: 0 0 19px 2px rgba(230,230,230,1);
-    -moz-box-shadow: 0 0 19px 2px rgba(230,230,230,1);
-    box-shadow: 0 0 19px 2px rgba(230,230,230,1);
-  }
-
 }
 

@@ -1,7 +1,7 @@
 import {Accordion, Alert} from "react-bootstrap";
 import React from "react";
-import {APIInfoAccordion} from "../../components/infoAPI/APIInfoAccordion";
-import {APIInfoExampleResult} from "../../components/infoAPI/APIInfoExampleResult";
+import {APIInfoAccordion} from "../components/infoAPI/APIInfoAccordion";
+import {APIInfoExampleResult} from "../components/infoAPI/APIInfoExampleResult";
 
 export function InformationalApiPage() {
     const prefixURL = "https://kostnad.skogkurs.no/api/v0/"
