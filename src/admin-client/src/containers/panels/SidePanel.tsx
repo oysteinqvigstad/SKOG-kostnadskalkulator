@@ -1,4 +1,4 @@
-import {Card, Row, Tab, Tabs} from "react-bootstrap";
+import {Row, Tab, Tabs} from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import {PagesWindow} from "../pagesWindow";
 import {PageEditor} from "../pageEditor";
@@ -6,13 +6,10 @@ import {UnitsWindow} from "../unitsWindow";
 
 export function SidePanel() {
     return (
-        <Card style={{height: '100%'}} className="mb-3">
-            <Card.Title>
-                Properties
-            </Card.Title>
-            <Card.Body>
+        <Container className={"h-100"} style={{borderLeft: 'lightgrey solid 1px'}}>
+            <h5 className={"pt-2 pb-3"}>{"Properties"}</h5>
                 <Tabs>
-                    <Tab eventKey="Pages" title="Pages">
+                    <Tab className={"h-100"} eventKey="Pages" title="Pages">
                         <Container fluid={true} style={{height: "80vh", justifyContent: ""}}>
                             <Row style={{height: "50%"}}>
                                 <PagesWindow/>
@@ -33,7 +30,6 @@ export function SidePanel() {
                         </Container>
                     </Tab>
                 </Tabs>
-            </Card.Body>
-        </Card>
+        </Container>
     )
 }

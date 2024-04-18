@@ -15,9 +15,7 @@ import {SidePanel} from "./containers/panels/SidePanel";
 import {RetePanel} from "./containers/panels/RetePanel";
 import {getNodeByID, ParseNode, TreeState} from "@skogkalk/common/dist/src/parseTree";
 import {ModulePanel} from "./containers/panels/modulePanel";
-import {useServices} from "./contexts/ServiceContext";
-import {useNavigate} from "react-router-dom";
-
+import "./App.css";
 
 export default function App() {
     const [reteRef, functions] = useRete(createEditor);
@@ -96,20 +94,22 @@ export default function App() {
 
   return (
       <Provider store={store}>
-          <div className="App">
+          {/*<div className="App">*/}
               <NavBar functions={functions} />
-              <Container style={{maxWidth: '100%'}}>
-                  <Row>
-                      <Col style={{padding: 0}}>
+              <Container className={"h-100"} fluid>
+                  <Row className={"h-100"}>
+                      <Col style={{padding: 0, flex: 1}}>
                           <ModulePanel editor={functions?.editor}></ModulePanel>
                           <RetePanel reteRef={reteRef} />
                       </Col>
-                      <Col style={{ padding: 0}}>
+                      <Col className={"h-100"} style={{ padding: 0, width: '500px', flex: 'none'}}>
                           <SidePanel />
                       </Col>
                   </Row>
+
+                  "werwer"
               </Container>
-          </div>
+          {/*</div>*/}
 
       </Provider>
   );
