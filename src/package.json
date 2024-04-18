@@ -24,7 +24,8 @@
   },
   "workspaces": [
     "common",
-    "client",
+    "static-client",
+    "dynamic-client",
     "api",
     "admin-client"
   ]

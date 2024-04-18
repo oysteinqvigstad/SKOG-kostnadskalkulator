@@ -1,0 +1,202 @@
+
+body {
+  background-color: #004f59;
+}
+
+.header-color {
+  background-color: #e9f0ec;
+}
+
+.field:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #a2afa7;
+}
+
+
+.field:invalid, .field:invalid:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #FA8072;
+}
+
+
+
+.btn-info {
+  background-color: #5e7461 !important;
+  border-color: #5e7461 !important;
+}
+
+.btn-primary {
+  color: #6f7174 !important;
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+.btn-primary:active {
+  color: #ffffff !important;
+  background-color: #4a604d !important;
+  border-color: #4a604d !important;
+}
+
+.btn-primary:disabled {
+  color: #6f7174;
+  background-color: #5e7461;
+  border-color: #5e7461;
+}
+
+.btn-secondary {
+  color: white !important;
+  background-color: #5e7461 !important;
+  border-color: #425443 !important;
+}
+
+.btn-toggle {
+  border-color: lightgray !important;
+  color: black !important;
+}
+
+
+.btn-toggle.active {
+  background-color: #E8E8E8 !important;
+}
+
+
+.btn-calculator {
+  background-color: #ffa100 !important;
+  border: #ffa100 solid 2px !important;
+  color: black !important;
+  min-height: 90px !important;
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn-calculator:disabled {
+  background-color: #f2f2f2 !important;
+  color: #666666 !important;
+  opacity: 1;
+}
+
+.btn-calculator .title {
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.btn-calculator .description {
+  font-weight: 500;
+}
+
+.reset-button, .reset-button:active {
+  font-size: 1.3em;
+  color: #6f7174 !important;
+  background-color: transparent !important;
+}
+
+.nav-tabs .nav-link {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+
+/* hide number input controls */
+.form-control[type="number"]::-webkit-inner-spin-button,
+.form-control[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.form-control[type="number"] {
+  -moz-appearance: textfield; /* same as above but for Firefox */
+}
+
+.page-item .page-link {
+  color: #6f7174;
+}
+.page-item.active .page-link {
+  color: white;
+  background-color: #5e7461;
+  border-color: #5e7461;
+}
+
+.page-bar-spacer {
+  width: 0.25rem;
+  padding: 0;
+}
+
+.page-bar {
+  background-color: #004f59;
+  padding-bottom: 0.2rem;
+}
+
+.page-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.5rem;
+  min-width: 20%;
+  max-width: 30%;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.custom-header-container {
+  position: relative;
+  text-align: center;
+  min-height: 60px; /* Adjust based on your content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-title {
+  position: absolute;
+  z-index: 1;
+}
+
+.header-icon {
+  position: absolute;
+  z-index: 0;
+}
+
+.header-icon.left {
+  left: 0;
+}
+
+.header-icon.right {
+  right: 0;
+}
+
+
+
+/* avoid applying hover on touch devices that emulate it. Buttons tend to "stick" */
+@media (hover: hover) {
+  .btn-primary:hover {
+    border-color: lightgray !important;
+    color: black !important;
+    background-color: #F5F5F5 !important;
+
+  }
+
+  .btn-toggle:hover {
+    border-color: lightgray !important;
+    color: black !important;
+    background-color: #F5F5F5 !important;
+  }
+  .btn-toggle.active:hover {
+    background-color: #E8E8E8 !important;
+  }
+
+  .btn-calculator:hover {
+    background-color: #ffa100 !important;
+    border: #ffa100 solid 2px !important;
+    transform: scale(1.05);
+    -webkit-box-shadow: 0 0 19px 2px rgba(230,230,230,1);
+    -moz-box-shadow: 0 0 19px 2px rgba(230,230,230,1);
+    box-shadow: 0 0 19px 2px rgba(230,230,230,1);
+  }
+
+
+  .btn-secondary:hover {
+    background-color: #526953 !important;
+  }
+  .reset-button:hover {
+    background-color: transparent !important;
+  }
+}
+

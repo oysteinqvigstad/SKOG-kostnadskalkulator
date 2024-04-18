@@ -15,6 +15,7 @@
 
 # Node.js dependencies:
 node_modules/
-client/node_modules/
+static-client/node_modules/
+dynamic-client/node_modules/
 api/node_modules/
 common/node_modules/
