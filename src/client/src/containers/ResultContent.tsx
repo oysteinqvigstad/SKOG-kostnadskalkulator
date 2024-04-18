@@ -24,7 +24,7 @@ export function ResultContent() {
     return (
             <Stack className={"mb-3"} gap={3}>
                 <Row className={"row-gap-4"}>
-                    <Col md={{span: 12, order: 1}} lg={{span: 8, order: 1}} className={"d-none d-md-block"}>
+                    <Col md={{span: 12, order: -1}} lg={{span: 8, order: -1}} className={"d-none d-md-block"}>
                         <ResultParameters />
                     </Col>
                     {displayNodes
@@ -59,8 +59,10 @@ function ResultComponent({displayNode}: {displayNode: DisplayNode}) {
         }
     }
 
+    const {xs, md, lg} = displayNode.arrangement
+
     return (
-        <Col xs={{span: 12, order: 2}} md={{span: 6, order: 2}} lg={{span: 4, order: 2}}>
+        <Col xs={xs} md={md} lg={lg}>
             {component(displayNode)}
         </Col>
     )
