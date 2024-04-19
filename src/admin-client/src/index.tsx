@@ -29,9 +29,9 @@ root.render(
             <ServiceProvider services={services}>
                 <Router>
                     <Routes>
-                        <Route path={"/"} element={<App />} />
-                        <Route path={"/access/signin"} element={<SignInPage />} />
-                        <Route path={"/access/confirm"} element={<SignInConfirmPage />} />
+                        <Route path={"editor/"} element={<App />} />
+                        <Route path={"editor/access/signin"} element={<SignInPage />} />
+                        <Route path={"editor/access/confirm"} element={<SignInConfirmPage />} />
                     </Routes>
                 </Router>
             </ServiceProvider>
