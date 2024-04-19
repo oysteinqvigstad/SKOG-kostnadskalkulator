@@ -1,33 +1,34 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Col, Row, Tab, Tabs} from "react-bootstrap";
-import {staticFieldDescriptions} from "../data/staticFieldDescriptions";
 import {InputField} from "./inputField/InputField";
 import {useAppSelector} from "../state/hooks";
+import {selectInputNodes, selectPageTitles} from "../state/treeSelectors";
 
 export function ParametersWithTabs() {
-    const hideAdanced = useAppSelector((state) => state.form.hideAdvanced)
-
-    const menuItems: string[] = [
-        "Bestand",
-        "Kjøreforhold",
-        "Maskin",
-        "Tillegg"
-    ]
-
-    const [key, setKey] = React.useState(menuItems[0]);
+    const inputNodes = useAppSelector(selectInputNodes)
+    const pageTitles = useAppSelector(selectPageTitles)
 
 
+    const [key, setKey] = React.useState(pageTitles[0] ?? "");
+
+    useEffect(() => {
+        if (!key) {
+            setKey(pageTitles[0] ?? "")
+        }
+    }, [key, pageTitles]);
 
 
-    const tabs = menuItems.map((title, index) => {
+
+
+    const tabs = pageTitles?.map((title) => {
         return (
             <Tab eventKey={title} title={title}>
                 <Row>
-                    {staticFieldDescriptions
-                        .filter((data) => data.page === index+1 && (hideAdanced ? !data.advanced : true))
-                        .map((data) => (
+                    {inputNodes
+                        ?.filter((node) => node.pageName === title)
+                         .map((node) => (
                             <Col md={12} lg={6}>
-                                <InputField fieldData={data} />
+                                <InputField node={node} />
                             </Col>
                         ))
                     }

@@ -1,10 +1,10 @@
 import {Container, Row} from "react-bootstrap";
-import {ResultListItem} from "../../types/ResultListItem";
+import {ResultListItem, VisualResult} from "../../types/ResultListItem";
 
-export function ResultRowBoxes(props: {
-    listItems: ResultListItem[]
+export function ResultRowBoxes({result}: {
+    result: VisualResult
 }) {
-    const combined = combineSameTitleAndColor(props.listItems)
+    const combined = combineSameTitleAndColor(result.items)
     const defaultColors = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#00D9E9', '#FF66C3']
 
 
@@ -48,9 +48,7 @@ function combineSameTitleAndColor(items: ResultListItem[]) {
     const unique = new Set<string>(
         items.map((item) => item.text)
     )
-    console.log(unique)
     return Array.from(unique).map((title) => {
-
         return {
             title: title,
             color: items
