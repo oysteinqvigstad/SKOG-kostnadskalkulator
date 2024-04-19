@@ -13,7 +13,7 @@ const firebaseConfig = {
     };
 
 export const actionCodeSettings = {
-    url: 'http://localhost:3000/access/confirm',
+    url: 'https://kostnadskalkulator.skogkurs.no/editor/access/confirm',
     handleCodeInApp: true
 }
 
