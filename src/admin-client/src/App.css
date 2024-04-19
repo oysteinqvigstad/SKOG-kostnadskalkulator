@@ -42,3 +42,45 @@ html, body, #root {
     transform: rotate(360deg);
   }
 }
+
+
+
+.btn-toggle {
+  border-color: lightgray !important;
+  color: black !important;
+  background-color: #ffffff !important;
+}
+
+
+
+.btn-toggle:disabled {
+  background-color: #e8e8e8 !important;
+  color: gray !important;
+}
+
+
+.reset-button, .reset-button:active {
+  font-size: 1.3em;
+  color: #6f7174 !important;
+  background-color: transparent !important;
+}
+
+
+/* avoid applying hover on touch devices that emulate it. Buttons tend to "stick" */
+@media (hover: hover) {
+
+
+   .btn-toggle:hover {
+    border-color: lightgray !important;
+    color: black !important;
+    background-color: #F5F5F5 !important;
+  }
+  .btn-toggle.active:hover {
+    background-color: #E8E8E8 !important;
+  }
+
+  .reset-button:hover {
+    background-color: transparent !important;
+  }
+}
+

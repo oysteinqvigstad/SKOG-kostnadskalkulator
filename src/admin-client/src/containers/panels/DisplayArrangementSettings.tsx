@@ -7,9 +7,13 @@ import {
 import {selectTreeState} from "../../state/store";
 import {useAppSelector} from "../../state/hooks";
 import {DisplayNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
+import Container from "react-bootstrap/Container";
 
 export function DisplayArrangementSettings() {
+
+
+
     return (
         <>
             <p>
@@ -46,15 +50,40 @@ function DisplayPreviewContainer(props: {
         }
     }
 
+
+
+    const [tabHeight, setTabHeight] = useState(0);
+    const tabRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (tabRef.current) {
+                setTabHeight(window.innerHeight - tabRef.current.getBoundingClientRect().top);
+            }
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+
+    console.log(tabHeight)
+
     return (
-        <Stack className={"mb-3 mx-auto"} style={{width: getWidth(props.widthMultiplier)}} gap={3}>
-            <Row className={"row-gap-2"}>
-                {tree?.displayNodes
-                    ?.filter(node => node.type !== NodeType.PreviewDisplay)
-                    .map((node) => <DisplayPreviewTile node={node} widthMultiplier={props.widthMultiplier} />)
-                }
-            </Row>
-        </Stack>
+        <div ref={tabRef}>
+            <Container style={{height: `${tabHeight}px`, overflowY: 'auto'}}>
+                    <Stack className={"mb-3 mx-auto"} style={{width: getWidth(props.widthMultiplier)}} gap={3}>
+                        <Row>
+                            {tree?.displayNodes
+                                ?.filter(node => node.type !== NodeType.PreviewDisplay)
+                                .map((node) => <DisplayPreviewTile node={node} widthMultiplier={props.widthMultiplier} />)
+                            }
+                        </Row>
+                    </Stack>
+            </Container>
+        </div>
     )
 }
 
@@ -72,37 +101,34 @@ function DisplayPreviewTile(props: {
     }
 
     return (
-        <Col className={"p-0"} xs={getArrangement(props.widthMultiplier)}>
-            <Card>
-                <div style={{fontSize: 12}}>
-                    {props.node.type}
-                </div>
-                <div style={{fontSize: 14, fontWeight: 600}}>
-                    {props.node.name}
-                </div>
-                <Card.Body>
-                    <Row>
-
+        <Col className={"p-1"} xs={getArrangement(props.widthMultiplier)}>
+            <Card className={"h-100"}>
+                <Card.Body className={"h-100 d-flex flex-column"}>
+                    <Row className={"mb-3"}>
+                    <div style={{fontSize: 12}}>
+                        {props.node.type}
+                    </div>
+                    <div style={{fontSize: 14, fontWeight: 600}}>
+                        {props.node.name}
+                    </div>
+                    </Row>
+                    <Row className={"mt-auto row-gap-1"}>
                         <Col>
                             {"Order:"}
                         </Col>
                         <Col>
                             <ButtonGroup size={"sm"}>
-                                <Button variant={"info"}>-</Button>
-                                <Button>+</Button>
+                                <Button className={"btn-toggle"}>-</Button>
+                                <Button className={"btn-toggle"}>+</Button>
                             </ButtonGroup>
                         </Col>
-
-                    </Row>
-
-                    <Row>
                         <Col>
                             {"Width:"}
                         </Col>
                         <Col>
                             <ButtonGroup size={"sm"}>
-                                <Button>-</Button>
-                                <Button>+</Button>
+                                <Button className={"btn-toggle"} disabled>-</Button>
+                                <Button className={"btn-toggle"} disabled>+</Button>
                             </ButtonGroup>
                         </Col>
                     </Row>
