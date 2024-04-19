@@ -24,7 +24,7 @@ handlers:
     redirect_http_response_code: 301
 
   # serve editor index.html for all other requests for client-side routing
-  - url: /editor/.*
+  - url: /editor(/.*)?
     static_files: admin-client/build/index.html
     upload: admin-client/build/index.html
     secure: always
