@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import {PagesWindow} from "../pagesWindow";
 import {PageEditor} from "../pageEditor";
 import {UnitsWindow} from "../unitsWindow";
+import {DisplayArrangementSettings} from "./DisplayArrangementSettings";
 
 export function SidePanel() {
     return (
@@ -28,6 +29,9 @@ export function SidePanel() {
                         <Container fluid={true} style={{height: "80vh", justifyContent: ""}}>
                             <UnitsWindow/>
                         </Container>
+                    </Tab>
+                    <Tab eventKey="Displays" title="Displays">
+                        <DisplayArrangementSettings />
                     </Tab>
                 </Tabs>
         </Container>
