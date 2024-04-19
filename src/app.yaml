@@ -15,15 +15,31 @@ handlers:
   - url: /api/.*
     script: auto
 
-  # Serve all static files with url ending with a file extension
-  - url: /(.*\..+)$
+
+  # Serve editor static files with url ending with a file extension
+  - url: /editor/(.*\..+)$
+    static_files: admin-client/build/\1
+    upload: admin-client/build/(.*\..+)$
     secure: always
     redirect_http_response_code: 301
+
+  # serve editor index.html for all other requests for client-side routing
+  - url: /editor/.*
+    static_files: admin-client/build/index.html
+    upload: admin-client/build/index.html
+    secure: always
+    redirect_http_response_code: 301
+
+
+  # Serve web frontend static files with url ending with a file extension
+  - url: /(.*\..+)$
     static_files: client/build/\1
     upload: client/build/(.*\..+)$
+    secure: always
+    redirect_http_response_code: 301
 
 
-  # Serve index.html for all other requests for client-side routing
+  # Serve web frontend index.html for all other requests for client-side routing
   - url: /.*
     secure: always
     redirect_http_response_code: 301
