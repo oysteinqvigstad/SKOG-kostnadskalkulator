@@ -50,7 +50,7 @@ export function DropdownInputControlContent(
             props.data.set({pageOrdering: ordering})
             console.log("ordering of", data.name, props.data.get('pageOrdering'))
         }
-    }, [pages])
+    }, [data.id, data.name, data.pageName, pages, props.data])
 
     return <>
         <Drag.NoDrag>

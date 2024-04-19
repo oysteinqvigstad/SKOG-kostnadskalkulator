@@ -196,7 +196,7 @@ export async function flattenGraph(serializer: GraphSerializer, moduleManager: M
         // resolve connections from nodes connected to module
         const resolvedConnections = resolveIncomingModuleConnections(moduleNode as ModuleNode, currentModuleConnections);
         // sort resolvedConnections into regular connections or module connections.
-        resolvedConnections.forEach(connection=>{
+        for(const connection of resolvedConnections) {
             const node = moduleNodes.find((node)=>{
                 return node.id === connection.target || node.id === connection.source
             })
@@ -205,8 +205,9 @@ export async function flattenGraph(serializer: GraphSerializer, moduleManager: M
             } else {
                 moduleConnections.push(connection);
             }
-        })
-        connections.forEach(connection=>{
+        }
+
+        for(const connection of connections) {
             const node = moduleNodes.find((node)=>{
                 return node.id === connection.target || node.id === connection.source
             })
@@ -215,7 +216,7 @@ export async function flattenGraph(serializer: GraphSerializer, moduleManager: M
             } else {
                 moduleConnections.push(connection);
             }
-        })
+        }
     }
     return { nodes: regularNodes, connections: regularConnections }
 }

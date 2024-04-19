@@ -232,23 +232,6 @@ function updateNodeValuesMutably(tree: TreeState) : TreeState {
 }
 
 
-/**
- * Creates a deep copy of the tree and updates the calculated value
- * of all nodes in the subtrees.
- *
- * NB: Noticeably slower than updateNodeValuesMutably due to the deep
- * copying of the tree
- *
- * @param tree
- */
-function updateNodeValuesImmutably(tree: TreeState) : TreeState {
-    const result = cloneTree(tree);
-    result.subTrees.forEach((root) => {
-        calculateNodeValue(result, root);
-    });
-    return result;
-}
-
 
 /**
  * Calculates the value of a node and all its children, along

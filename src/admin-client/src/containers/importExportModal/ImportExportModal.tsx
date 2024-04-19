@@ -8,7 +8,6 @@ import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {selectCalculator} from "../../state/selectors";
 import {OnlineStoragePane} from "./OnlineStoragePane";
 import {LocalStoragePane} from "./LocalStoragePane";
-import {useEffect, useState} from "react";
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {EditorDataPackage} from "../../rete/editor";
 

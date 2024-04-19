@@ -39,7 +39,7 @@ export class ChooseNode extends ParseableBaseNode<
         const control = new NodeControl<ChooseNodeControlData>(
             {comparisonCount: 2},
             {
-                onUpdate: (newValue: Partial<ChooseNodeControlData>) => {
+                onUpdate: () => {
                     this.updateComparisonCount();
                     this.updateNodeRendering(this.id);
                 },

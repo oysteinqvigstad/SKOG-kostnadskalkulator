@@ -19,9 +19,6 @@ export type ReteNode = ParseableNode | ModuleInput | ModuleOutput | ModuleNode;
 
 export type ParseableNode = NumberNode | BinaryNode | NaryNode | NumberInputNode | OutputNode | DropdownInputNode | DisplayPieNode | DisplayBarNode | ChooseNode | DisplayPreviewNode | DisplayListNode | GraphDisplayNode;
 
-export function isParseableNode(node: ReteNode): node is ParseableNode {
-    return !(node instanceof ModuleInput || node instanceof ModuleOutput || node instanceof ModuleNode);
-}
 
 export type NumberNodeOutput = { value: number, sourceID: string };
 

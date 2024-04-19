@@ -35,7 +35,7 @@ export function NumberInputControlsContent(
         // finds new index of page if it has been moved
         if (props.data.get('pageName') !== undefined) {
             const pageName = props.data.get('pageName');
-            const result = pages.find(({id, page}) => {
+            const result = pages.find(({page}) => {
                 return page.title === pageName;
             });
             const ordering = result?.page.inputIds.findIndex((id)=>{
