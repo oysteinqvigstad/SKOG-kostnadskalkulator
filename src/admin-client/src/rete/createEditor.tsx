@@ -13,13 +13,7 @@ export async function createEditor(container: HTMLElement) {
 
     return {
         destroy: ()=> {editor.destroyArea()},
-        load: async (
-            onLoading: ()=>void = ()=>{},
-            onLoaded: ()=>void = ()=>{},
-            onUnsavedProgress: ()=>void = ()=>{},
-            onPotentialOverwrite: ()=>void = ()=>{},
-            onFailedToLoad: ()=>void = ()=>{}
-        ) => {
+        load: async () => {
             if(localStorage) {
                 const data = localStorage.getItem('graph');
                 if(data) {

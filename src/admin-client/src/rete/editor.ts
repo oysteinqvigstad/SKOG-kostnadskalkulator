@@ -316,13 +316,6 @@ export class Editor {
         return this.serializer.exportNodes();
     }
 
-    public async exportModule(name: string) {
-        if(!this.moduleManager.hasModule(name)) {throw new Error("No module with name " + name)};
-        const tempEditor = new NodeEditor<Schemes>();
-        const tempSerializer = new GraphSerializer(tempEditor, new NodeFactory(this.moduleManager))
-        await tempSerializer.importNodes(this.moduleManager.getModuleData(name)!);
-        return tempSerializer.exportNodes();
-    }
 
 
     public async exportWithModules() : Promise<EditorDataPackage> {
@@ -556,7 +549,7 @@ export class Editor {
                     control(data) {
                         return data.payload.controlContainer
                     },
-                    node(data) {
+                    node() {
                         return CustomNode;
                         // return Presets.classic.Node;
                     },

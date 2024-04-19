@@ -45,8 +45,6 @@ function ModulePanelContents( props: { editor: Editor }) {
     const [showUploadModal, setShowUploadModal] = useState(false);
 
     const mainLoaded = () => { return !props?.editor.hasModuleLoaded() }
-    const moduleLoaded = (name: string) => { return props.editor?.currentModule === name}
-
 
     return <>
         <Button
@@ -73,7 +71,9 @@ function ModulePanelContents( props: { editor: Editor }) {
                 }
             }}>new</Button>
             <Button disabled={mainLoaded()} onClick={()=>{
-                props.editor.deleteModule(props.editor.currentModule!);
+                props.editor.deleteModule(props.editor.currentModule!).then().catch(()=>{
+                    prompt("No module with that name found");
+                });
             }}>delete</Button>
             <Button disabled={mainLoaded()} onClick={()=>{
                 const newName = prompt("New name");
@@ -95,6 +95,7 @@ function ModulePanelContents( props: { editor: Editor }) {
                 onClick={()=>{setShowUploadModal(true)}}
             >import</Button>
             <Modal
+                onHide={()=>{}}
                 show={showUploadModal}
             >
                 <SingleFileUploader handleFile={(file)=>{

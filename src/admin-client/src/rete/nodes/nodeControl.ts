@@ -1,5 +1,4 @@
 import {ClassicPreset} from "rete";
-import {NodeType} from "@skogkalk/common/dist/src/parseTree";
 import React from "react";
 
 export class NodeControl<T extends {}> extends ClassicPreset.Control {
