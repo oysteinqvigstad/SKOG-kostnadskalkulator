@@ -2,9 +2,9 @@ name: Production Pipeline (github-hosted)
 
 on:
   push:
-    branches: [ dynamic-tree-migration ]
+    branches: [ migration ]
   pull_request:
-    branches: [ dynamic-tree-migration ]
+    branches: [ migration ]
 
 jobs:
   build:
