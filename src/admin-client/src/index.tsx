@@ -1,5 +1,5 @@
-import React, { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import React, {StrictMode} from "react";
+import {createRoot} from "react-dom/client";
 import "./styles.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
@@ -9,9 +9,8 @@ import {Provider as StoreProvider} from "react-redux";
 import {store} from "./state/store";
 import {ServiceContextType, ServiceProvider} from "./contexts/ServiceContext";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import { SignInPage } from "./pages/SignInPage";
+import {SignInPage} from "./pages/SignInPage";
 import {SignInConfirmPage} from "./pages/SignInConfirmPage";
-import {MockAuthService} from "./services/MockAuthService";
 import {FirebaseAuthService} from "./services/FirebaseAuthService";
 
 const rootElement = document.getElementById("root");
