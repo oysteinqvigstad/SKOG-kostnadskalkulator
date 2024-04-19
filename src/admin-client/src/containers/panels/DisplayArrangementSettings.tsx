@@ -1,4 +1,4 @@
-import {Card, Col, Row, Stack, Tab, Tabs} from "react-bootstrap";
+import {Button, ButtonGroup, Card, Col, Row, Stack, Tab, Tabs} from "react-bootstrap";
 import {
     MdGridOn,
     MdOutlineViewAgenda,
@@ -8,7 +8,6 @@ import {selectTreeState} from "../../state/store";
 import {useAppSelector} from "../../state/hooks";
 import {DisplayNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import React from "react";
-import {DisplayArrangement} from "@skogkalk/common/dist/src/parseTree/nodes/displayNode";
 
 export function DisplayArrangementSettings() {
     return (
@@ -81,6 +80,33 @@ function DisplayPreviewTile(props: {
                 <div style={{fontSize: 14, fontWeight: 600}}>
                     {props.node.name}
                 </div>
+                <Card.Body>
+                    <Row>
+
+                        <Col>
+                            {"Order:"}
+                        </Col>
+                        <Col>
+                            <ButtonGroup size={"sm"}>
+                                <Button variant={"info"}>-</Button>
+                                <Button>+</Button>
+                            </ButtonGroup>
+                        </Col>
+
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            {"Width:"}
+                        </Col>
+                        <Col>
+                            <ButtonGroup size={"sm"}>
+                                <Button>-</Button>
+                                <Button>+</Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </Card.Body>
             </Card>
         </Col>
     )
