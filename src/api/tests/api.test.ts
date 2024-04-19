@@ -35,25 +35,7 @@ afterAll(() => {
     server.stop()
 })
 
-describe('serve static files', () => {
-    test('GET /', async () => {
-        await request(server.app)
-            .get('/')
-            .expect(200)
-            .then(response => {
-                expect(response.text).toContain('<!doctype html>')
-            })
-    })
 
-    test('GET /random-urls-to-react-dom-router', async () => {
-        await request(server.app)
-            .get('/')
-            .expect(200)
-            .then(response => {
-                expect(response.text).toContain('<!doctype html>')
-            })
-    })
-})
 
 describe('api calculator', () => {
     test('POST /api/v0/addCalculator', async () => {

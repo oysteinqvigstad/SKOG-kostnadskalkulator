@@ -32,11 +32,6 @@ export default class WebServer {
 
     #initRouting() {
         let router = express.Router()
-            // Google App Engine has been configured to use a frontend/middleware
-            // handler for the static files for faster processing. No request for
-            // static files will actually reach this handler on the production
-            // PaaS server, but is useful for local development.
-            .use(express.static(this.#config.staticFilesPath))
             .use(express.json())
             .use(cors()) // temprory during development to allow CORS
             .get('/api/v0/getCalculatorsInfo', getCalculatorsInfo(this.#config.database))
