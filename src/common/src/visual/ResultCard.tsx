@@ -6,13 +6,15 @@ import {FcInfo} from "react-icons/fc";
 export function ResultCard(props: {
     icon: JSX.Element,
     title: string,
-    infoText: string,
+    left?: any,
+    infoText?: string,
     children: any
 }) {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const disableInfo = props.infoText.length === 0;
+
+
     return (
         <Card className={"h-100"}>
             <Card.Body>
@@ -23,19 +25,26 @@ export function ResultCard(props: {
                     <h5 className={"m-0 ms-1"}>
                         {props.title}
                     </h5>
-                    <Button
-                        className={"ms-auto"}
-                        onClick={handleShow} disabled={disableInfo}
-                        style={{backgroundColor: 'transparent', border: 'none'}}
-                    >
-                        {disableInfo ? <></> : <FcInfo size={"2rem"}/>}
-                    </Button>
-                    <Modal onHide={handleClose} show={show}>
-                        <Modal.Header closeButton>
-                            <Modal.Title> Info </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body dangerouslySetInnerHTML={{__html: props.infoText}}/>
-                    </Modal>
+                    <div className={"ms-auto"}>
+                        {props.left}
+                        {props.infoText &&
+                        <>
+                            <Button
+                                className={"ms-auto"}
+                                onClick={handleShow} disabled={!props.infoText}
+                                style={{backgroundColor: 'transparent', border: 'none'}}
+                            >
+                                <FcInfo size={"2rem"}/>
+                            </Button>
+                            <Modal onHide={handleClose} show={show}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title> Info </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body dangerouslySetInnerHTML={{__html: props.infoText ?? ""}}/>
+                            </Modal>
+                        </>
+                        }
+                    </div>
                 </Stack>
                 {props.children}
             </Card.Body>

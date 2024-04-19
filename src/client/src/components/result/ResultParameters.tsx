@@ -1,4 +1,4 @@
-import {ResultCard} from "./ResultCard";
+import {ResultCard} from "@skogkalk/common/dist/src/visual/ResultCard";
 import {FcMultipleInputs} from "react-icons/fc";
 import React from "react";
 import {ParametersWithTabs} from "../ParametersWithTabs";

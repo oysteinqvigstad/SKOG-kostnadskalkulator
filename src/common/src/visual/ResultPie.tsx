@@ -99,7 +99,7 @@ export function ResultPie(props: {
         <ResultCard
             icon={<FcSalesPerformance />}
             title={props.displayData.name}
-            infoText={props.displayData.infoText || ""}
+            infoText={props.displayData.infoText}
         >
             {children}
             <ResultRowBoxes
