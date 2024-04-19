@@ -2,7 +2,7 @@ import {FcSalesPerformance} from "react-icons/fc";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 import {ApexOptions} from "apexcharts";
-import {ResultCard} from "./ResultCard";
+import {ResultCard} from "./resultCard";
 import {DisplayPieNode, getNodeByID, TreeState} from "../parseTree";
 import {ResultRowBoxes} from "./ResultRowBoxes";
 import {OutputNode as ParseOutputNode} from "../parseTree";
@@ -37,7 +37,7 @@ export function ResultPie(props: {
             text: totalCost.toString(),
             align: 'center',
             floating: true,
-            offsetY: props.displayData.unit ? 85 : 75,
+            offsetY: 85,
             style: {
                 fontSize: '40px'
             }
@@ -99,7 +99,6 @@ export function ResultPie(props: {
         <ResultCard
             icon={<FcSalesPerformance />}
             title={props.displayData.name}
-            infoText={props.displayData.infoText || ""}
         >
             {children}
             <ResultRowBoxes
