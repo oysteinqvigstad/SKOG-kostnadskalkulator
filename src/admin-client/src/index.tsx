@@ -27,7 +27,7 @@ root.render(
     <StrictMode>
         <StoreProvider store={store}>
             <ServiceProvider services={services}>
-                <Router>
+                <Router basename={"/editor"}>
                     <Routes>
                         <Route path={"/"} element={<App />} />
                         <Route path={"/access/signin"} element={<SignInPage />} />
