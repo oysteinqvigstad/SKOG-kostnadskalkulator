@@ -12,9 +12,9 @@ env_variables:
   NODE_ENV: 'production'
 
 handlers:
+  # Serve API calls to the Node.js server
   - url: /api/.*
     script: auto
-
 
   # Serve editor static files with url ending with a file extension
   - url: /editor/(.*\..+)$
@@ -37,7 +37,6 @@ handlers:
     upload: client/build/(.*\..+)$
     secure: always
     redirect_http_response_code: 301
-
 
   # Serve web frontend index.html for all other requests for client-side routing
   - url: /.*
