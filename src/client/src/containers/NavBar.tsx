@@ -5,7 +5,7 @@ import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
 import {MdArrowBackIosNew, MdClose, MdMenu} from "react-icons/md";
 import {ShareResultButton} from "../components/buttons/ShareResultButton";
 import {SaveMenuButton} from "../components/buttons/SaveMenuButton";
-import { ReactComponent as BrandBanner } from '../brand-banner.svg';
+import BrandBanner from '../brand-banner.svg?react';
 
 /**
  * The navigation bar for the application

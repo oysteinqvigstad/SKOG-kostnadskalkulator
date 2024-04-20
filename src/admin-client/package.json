@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "/editor/",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.3",
     "@skogkalk/common": "^1.0.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -37,9 +38,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
     "react-redux": "^9.1.0",
-    "react-scripts": "5.0.1",
     "redux": "^5.0.1",
-    "redux-toolkit": "^1.1.2",
     "rete-auto-arrange-plugin": "^2.0.0",
     "rete-connection-plugin": "^2.0.0",
     "rete-context-menu-plugin": "^2.0.0",
@@ -50,12 +49,13 @@
     "rete-scopes-plugin": "^2.0.0",
     "sanitize-html": "^2.13.0",
     "typescript": "^4.9.5",
+    "vitest": "^1.5.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "jest --runInBand --detectOpenHandles --forceExit --collect-coverage",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest run",
     "eject": "react-scripts eject"
   },
   "jest": {
@@ -90,8 +90,12 @@
     "@happy-dom/jest-environment": "^14.5.1",
     "@types/react-color": "^3.0.12",
     "@types/sanitize-html": "^2.11.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "ts-jest": "^29.1.2"
+    "ts-jest": "^29.1.2",
+    "vite": "^5.2.10",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.3.2"
   }
 }
