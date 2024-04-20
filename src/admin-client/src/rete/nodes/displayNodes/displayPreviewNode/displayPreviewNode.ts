@@ -81,8 +81,8 @@ export class DisplayPreviewNode extends ParseableBaseNode <
             infoText: this.controls.c.get('infoText') || "",
             arrangement: {
                 xs: this.controls.c.get('arrangement')?.xs ?? {order: 0, span: 12},
-                md: this.controls.c.get('arrangement')?.md ?? {order: 0, span: 6},
-                lg: this.controls.c.get('arrangement')?.lg ?? {order: 0, span: 4},
+                md: this.controls.c.get('arrangement')?.md ?? {order: 0, span: 0},
+                lg: this.controls.c.get('arrangement')?.lg ?? {order: 0, span: 0},
             }
         }
     }

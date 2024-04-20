@@ -1,8 +1,8 @@
 import {DisplayPieNodeData} from "./displayPieNodeControlData";
-import React from "react";
+import React, {useEffect} from "react";
 import {getNodeByID} from "@skogkalk/common/dist/src/parseTree";
 import {useAppSelector} from "../../../../state/hooks";
-import {selectTreeState, store} from "../../../../state/store";
+import {selectDisplayArrangements, selectTreeState, store} from "../../../../state/store";
 import {Provider} from "react-redux";
 import {ResultPie} from "@skogkalk/common/dist/src/visual/ResultPie";
 import Container from "react-bootstrap/Container";
@@ -25,6 +25,13 @@ function DisplayPieNodeContent(
 ) {
     const treeState = useAppSelector(selectTreeState)
     const nodeData = getNodeByID(treeState.tree, props.data.get('nodeID')) as ParseDisplayNode
+    const displayArrangements = useAppSelector(selectDisplayArrangements)
+
+
+    useEffect(() => {
+        props.data.set({arrangement: displayArrangements[props.data.get('nodeID')]})
+    }, [displayArrangements, props.data]);
+
 
     return <>
         <Drag.NoDrag>

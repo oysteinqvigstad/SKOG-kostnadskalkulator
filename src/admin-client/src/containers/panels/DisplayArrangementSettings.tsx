@@ -9,7 +9,7 @@ import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {DisplayNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import React, {useEffect, useRef, useState} from "react";
 import Container from "react-bootstrap/Container";
-import {moveDisplay} from "../../state/slices/displayArrangements";
+import {changeSpan, moveDisplay} from "../../state/slices/displayArrangements";
 
 export function DisplayArrangementSettings() {
 
@@ -85,7 +85,8 @@ function DisplayPreviewContainer(props: {
                         <Row>
                             {tree?.displayNodes
                                 ?.filter(node => node.type !== NodeType.PreviewDisplay)
-                                .map((node, index) => <DisplayPreviewTile node={node} widthMultiplier={props.widthMultiplier} size={getSize(props.widthMultiplier)} order={index} />)
+                                .sort((a, b) => a.arrangement[getSize(props.widthMultiplier)].order - b.arrangement[getSize(props.widthMultiplier)].order)
+                                .map((node, index, arr) => <DisplayPreviewTile node={node} widthMultiplier={props.widthMultiplier} size={getSize(props.widthMultiplier)} order={index} n={arr.length} />)
                             }
                         </Row>
                     </Stack>
@@ -99,29 +100,27 @@ function DisplayPreviewTile(props: {
     widthMultiplier: number
     size: "xs" | "md" | "lg"
     order: number
+    n: number
 }) {
     const {tree} = useAppSelector(selectTreeState)
     const dispatch = useAppDispatch()
-    const numberOfDisplayNodes = tree?.displayNodes.filter(node => node.type !== NodeType.PreviewDisplay).length ?? 0
-    const arrangement = props.node.arrangement[props.size]
-
-
-
+    const span = props.node.arrangement[props.size].span
 
     const move = (direction: "forward" | "backward") => {
         if (tree) {
-            dispatch(moveDisplay({
-                id: props.node.id,
-                size: props.size,
-                direction,
-                nodes: tree.displayNodes
-            }))
+            dispatch(moveDisplay({id: props.node.id, size: props.size, direction, nodes: tree.displayNodes}))
         }
     }
 
+    const changeWidth = (direction: "increase" | "decrease") => {
+        if (tree) {
+            dispatch(changeSpan({id: props.node.id, size: props.size, widthMultiplier: props.widthMultiplier, direction, nodes: tree.displayNodes}))
+        }
+    }
 
     return (
-        <Col className={"p-1"} xs={arrangement}>
+        <Col className={"p-1"} xs={props.node.arrangement[props.size]}>
+
             <Card className={"h-100"}>
                 <Card.Body className={"h-100 d-flex flex-column"}>
                     <Row className={"mb-3"}>
@@ -133,30 +132,46 @@ function DisplayPreviewTile(props: {
                     </div>
                     </Row>
                     <Row className={"mt-auto row-gap-1"}>
-                        <Col>
+                        <Col className={"pe-0"} xs={6}>
                             {"Order:"}
                         </Col>
-                        <Col>
+                        <Col xs={6}>
                             <ButtonGroup size={"sm"}>
                                 <Button
                                     className={"btn-toggle"}
                                     onClick={() => move("backward")}
                                     disabled={props.order === 0}
-                                >-</Button>
+                                >
+                                    {"-"}
+                                </Button>
                                 <Button
                                     className={"btn-toggle"}
                                     onClick={() => move("forward")}
-                                    disabled={props.order === numberOfDisplayNodes - 1}
-                                >+</Button>
+                                    disabled={props.order === props.n - 1}
+                                >
+                                    {"+"}
+                                </Button>
                             </ButtonGroup>
                         </Col>
-                        <Col>
+                        <Col className={"pe-0"} xs={6}>
                             {"Width:"}
                         </Col>
-                        <Col>
+                        <Col xs={6}>
                             <ButtonGroup size={"sm"}>
-                                <Button className={"btn-toggle"} disabled>-</Button>
-                                <Button className={"btn-toggle"} disabled>+</Button>
+                                <Button
+                                    className={"btn-toggle"}
+                                    disabled={span === props.widthMultiplier}
+                                    onClick={() => changeWidth("decrease")}
+                                >
+                                    {"-"}
+                                </Button>
+                                <Button
+                                    className={"btn-toggle"}
+                                    disabled={span === 12}
+                                    onClick={() => changeWidth("increase")}
+                                >
+                                    {"+"}
+                                </Button>
                             </ButtonGroup>
                         </Col>
                     </Row>

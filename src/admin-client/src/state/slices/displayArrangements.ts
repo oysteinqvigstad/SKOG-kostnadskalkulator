@@ -16,13 +16,18 @@ export const displayArrangementsSlice = createSlice({
     name: 'displayArrangements',
     initialState: {} as DisplayArrangementsState,
     reducers: {
-        moveDisplay: (state, action: PayloadAction<{id: string, size: "xs" | "md" | "lg", direction: "forward" | "backward", nodes: DisplayNode[]}>) => {
-            let arrangements = extractDisplayArrangements(action.payload.nodes)
-            let ids = sortIDsByOrder(action.payload.size, arrangements)
-            ids = shiftID(ids, action.payload.id, action.payload.direction)
-            arrangements = setArrangeOrderByIndex(arrangements, ids, action.payload.size)
-            return arrangements
+        moveDisplay: (_state, action: PayloadAction<{id: string, size: "xs" | "md" | "lg", direction: "forward" | "backward", nodes: DisplayNode[]}>) => {
+            const {id, size, direction, nodes} = action.payload
+            let arrangements = extractDisplayArrangements(nodes)
+            let ids = sortIDsByOrder(size, arrangements)
+            ids = shiftID(ids, id, direction)
+            return setArrangeOrderByIndex(arrangements, ids, size)
         },
+        changeSpan: (_state, action: PayloadAction<{id: string, size: "xs" | "md" | "lg", widthMultiplier: number, direction: "increase" | "decrease", nodes: DisplayNode[]}>) => {
+            const {id, size, widthMultiplier, direction, nodes} = action.payload
+            let arrangements = extractDisplayArrangements(nodes)
+            return {...arrangements, [id]: adjustWidth(arrangements[id], size, widthMultiplier, direction)}
+        }
     }
 });
 
@@ -59,22 +64,19 @@ function shiftID(arr: string[], id: string, direction: "forward" | "backward") {
 function setArrangeOrderByIndex(arrangements: DisplayArrangementsState, ids: string[], size: "xs" | "md" | "lg") {
     return ids.reduce((acc, id, index) => {
         const currentArrangement = acc[id];
-        const updatedArrangement = {
-            ...currentArrangement,
-            [size]: {
-                ...currentArrangement[size],
-                order: index
-            }
-        };
-
-        return {
-            ...acc,
-            [id]: updatedArrangement
-        };
+        const updatedArrangement = {...currentArrangement, [size]: {...currentArrangement[size], order: index}}
+        return {...acc, [id]: updatedArrangement}
     }, {...arrangements})
 }
 
+function adjustWidth(arrangements: Arrangements, size: "xs" | "md" | "lg", widthMultiplier: number, direction: "increase" | "decrease") {
+    const newSpan = arrangements[size].span + (direction === "increase" ? widthMultiplier : -widthMultiplier)
+    if (newSpan < widthMultiplier || newSpan > 12) return arrangements
+    return {...arrangements, [size]: {...arrangements[size], span: newSpan}}
+}
+
 export const {
-    moveDisplay
+    moveDisplay,
+    changeSpan
 } = displayArrangementsSlice.actions;
 export const displayArrangementsReducer = displayArrangementsSlice.reducer;

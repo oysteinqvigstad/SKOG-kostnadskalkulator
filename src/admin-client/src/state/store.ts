@@ -36,5 +36,6 @@ export const selectPages = (state: RootState) => state.pages.pages;
 export const selectUnits = (state: RootState) => state.units.units;
 export const selectFormulaInfo = (state: RootState) => state.formulaInfo;
 export const selectTreeState = (state: RootState) => state.treeState;
+export const selectDisplayArrangements = (state: RootState) => state.displayArrangements;
 
 export const selectPageSelection = (state: RootState) => state.pages.selected;
