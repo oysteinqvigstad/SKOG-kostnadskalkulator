@@ -1,9 +1,10 @@
-import {FieldData, FieldType} from "../../types/FieldData";
 import {InputNumber} from "./InputNumber";
-import {InputDropdown} from "./InputDropdown";
 import {Button, InputGroup, Modal} from "react-bootstrap";
 import {useState} from "react";
 import {MdInfoOutline} from "react-icons/md";
+import {DropdownInput, InputNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
+import {InputDropdown} from "./InputDropdown";
+import {NumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
 
 /**
  * `InputField` is a container for an individual input field. It contains a button that opens a modal with a description
@@ -11,14 +12,7 @@ import {MdInfoOutline} from "react-icons/md";
  * @param props - fieldData: FieldData - the data for the field,
  *                hidden: boolean - whether the field should be hidden (stilll applicable for form validation)
  */
-export function InputField(props: {fieldData: FieldData}) {
-    // creates a mapping of field type with corresponding jsx component
-    const fieldComponents = {
-        [FieldType.NUMBERED_INPUT]: InputNumber,
-        [FieldType.DROPDOWN_INPUT]: InputDropdown,
-    }
-    const Component = fieldComponents[props.fieldData.type]
-
+export function InputField({node}: {node: InputNode}) {
     // modal state
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -31,13 +25,18 @@ export function InputField(props: {fieldData: FieldData}) {
                <Button variant={"white"} onClick={handleShow} className={"btn-toggle"}>
                    <MdInfoOutline />
                </Button>
-               {Component ? <Component fieldData={props.fieldData} /> : null}
+               {(node.type === NodeType.NumberInput) ? (
+                   <InputNumber node={node as NumberInputNode} />
+               ):(
+                   <InputDropdown node={node as DropdownInput} />
+               )}
+               {/*{Component ? <Component node={props.node} /> : null}*/}
            </InputGroup>
            <Modal show={show} onHide={handleClose}>
                <Modal.Header closeButton>
-                   <Modal.Title>{props.fieldData.title}</Modal.Title>
+                   <Modal.Title>{node.name}</Modal.Title>
                </Modal.Header>
-               <Modal.Body dangerouslySetInnerHTML={{__html: props.fieldData.descriptionHTML}}></Modal.Body>
+               <Modal.Body dangerouslySetInnerHTML={{__html: node.infoText}}></Modal.Body>
            </Modal>
        </>
    )
