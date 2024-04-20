@@ -54,7 +54,7 @@ jobs:
       # npm ci is equivalent to npm install but is specifically optimized for CI
       - run: npm ci
         working-directory: src
-      - run: npm run build
+      - run: npm run build --prefix common
         working-directory: src
       - run: npm test
         working-directory: src
@@ -67,16 +67,13 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
-#          credentials_json: '${{ secrets.GCP_SA_KEY_SKOGKURS }}'
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          credentials_json: '${{ secrets.GCP_SA_KEY_SKOGKURS }}'
       - name: Set up Google SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
           version: 'latest'
-          project_id: ${{ secrets.GCP_PROJECT }}
-#          service_account_key: ${{ secrets.GCP_SA_KEY }}
-#          project_id: ${{ secrets.GCP_PROJECT_SKOGKURS }}
-#          service_account_key: ${{ secrets.GCP_SA_KEY_SKOGKURS }}
+          project_id: ${{ secrets.GCP_PROJECT_SKOGKURS }}
+          service_account_key: ${{ secrets.GCP_SA_KEY_SKOGKURS }}
           # allows gcloud to read credentials
           export_default_credentials: true
       - name: Installing dependencies
@@ -93,15 +90,16 @@ jobs:
         run: gcloud app deploy
         working-directory: src
 
-  backup:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Push to NTNU GitLab Workspace
-        env:
-          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN}}
-        run: |
-          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.stud.idi.ntnu.no/oysteinq/skogkurskalk.git"
-          git fetch --prune --unshallow
-          git push --force gitlab --all
+
+#  backup:
+#    needs: test
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Push to NTNU GitLab Workspace
+#        env:
+#          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN}}
+#        run: |
+#          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.stud.idi.ntnu.no/oysteinq/skogkurskalk.git"
+#          git fetch --prune --unshallow
+#          git push --force gitlab --all
