@@ -1,6 +1,6 @@
 import {Button, ButtonGroup, Card, Col, Row, Stack, Tab, Tabs} from "react-bootstrap";
 import {
-    MdGridOn,
+    MdGridOn, MdMenu,
     MdOutlineViewAgenda,
     MdOutlineWindow,
 } from "react-icons/md";
@@ -12,9 +12,6 @@ import Container from "react-bootstrap/Container";
 import {changeSpan, moveDisplay} from "../../state/slices/displayArrangements";
 
 export function DisplayArrangementSettings() {
-
-
-
     return (
         <>
             <p>
@@ -81,8 +78,10 @@ function DisplayPreviewContainer(props: {
     return (
         <div ref={tabRef}>
             <Container style={{height: `${tabHeight}px`, overflowY: 'auto'}}>
-                    <Stack className={"mb-3 mx-auto"} style={{width: getWidth(props.widthMultiplier)}} gap={3}>
+                    <Stack className={"mx-auto p-3"} style={{width: getWidth(props.widthMultiplier), backgroundColor: '#004f59'}} gap={3}>
                         <Row>
+                            <Banner />
+                            <InputTile widthMultiplier={props.widthMultiplier} />
                             {tree?.displayNodes
                                 ?.filter(node => node.type !== NodeType.PreviewDisplay)
                                 .sort((a, b) => a.arrangement[getSize(props.widthMultiplier)].order - b.arrangement[getSize(props.widthMultiplier)].order)
@@ -120,7 +119,6 @@ function DisplayPreviewTile(props: {
 
     return (
         <Col className={"p-1"} xs={props.node.arrangement[props.size]}>
-
             <Card className={"h-100"}>
                 <Card.Body className={"h-100 d-flex flex-column"}>
                     <Row className={"mb-3"}>
@@ -132,10 +130,10 @@ function DisplayPreviewTile(props: {
                     </div>
                     </Row>
                     <Row className={"mt-auto row-gap-1"}>
-                        <Col className={"pe-0"} xs={6}>
+                        <Col className={"p-0"} xs={6}>
                             {"Order:"}
                         </Col>
-                        <Col xs={6}>
+                        <Col className={"d-flex justify-content-end"} xs={6}>
                             <ButtonGroup size={"sm"}>
                                 <Button
                                     className={"btn-toggle"}
@@ -153,10 +151,10 @@ function DisplayPreviewTile(props: {
                                 </Button>
                             </ButtonGroup>
                         </Col>
-                        <Col className={"pe-0"} xs={6}>
+                        <Col className={"p-0"} xs={6}>
                             {"Width:"}
                         </Col>
-                        <Col xs={6}>
+                        <Col className={"d-flex justify-content-end"} xs={6}>
                             <ButtonGroup size={"sm"}>
                                 <Button
                                     className={"btn-toggle"}
@@ -177,6 +175,37 @@ function DisplayPreviewTile(props: {
                     </Row>
                 </Card.Body>
             </Card>
+        </Col>
+    )
+}
+
+function InputTile(props: {
+    widthMultiplier: number
+}) {
+    const width = (props.widthMultiplier === 4) ? 8 : 12
+
+    return (
+        <Col className={"p-1"} xs={width}>
+            <Card className={"h-100"} style={{opacity: '40%'}}>
+                <Card.Body className={"h-100 d-flex flex-column"}>
+                    <Row className={"mb-3"}>
+                        <div style={{fontSize: 12}}>
+                            {"Input fields"}
+                        </div>
+                        <div className={"pt-3"}>
+                            <img src={"/editor/input-fields.svg"} alt={"input fields illustrations"} width={"100px"}/>
+                        </div>
+                    </Row>
+                </Card.Body>
+            </Card>
+        </Col>
+    )
+}
+
+function Banner() {
+    return (
+        <Col className={"p-1 pt-0 text-end"} style={{opacity: '40%'}} xs={12}>
+            <MdMenu color={'white'} />
         </Col>
     )
 }
