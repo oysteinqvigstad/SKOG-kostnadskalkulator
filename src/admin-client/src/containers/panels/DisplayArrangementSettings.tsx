@@ -5,10 +5,11 @@ import {
     MdOutlineWindow,
 } from "react-icons/md";
 import {selectTreeState} from "../../state/store";
-import {useAppSelector} from "../../state/hooks";
+import {useAppDispatch, useAppSelector} from "../../state/hooks";
 import {DisplayNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import React, {useEffect, useRef, useState} from "react";
 import Container from "react-bootstrap/Container";
+import {moveDisplay} from "../../state/slices/displayArrangements";
 
 export function DisplayArrangementSettings() {
 
@@ -50,6 +51,13 @@ function DisplayPreviewContainer(props: {
         }
     }
 
+    const getSize = (widthMultiplier: number) => {
+        switch (widthMultiplier) {
+            case 12: return "xs"
+            case 6: return "md"
+            default: return "lg"
+        }
+    }
 
 
     const [tabHeight, setTabHeight] = useState(0);
@@ -69,7 +77,6 @@ function DisplayPreviewContainer(props: {
     }, []);
 
 
-    console.log(tabHeight)
 
     return (
         <div ref={tabRef}>
@@ -78,7 +85,7 @@ function DisplayPreviewContainer(props: {
                         <Row>
                             {tree?.displayNodes
                                 ?.filter(node => node.type !== NodeType.PreviewDisplay)
-                                .map((node) => <DisplayPreviewTile node={node} widthMultiplier={props.widthMultiplier} />)
+                                .map((node, index) => <DisplayPreviewTile node={node} widthMultiplier={props.widthMultiplier} size={getSize(props.widthMultiplier)} order={index} />)
                             }
                         </Row>
                     </Stack>
@@ -90,18 +97,31 @@ function DisplayPreviewContainer(props: {
 function DisplayPreviewTile(props: {
     node: DisplayNode
     widthMultiplier: number
+    size: "xs" | "md" | "lg"
+    order: number
 }) {
+    const {tree} = useAppSelector(selectTreeState)
+    const dispatch = useAppDispatch()
+    const numberOfDisplayNodes = tree?.displayNodes.filter(node => node.type !== NodeType.PreviewDisplay).length ?? 0
+    const arrangement = props.node.arrangement[props.size]
 
-    const getArrangement = (widthMultiplier: number) => {
-        switch (widthMultiplier) {
-            case 12: return props.node.arrangement.xs
-            case 6: return props.node.arrangement.md
-            case 4: return props.node.arrangement.lg
+
+
+
+    const move = (direction: "forward" | "backward") => {
+        if (tree) {
+            dispatch(moveDisplay({
+                id: props.node.id,
+                size: props.size,
+                direction,
+                nodes: tree.displayNodes
+            }))
         }
     }
 
+
     return (
-        <Col className={"p-1"} xs={getArrangement(props.widthMultiplier)}>
+        <Col className={"p-1"} xs={arrangement}>
             <Card className={"h-100"}>
                 <Card.Body className={"h-100 d-flex flex-column"}>
                     <Row className={"mb-3"}>
@@ -118,8 +138,16 @@ function DisplayPreviewTile(props: {
                         </Col>
                         <Col>
                             <ButtonGroup size={"sm"}>
-                                <Button className={"btn-toggle"}>-</Button>
-                                <Button className={"btn-toggle"}>+</Button>
+                                <Button
+                                    className={"btn-toggle"}
+                                    onClick={() => move("backward")}
+                                    disabled={props.order === 0}
+                                >-</Button>
+                                <Button
+                                    className={"btn-toggle"}
+                                    onClick={() => move("forward")}
+                                    disabled={props.order === numberOfDisplayNodes - 1}
+                                >+</Button>
                             </ButtonGroup>
                         </Col>
                         <Col>

@@ -4,10 +4,12 @@ import {pagesReducer, PagesState} from "./slices/pages";
 import {formulaInfoReducer, FormulaInfoState} from "./slices/formulaInfo";
 import {TreeSliceState, treeStateReducer} from "./slices/treeState";
 import {unitsReducer, UnitsState,} from "./slices/units";
+import {displayArrangementsReducer, DisplayArrangementsState} from "./slices/displayArrangements";
 
 export interface StoreState {
     pages: PagesState,
     units: UnitsState,
+    displayArrangements: DisplayArrangementsState,
     formulaInfo: FormulaInfoState,
     treeState: TreeSliceState
 }
@@ -16,6 +18,7 @@ export const store = configureStore({
     reducer: {
         pages: pagesReducer,
         units: unitsReducer,
+        displayArrangements: displayArrangementsReducer,
         formulaInfo: formulaInfoReducer,
         treeState: treeStateReducer,
         [apiService.reducerPath]: apiService.reducer
