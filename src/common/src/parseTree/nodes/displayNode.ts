@@ -56,7 +56,6 @@ export interface ResultGroup {
     name: string,
     inputIDs: string[],
     unit: string,
-    label: string
 }
 
 export interface GraphDisplayNode extends DisplayNode {

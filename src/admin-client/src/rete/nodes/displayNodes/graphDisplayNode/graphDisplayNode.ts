@@ -77,7 +77,7 @@ export class GraphDisplayNode extends ParseableBaseNode <
         if(!inputID) inputID = getUID();
         this.addInput(inputID, new ClassicPreset.Input(new ResultSocket(), "Result", true));
         const control = new NodeControl<GraphDisplayGroupData>(
-            { id: inputID, name: "", shouldDelete: false, unit: "", label: "", resultIDs: []},
+            { id: inputID, name: "", shouldDelete: false, unit: "", resultIDs: []},
             {
                 onUpdate: (data: Partial<GraphDisplayGroupData>) => {
                     if(data.shouldDelete) {
@@ -127,7 +127,6 @@ export class GraphDisplayNode extends ParseableBaseNode <
             resultGroups.push({
                 unit: data.unit,
                 id: data.id,
-                label: data.label,
                 inputIDs: data.resultIDs,
                 name: data.name
             })

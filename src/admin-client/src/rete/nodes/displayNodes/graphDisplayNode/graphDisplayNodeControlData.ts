@@ -12,5 +12,4 @@ export interface GraphDisplayGroupData {
     resultIDs: string[],
     shouldDelete: boolean,
     unit: string,
-    label: string
 }
