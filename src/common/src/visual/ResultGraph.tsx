@@ -15,31 +15,8 @@ import {
 } from "../parseTree";
 import {GraphDisplayNode} from "../parseTree";
 import {isDropdownInputNode} from "../parseTree/nodes/inputNode";
+import {isReferenceNode} from "../parseTree/nodes/referenceNode";
 
-
-function selectGraphXAxisInput(input: InputNode | undefined) {
-    if(input === undefined) {
-        return { labels: [], values: [] }
-    }
-    if(isDropdownInputNode(input)) {
-        return {
-            labels: (input as DropdownInput).dropdownAlternatives.map(d=>d.label),
-            values: (input as DropdownInput).dropdownAlternatives.map(d=>d.value.toString())
-        }
-    } else {
-        const steps = 5;
-        const baseValue = input.value;
-        const stepSize = Math.ceil(baseValue * 0.1);
-        const range = [];
-        for(let i = -steps; i<= steps; i++) {
-            range.push((i*stepSize + baseValue).toString());
-        }
-        return {
-            labels: range,
-            values: range
-        }
-    }
-}
 
 
 
@@ -47,15 +24,13 @@ export function ResultGraph(
     props: { treeState: TreeState, displayData: GraphDisplayNode }
 ) {
 
-    // const inputs = displayData.inputNames.map(input=>{
-    //     return getInputByPageAndIndex(props.treeState!, input.page, input.ordering);
-    // })
-    const inputs = props.treeState?.inputs;
+    const inputNodes = props.treeState?.inputs;
 
-    const [selection, setSelection] : [InputNode | undefined, any] = useState(inputs?.[0] ?? undefined);
+    const [selection, setSelection] : [InputNode | undefined, any] = useState(inputNodes?.[0] ?? undefined);
+
     const outputIDs = props.displayData.inputs.map(node=>{
-        if(node.type === NodeType.Reference) {
-            return getNodeByID(props.treeState, node.id)?.id || "";
+        if(isReferenceNode(node)) {
+             return getNodeByID(props.treeState, node.referenceID)?.id || "";
         } else {
             return node.id;
         }
@@ -68,11 +43,12 @@ export function ResultGraph(
     const xValues = series.values.map(v=>parseInt(v));
     const results = getResultsForInputs(props.treeState, selection?.id || "", xValues);
 
-    const [showCost, setShowCost] = useState<boolean>(false) // velge mellom kostnad eller produktivitet
+    const [showCost, setShowCost] = useState<boolean>(false)
 
 
     const chartSeries: ApexAxisChartSeries = results
-        ?.filter((entry)=>{return outputIDs.includes(entry.outputID)})
+        ?.filter((result)=>{
+            return outputIDs.includes(result.outputID)})
         .map(entry=>{
         const output = getNodeByID(props.treeState, entry.outputID);
         return {
@@ -81,6 +57,7 @@ export function ResultGraph(
             color: (output as OutputNode).color
         }
     }) || [];
+
 
     const children = (
         <>
@@ -92,11 +69,11 @@ export function ResultGraph(
                             aria-label={`select field to draw graph for`}
                             value={selection?.name}
                             onChange={e => {
-                                const input = inputs.find(i=>i.name === e.currentTarget.value);
+                                const input = inputNodes.find(i=>i.name === e.currentTarget.value);
                                 setSelection(input);
                             }}
                         >
-                            {inputs.map((input, index) => <option key={input?.id} value={input?.name}>{input?.name}</option>)}
+                            {inputNodes.map((input, index) => <option key={input?.id} value={input?.name}>{input?.name}</option>)}
                         </Form.Select>
                     </Col>
 
@@ -222,5 +199,29 @@ function DrawGraph(
         />
     )
 
+}
+
+function selectGraphXAxisInput(input: InputNode | undefined) {
+    if(input === undefined) {
+        return { labels: [], values: [] }
+    }
+    if(isDropdownInputNode(input)) {
+        return {
+            labels: (input as DropdownInput).dropdownAlternatives.map(d=>d.label),
+            values: (input as DropdownInput).dropdownAlternatives.map(d=>d.value.toString())
+        }
+    } else {
+        const steps = 5;
+        const baseValue = input.value;
+        const stepSize = Math.ceil(baseValue * 0.1);
+        const range = [];
+        for(let i = -steps; i<= steps; i++) {
+            range.push((i*stepSize + baseValue).toString());
+        }
+        return {
+            labels: range,
+            values: range
+        }
+    }
 }
 
