@@ -1,4 +1,4 @@
-import {Col, Form, Row} from "react-bootstrap";
+import {Button, ButtonGroup, Col, Form, Row} from "react-bootstrap";
 import ReactApexChart from "react-apexcharts";
 import React, {useState} from "react";
 import {ApexOptions} from "apexcharts";
@@ -8,47 +8,48 @@ import {
     DropdownInput,
     getNodeByID,
     getResultsForInputs,
+    GraphDisplayNode,
     InputNode,
-    NodeType,
     OutputNode,
     TreeState
 } from "../parseTree";
-import {GraphDisplayNode} from "../parseTree";
 import {isDropdownInputNode} from "../parseTree/nodes/inputNode";
 import {isReferenceNode} from "../parseTree/nodes/referenceNode";
-
-
 
 
 export function ResultGraph(
     props: { treeState: TreeState, displayData: GraphDisplayNode }
 ) {
+    const groups = props.displayData.resultGroups;
+    const [selectedGroup, setSelectedGroup] = useState(groups[0] ?? undefined);
 
-    const inputNodes = props.treeState?.inputs;
+    const inputNodes = props.treeState?.inputs
+        .filter(node=>props.displayData.displayedInputIDs.includes(node.id));
+    const [selectedInputDriver, setSelectedInputDriver] : [InputNode | undefined, any] =
+        useState(inputNodes?.[0] ?? undefined);
 
-    const [selection, setSelection] : [InputNode | undefined, any] = useState(inputNodes?.[0] ?? undefined);
-
-    const outputIDs = props.displayData.inputs.map(node=>{
-        if(isReferenceNode(node)) {
-             return getNodeByID(props.treeState, node.referenceID)?.id || "";
-        } else {
-            return node.id;
-        }
-    })
+    // const outputIDs = props.displayData.inputs.map(node=>{
+    //     if(isReferenceNode(node)) {
+    //          return getNodeByID(props.treeState, node.referenceID)?.id || "";
+    //     } else {
+    //         return node.id;
+    //     }
+    // })
 
 
-    const value = "value?"; // Usikker på hva denne er til
+    const value = "VALUE???"; // Usikker på hva denne er til
 
-    const series : { labels: string[], values: string[] } = selectGraphXAxisInput(selection);
+    const series : { labels: string[], values: string[] } = selectGraphXAxisInput(selectedInputDriver);
     const xValues = series.values.map(v=>parseInt(v));
-    const results = getResultsForInputs(props.treeState, selection?.id || "", xValues);
+    const results = getResultsForInputs(props.treeState, selectedInputDriver?.id || "", xValues);
 
-    const [showCost, setShowCost] = useState<boolean>(false)
+
 
 
     const chartSeries: ApexAxisChartSeries = results
         ?.filter((result)=>{
-            return outputIDs.includes(result.outputID)})
+            if(selectedGroup === undefined) return false;
+            return selectedGroup?.inputIDs.includes(result.outputID)})
         .map(entry=>{
         const output = getNodeByID(props.treeState, entry.outputID);
         return {
@@ -67,48 +68,44 @@ export function ResultGraph(
                         <Form.Text>{"Velg kostnadsdriver:"}</Form.Text>
                         <Form.Select
                             aria-label={`select field to draw graph for`}
-                            value={selection?.name}
+                            value={selectedInputDriver?.name}
                             onChange={e => {
                                 const input = inputNodes.find(i=>i.name === e.currentTarget.value);
-                                setSelection(input);
+                                setSelectedInputDriver(input);
                             }}
                         >
-                            {inputNodes.map((input, index) => <option key={input?.id} value={input?.name}>{input?.name}</option>)}
+                            {inputNodes.map((input) => <option key={input?.id} value={input?.name}>{input?.name}</option>)}
                         </Form.Select>
                     </Col>
 
-                    {/*<Col md={12} lg={12}>*/}
+                    <Col md={12} lg={12}>
 
-                    {/*    <Row>*/}
-                    {/*        <Form.Text>{"Velg resultattype:"}</Form.Text>*/}
-                    {/*    </Row>*/}
-                    {/*    <Row>*/}
-                    {/*        <ButtonGroup aria-label="Basic example" className={"d-inline"} >*/}
-                    {/*            <Button*/}
-                    {/*                className={"btn-toggle"}*/}
-                    {/*                active={!showCost}*/}
-                    {/*                onClick={() => setShowCost(false)}*/}
-                    {/*            >*/}
-                    {/*                {"Produktivitet"}*/}
-                    {/*            </Button>*/}
-                    {/*            <Button*/}
-                    {/*                className={"btn-toggle"}*/}
-                    {/*                active={showCost}*/}
-                    {/*                onClick={() => setShowCost(true)}*/}
-                    {/*            >*/}
-                    {/*                {"Kostnad"}*/}
-                    {/*            </Button>*/}
-                    {/*        </ButtonGroup>*/}
-                    {/*    </Row>*/}
-                    {/*</Col>*/}
+                        <Row>
+                            <Form.Text>{"Velg resultattype:"}</Form.Text>
+                        </Row>
+                        <Row>
+                            <ButtonGroup aria-label="Basic example" className={"d-inline"} >
+                                {groups.map((group)=>{
+                                    return <Button
+                                        disabled={selectedGroup?.id === group.id}
+                                        onClick={()=>{
+                                            setSelectedGroup(group);
+                                        }}
+                                    >
+                                        {group.name}
+                                    </Button>
+                                })}
+                            </ButtonGroup>
+                        </Row>
+                    </Col>
                 </Row>
             </Form>
             <DrawGraph
                 series={chartSeries}
                 xLabels={series.labels}
-                xUnit={selection?.unit ?? "XUnit"}
-                yUnit={showCost ? "unit" : "annen unit"} // popup unit
-                yLabel={showCost ? 'Kostnad' : 'Produktivitet'}
+                xUnit={selectedInputDriver?.unit ?? ""}
+                yUnit={selectedGroup?.unit || ""} // popup unit
+                yLabel={selectedGroup?.name || ""}
 
                 actualValue={value}
             />
