@@ -14,7 +14,6 @@ import {
     TreeState
 } from "../parseTree";
 import {isDropdownInputNode} from "../parseTree/nodes/inputNode";
-import {isReferenceNode} from "../parseTree/nodes/referenceNode";
 
 
 export function ResultGraph(
@@ -27,14 +26,6 @@ export function ResultGraph(
         .filter(node=>props.displayData.displayedInputIDs.includes(node.id));
     const [selectedInputDriver, setSelectedInputDriver] : [InputNode | undefined, any] =
         useState(inputNodes?.[0] ?? undefined);
-
-    // const outputIDs = props.displayData.inputs.map(node=>{
-    //     if(isReferenceNode(node)) {
-    //          return getNodeByID(props.treeState, node.referenceID)?.id || "";
-    //     } else {
-    //         return node.id;
-    //     }
-    // })
 
 
     const value = "VALUE???"; // Usikker på hva denne er til
