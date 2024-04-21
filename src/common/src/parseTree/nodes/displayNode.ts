@@ -49,7 +49,19 @@ export interface DisplayListNode extends DisplayNode {
     unit: string
 }
 
+
+
+export interface ResultGroup {
+    id: string,
+    name: string,
+    inputIDs: string[],
+    unit: string,
+    label: string
+}
+
 export interface GraphDisplayNode extends DisplayNode {
     unit: string
+    resultGroups: ResultGroup[]
+    displayedInputIDs: string[]
 }
 
