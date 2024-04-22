@@ -2,7 +2,7 @@ name: Production Pipeline (github-hosted)
 
 on:
   push:
-    branches: [ attempt-vite-migration ]
+    branches: [ main ]
 
 jobs:
   build:
