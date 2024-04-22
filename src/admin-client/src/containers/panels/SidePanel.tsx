@@ -20,11 +20,6 @@ export function SidePanel() {
                             </Row>
                         </Container>
                     </Tab>
-                    <Tab eventKey="Inputs" title="Inputs">
-                        <div>
-                            WIP
-                        </div>
-                    </Tab>
                     <Tab eventKey="Units" title="Units">
                         <Container fluid={true} style={{height: "80vh", justifyContent: ""}}>
                             <UnitsWindow/>
