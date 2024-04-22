@@ -28,7 +28,7 @@ export function ResultGraph(
         useState(inputNodes?.[0] ?? undefined);
 
 
-    const value = "VALUE???"; // Usikker på hva denne er til
+    const value = (selectedInputDriver?.value).toString();
 
     const series : { labels: string[], values: string[] } = selectGraphXAxisInput(selectedInputDriver);
     const xValues = series.values.map(v=>parseInt(v));
