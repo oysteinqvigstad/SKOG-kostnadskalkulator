@@ -14,6 +14,10 @@ import {
     TreeState
 } from "../parseTree";
 import {isDropdownInputNode} from "../parseTree/nodes/inputNode";
+import {parseHtmlString} from "../util/htmlParsing";
+
+
+
 
 
 export function ResultGraph(
@@ -147,7 +151,7 @@ function DrawGraph(
         },
         yaxis: {
             title: {
-                text: `${props.yLabel} (${props.yUnit})`,
+                text: `${props.yLabel} (${parseHtmlString(props.yUnit)})`,
             },
             decimalsInFloat: 1,
         },
