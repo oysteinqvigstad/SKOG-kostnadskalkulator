@@ -5,7 +5,6 @@ export interface Configuration {
     database: IDatabase
     auth: IAuth
     httpPort: string | number
-    staticFilesPath: string
 }
 
 export interface FirestoreConfiguration {

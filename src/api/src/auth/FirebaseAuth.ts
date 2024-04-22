@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
 import {auth} from "firebase-admin";
 import Auth = auth.Auth;
 import {IAuth} from "../models/IAuth";

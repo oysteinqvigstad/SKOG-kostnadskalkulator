@@ -82,7 +82,7 @@ export function setInputsByJSON(tree: TreeState, inputs: JsonInputs, verifyAllIn
      * as an option for developers to ensure that fields are not forgotten
      * @throws Error If a field is missing in the JSON object
      */
-    const assertAllFieldsPresent = (inputNodes: InputNode[], inputs: JsonInputs) => {
+    const assertAllFieldsPresent = (inputs: JsonInputs) => {
         const missingFields = tree.inputs.filter((node) => {
             return inputs[node.pageName] === undefined || inputs[node.pageName][node.name] === undefined
         })
@@ -92,7 +92,7 @@ export function setInputsByJSON(tree: TreeState, inputs: JsonInputs, verifyAllIn
     }
 
     if (verifyAllInputsSet) {
-        assertAllFieldsPresent(tree.inputs, inputs)
+        assertAllFieldsPresent(inputs)
     }
     return updateAllValues(tree, inputs)
 }
