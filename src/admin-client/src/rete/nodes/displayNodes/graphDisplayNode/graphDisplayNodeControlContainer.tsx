@@ -134,6 +134,13 @@ function GraphDisplayNodeControlContainerContent(
             treeState={treeState.tree}
             displayData={nodeData}
         /> }
+        <TextInputField
+            value={props.data.get('name')}
+            onChange={ value=>{
+                props.data.set({name: value})
+            }}
+            inputHint={"Name"}
+        />
         <Accordion defaultActiveKey="-1">
             <Accordion.Item eventKey="0">
                 <Accordion.Header>Toggle available inputs</Accordion.Header>
