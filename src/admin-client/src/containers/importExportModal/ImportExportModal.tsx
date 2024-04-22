@@ -10,6 +10,7 @@ import {OnlineStoragePane} from "./OnlineStoragePane";
 import {LocalStoragePane} from "./LocalStoragePane";
 import {ParseNode} from "@skogkalk/common/dist/src/parseTree";
 import {EditorDataPackage} from "../../rete/editor";
+import {setUnitsState} from "../../state/slices/units";
 
 /**
  * A modal dialogue for importing and exporting calculators from/to the database and local storage
@@ -53,6 +54,7 @@ function ImportExportModalContent( props: {
             dispatch(setTreeState(data.store.treeState));
             dispatch(setPagesState(data.store.pages));
             dispatch(setFormulaInfoState(data.store.formulaInfo));
+            dispatch(setUnitsState(data.store.units))
             props.onHide()
         }
     }

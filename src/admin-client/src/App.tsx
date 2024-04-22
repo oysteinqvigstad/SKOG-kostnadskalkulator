@@ -16,6 +16,7 @@ import {RetePanel} from "./containers/panels/RetePanel";
 import {getNodeByID, ParseNode, TreeState} from "@skogkalk/common/dist/src/parseTree";
 import {ModulePanel} from "./containers/panels/modulePanel";
 import "./App.css";
+import {setUnitsState} from "./state/slices/units";
 
 export default function App() {
     const [reteRef, functions] = useRete(createEditor);
@@ -74,6 +75,7 @@ export default function App() {
                         dispatch(setTreeState(state.treeState));
                         dispatch(setPagesState(state.pages));
                         dispatch(setFormulaInfoState(state.formulaInfo));
+                        dispatch(setUnitsState(state.units));
                     }
                 }
             }
