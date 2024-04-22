@@ -68,8 +68,6 @@ function SaveToAPI(props: {
 
 
     const sendToAPI = async (publish: boolean) => {
-        console.log("graph", props.calculator.reteSchema?.graph);
-        console.log("treeNodes", props.calculator.treeNodes);
         if (!props.calculator.reteSchema?.graph || props.calculator.treeNodes?.length === 1) {
 
             window.alert("Cannot save empty graph to database")
