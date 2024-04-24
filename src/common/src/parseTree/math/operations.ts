@@ -3,6 +3,7 @@ import {NodeType} from "../nodes/parseNode";
 
 export function getBinaryOperation(type: NodeType): (l:number, r:number) => number {
     switch(type) {
+        case NodeType.Sqrt: return (l,r)=>Math.pow(l, 1/(r || 2));
         case NodeType.Add : return (l,r)=>l+r;
         case NodeType.Mul : return (l, r) => l*r;
         case NodeType.Div : return (l, r) => l/r;
