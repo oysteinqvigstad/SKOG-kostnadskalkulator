@@ -31,7 +31,7 @@ export default class WebServer {
 
     #initRouting() {
         let router = express.Router()
-            .use(express.json())
+            .use(express.json({limit: '32mb'}))
             .use(cors()) // temprory during development to allow CORS
             .get('/api/v0/getCalculatorsInfo', getCalculatorsInfo(this.#config.database))
             .get('/api/v0/getCalculatorTree', getCalculatorTree(this.#config.database))
