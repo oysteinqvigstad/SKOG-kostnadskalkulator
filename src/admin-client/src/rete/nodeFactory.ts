@@ -49,6 +49,7 @@ export class NodeFactory {
             case NodeType.Prod: return new NaryNode(NodeType.Prod, this.updateNodeRendering, id);
             case NodeType.Min: return new NaryNode(NodeType.Min, this.updateNodeRendering, id);
             case NodeType.Max: return new NaryNode(NodeType.Max, this.updateNodeRendering, id);
+            case NodeType.Sqrt: return new BinaryNode(NodeType.Sqrt, this.updateNodeRendering, id);
             case NodeType.Choose: return new ChooseNode(this.updateNodeRendering, this.updateDataFlow, this.removeNodeConnections, id);
         }
         throw new Error("NodeFactory.createNode() was invoked with " + type + " which has no implementation in createNode().");
