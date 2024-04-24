@@ -28,6 +28,7 @@ export function isParseNode(node: any): node is ParseNode {
 
 export function isBinaryNode(node: ParseNode) : boolean {
     return [
+        NodeType.Sqrt,
         NodeType.Add,
         NodeType.Sub,
         NodeType.Pow,
@@ -66,7 +67,7 @@ export enum NodeType {
     Div = "Div",
     Min = "Min",
     Max = "Max",
-
+    Sqrt = "Sqrt",
     Choose = "Choose",
     Module = "Module",
     ModuleOutput = "ModuleOutput",
