@@ -482,6 +482,7 @@ export class Editor {
             NodeType.Choose,
             NodeType.Min,
             NodeType.Max,
+            NodeType.Sqrt
         ])
         const inputNodes = nodeTypesToDefinition ([
             NodeType.DropdownInput,
