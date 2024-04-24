@@ -5,6 +5,7 @@ import {ModuleNodeControlData} from "./moduleNode";
 import {FloatingLabel, FormSelect} from "react-bootstrap";
 import React from "react";
 import {NodeControl} from "../nodeControl";
+import {NumberInputField} from "../../../components/input/numberInputField";
 
 export function ModuleInputControl( props: { data: NodeControl<ModuleInputControlData> }) {
     return <>
@@ -13,6 +14,11 @@ export function ModuleInputControl( props: { data: NodeControl<ModuleInputContro
             onChange={(value )=>{
                 props.data.set({inputName: value})
             }}
+        />
+        <NumberInputField
+            inputHint={"test value"}
+            value={props.data.getData().value}
+            onChange={(value)=>{props.data.set({value: value})}}
         />
     </>
 }

@@ -38,7 +38,11 @@ export class ModuleInput extends BaseNode<
         this.addControl("c", new NodeControl<ModuleInputControlData>(
             initialState,
             {
-                onUpdate: () => {
+                onUpdate: (data: Partial<ModuleInputControlData>) => {
+                    if(data.value) {
+                        this.value = data.value;
+                        this.updateDataFlow();
+                    }
                     this.updateNodeRendering(this.id)
                 },
                 minimized: false
@@ -51,7 +55,7 @@ export class ModuleInput extends BaseNode<
 
     data() : { out : NumberNodeOutput } {
         return {
-            out: { value: this.value || 0, sourceID: this.id }
+            out: { value: this.value, sourceID: this.id }
         };
     }
 
