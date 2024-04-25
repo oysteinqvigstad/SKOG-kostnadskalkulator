@@ -8,11 +8,13 @@ import {
     DisplayListNode,
     DisplayNode,
     DisplayPieNode,
+    GraphDisplayNode,
     NodeType
 } from "@skogkalk/common/dist/src/parseTree";
 import {ResultBar} from "@skogkalk/common/dist/src/visual/ResultBar";
 import {ResultPie} from "@skogkalk/common/dist/src/visual/ResultPie";
 import {ResultList} from "@skogkalk/common/dist/src/visual/ResultList";
+import {ResultGraph} from "@skogkalk/common/dist/src/visual/ResultGraph";
 
 
 /**
@@ -54,6 +56,8 @@ function ResultComponent({displayNode}: {displayNode: DisplayNode}) {
                 return <ResultPie displayData={node as DisplayPieNode} treeState={treeState} />
             case NodeType.ListDisplay:
                 return <ResultList displayData={node as DisplayListNode} treeState={treeState} />
+            case NodeType.GraphDisplay:
+                return <ResultGraph displayData={node as GraphDisplayNode} treeState={treeState} />
             default:
                 return <></>
         }

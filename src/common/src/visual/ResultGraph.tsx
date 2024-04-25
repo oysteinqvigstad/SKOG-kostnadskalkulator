@@ -21,7 +21,7 @@ import {parseHtmlString} from "../util/htmlParsing";
 
 
 export function ResultGraph(
-    props: { treeState: TreeState, displayData: GraphDisplayNode }
+    props: { treeState: TreeState | undefined, displayData: GraphDisplayNode }
 ) {
     const groups = props.displayData.resultGroups;
     const [selectedGroup, setSelectedGroup] = useState(groups[0] ?? undefined);
@@ -36,7 +36,7 @@ export function ResultGraph(
 
     const series : { labels: string[], values: string[] } = selectGraphXAxisInput(selectedInputDriver);
     const xValues = series.values.map(v=>parseInt(v));
-    const results = getResultsForInputs(props.treeState, selectedInputDriver?.id || "", xValues);
+    const results = props.treeState && getResultsForInputs(props.treeState, selectedInputDriver?.id || "", xValues);
 
 
 
@@ -65,11 +65,11 @@ export function ResultGraph(
                             aria-label={`select field to draw graph for`}
                             value={selectedInputDriver?.name}
                             onChange={e => {
-                                const input = inputNodes.find(i=>i.name === e.currentTarget.value);
+                                const input = inputNodes?.find(i=>i.name === e.currentTarget.value);
                                 setSelectedInputDriver(input);
                             }}
                         >
-                            {inputNodes.map((input) => <option key={input?.id} value={input?.name}>{input?.name}</option>)}
+                            {inputNodes?.map((input) => <option key={input?.id} value={input?.name}>{input?.name}</option>)}
                         </Form.Select>
                     </Col>
 
@@ -82,7 +82,8 @@ export function ResultGraph(
                             <ButtonGroup aria-label="Basic example" className={"d-inline"} >
                                 {groups.map((group)=>{
                                     return <Button
-                                        disabled={selectedGroup?.id === group.id}
+                                        active={selectedGroup?.id === group.id}
+                                        className={"btn-toggle"}
                                         onClick={()=>{
                                             setSelectedGroup(group);
                                         }}
