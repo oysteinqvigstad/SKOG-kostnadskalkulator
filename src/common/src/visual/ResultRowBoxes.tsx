@@ -11,7 +11,7 @@ export function ResultRowBoxes(props: {
     return (
        <Row className={"d-flex gap-4 justify-content-center"}>
            {props.result.map(({label, color, value}, index) =>
-               <ResultRowBox title={label} color={color ?? defaultColors[index]} measurement={`${value} ${props.unit}`} />)}
+               <ResultRowBox title={label} color={color ?? defaultColors[index]} measurement={`${value.toFixed()} ${props.unit}`} />)}
        </Row>
     )
 }
