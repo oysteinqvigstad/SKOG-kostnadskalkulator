@@ -26,6 +26,7 @@ export function ParametersWithTabs() {
                 <Row>
                     {inputNodes
                         ?.filter((node) => node.pageName === title)
+                        .sort((a, b) => a.ordering - b.ordering)
                          .map((node) => (
                             <Col md={12} lg={6}>
                                 <InputField node={node} />
