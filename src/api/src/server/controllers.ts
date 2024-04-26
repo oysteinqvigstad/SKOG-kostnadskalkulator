@@ -1,10 +1,8 @@
 import {IDatabase} from "../models/IDatabase";
 import express from "express";
-import path from "path";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 import {AuthenticationError, BadRequestError, DatabaseError, NotFoundError} from "../types/errorTypes";
 import {IAuth} from "../models/IAuth";
-
 
 /**
  * Adds a calculator to the database
@@ -71,15 +69,6 @@ export function calculateResult(db: IDatabase) {
 }
 
 /**
- * Serves the react app
- */
-export function reactApp(staticFilesPath: string) {
-    return async function(_req: express.Request, res: express.Response) {
-        res.sendFile(path.join(staticFilesPath, 'index.html'));
-    }
-}
-
-/**
  * Adds CORS headers to the response
  */
 export function cors() {
@@ -102,9 +91,6 @@ function validateGetCalculatorQueryNameAndVersion(req: express.Request, res: exp
     }
     return { name, version: parseInt(version) };
 }
-
-
-
 
 /**
  * Helper function that resolves a operation and send the appropriate response to the caller
