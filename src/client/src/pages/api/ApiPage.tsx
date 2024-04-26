@@ -225,7 +225,8 @@ function generateExampleJsonQuery(treeState: TreeState) {
         acc[pageName] = inputFields.reduce<{ [key: string]: number | string }>((acc, inputField) => {
             let value: number | string = inputField.defaultValue
             if (inputField.type === NodeType.DropdownInput) {
-                value = (inputField as DropdownInput).dropdownAlternatives[0].label
+                const alternatives = (inputField as DropdownInput).dropdownAlternatives
+                value = alternatives.find((option) => option.value === inputField.defaultValue)?.label ?? alternatives[0].label
             }
             acc[inputField.name] = value
             return acc
