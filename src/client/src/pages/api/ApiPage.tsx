@@ -172,7 +172,10 @@ function CalculatorAccordeons() {
             {isLoading && <Spinner />}
             {error && <Alert>{"En feil oppstod ved henting av kalkulatorer"}</Alert>}
             {data && data.length === 0 && <Alert>{"Ingen kalkulatorer funnet"}</Alert>}
-            {data && data.map((calculator) => <SingleCalculatorExample calculator={calculator} />)}
+            {data && data
+                .filter((calculator) => calculator.published)
+                .map((calculator) => <SingleCalculatorExample calculator={calculator} />)
+            }
         </>
     )
 }
