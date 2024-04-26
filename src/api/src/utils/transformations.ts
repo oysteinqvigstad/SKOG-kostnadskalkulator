@@ -10,7 +10,9 @@ import {
 import {BadRequestError} from "../types/errorTypes";
 
 export function generateJsonCalculationResponse(tree: TreeState) {
-    return tree.displayNodes.reduce<{[key: string]: any}>((acc, displayNode) => {
+    return tree.displayNodes
+        .filter((node) => node.type !== NodeType.PreviewDisplay && node.type !== NodeType.GraphDisplay)
+        .reduce<{[key: string]: any}>((acc, displayNode) => {
         acc[displayNode.name] = displayNode.inputOrdering.map(ref => {
             const outputNode = getNodeByID(tree, ref.outputID) as OutputNode
             return {
