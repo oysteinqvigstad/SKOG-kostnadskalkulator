@@ -18,7 +18,7 @@ export function generateJsonCalculationResponse(tree: TreeState) {
             return {
                 name: outputNode.name,
                 value: outputNode.value,
-                unit: outputNode.unit,
+                unit: (displayNode as any).unit ?? "",
             }
         })
         return acc
