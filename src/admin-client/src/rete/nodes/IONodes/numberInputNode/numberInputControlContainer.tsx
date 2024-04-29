@@ -13,7 +13,7 @@ import {HiddenOnMinimized, MinimizeButton} from "../sharedComponents";
 import {NumberInputControlData} from "./numberInputControlData";
 import {addInputToPage} from "../../../../state/slices/pages";
 import {NodeControl} from "../../nodeControl";
-import {TextEditor, TextEditorTest} from "../../../../components/input/textEditor";
+import {TextEditorTest} from "../../../../components/input/textEditor";
 import {simpleConfig} from "../../../../components/input/textEditorConfig";
 
 
