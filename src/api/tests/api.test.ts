@@ -1,7 +1,6 @@
 import WebServer from "../src/server/WebServer";
 import {MockDatabase} from "../src/database/MockDatabase";
 import request from 'supertest'
-import path from "path";
 import {testTree, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 import {Configuration} from "../src/types/config";
@@ -26,7 +25,6 @@ beforeAll(() => {
         database: new MockDatabase(),
         auth: new MockAuth(),
         httpPort: 4000,
-        staticFilesPath: path.join(__dirname, '..', '..', 'client', 'build')
     }
     server = new WebServer(config).run()
 })
@@ -38,106 +36,106 @@ afterAll(() => {
 
 
 describe('api calculator', () => {
-    test('POST /api/v0/addCalculator', async () => {
+    test('POST /api/v1/addCalculator', async () => {
         await request(server.app)
-            .post('/api/v0/addCalculator')
+            .post('/api/v1/addCalculator')
             .set('Authorization', 'Bearer test_token')
             .send(calculator)
             .expect(200)
     })
 
-    test('POST /api/v0/addCalculator (no authorization header)', async () => {
+    test('POST /api/v1/addCalculator (no authorization header)', async () => {
         await request(server.app)
-            .post('/api/v0/addCalculator')
+            .post('/api/v1/addCalculator')
             .send(calculator)
             .expect(401)
     })
 
-    test('POST /api/v0/addCalculator (no authorization Bearer)', async () => {
+    test('POST /api/v1/addCalculator (no authorization Bearer)', async () => {
         await request(server.app)
-            .post('/api/v0/addCalculator')
+            .post('/api/v1/addCalculator')
             .set('Authorization', '')
             .send(calculator)
             .expect(401)
     })
 
-    test('POST /api/v0/addCalculator (empty authorization Bearer)', async () => {
+    test('POST /api/v1/addCalculator (empty authorization Bearer)', async () => {
         await request(server.app)
-            .post('/api/v0/addCalculator')
+            .post('/api/v1/addCalculator')
             .set('Authorization', 'Bearer ')
             .send(calculator)
             .expect(401)
     })
 
-    test('GET /api/v0/getCalculatorsInfo', async () => {
+    test('GET /api/v1/getCalculatorsInfo', async () => {
         const {reteSchema, treeNodes, ...rest} = calculator
         await request(server.app)
-            .get('/api/v0/getCalculatorsInfo')
+            .get('/api/v1/getCalculatorsInfo')
             .expect(200, [rest])
             .expect('Content-Type', /json/)
     })
 
-    test('GET /api/v0/getCalculatorTree?name=testMy (no version)', async () => {
+    test('GET /api/v1/getCalculatorTree?name=testMy (no version)', async () => {
         await request(server.app)
-            .get('/api/v0/getCalculatorTree?name=testMy')
+            .get('/api/v1/getCalculatorTree?name=testMy')
             .expect(400)
     })
 
-    test('GET /api/v0/getCalculatorTree?name=testMy&version=1', async () => {
+    test('GET /api/v1/getCalculatorTree?name=testMy&version=1', async () => {
         const {treeNodes} = calculator
         await request(server.app)
-            .get('/api/v0/getCalculatorTree?name=testMy&version=1')
+            .get('/api/v1/getCalculatorTree?name=testMy&version=1')
             .expect(200, treeNodes)
     })
 
-    test('GET /api/v0/getCalculatorSchema?name=testMy&version=1', async () => {
+    test('GET /api/v1/getCalculatorSchema?name=testMy&version=1', async () => {
         const {reteSchema} = calculator
         await request(server.app)
-            .get('/api/v0/getCalculatorSchema?name=testMy&version=1')
+            .get('/api/v1/getCalculatorSchema?name=testMy&version=1')
             .expect(200, reteSchema)
     })
 })
 
 describe('api calculate', () => {
-    test('POST /api/v0/calculate (missing payload)', async () => {
+    test('POST /api/v1/calculate (missing payload)', async () => {
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send()
             .expect(400)
     })
 
-    test('POST /api/v0/calculate (missing name)', async () => {
+    test('POST /api/v1/calculate (missing name)', async () => {
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send({version: 1, mode: 'strict', inputs: {}})
             .expect(400)
     })
 
-    test('POST /api/v0/calculate (missing version)', async () => {
+    test('POST /api/v1/calculate (missing version)', async () => {
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send({name: "testMy", mode: 'strict', inputs: {}})
             .expect(400)
     })
 
 
-    test('POST /api/v0/calculate (missing mode)', async () => {
+    test('POST /api/v1/calculate (missing mode)', async () => {
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send({name: "testMy", version: 1, inputs: {}})
             .expect(400)
     })
 
-    test('POST /api/v0/calculate (invalid mode)', async () => {
+    test('POST /api/v1/calculate (invalid mode)', async () => {
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send({name: "testMy", version: 1, mode: "", inputs: {}})
             .expect(400)
     })
 
-    test('POST /api/v0/calculate (relaxed mode, no changes)', async () => {
+    test('POST /api/v1/calculate (relaxed mode, no changes)', async () => {
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send({name: "testMy", version: 1, mode: "relaxed", inputs: {}})
             .expect(200)
             .then(response => {
@@ -146,14 +144,14 @@ describe('api calculate', () => {
             })
     })
 
-    test('POST /api/v0/calculate (relaxed mode, one input change)', async () => {
+    test('POST /api/v1/calculate (relaxed mode, one input change)', async () => {
         const inputs = {
             "Rektangel": {
                 "bredde": 2
             }
         }
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send({name: "testMy", version: 1, mode: "relaxed", inputs: inputs})
             .expect(200)
             .then(response => {
@@ -162,14 +160,14 @@ describe('api calculate', () => {
     })
 
 
-    test('POST /api/v0/calculate (strict mode, no changes)', async () => {
+    test('POST /api/v1/calculate (strict mode, no changes)', async () => {
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send({name: "testMy", version: 1, mode: "strict", inputs: {}})
             .expect(400)
     })
 
-    test('POST /api/v0/calculate (strict mode, all changes)', async () => {
+    test('POST /api/v1/calculate (strict mode, all changes)', async () => {
         const inputs = {
             "Rektangel": {
                 "bredde": 2,
@@ -183,7 +181,7 @@ describe('api calculate', () => {
             }
         }
         await request(server.app)
-            .post('/api/v0/calculate')
+            .post('/api/v1/calculate')
             .send({name: "testMy", version: 1, mode: "strict", inputs: inputs})
             .expect(200)
             .then(response => {

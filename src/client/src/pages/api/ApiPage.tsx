@@ -43,7 +43,7 @@ function GeneralDescription() {
                     <h4><Badge className={"me-2"}>POST</Badge></h4>
                 </Col>
                 <Col className={"ps-0"} xs={"auto"}>
-                    <h4>{"https://kostnadskalkulator.skogkurs.no/api/v0/calculate"}</h4>
+                    <h4>{"https://kostnadskalkulator.skogkurs.no/api/v1/calculate"}</h4>
 
                     <p style={{fontWeight: 600}}>Content-Type: application/json</p>
                 </Col>
