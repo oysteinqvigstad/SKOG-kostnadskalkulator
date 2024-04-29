@@ -13,8 +13,8 @@ import {HiddenOnMinimized, MinimizeButton} from "../sharedComponents";
 import {NumberInputControlData} from "./numberInputControlData";
 import {addInputToPage} from "../../../../state/slices/pages";
 import {NodeControl} from "../../nodeControl";
-import {TextEditorTest} from "../../../../components/input/textEditor";
-import {simpleConfig} from "../../../../components/input/textEditorConfig";
+import {TextEditor} from "../../../../components/input/textEditor";
+import {standardConfig} from "../../../../components/input/textEditorConfig";
 
 
 export function NumberInputControlContainer(
@@ -173,19 +173,12 @@ export function NumberInputControlsContent(
                                 }
                             }}
                         />
-                        {/*<TextEditor
+                        <TextEditor
                             value={props.data.get('infoText')}
                             buttonText={"Edit Info Text"}
                             onSave={(value) => {
                                 props.data.set({infoText: value})
-                            }}
-                        />*/}
-                        <TextEditorTest
-                            value={props.data.get('infoText')}
-                            buttonText={"Edit Info Text Test"}
-                            onSave={(value) => {
-                                props.data.set({infoText: value})
-                            }} config={simpleConfig}/>
+                            }} config={standardConfig}/>
                     </div>
                 }
             />

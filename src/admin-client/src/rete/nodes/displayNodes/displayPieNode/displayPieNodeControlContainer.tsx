@@ -11,6 +11,7 @@ import {DisplayPieNode as ParseDisplayNode} from "@skogkalk/common/dist/src/pars
 import {NodeControl} from "../../nodeControl";
 import {TextEditor} from "../../../../components/input/textEditor";
 import { Drag } from "rete-react-plugin";
+import {standardConfig} from "../../../../components/input/textEditorConfig";
 
 export function DisplayPieNodeControlContainer(
     props: { data: NodeControl<DisplayPieNodeData> }
@@ -52,7 +53,8 @@ function DisplayPieNodeContent(
                     buttonText={"Edit Info text"}
                     onSave={(value: string) => {
                         props.data.set({infoText: value});
-                    }}/>
+                    }}
+                    config={standardConfig}/>
 
             </Container>
         </Drag.NoDrag>

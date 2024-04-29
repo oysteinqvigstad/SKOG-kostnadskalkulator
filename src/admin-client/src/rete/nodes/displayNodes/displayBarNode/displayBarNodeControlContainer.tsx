@@ -12,6 +12,7 @@ import {DisplayBarNodeData} from "./displayBarNodeControlData";
 import {TextEditor} from "../../../../components/input/textEditor";
 import { Drag } from "rete-react-plugin";
 import {ResultBar} from "@skogkalk/common/dist/src/visual/ResultBar";
+import {standardConfig} from "../../../../components/input/textEditorConfig";
 
 export function DisplayBarNodeControlContainer(
     props: { data: NodeControl<DisplayBarNodeData> }
@@ -63,7 +64,8 @@ function DisplayBarNodeContent(
                     buttonText={"Edit Info Text"}
                     onSave={(value) => {
                         props.data.set({infoText: value})
-                    }}/>
+                    }}
+                    config={standardConfig}/>
             </Container>
         </Drag.NoDrag>
     </>

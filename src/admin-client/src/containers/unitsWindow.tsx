@@ -8,6 +8,7 @@ import parse from 'html-react-parser';
 import Button from "react-bootstrap/Button";
 import {SlArrowDown, SlArrowUp} from "react-icons/sl";
 import {useState} from "react";
+import {simpleConfig} from "../components/input/textEditorConfig";
 
 // TODO: Make this look better
 export function UnitBox(props: {
@@ -35,7 +36,8 @@ export function UnitBox(props: {
                 onSave={(newName: string) => {
                     props.onChange(newName)
                     setUnitName(newName)
-                }}/>
+                }}
+                config={simpleConfig}/>
         </InputGroup>
     </Row>
 }
@@ -52,7 +54,8 @@ export function UnitsWindow() {
                     buttonText={"Add Unit"}
                     onSave={(value: string) => {
                         dispatch(addUnit({name: value, ordering: 1}))
-                    }}/>
+                    }}
+                    config={simpleConfig}/>
             </Row>
             {units.map(({id, unit}) => {
                 return <Row key={id}>

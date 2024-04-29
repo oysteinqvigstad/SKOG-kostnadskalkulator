@@ -11,6 +11,7 @@ import {DisplayListNodeData} from "./displayListNodeControlData";
 import {ResultList} from "@skogkalk/common/dist/src/visual/ResultList";
 import {TextEditor} from "../../../../components/input/textEditor";
 import { Drag } from "rete-react-plugin";
+import {standardConfig} from "../../../../components/input/textEditorConfig";
 
 export function DisplayListNodeControlContainer(
     props: { data: NodeControl<DisplayListNodeData> }
@@ -53,7 +54,8 @@ function DisplayListNodeContent(
                     buttonText={"Edit Info text"}
                     onSave={(value) => {
                         props.data.set({infoText: value})
-                    }}/>
+                    }}
+                    config={standardConfig}/>
             </Container>
         </Drag.NoDrag>
     </>

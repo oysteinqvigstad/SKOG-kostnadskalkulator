@@ -11,7 +11,8 @@ import {DisplayPreviewNodeData} from "./displayPreviewNodeControlData";
 import {ResultPreview} from "@skogkalk/common/dist/src/visual/ResultPreview";
 import {Card} from "react-bootstrap";
 import {TextEditor} from "../../../../components/input/textEditor";
-import { Drag } from "rete-react-plugin";
+import {Drag} from "rete-react-plugin";
+import {standardConfig} from "../../../../components/input/textEditorConfig";
 
 export function DisplayPreviewNodeControlContainer(
     props: { data: NodeControl<DisplayPreviewNodeData> }
@@ -53,7 +54,8 @@ function DisplayPreviewNodeContent(
                     buttonText={"Edit Info text"}
                     onSave={(value) => {
                         props.data.set({infoText: value})
-                    }}/>
+                    }}
+                    config={standardConfig}/>
             </Container>
         </Drag.NoDrag>
     </>
