@@ -15,7 +15,12 @@ import Superscript from '@tiptap/extension-superscript'
 import StarterKit from '@tiptap/starter-kit'
 import sanitizeHtml from 'sanitize-html';
 import {Subscript} from "@tiptap/extension-subscript";
-import {Placeholder} from "@tiptap/extension-placeholder";
+import {Gapcursor} from "@tiptap/extension-gapcursor";
+import Table from '@tiptap/extension-table'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import TableRow from '@tiptap/extension-table-row'
+import {textEditorConfig} from "./textEditorConfig";
 
 //  TODO: Move this to a separate file and make into interface/class
 function MenuBar(props: { editor: Editor | null }) {
@@ -94,7 +99,7 @@ function MenuBar(props: { editor: Editor | null }) {
                 </Button>
             </ButtonGroup>
             <ButtonGroup>
-                    <Button
+                <Button
                     variant={"outline-dark"}
                     active={editor.isActive('paragraph')}
                     onClick={() => editor.chain().focus().setParagraph().run()}>
@@ -141,6 +146,16 @@ function MenuBar(props: { editor: Editor | null }) {
                     ordered list
                 </Button>
             </ButtonGroup>
+            <ButtonGroup>
+                <Button
+                    variant={"outline-dark"}
+                    active={editor.isActive('table')}
+                    onClick={() => editor.chain().focus().insertTable({rows: 3, cols: 3, withHeaderRow: true}).run()
+                    }
+                >
+                    insertTable
+                </Button>
+            </ButtonGroup>
         </>
     )
 }
@@ -163,10 +178,13 @@ export function TextEditor(
             }),
             Superscript,
             Subscript,
-            Placeholder.configure({
-                placeholder: 'Start typing here...',
-                considerAnyAsEmpty: true,
-            })
+            Gapcursor,
+            Table.configure({
+                resizable: true,
+            }),
+            TableRow,
+            TableHeader,
+            TableCell,
         ],
         content: props.value,
     });
@@ -214,6 +232,69 @@ export function TextEditor(
             centered>
             <ModalBody>
                 <MenuBar editor={editor}/>
+                <div style={{border: '1px solid #ccc', padding: '10px'}}>
+                    <EditorContent editor={editor} /*style={{backgroundColor: "lightgrey"}}*//>
+                </div>
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                    variant={"danger"}
+                    onClick={handleDiscard}>
+                    Discard changes
+                </Button>
+                <Button
+                    variant={"primary"}
+                    onClick={handleSave}>
+                    Save changes
+                </Button>
+            </ModalFooter>
+        </Modal>
+    </>
+}
+
+export function TextEditorTest(props: {
+    value: string,
+    buttonText: string,
+    onSave: (value: string) => void,
+    config: textEditorConfig
+}): JSX.Element {
+    const [show, setShow] = useState(false);
+    const editor = useEditor({
+        extensions: props.config.extensions,
+        content: props.value,
+    });
+    const handleShow = () => setShow(!show);
+    const handleSave = () => {
+        if (editor !== null) {
+            let cleanHTML = sanitizeHtml(editor.getHTML(), {
+                allowedTags: props.config.allowedTags
+            });
+            if (cleanHTML === "<p></p>") {
+                cleanHTML = "";
+            }
+            props.onSave(cleanHTML);
+            handleShow();
+        }
+
+    }
+    const handleDiscard = () => {
+        if (editor !== null) {
+            editor.commands.setContent(props.value);
+            handleShow();
+        }
+    }
+    return <>
+        <Button
+            onClick={handleShow}>
+            {props.buttonText}
+        </Button>
+        <Modal
+            show={show}
+            onHide={handleShow}
+            backdrop={"static"}
+            centered>
+            <ModalBody>
+                {props.config.menuBar({editor: editor})}
                 <div style={{border: '1px solid #ccc', padding: '10px'}}>
                     <EditorContent editor={editor} /*style={{backgroundColor: "lightgrey"}}*//>
                 </div>

@@ -13,7 +13,8 @@ import {HiddenOnMinimized, MinimizeButton} from "../sharedComponents";
 import {NumberInputControlData} from "./numberInputControlData";
 import {addInputToPage} from "../../../../state/slices/pages";
 import {NodeControl} from "../../nodeControl";
-import {TextEditor} from "../../../../components/input/textEditor";
+import {TextEditor, TextEditorTest} from "../../../../components/input/textEditor";
+import {simpleConfig} from "../../../../components/input/textEditorConfig";
 
 
 export function NumberInputControlContainer(
@@ -38,11 +39,11 @@ export function NumberInputControlsContent(
             const result = pages.find(({page}) => {
                 return page.title === pageName;
             });
-            const ordering = result?.page.inputIds.findIndex((id)=>{
+            const ordering = result?.page.inputIds.findIndex((id) => {
                 return id === props.data.get('id');
             });
 
-            if(result) {
+            if (result) {
                 props.data.set({pageName: result.page.title, pageOrdering: ordering});
             }
         }
@@ -87,15 +88,16 @@ export function NumberInputControlsContent(
                             </Col>
                             <Col>
                                 <OptionSwitch inputHint={"simple input"} on={props.data.get('simpleInput')} onChange={
-                                    (on: boolean)=> {
+                                    (on: boolean) => {
                                         props.data.set({simpleInput: on});
                                     }
                                 }/>
-                                <OptionSwitch inputHint={"Allow decimals"} on={props.data.get('allowDecimals')} onChange={
-                                    (on: boolean) => {
-                                        props.data.set({allowDecimals: on});
-                                    }
-                                } />
+                                <OptionSwitch inputHint={"Allow decimals"} on={props.data.get('allowDecimals')}
+                                              onChange={
+                                                  (on: boolean) => {
+                                                      props.data.set({allowDecimals: on});
+                                                  }
+                                              }/>
                             </Col>
                         </Row>
                         <Button
@@ -171,13 +173,19 @@ export function NumberInputControlsContent(
                                 }
                             }}
                         />
-                        <TextEditor
+                        {/*<TextEditor
                             value={props.data.get('infoText')}
                             buttonText={"Edit Info Text"}
                             onSave={(value) => {
                                 props.data.set({infoText: value})
                             }}
-                        />
+                        />*/}
+                        <TextEditorTest
+                            value={props.data.get('infoText')}
+                            buttonText={"Edit Info Text Test"}
+                            onSave={(value) => {
+                                props.data.set({infoText: value})
+                            }} config={simpleConfig}/>
                     </div>
                 }
             />
