@@ -29,6 +29,14 @@ export const selectInputFieldValue = (id: string) => createSelector(
     (inputFields) => inputFields[id]
 )
 
+export const selectInvalidFieldValuesByPage =(titles: string[]) => createSelector(
+    [(state: RootState) => state.tree.tree, (state: RootState) => state.tree.inputFieldValues],
+    (tree, inputFields) => {
+        const nodesByPage = titles.map((title) => tree?.inputs.filter((node) => node.pageName === title) ?? [])
+        return nodesByPage.map((nodes) => nodes.filter((node) => inputFields[node.id] === "").length)
+    }
+)
+
 export const selectPageTitles = createSelector(
     (state: RootState) => state.tree.tree,
     (tree) => {
@@ -73,7 +81,9 @@ export const selectURLQueries = (seperator: string) => createSelector(
                 const inputs = tree?.inputs.filter((input) => input.pageName === pageName)!
                 const size = Math.max(...inputs.map((input) => input.ordering)) + 1
                 const values = new Array<string>(size)
-                inputs.forEach((input) => { values[input.ordering] = input.value.toString() })
+                inputs.forEach((input) => {
+                    values[input.ordering] = input.value.toString()
+                })
                 return `${encodeURI(pageName)}=${values.join(seperator)}`
             }).join('&')
     }
