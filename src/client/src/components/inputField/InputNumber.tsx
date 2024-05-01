@@ -55,9 +55,9 @@ export function InputNumber({node}: {
     }
 
     const onUnfocus = (e: React.FocusEvent<any>) => {
-        if (!isInvalid) {
+        //if (!isInvalid) {
             dispatch(setField({id: node.id, value: e.currentTarget.value}))
-        }
+        //}
     }
 
     const onReset = () => {
