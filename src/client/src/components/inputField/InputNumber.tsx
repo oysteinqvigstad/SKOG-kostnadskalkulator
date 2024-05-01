@@ -7,6 +7,7 @@ import {resetField, setField} from "../../state/treeSlice";
 import {selectInputFieldValue} from "../../state/treeSelectors";
 import {NumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
 import {isValidValue} from "@skogkalk/common/dist/src/parseTree";
+import parse from "html-react-parser";
 
 /**
  * The input field for a numerical input
@@ -69,7 +70,6 @@ export function InputNumber({node}: {
             <Form.Floating style={{color: '#6f7174'}}>
                 <Form.Control
                     className={"field"}
-                    // style={{fontWeight: (fieldValue !== fieldData.default) ? 'bold' : 'normal'}}
                     placeholder="value"
                     aria-describedby={`input ${node.name}`}
                     type={"text"}
@@ -101,9 +101,9 @@ export function InputNumber({node}: {
             </Button>
 
             <InputGroup.Text
-                className={"justify-content-center"}
+                className={"justify-content-center field"}
                 style={{width: '5rem'}}>
-                {node.unit}
+                {parse(node.unit)}
             </InputGroup.Text>
         </>
     )
