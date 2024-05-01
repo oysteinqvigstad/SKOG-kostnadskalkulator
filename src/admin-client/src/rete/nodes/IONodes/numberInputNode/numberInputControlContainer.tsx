@@ -1,10 +1,10 @@
 import {Provider} from "react-redux";
-import {selectPages, store} from "../../../../state/store";
+import {selectPages, selectUnits, store} from "../../../../state/store";
 import {useAppDispatch, useAppSelector} from "../../../../state/hooks";
 import React, {useEffect} from "react";
 import {Drag} from "rete-react-plugin";
 import {TextInputField} from "../../../../components/input/textInputField";
-import {Col, InputGroup, Row} from "react-bootstrap";
+import {Col, FloatingLabel, FormSelect, InputGroup, Row} from "react-bootstrap";
 import {NumberInputField} from "../../../../components/input/numberInputField";
 import {OptionSwitch} from "../../../../components/input/optionSwitch";
 import Button from "react-bootstrap/Button";
@@ -14,6 +14,7 @@ import {NumberInputControlData} from "./numberInputControlData";
 import {addInputToPage} from "../../../../state/slices/pages";
 import {NodeControl} from "../../nodeControl";
 import {TextEditor} from "../../../../components/input/textEditor";
+import parse from "html-react-parser";
 
 
 export function NumberInputControlContainer(
@@ -30,6 +31,7 @@ export function NumberInputControlsContent(
 ) {
     const pages = useAppSelector(selectPages);
     const dispatch = useAppDispatch();
+    const units = useAppSelector(selectUnits);
 
     useEffect(() => {
         // finds new index of page if it has been moved
@@ -171,6 +173,22 @@ export function NumberInputControlsContent(
                                 }
                             }}
                         />
+                        <FloatingLabel label={"Select unit"}>
+                            <FormSelect
+                                className={"field"}
+                                aria-label="Default select example"
+                                value={props.data.getData().unit}
+                                onChange={(e)=> {
+                                    props.data.set({unit: e.currentTarget.value})
+                                }}
+                            >
+                                <option value={undefined} >...</option>
+                                {units.map(unit=>{
+                                    return <option key={unit.id} value={unit.unit.name}>{parse(unit.unit.name)}</option>
+                                })
+                                }
+                            </FormSelect>
+                        </FloatingLabel>
                         <TextEditor
                             value={props.data.get('infoText')}
                             buttonText={"Edit Info Text"}
