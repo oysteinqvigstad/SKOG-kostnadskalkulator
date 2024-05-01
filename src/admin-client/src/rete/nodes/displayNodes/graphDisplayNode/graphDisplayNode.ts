@@ -42,6 +42,7 @@ export class GraphDisplayNode extends ParseableBaseNode <
                 {
                     onUpdate: (data: Partial<GraphDisplayNodeControlData>) => {
                         if(data.shouldAddGroup) {
+                            this.controls.c.set({shouldAddGroup: false})
                             this.addInputGroup();
                         }
                         updateNodeRendering(this.id);
