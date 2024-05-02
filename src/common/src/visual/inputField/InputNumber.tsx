@@ -1,7 +1,7 @@
 import React from "react";
 import {Form, InputGroup} from "react-bootstrap";
 import {NumberInputNode} from "../../parseTree/nodes/inputNode";
-
+import parse from 'html-react-parser';
 /**
  * The input field for a numerical input
  * @param fieldData - the data for the field, including the title and properties
@@ -26,7 +26,7 @@ export function InputNumberPreview({node}: {node: NumberInputNode}) {
             <InputGroup.Text
                 className={"justify-content-center"}
                 style={{width: '5rem'}}>
-                    {node.unit}
+                    {parse(node.unit)}
             </InputGroup.Text>
         </>
     )
