@@ -5,6 +5,7 @@ import {MdInfoOutline} from "react-icons/md";
 import {DropdownInput, InputNode, NodeType} from "@skogkalk/common/dist/src/parseTree";
 import {InputDropdown} from "./InputDropdown";
 import {NumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
+import DOMPurify from 'dompurify';
 
 /**
  * `InputField` is a container for an individual input field. It contains a button that opens a modal with a description
@@ -30,13 +31,12 @@ export function InputField({node}: {node: InputNode}) {
                ):(
                    <InputDropdown node={node as DropdownInput} />
                )}
-               {/*{Component ? <Component node={props.node} /> : null}*/}
            </InputGroup>
            <Modal show={show} onHide={handleClose}>
                <Modal.Header closeButton>
                    <Modal.Title>{node.name}</Modal.Title>
                </Modal.Header>
-               <Modal.Body dangerouslySetInnerHTML={{__html: node.infoText}}></Modal.Body>
+               <Modal.Body dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(node.infoText)}}></Modal.Body>
            </Modal>
        </>
    )
