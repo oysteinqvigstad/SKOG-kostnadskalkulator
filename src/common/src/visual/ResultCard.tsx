@@ -1,6 +1,7 @@
 import {Button, Card, Modal, Stack} from "react-bootstrap";
 import React, {useState} from "react";
 import {FcInfo} from "react-icons/fc";
+import DOMPurify from "dompurify";
 
 //TODO: Maybe change dangerouslySet to parseHTML??
 export function ResultCard(props: {
@@ -40,7 +41,7 @@ export function ResultCard(props: {
                                 <Modal.Header closeButton>
                                     <Modal.Title> Info </Modal.Title>
                                 </Modal.Header>
-                                <Modal.Body dangerouslySetInnerHTML={{__html: props.infoText ?? ""}}/>
+                                <Modal.Body dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(props.infoText ?? "")}}/>
                             </Modal>
                         </>
                         }
