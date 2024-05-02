@@ -279,7 +279,7 @@ function SingleCalculatorExampleTable(props: {inputNodes: InputNode[]}) {
             const legalValues = (inputNode as NumberInputNode).legalValues
             if (!legalValues.length) return "Any number"
             return legalValues.map(range =>
-                `${range.min === null ? "-∞" : range.min} to ${range.max === null ? "∞" : range.max}`
+                `${range.min === null ? "0" : range.min} to ${range.max === null ? "0" : range.max}`
             ).join(", ")
         } else if (inputNode.type === NodeType.DropdownInput) {
             return (inputNode as DropdownInput).dropdownAlternatives.map((option) => `"${option.label}"`).join(", ")
