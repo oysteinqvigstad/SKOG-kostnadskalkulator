@@ -1,7 +1,8 @@
 import React from "react";
 import {Form, InputGroup} from "react-bootstrap";
 import {NumberInputNode} from "../../parseTree/nodes/inputNode";
-import parse from 'html-react-parser';
+import DOMPurify from 'dompurify';
+
 /**
  * The input field for a numerical input
  * @param fieldData - the data for the field, including the title and properties
@@ -25,9 +26,9 @@ export function InputNumberPreview({node}: {node: NumberInputNode}) {
             </Form.Floating>
             <InputGroup.Text
                 className={"justify-content-center"}
-                style={{width: '5rem'}}>
-                    {parse(node.unit)}
-            </InputGroup.Text>
+                style={{width: '5rem'}}
+                dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(node.unit)}}
+            />
         </>
     )
 }

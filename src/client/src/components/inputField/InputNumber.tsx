@@ -8,6 +8,7 @@ import {selectInputFieldValue} from "../../state/treeSelectors";
 import {NumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
 import {isValidValue} from "@skogkalk/common/dist/src/parseTree";
 import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 
 /**
  * The input field for a numerical input
@@ -103,7 +104,7 @@ export function InputNumber({node}: {
             <InputGroup.Text
                 className={"justify-content-center field"}
                 style={{width: '5rem'}}>
-                {parse(node.unit)}
+                {parse(DOMPurify.sanitize(node.unit))}
             </InputGroup.Text>
         </>
     )
