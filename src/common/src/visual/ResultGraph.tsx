@@ -10,14 +10,12 @@ import {
     getResultsForInputs,
     GraphDisplayNode,
     InputNode,
+    NodeType,
     OutputNode,
     TreeState
 } from "../parseTree";
 import {isDropdownInputNode} from "../parseTree/nodes/inputNode";
 import {parseHtmlString} from "../util/htmlParsing";
-
-
-
 
 
 export function ResultGraph(
@@ -32,7 +30,8 @@ export function ResultGraph(
         useState(inputNodes?.[0] ?? undefined);
 
 
-    const value = `${selectedInputDriver?.value}`;
+    // const value = `${selectedInputDriver?.value}`;
+    const value = getActualValue(selectedInputDriver)
 
     const series : { labels: string[], values: string[] } = selectGraphXAxisInput(selectedInputDriver);
     const xValues = series.values.map(v=>parseInt(v));
@@ -218,3 +217,14 @@ function selectGraphXAxisInput(input: InputNode | undefined) {
     }
 }
 
+function getActualValue(input: InputNode | undefined) {
+    switch (input?.type) {
+        case NodeType.NumberInput:
+            return input.value.toString()
+        case NodeType.DropdownInput:
+            const options = (input as DropdownInput).dropdownAlternatives
+            return options.find(option => option.value === input.value)?.label ?? ""
+        default:
+            return ""
+    }
+}
