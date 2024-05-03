@@ -16,7 +16,6 @@ module.exports = {
                     maxEntries: 100,
                     maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
                 },
-                cachableResponse: { statuses: [200] }
             },
         },
     ],
