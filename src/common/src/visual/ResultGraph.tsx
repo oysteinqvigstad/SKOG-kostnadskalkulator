@@ -156,6 +156,7 @@ function DrawGraph(
             title: {
                 text: `${props.yLabel} (${parseHtmlString(props.yUnit)})`,
             },
+            tickAmount: 5,
             decimalsInFloat: 1,
         },
         annotations: {
