@@ -9,13 +9,14 @@ module.exports = {
     runtimeCaching: [
         {
             urlPattern: new RegExp('.*'),
-            handler: 'NetworkFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
                 cacheName: 'all',
                 expiration: {
                     maxEntries: 100,
                     maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
                 },
+                cachableResponse: { statuses: [200] }
             },
         },
     ],
