@@ -26,16 +26,18 @@ export function ResultGraph(
 
     const inputNodes = props.treeState?.inputs
         .filter(node=>props.displayData.displayedInputIDs.includes(node.id));
-    const [selectedInputDriver, setSelectedInputDriver] : [InputNode | undefined, any] =
-        useState(inputNodes?.[0] ?? undefined);
 
+    const [selectedId, setSelectedId] = useState(inputNodes?.[0]?.id ?? "")
 
-    // const value = `${selectedInputDriver?.value}`;
-    const value = getActualValue(selectedInputDriver)
+    // value in `selectedInputDriver` might be stale, only use it to reference id and name. Use `node` for actual value
+    // const [selectedInputDriver, setSelectedInputDriver] : [InputNode | undefined, any] =
+    //     useState(inputNodes?.[0] ?? undefined);
+    const node = getNodeByID(props.treeState, selectedId) as InputNode
+    const value = getActualValue(node)
 
-    const series : { labels: string[], values: string[] } = selectGraphXAxisInput(selectedInputDriver);
+    const series : { labels: string[], values: string[] } = selectGraphXAxisInput(node);
     const xValues = series.values.map(v=>parseInt(v));
-    const results = props.treeState && getResultsForInputs(props.treeState, selectedInputDriver?.id || "", xValues);
+    const results = props.treeState && getResultsForInputs(props.treeState, node?.id || "", xValues);
 
 
 
@@ -62,10 +64,10 @@ export function ResultGraph(
                         <Form.Text>{"Velg kostnadsdriver:"}</Form.Text>
                         <Form.Select
                             aria-label={`select field to draw graph for`}
-                            value={selectedInputDriver?.name}
+                            value={node?.name}
                             onChange={e => {
                                 const input = inputNodes?.find(i=>i.name === e.currentTarget.value);
-                                setSelectedInputDriver(input);
+                                if (input) setSelectedId(input.id);
                             }}
                         >
                             {inputNodes?.map((input) => <option key={input?.id} value={input?.name}>{input?.name}</option>)}
@@ -98,10 +100,9 @@ export function ResultGraph(
             <DrawGraph
                 series={chartSeries}
                 xLabels={series.labels}
-                xUnit={selectedInputDriver?.unit ?? ""}
+                xUnit={node?.unit ?? ""}
                 yUnit={selectedGroup?.unit || ""} // popup unit
                 yLabel={selectedGroup?.name || ""}
-
                 actualValue={value}
             />
         </>
