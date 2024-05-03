@@ -6,7 +6,6 @@ module.exports = {
     swDest: 'build/service-worker.js',
     maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
     mode: 'debug',
-    skipWaiting: true,
     runtimeCaching: [
         {
             urlPattern: new RegExp('.*'),
