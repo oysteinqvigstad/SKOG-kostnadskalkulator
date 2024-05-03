@@ -16,6 +16,7 @@ import {
 } from "../parseTree";
 import {isDropdownInputNode} from "../parseTree/nodes/inputNode";
 import {parseHtmlString} from "../util/htmlParsing";
+import DOMPurify from "dompurify";
 
 
 export function ResultGraph(
@@ -29,11 +30,12 @@ export function ResultGraph(
 
     const [selectedId, setSelectedId] = useState(inputNodes?.[0]?.id ?? "")
 
-    // value in `selectedInputDriver` might be stale, only use it to reference id and name. Use `node` for actual value
-    // const [selectedInputDriver, setSelectedInputDriver] : [InputNode | undefined, any] =
-    //     useState(inputNodes?.[0] ?? undefined);
+    const sanitizeHTML = (html: string) => DOMPurify.sanitize(html.replace(/<p>(.*?)<\/p>|(.*)/gs, '$1'))
+
     const node = getNodeByID(props.treeState, selectedId) as InputNode
-    const value = getActualValue(node)
+    const value = getSelectedXLabel(node)
+    const yUnit = sanitizeHTML(selectedGroup?.unit)
+    const xUnit = sanitizeHTML(node?.unit)
 
     const series : { labels: string[], values: string[] } = selectGraphXAxisInput(node);
     const xValues = series.values.map(v=>parseInt(v));
@@ -100,8 +102,8 @@ export function ResultGraph(
             <DrawGraph
                 series={chartSeries}
                 xLabels={series.labels}
-                xUnit={node?.unit ?? ""}
-                yUnit={selectedGroup?.unit || ""} // popup unit
+                xUnit={xUnit}
+                yUnit={yUnit} // popup unit
                 yLabel={selectedGroup?.name || ""}
                 actualValue={value}
             />
@@ -145,7 +147,7 @@ function DrawGraph(
         xaxis: {
             categories: props.xLabels,
             title: {
-                text: props.xUnit,
+                text: parseHtmlString(props.xUnit),
                 offsetY: -8
             }
 
@@ -218,7 +220,7 @@ function selectGraphXAxisInput(input: InputNode | undefined) {
     }
 }
 
-function getActualValue(input: InputNode | undefined) {
+function getSelectedXLabel(input: InputNode | undefined) {
     switch (input?.type) {
         case NodeType.NumberInput:
             return input.value.toString()
