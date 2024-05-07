@@ -9,7 +9,10 @@ export const apiService = createApi({
     endpoints: (builder) => ({
         getCalculatorsInfo: builder.query<Calculator[], void>({
             query: () => 'getCalculatorsInfo',
-            transformResponse: (data: Calculator[]) => data.filter(c => c.published)
+            transformResponse: (data: Calculator[]) =>
+                data
+                .filter(c => c.published)
+                .sort((a, b) => Number(a.disabled) - Number(b.disabled))
         }),
         getCalculatorsInfoIncludingUnpublished: builder.query<Calculator[], void>({
             query: () => 'getCalculatorsInfo',

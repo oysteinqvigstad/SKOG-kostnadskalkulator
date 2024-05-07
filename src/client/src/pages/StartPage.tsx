@@ -54,9 +54,8 @@ function CalculatorPicker() {
                             <Col xs={6}>
                                 <CalculatorButton
                                     title={calculator.name}
-                                    description={"Kort beskrivelse"}
                                     onclick={() => {navigate(`/kalkulator/${encodeURI(calculator.name)}/${calculator.version}`)}}
-                                    disabled={false}/>
+                                    disabled={calculator.disabled}/>
                             </Col>
                         )
                     })}
@@ -68,7 +67,6 @@ function CalculatorPicker() {
 
 function CalculatorButton(props: {
     title: string,
-    description: string,
     onclick: () => void,
     disabled: boolean}) {
     return (
@@ -80,8 +78,11 @@ function CalculatorButton(props: {
         >
             <Col>
                 <div className={"title"}>{props.title}</div>
+                {props.disabled &&
+                    <div className={"description"}>{"Kommer senere"}</div>
+                }
             </Col>
         </Button>
-)
+    )
 
 }
