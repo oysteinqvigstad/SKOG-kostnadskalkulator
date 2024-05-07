@@ -75,7 +75,7 @@ export function cors() {
     return function(_req: express.Request, res: express.Response, next: express.NextFunction) {
         res.header("Access-Control-Allow-Origin", "*")
         res.header("Access-Control-Allow-Credentials", "true")
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-No-Cache")
         next()
     }
 }
