@@ -1,6 +1,9 @@
 import {Accordion, Alert, Badge, Card, Col, Row, Spinner, Table} from "react-bootstrap";
 import React, {useEffect} from "react";
-import {useGetCalculatorsInfoIncludingUnpublishedQuery, useGetCalculatorTreeQuery} from "../../state/store";
+import {
+    useGetCalculatorsInfoQuery,
+    useGetCalculatorTreeQuery
+} from "../../state/store";
 import {DropdownInput, InputNode, NodeType, TreeState, treeStateFromData} from "@skogkalk/common/dist/src/parseTree";
 import {NumberInputNode} from "@skogkalk/common/dist/src/parseTree/nodes/inputNode";
 import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
@@ -164,7 +167,7 @@ function ExampleCode(props: { object: any, header: string }) {
 }
 
 function CalculatorAccordeons() {
-    const {data, error, isLoading} = useGetCalculatorsInfoIncludingUnpublishedQuery()
+    const {data, error, isLoading} = useGetCalculatorsInfoQuery()
 
     return (
         <>
@@ -173,7 +176,7 @@ function CalculatorAccordeons() {
             {error && <Alert>{"En feil oppstod ved henting av kalkulatorer"}</Alert>}
             {data && data.length === 0 && <Alert>{"Ingen kalkulatorer funnet"}</Alert>}
             {data && data
-                .filter((calculator) => calculator.published)
+                .filter((calculator) => !calculator.disabled)
                 .map((calculator) => <SingleCalculatorExample calculator={calculator} />)
             }
         </>
@@ -249,8 +252,6 @@ function generateExampleJsonQuery(treeState: TreeState) {
 function SingleCalculatorExampleFields(props: {treeState: TreeState}) {
     const pages = props.treeState.rootNode.pages.map((page) => page.pageName)
     const exampleJsonBody = generateExampleJsonQuery(props.treeState)
-
-
 
     return (
        <>
