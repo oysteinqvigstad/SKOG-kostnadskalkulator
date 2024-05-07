@@ -8,6 +8,8 @@ export interface Calculator {
     version: number,
     dateCreated: number,
     published: boolean,
+    disabled: boolean,
+    deleted: boolean,
     reteSchema?: {
         store: any,
         graph: any
