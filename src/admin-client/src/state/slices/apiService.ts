@@ -4,7 +4,12 @@ import {Calculator} from "@skogkalk/common/dist/src/types/Calculator";
 
 export const apiService = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: apiBaseUrl }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: apiBaseUrl,
+        prepareHeaders: headers => {
+            headers.set('X-No-Cache', 'true') // ensure service worker do not return stale data
+        },
+    }),
     endpoints: (builder) => ({
         getCalculatorsInfo: builder.query<Calculator[], void>({
             query: () => 'getCalculatorsInfo',

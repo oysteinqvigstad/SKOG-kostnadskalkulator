@@ -8,6 +8,12 @@ module.exports = {
     mode: 'debug',
     runtimeCaching: [
         {
+            urlPattern: ({event}) => {
+                return event.request.headers.get('X-No-Cache') === 'true';
+            },
+            handler: 'NetworkOnly',
+        },
+        {
             urlPattern: new RegExp('.*'),
             handler: 'StaleWhileRevalidate',
             options: {
