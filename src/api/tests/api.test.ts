@@ -15,6 +15,8 @@ beforeAll(() => {
         version: 1,
         dateCreated: Date.now(),
         published: false,
+        deleted: false,
+        disabled: false,
         reteSchema: {
             graph: "test",
             store: "test",
