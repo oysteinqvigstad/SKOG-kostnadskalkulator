@@ -8,6 +8,7 @@ import {
 } from "./controllers";
 import * as http from "http";
 import {Configuration} from "../types/config";
+import rateLimit from "express-rate-limit";
 
 export default class WebServer {
     #config: Configuration
@@ -31,6 +32,7 @@ export default class WebServer {
 
     #initRouting() {
         let router = express.Router()
+            .use(rateLimit({windowMs: 5 * 60 * 1000, limit: 10}))
             .use(express.json({limit: '32mb'}))
             .use(cors()) // temprory during development to allow CORS
             .get('/api/v1/getCalculatorsInfo', getCalculatorsInfo(this.#config.database))
