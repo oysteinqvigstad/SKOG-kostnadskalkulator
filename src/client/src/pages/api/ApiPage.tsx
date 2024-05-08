@@ -89,7 +89,8 @@ function SectionResponseBodyFormat() {
     const rows = [
         ["200 OK", "Successful computation. Consult the specifications for each individual cauclators below"],
         ["400 Bad Request", "Caused by a missing fields or input (when required), invalid inputs or otherwise not adhering to the request body specifications"],
-        ["404 Not Found", "Usually casued by a deleted resource. The database connection is working but was unable to process the request"],
+        ["404 Not Found", "Usually caused by a deleted resource. The database connection is working but was unable to process the request"],
+        ["429 Too Many Requests", "Caused by excessive requests within set time limit"],
         ["500 Internal Server Error", "Unexpected error or a failed database connection"]
     ]
     const exampleResponse = {

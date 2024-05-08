@@ -32,7 +32,7 @@ export default class WebServer {
 
     #initRouting() {
         let router = express.Router()
-            .use(rateLimit({windowMs: 5 * 60 * 1000, limit: 10}))
+            .use(rateLimit({windowMs: 5 * 60 * 1000, limit: 20}))
             .use(express.json({limit: '32mb'}))
             .use(cors()) // temprory during development to allow CORS
             .get('/api/v1/getCalculatorsInfo', getCalculatorsInfo(this.#config.database))
