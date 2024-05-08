@@ -8,12 +8,14 @@ module.exports = {
     mode: 'debug',
     runtimeCaching: [
         {
+            // handler used by Editor
             urlPattern: ({event}) => {
                 return event.request.headers.get('X-No-Cache') === 'true';
             },
             handler: 'NetworkOnly',
         },
         {
+            // handler used by App
             urlPattern: new RegExp('.*'),
             handler: 'StaleWhileRevalidate',
             options: {
